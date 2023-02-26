@@ -10,11 +10,50 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id      String @id @default(cuid())
-    title   String
-    content String
+model Room {
+    pin     String @id
+    currentIndex Int @map("current_index")
+    lastPlayedIndex Int @map("last_played_index")
+    expectedEndTime DateTime @map("expected_end_time")
+
+    tracks Track[]
+
+    @@map("rooms")
 }
+
+model Track {
+    index  Int
+    trackId String @map("track_id")
+    durationMs Int @map("duration_ms")
+
+    room Room @relation(fields: [roomId], references: [pin])
+    roomId String @map("room_id")
+    
+    votes Vote[]
+
+    @@id([roomId, trackId])
+    @@map("tracks")
+}
+
+enum VOTE {
+    UP
+    DOWN
+}
+
+model Vote {
+    vote VOTE
+
+    by User @relation(fields: [userId], references: [id])
+    userId String @map("user_id")
+
+    track Track @relation(fields: [trackId, roomId], references: [trackId, roomId])
+    roomId String @map("room_id")
+    trackId String @map("track_id")
+
+    @@id([trackId, userId, roomId])
+    @@map("votes")
+}
+
 
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver, 
@@ -36,6 +75,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@map("accounts")
 }
 
 model Session {
@@ -44,6 +84,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
 }
 
 model User {
@@ -54,6 +96,10 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+
+    votes         Vote[]
+
+    @@map("users")
 }
 
 model VerificationToken {
@@ -62,4 +108,5 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+    @@map("verification_tokens")
 }

@@ -1,7 +1,7 @@
+import { prisma } from "@fissa/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type DefaultSession, type NextAuthOptions } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-import { prisma } from "@acme/db";
+import SpotifyProvider from "next-auth/providers/spotify";
 
 /**
  * Module augmentation for `next-auth` types
@@ -41,9 +41,9 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: process.env.DISCORD_CLIENT_ID as string,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
+    SpotifyProvider({
+      clientId: process.env.SPOTIFY_CLIENT_ID!,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
     }),
     /**
      * ...add more providers here
