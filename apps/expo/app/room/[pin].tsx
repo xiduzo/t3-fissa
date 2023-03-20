@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
+import Action from "../../src/components/Action";
 import { Button } from "../../src/components/Button";
 import Popover from "../../src/components/Popover";
 import { Typography } from "../../src/components/Typography";
@@ -47,7 +48,28 @@ const Room = () => {
           className="absolute bottom-0 h-24 w-full"
         />
         <Popover visible={test} onRequestClose={() => setTest(false)}>
-          <Typography>hello world</Typography>
+          <Action
+            title="title"
+            subtitle="subtitle"
+            icon="funnel"
+            layout="column"
+          />
+          <Action
+            title="title"
+            reversed
+            subtitle="subtitle"
+            icon="funnel"
+            layout="column"
+          />
+          <Action title="title" subtitle="subtitle" icon="funnel" />
+          <Action disabled title="title" subtitle="subtitle" icon="bulb" />
+          <Action
+            disabled
+            active
+            title="title"
+            subtitle="subtitle"
+            icon="film"
+          />
         </Popover>
       </View>
     </SafeAreaView>
