@@ -6,11 +6,18 @@ import {
   View,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { VariantProps, cva } from "@fissa/utils";
 
 import { Typography } from "./Typography";
 
-export const Button: FC<Props> = ({ title, inverted, variant, ...props }) => {
+export const Button: FC<Props> = ({
+  title,
+  inverted,
+  variant,
+  endIcon,
+  ...props
+}) => {
   const { push } = useRouter();
 
   const textInverted = useMemo(() => {
@@ -39,10 +46,18 @@ export const Button: FC<Props> = ({ title, inverted, variant, ...props }) => {
         className={button({ inverted, disabled: !!props.disabled, variant })}
       >
         {/* {start && <View style={styles.start}>{start}</View>} */}
-        <Typography className="text-center font-bold" inverted={textInverted}>
+        <Typography
+          className="flex-grow font-bold"
+          centered
+          inverted={textInverted}
+        >
           {title.toLowerCase()}
         </Typography>
-        {/* {end && <View style={styles.end}>{end}</View>} */}
+        {endIcon && (
+          <Typography className="ml-2 mt-0.5" centered>
+            <Ionicons name={endIcon} size={16} />
+          </Typography>
+        )}
       </View>
     </TouchableHighlight>
   );
@@ -52,26 +67,30 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   disabled?: boolean;
   className?: string;
   linkTo?: string;
+  endIcon?: keyof typeof Ionicons.glyphMap;
 }
 
-const button = cva("border-2 text-center py-5 rounded-lg border-theme-500", {
-  variants: {
-    variant: {
-      outlined: "",
-      contained: "bg-theme-500",
-      text: "bg-transparent border-transparent",
+const button = cva(
+  "flex flex-row items-center border-2 rounded-lg border-theme-500",
+  {
+    variants: {
+      variant: {
+        outlined: "py-5",
+        contained: "bg-theme-500 py-5",
+        text: "bg-transparent border-transparent",
+      },
+      inverted: {
+        true: "",
+        false: "",
+      },
+      disabled: {
+        true: "opacity-50",
+      },
     },
-    inverted: {
-      true: "",
-      false: "",
+    defaultVariants: {
+      variant: "contained",
+      inverted: false,
     },
-    disabled: {
-      true: "opacity-50",
-    },
+    compoundVariants: [],
   },
-  defaultVariants: {
-    variant: "contained",
-    inverted: false,
-  },
-  compoundVariants: [],
-});
+);

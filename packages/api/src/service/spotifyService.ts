@@ -14,6 +14,7 @@ export class SpotifyService {
 
   refresh = async (refreshToken: string) => {
     this.api.setRefreshToken(refreshToken);
+    // TODO: update tokens in db
     return this.api.refreshAccessToken();
   };
 

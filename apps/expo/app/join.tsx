@@ -104,7 +104,6 @@ const Join = () => {
       <Stack.Screen
         options={{
           header: (props) => <Header {...props} />,
-          headerRight: () => <Button title="right" />,
         }}
       />
       <View className="mt-6 flex h-full w-full space-y-16 px-6">
