@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { SafeAreaView, View, VirtualizedList } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter, useSearchParams } from "expo-router";
@@ -12,18 +12,12 @@ import { Typography } from "../../src/components/Typography";
 
 const Room = () => {
   const { pin } = useSearchParams();
-  const { back } = useRouter();
 
   const [showRoomPopover, setShowRoomPopover] = useState(false);
 
   const toggleRoomPopover = useCallback(() => {
     setShowRoomPopover((prev) => !prev);
   }, []);
-
-  const goToHome = useCallback(() => {
-    toggleRoomPopover();
-    back();
-  }, [toggleRoomPopover, back]);
 
   return (
     <SafeAreaView className="bg-theme-900">
@@ -60,37 +54,11 @@ const Room = () => {
           initialNumToRender={5}
           ListFooterComponent={ListFooterComponent}
         />
+        <RoomPopover visible={showRoomPopover} close={toggleRoomPopover} />
         <LinearGradient
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"
         />
-        <Popover visible={showRoomPopover} onRequestClose={toggleRoomPopover}>
-          <Action
-            title="Leave session"
-            subtitle="No worries, you can come back"
-            inverted
-            onPress={goToHome}
-            icon="arrow-up"
-          />
-          <Action
-            title="Create playlist in spotify"
-            subtitle="And keep this fissa's memories"
-            inverted
-            disabled
-            // onPress={createPlaylist}
-            // disabled={!currentUser || savingPlaylist}
-            icon="musical-note"
-          />
-          <Action
-            // hidden={!isOwner}
-            title={"No speakers found"}
-            subtitle="Current speaker"
-            inverted
-            disabled
-            icon="headset"
-            // onPress={toggleDevicePopover}
-          />
-        </Popover>
       </View>
     </SafeAreaView>
   );
@@ -106,5 +74,47 @@ const ListFooterComponent = () => {
       </Typography>
       <Typography variant="bodyM">Add tracks or I'll fill the queue</Typography>
     </View>
+  );
+};
+
+const RoomPopover: FC<{ visible: boolean; close: () => void }> = ({
+  visible,
+  close,
+}) => {
+  const { back } = useRouter();
+
+  const goToHome = useCallback(() => {
+    close();
+    back();
+  }, [close, back]);
+
+  return (
+    <Popover visible={visible} onRequestClose={close}>
+      <Action
+        title="Leave session"
+        subtitle="No worries, you can come back"
+        inverted
+        onPress={goToHome}
+        icon="arrow-up"
+      />
+      <Action
+        title="Create playlist in spotify"
+        subtitle="And keep this fissa's memories"
+        inverted
+        disabled
+        // onPress={createPlaylist}
+        // disabled={!currentUser || savingPlaylist}
+        icon="musical-note"
+      />
+      <Action
+        // hidden={!isOwner}
+        title={"No speakers found"}
+        subtitle="Current speaker"
+        inverted
+        disabled
+        icon="headset"
+        // onPress={toggleDevicePopover}
+      />
+    </Popover>
   );
 };

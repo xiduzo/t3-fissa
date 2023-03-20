@@ -14,12 +14,14 @@ import { cva } from "@fissa/utils";
 import { Button } from "../src/components/Button";
 import { Header } from "../src/components/Header";
 import { Typography } from "../src/components/Typography";
+import { useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
 import { toast } from "../src/utils/Toast";
 import { api } from "../src/utils/api";
 
 const Join = () => {
   const [pin, setPin] = useState(["", "", "", ""]);
   const { replace } = useRouter();
+  const { save } = useEncryptedStorage("pin");
 
   api.room.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),
@@ -27,7 +29,9 @@ const Join = () => {
       toast.warn({ message: error.message });
       reset();
     },
-    onSuccess: ({ pin }) => {
+    onSuccess: async ({ pin }) => {
+      await save(pin);
+
       replace(`/room/${pin}`);
     },
   });
@@ -121,7 +125,7 @@ const Join = () => {
                 onFocus={handleSelect(index)}
                 placeholder="⦚"
                 maxLength={1}
-                className="p-4 text-center text-5xl font-extrabold text-theme-100"
+                className="text-theme-100 p-4 text-center text-5xl font-extrabold"
               />
               <View
                 className={underline({ active: pin.indexOf("") === index })}

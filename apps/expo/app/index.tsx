@@ -5,7 +5,9 @@ import { Stack } from "expo-router";
 
 import { Button } from "../src/components/Button";
 import { Typography } from "../src/components/Typography";
+import { useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
 import { useAuth } from "../src/providers/AuthProvider";
+import { api } from "../src/utils/api";
 
 const Index = () => {
   const { promptAsync, user } = useAuth();
@@ -35,7 +37,7 @@ const Index = () => {
           )}
         </View>
         <View>
-          <Button variant="text" title="re join" disabled />
+          <Rejoin />
         </View>
       </View>
     </SafeAreaView>
@@ -43,3 +45,21 @@ const Index = () => {
 };
 
 export default Index;
+
+const Rejoin = () => {
+  const { value } = useEncryptedStorage("pin");
+  const { data } = api.room.byId.useQuery(value!, {
+    enabled: !!value,
+  });
+
+  if (!value) return null; // no pin stored
+  if (!data) return null; // no room found
+
+  return (
+    <Button
+      variant="text"
+      title={`re-join ${value}`}
+      linkTo={`/room/${value}`}
+    />
+  );
+};

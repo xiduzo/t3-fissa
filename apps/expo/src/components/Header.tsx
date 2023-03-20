@@ -9,10 +9,8 @@ import { Typography } from "./Typography";
 export const Header: FC<NativeStackHeaderProps> = (props) => {
   const { back } = useRouter();
 
-  console.log(props);
-
   return (
-    <View className="flex flex-row items-center justify-between bg-theme-900 px-6 pt-12">
+    <View className="bg-theme-900 flex flex-row items-center justify-between px-6 pt-12">
       <View>
         {props.back && props.options.headerBackVisible && (
           <Typography>

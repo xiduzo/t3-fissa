@@ -51,7 +51,7 @@ export const Button: FC<Props> = ({
           centered
           inverted={textInverted}
         >
-          {title.toLowerCase()}
+          {title}
         </Typography>
         {endIcon && (
           <Typography className="ml-2 mt-0.5" centered>
