@@ -80,7 +80,7 @@ model Account {
 
 model Session {
     id           String   @id @default(cuid())
-    sessionToken String   @unique
+    sessionToken String   @unique @default(uuid())
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)

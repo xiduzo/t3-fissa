@@ -3,6 +3,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
+import { SpotifyProvider } from "../src/providers/AuthProvider";
 import { TRPCProvider } from "../src/utils/api";
 
 // This is the main layout of the app
@@ -10,20 +11,22 @@ import { TRPCProvider } from "../src/utils/api";
 const RootLayout = () => {
   return (
     <TRPCProvider>
-      <SafeAreaProvider>
-        {/*
+      <SpotifyProvider>
+        <SafeAreaProvider>
+          {/*
           The Stack component displays the current page.
           It also allows you to configure your screens 
         */}
-        <Stack
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: "#f472b6",
-            },
-          }}
-        />
-        <StatusBar />
-      </SafeAreaProvider>
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: "#ffcc00",
+              },
+            }}
+          />
+          <StatusBar />
+        </SafeAreaProvider>
+      </SpotifyProvider>
     </TRPCProvider>
   );
 };

@@ -1,9 +1,9 @@
 import { type ConfigContext, type ExpoConfig } from "@expo/config";
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
-  name: "expo",
-  slug: "expo",
-  scheme: "expo",
+  name: "fissa",
+  slug: "not only one person should decide what is playing on a party",
+  scheme: "com.fissa",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
@@ -19,7 +19,10 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "your.bundle.identifier",
+    bundleIdentifier: "com.xiduzo.fissa",
+    config: {
+      usesNonExemptEncryption: false,
+    },
   },
   android: {
     adaptiveIcon: {

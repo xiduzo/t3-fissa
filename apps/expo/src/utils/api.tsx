@@ -58,6 +58,13 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
+          // TODO: send session token for next auth
+          // headers: () => {
+          //   return {
+          //     authorization: "test-auth",
+          //     // Cookie: `next-auth.callback-url=exp%3A%2F%2F192.168.2.27%3A19000; next-auth.session-token=cb3739bc-a3e1-4126-9c16-dbd0b4970628`,
+          //   };
+          // },
         }),
       ],
     }),

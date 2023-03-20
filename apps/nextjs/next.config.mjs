@@ -7,7 +7,7 @@
 /** @type {import("next").NextConfig} */
 const config = {
   /** Enables hot reloading for local packages without a build step */
-  transpilePackages: ["@fissa/api", "@fissa/auth", "@fissa/db"],
+  transpilePackages: ["@fissa/api", "@fissa/auth", "@fissa/db", "@fissa/utils"],
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: !!process.env.CI },
   typescript: { ignoreBuildErrors: !!process.env.CI },
