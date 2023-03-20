@@ -1,20 +1,17 @@
 import React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 
 import { Button } from "../src/components/Button";
 import { Typography } from "../src/components/Typography";
 import { useAuth } from "../src/providers/AuthProvider";
-import { api, type RouterOutputs } from "../src/utils/api";
 
 const Index = () => {
   const { promptAsync, user } = useAuth();
 
-  console.log(user);
   return (
     <SafeAreaView className="bg-theme-900">
-      {/* Changes page title visible on the header */}
       <Stack.Screen options={{ headerShown: false }} />
       <View className="flex h-full w-full justify-between px-6">
         <View></View>

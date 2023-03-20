@@ -8,9 +8,7 @@ export const getAccessTokenSchema = z.object({
   redirectUri: z.string().url(),
 });
 
-export const refreshAccessTokenSchema = z.object({
-  refreshToken: z.string(),
-});
+export const refreshAccessTokenSchema = z.string();
 
 export const authRouter = createTRPCRouter({
   getSession: publicProcedure.query(({ ctx }) => {
@@ -26,7 +24,10 @@ export const authRouter = createTRPCRouter({
       const service = new AuthService(ctx);
       return service.getAccessToken(input);
     }),
-  refreshToken: protectedProcedure
+  refreshToken: publicProcedure
     .input(refreshAccessTokenSchema)
-    .query(() => {}),
+    .mutation(({ ctx, input }) => {
+      const service = new AuthService(ctx);
+      return service.refreshToken(input);
+    }),
 });

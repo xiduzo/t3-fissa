@@ -12,6 +12,11 @@ export class SpotifyService {
     return this.api.authorizationCodeGrant(code);
   };
 
+  refresh = async (refreshToken: string) => {
+    this.api.setRefreshToken(refreshToken);
+    return this.api.refreshAccessToken();
+  };
+
   me = async (accessToken: string) => {
     this.api.setAccessToken(accessToken);
     return this.api.getMe();

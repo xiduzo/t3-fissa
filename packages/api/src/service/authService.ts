@@ -26,6 +26,11 @@ export class AuthService extends ServiceWithContext {
     return tokens;
   };
 
+  refreshToken = async (refreshToken: string) => {
+    const service = new SpotifyService();
+    return service.refresh(refreshToken);
+  };
+
   private createUser = async (
     spotifyUser: SpotifyApi.CurrentUsersProfileResponse,
     tokens: Awaited<ReturnType<SpotifyService["codeGrant"]>>,

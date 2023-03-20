@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -14,14 +15,10 @@ import {
   AuthRequestPromptOptions,
   AuthSessionResult,
   DiscoveryDocument,
-  RefreshTokenRequestConfig,
   ResponseType,
-  TokenResponse,
-  TokenResponseConfig,
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
-import jwtDecode from "jwt-decode";
 import SpotifyWebApi from "spotify-web-api-js";
 
 import { useEncryptedStorage } from "../hooks/useEncryptedStorage";
@@ -39,65 +36,41 @@ const SpotifyContext = createContext({
 export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const spotify = useRef(new SpotifyWebApi());
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
-  // storing our user token
-  const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
 
-  // caching the token configuration, use secure storage in production app
-  const { save, getValueFor } = useEncryptedStorage("accessToken");
+  const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
+  const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
+
+  const { save, getValueFor } = useEncryptedStorage("refreshToken");
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
   const readTokenFromStorage = useCallback(async () => {
-    // get the cached token config
-    const accessToken = await getValueFor();
-    // TODO: set session based on refresh token
-    console.log(accessToken);
-    // const tokenConfig: TokenResponseConfig = JSON.parse(tokenString ?? "");
-    // if (tokenConfig) {
-    //   // instantiate a new token response object which will allow us to refresh
-    //   let tokenResponse = new TokenResponse(tokenConfig);
+    const refreshToken = await getValueFor();
+    if (!refreshToken) return;
 
-    //   // shouldRefresh checks the expiration and makes sure there is a refresh token
-    //   if (tokenResponse.shouldRefresh()) {
-    //     // All we need here is the clientID and refreshToken because the function handles setting our grant type based on
-    //     // the type of request configuration (refreshtokenrequestconfig in our example)
-    //     const refreshConfig: RefreshTokenRequestConfig = {
-    //       clientId: request?.clientId!,
-    //       refreshToken: tokenConfig.refreshToken,
-    //     };
-
-    //     const endpointConfig: Pick<DiscoveryDocument, "tokenEndpoint"> = {
-    //       tokenEndpoint: discovery.tokenEndpoint,
-    //     };
-
-    //     // pass our refresh token and get a new access token and new refresh token
-    //     tokenResponse = await tokenResponse.refreshAsync(
-    //       refreshConfig,
-    //       endpointConfig,
-    //     );
-    //   }
-    //   // cache the token for next time
-    //   save(JSON.stringify(tokenResponse.getRequestConfig()));
-
-    //   // decode the jwt for getting profile information
-    //   const decoded = jwtDecode(tokenResponse.accessToken);
-    //   // storing token in state
-    //   setUser({ jwtToken: tokenResponse.accessToken, decoded });
-    // }
+    try {
+      const response = await refresh(refreshToken);
+      spotify.current.setAccessToken(response.body.access_token);
+      spotify.current.getMe().then(setUser);
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
 
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { code } = response.params;
-      if (!code) return;
-      mutateAsync({ code, redirectUri: request!.redirectUri }).then(
-        (response) => {
-          spotify.current.setAccessToken(response.body.access_token);
-          spotify.current.getMe().then(setUser);
-          console.log(response);
-        },
-      );
-    }
+  useMemo(async () => {
+    if (response?.type !== "success") return;
+
+    const { code } = response.params;
+    if (!code) return;
+
+    const { body } = await mutateAsync({
+      code,
+      redirectUri: request!.redirectUri,
+    });
+
+    spotify.current.setAccessToken(body.access_token);
+    spotify.current.getMe().then(setUser);
+    save(body.refresh_token);
   }, [response, request, setUser]);
 
   useEffect(() => {
