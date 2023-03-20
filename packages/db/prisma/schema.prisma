@@ -11,10 +11,13 @@ datasource db {
 }
 
 model Room {
-    pin     String @id
-    currentIndex Int @map("current_index")
-    lastPlayedIndex Int @map("last_played_index")
-    expectedEndTime DateTime @map("expected_end_time")
+    pin     String @id @unique
+    currentIndex Int @map("current_index") @default(0)
+    lastPlayedIndex Int @map("last_played_index") @default(0)
+    expectedEndTime DateTime @map("expected_end_time") @default(now())
+
+    by User @relation(fields: [userId], references: [id])
+    userId String @map("user_id")
 
     tracks Track[]
 
@@ -98,6 +101,7 @@ model User {
     sessions      Session[]
 
     votes         Vote[]
+    rooms         Room[]
 
     @@map("users")
 }

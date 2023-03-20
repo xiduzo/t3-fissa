@@ -5,6 +5,11 @@ import { signIn, signOut } from "next-auth/react";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
+  const { mutateAsync } = api.room.create.useMutation({
+    onSuccess: (data) => {
+      console.log("data", data);
+    },
+  });
   return (
     <>
       <Head>
@@ -18,6 +23,7 @@ const Home: NextPage = () => {
             Create <span className="text-pink-400">T3</span> Turbo
           </h1>
           <AuthShowcase />
+          <button onClick={() => mutateAsync()}>Create Room</button>
         </div>
       </main>
     </>

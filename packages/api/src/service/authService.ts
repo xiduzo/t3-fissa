@@ -4,7 +4,7 @@ import { addMonths, addSeconds } from "@fissa/utils";
 
 import { getAccessTokenSchema } from "../router/auth";
 import { ServiceWithContext } from "../utils/context";
-import { SpotifyService } from "./spotifyService";
+import { SpotifyService } from "./SpotifyService";
 
 export class AuthService extends ServiceWithContext {
   getAccessToken = async (input: z.infer<typeof getAccessTokenSchema>) => {

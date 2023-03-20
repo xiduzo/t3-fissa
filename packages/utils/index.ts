@@ -1,2 +1,7 @@
+import randomize from "randomatic";
+
 export * from "date-fns";
-export { randomUUID } from "crypto";
+
+export { randomize };
+
+export * from "class-variance-authority";

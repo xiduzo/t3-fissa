@@ -2,7 +2,8 @@
   "name": "@fissa/utils",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "date-fns": "^2.29.3"
+    "class-variance-authority": "^0.4.0",
+    "date-fns": "^2.29.3",
+    "randomatic": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/randomatic": "^3.1.3"
   }
 }

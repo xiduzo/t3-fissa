@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { AuthService } from "../service/authService";
+import { AuthService } from "../service/AuthService";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const getAccessTokenSchema = z.object({

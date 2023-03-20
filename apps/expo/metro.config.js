@@ -10,6 +10,7 @@ const config = getDefaultConfig(projectRoot);
 
 // Add the additional `cjs` extension to the resolver
 config.resolver.sourceExts.push("cjs");
+config.resolver.sourceExts.push("ts");
 
 // 1. Watch all files within the monorepo
 config.watchFolders = [workspaceRoot];

@@ -6,9 +6,11 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
+  AuthRequestConfig,
   AuthRequestPromptOptions,
   AuthSessionResult,
   DiscoveryDocument,
@@ -20,14 +22,10 @@ import {
   useAuthRequest,
 } from "expo-auth-session";
 import jwtDecode from "jwt-decode";
+import SpotifyWebApi from "spotify-web-api-js";
 
 import { useEncryptedStorage } from "../hooks/useEncryptedStorage";
 import { api } from "../utils/api";
-
-const discovery = {
-  authorizationEndpoint: "https://accounts.spotify.com/authorize",
-  tokenEndpoint: "https://accounts.spotify.com/api/token",
-};
 
 const SpotifyContext = createContext({
   promptAsync: (options?: AuthRequestPromptOptions | undefined) => {
@@ -35,48 +33,25 @@ const SpotifyContext = createContext({
       reject("Not implemented");
     });
   },
+  user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
 });
 
 export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
+  const spotify = useRef(new SpotifyWebApi());
+  const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
   // storing our user token
   const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
-  const { data } = api.auth.getSecretMessage.useQuery();
-  console.log("message", data);
 
   // caching the token configuration, use secure storage in production app
-  const { save, getValueFor } = useEncryptedStorage("jwtToken");
+  const { save, getValueFor } = useEncryptedStorage("accessToken");
 
-  const [request, response, promptAsync] = useAuthRequest(
-    {
-      scopes: [
-        // Read
-        "user-read-email",
-        "user-read-playback-state",
-        "user-read-currently-playing",
-        "user-top-read",
-        "user-library-read",
-        "playlist-read-private",
-        "playlist-read-collaborative",
-        // Modify
-        "playlist-modify-public",
-        "user-modify-playback-state",
-        "user-library-modify",
-      ],
-      responseType: ResponseType.Code,
-      clientId: "a2a88c4618324942859ce3e1f888b938",
-      usePKCE: false,
-      redirectUri: makeRedirectUri({
-        scheme: "com.xiduzo.fissa:/redirect",
-      }),
-    },
-    discovery,
-  );
+  const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
   const readTokenFromStorage = useCallback(async () => {
     // get the cached token config
-    const tokenString = await getValueFor();
+    const accessToken = await getValueFor();
     // TODO: set session based on refresh token
-    console.log(tokenString);
+    console.log(accessToken);
     // const tokenConfig: TokenResponseConfig = JSON.parse(tokenString ?? "");
     // if (tokenConfig) {
     //   // instantiate a new token response object which will allow us to refresh
@@ -114,25 +89,54 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     if (response?.type === "success") {
       const { code } = response.params;
-      console.log(code);
       if (!code) return;
       mutateAsync({ code, redirectUri: request!.redirectUri }).then(
         (response) => {
+          spotify.current.setAccessToken(response.body.access_token);
+          spotify.current.getMe().then(setUser);
           console.log(response);
         },
       );
     }
-  }, [response, request]);
+  }, [response, request, setUser]);
 
   useEffect(() => {
     readTokenFromStorage();
   }, [readTokenFromStorage]);
 
   return (
-    <SpotifyContext.Provider value={{ promptAsync }}>
+    <SpotifyContext.Provider value={{ promptAsync, user }}>
       {children}
     </SpotifyContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(SpotifyContext);
+
+const config: AuthRequestConfig = {
+  scopes: [
+    // Read
+    "user-read-email",
+    "user-read-playback-state",
+    "user-read-currently-playing",
+    "user-top-read",
+    "user-library-read",
+    "playlist-read-private",
+    "playlist-read-collaborative",
+    // Modify
+    "playlist-modify-public",
+    "user-modify-playback-state",
+    "user-library-modify",
+  ],
+  responseType: ResponseType.Code,
+  clientId: "a2a88c4618324942859ce3e1f888b938",
+  usePKCE: false,
+  redirectUri: makeRedirectUri({
+    scheme: "xiduzo.fissa:/redirect",
+  }),
+};
+
+const discovery: DiscoveryDocument = {
+  authorizationEndpoint: "https://accounts.spotify.com/authorize",
+  tokenEndpoint: "https://accounts.spotify.com/api/token",
+};

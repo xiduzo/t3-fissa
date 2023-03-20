@@ -3,7 +3,7 @@ import { type ConfigContext, type ExpoConfig } from "@expo/config";
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
   slug: "not only one person should decide what is playing on a party",
-  scheme: "com.fissa",
+  scheme: "xiduzo.fissa",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
@@ -19,7 +19,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.xiduzo.fissa",
+    bundleIdentifier: "xiduzo.fissa",
     config: {
       usesNonExemptEncryption: false,
     },
