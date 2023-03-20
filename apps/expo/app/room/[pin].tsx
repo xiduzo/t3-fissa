@@ -1,19 +1,30 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { SafeAreaView, View, VirtualizedList } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useSearchParams } from "expo-router";
+import { Stack, useRouter, useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import Action from "../../src/components/Action";
 import { Button } from "../../src/components/Button";
+import ListItem from "../../src/components/ListItem";
 import Popover from "../../src/components/Popover";
 import { Typography } from "../../src/components/Typography";
 
 const Room = () => {
   const { pin } = useSearchParams();
+  const { back } = useRouter();
 
-  const [test, setTest] = useState(false);
-  console.log(pin);
+  const [showRoomPopover, setShowRoomPopover] = useState(false);
+
+  const toggleRoomPopover = useCallback(() => {
+    setShowRoomPopover((prev) => !prev);
+  }, []);
+
+  const goToHome = useCallback(() => {
+    toggleRoomPopover();
+    back();
+  }, [toggleRoomPopover, back]);
+
   return (
     <SafeAreaView className="bg-theme-900">
       <Stack.Screen options={{ headerShown: false }} />
@@ -21,7 +32,7 @@ const Room = () => {
         <View className="flex-row items-center justify-between px-6">
           <Typography variant="h2">Now Playing</Typography>
           <Button
-            onPress={() => setTest(true)}
+            onPress={toggleRoomPopover}
             className="opacity-60"
             title={pin!}
             variant="text"
@@ -38,7 +49,13 @@ const Room = () => {
           ]}
           getItemCount={() => 25}
           getItem={(data, index) => data[index]}
-          renderItem={(render) => <Typography>{render.index}</Typography>}
+          renderItem={(render) => (
+            <ListItem
+              title="test"
+              subtitle="test"
+              // imageUri="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"
+            />
+          )}
           keyExtractor={(item, index) => index}
           initialNumToRender={5}
           ListFooterComponent={ListFooterComponent}
@@ -47,28 +64,31 @@ const Room = () => {
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"
         />
-        <Popover visible={test} onRequestClose={() => setTest(false)}>
+        <Popover visible={showRoomPopover} onRequestClose={toggleRoomPopover}>
           <Action
-            title="title"
-            subtitle="subtitle"
-            icon="funnel"
-            layout="column"
+            title="Leave session"
+            subtitle="No worries, you can come back"
+            inverted
+            onPress={goToHome}
+            icon="arrow-up"
           />
           <Action
-            title="title"
-            reversed
-            subtitle="subtitle"
-            icon="funnel"
-            layout="column"
-          />
-          <Action title="title" subtitle="subtitle" icon="funnel" />
-          <Action disabled title="title" subtitle="subtitle" icon="bulb" />
-          <Action
+            title="Create playlist in spotify"
+            subtitle="And keep this fissa's memories"
+            inverted
             disabled
-            active
-            title="title"
-            subtitle="subtitle"
-            icon="film"
+            // onPress={createPlaylist}
+            // disabled={!currentUser || savingPlaylist}
+            icon="musical-note"
+          />
+          <Action
+            // hidden={!isOwner}
+            title={"No speakers found"}
+            subtitle="Current speaker"
+            inverted
+            disabled
+            icon="headset"
+            // onPress={toggleDevicePopover}
           />
         </Popover>
       </View>
