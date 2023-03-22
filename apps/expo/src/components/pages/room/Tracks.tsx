@@ -12,6 +12,7 @@ export const RoomTracks = () => {
 
   const { data } = api.track.byRoomId.useQuery(pin!, {
     enabled: !!pin,
+    refetchInterval: 5000,
   });
 
   const [tracks, setTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);

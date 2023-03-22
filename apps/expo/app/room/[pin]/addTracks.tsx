@@ -34,6 +34,8 @@ const AddTracks = () => {
   useEffect(() => {
     if (!debounced) return setTracks([]);
 
+    // TODO: cache already fetched tracks
+    // TODO: split into multiple requests if more than 50 tracks
     spotify.search(debounced, ["track"]).then((response) => {
       setTracks(response.tracks?.items || []);
     });
