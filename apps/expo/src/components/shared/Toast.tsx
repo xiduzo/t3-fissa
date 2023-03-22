@@ -34,7 +34,7 @@ const Toaster: FC<ToastProps> = ({ text1, text2 }) => {
   );
 };
 
-const ToastContainer: FC = () => {
+export const ToastContainer: FC = () => {
   const toastConfig: ToastConfig = {
     success: (props) => <Toaster {...props} />,
     error: (props) => <Toaster {...props} />,
@@ -45,5 +45,3 @@ const ToastContainer: FC = () => {
   if (Platform.OS === "android") return null;
   return <Toast config={toastConfig} />;
 };
-
-export default ToastContainer;

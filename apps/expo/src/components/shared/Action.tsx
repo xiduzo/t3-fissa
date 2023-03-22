@@ -16,7 +16,7 @@ interface ActionProps extends Omit<ButtonProps, "color"> {
   layout?: "row" | "column";
 }
 
-const Action: FC<ActionProps> = ({
+export const Action: FC<ActionProps> = ({
   icon,
   title,
   subtitle,
@@ -70,8 +70,6 @@ const Action: FC<ActionProps> = ({
     </TouchableHighlight>
   );
 };
-
-export default Action;
 
 const text = cva("mx-4", {
   variants: {

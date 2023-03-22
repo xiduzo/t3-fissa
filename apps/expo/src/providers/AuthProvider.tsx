@@ -31,6 +31,7 @@ const SpotifyContext = createContext({
     });
   },
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
+  spotify: new SpotifyWebApi(),
 });
 
 export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -78,13 +79,19 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [readTokenFromStorage]);
 
   return (
-    <SpotifyContext.Provider value={{ promptAsync, user }}>
+    <SpotifyContext.Provider
+      value={{ promptAsync, user, spotify: spotify.current }}
+    >
       {children}
     </SpotifyContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(SpotifyContext);
+export const useSpotify = () => {
+  const { spotify } = useAuth();
+  return spotify;
+};
 
 const config: AuthRequestConfig = {
   scopes: [

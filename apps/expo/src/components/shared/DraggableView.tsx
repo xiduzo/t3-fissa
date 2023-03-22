@@ -10,7 +10,7 @@ interface DraggableViewProps extends ViewProps {
   touchThreshold?: number;
 }
 
-const DraggableView: FC<DraggableViewProps> = ({
+export const DraggableView: FC<DraggableViewProps> = ({
   children,
   touchThreshold = 10,
   ...viewProps
@@ -56,5 +56,3 @@ const DraggableView: FC<DraggableViewProps> = ({
     </Animated.View>
   );
 };
-
-export default DraggableView;

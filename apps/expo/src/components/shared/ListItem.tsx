@@ -28,7 +28,7 @@ export interface ListItemProps
   selected?: boolean;
 }
 
-const ListItem: FC<ListItemProps> = ({
+export const ListItem: FC<ListItemProps> = ({
   imageUri,
   title,
   subtitle,
@@ -92,6 +92,7 @@ const ListItem: FC<ListItemProps> = ({
             style={[
               styles.image,
               {
+                borderRadius: 12,
                 borderTopRightRadius: hasBorder ? 0 : 12,
                 borderBottomRightRadius: hasBorder ? 0 : 12,
               },
@@ -160,8 +161,6 @@ const ListItem: FC<ListItemProps> = ({
     </TouchableWithoutFeedback>
   );
 };
-
-export default ListItem;
 
 const styles = StyleSheet.create({
   container: {

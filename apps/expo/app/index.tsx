@@ -4,10 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import { Button } from "../src/components/Button";
-import { Typography } from "../src/components/Typography";
+import { Button, Typography } from "../src/components";
 import { useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
-import { useAuth } from "../src/providers/AuthProvider";
+import { useAuth } from "../src/providers";
 import { api } from "../src/utils/api";
 
 const Index = () => {
@@ -33,9 +32,7 @@ const Index = () => {
               variant="text"
             />
           )}
-          {user && (
-            <Button title="host a fissa" className="mb-6" variant="outlined" />
-          )}
+          {user && <Button title="host a fissa" variant="outlined" />}
         </View>
         <View>
           <Rejoin />

@@ -9,11 +9,8 @@ import {
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { cva } from "@fissa/utils";
 
-import { Button } from "../src/components/Button";
-import { Header } from "../src/components/Header";
-import { Typography } from "../src/components/Typography";
+import { Button, Typography } from "../src/components";
 import { useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
 import { toast } from "../src/utils/Toast";
 import { api } from "../src/utils/api";
@@ -105,11 +102,7 @@ const Join = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
-      <Stack.Screen
-        options={{
-          header: (props) => <Header {...props} />,
-        }}
-      />
+      <Stack.Screen options={{ headerBackVisible: true }} />
       <View className="mt-6 flex h-full w-full space-y-16 px-6">
         <Typography variant="h5" centered>
           Enter the fissa code

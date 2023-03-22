@@ -35,6 +35,7 @@ model Track {
     votes Vote[]
 
     @@id([roomId, trackId])
+    @@unique([roomId, index])
     @@map("tracks")
 }
 

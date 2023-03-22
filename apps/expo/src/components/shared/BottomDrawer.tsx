@@ -11,7 +11,7 @@ interface BottomDrawerProps extends Omit<LinearGradientProps, "colors"> {
   actionIcon?: keyof typeof Ionicons.glyphMap;
 }
 
-const BottomDrawer: FC<BottomDrawerProps> = ({
+export const BottomDrawer: FC<BottomDrawerProps> = ({
   title,
   action,
   children,
@@ -22,7 +22,7 @@ const BottomDrawer: FC<BottomDrawerProps> = ({
       colors={theme.gradient}
       start={[0, 0]}
       end={[1, 1]}
-      className="rounded-3xl p-3 pb-10"
+      className="absolute bottom-0 w-full rounded-3xl p-3 pb-10"
     >
       <View className={bottomDrawer({ hasTitle: !!title })}>
         {title}
@@ -32,8 +32,6 @@ const BottomDrawer: FC<BottomDrawerProps> = ({
     </LinearGradient>
   );
 };
-
-export default BottomDrawer;
 
 const bottomDrawer = cva("flex-row items-center", {
   variants: {

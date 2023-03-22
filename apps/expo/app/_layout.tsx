@@ -3,9 +3,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-import ToastContainer from "../src/components/Toast";
-import { SpotifyProvider } from "../src/providers/AuthProvider";
-import { NotificationProvider } from "../src/providers/NotificationProvider";
+import { Header, ToastContainer } from "../src/components/";
+import { NotificationProvider, SpotifyProvider } from "../src/providers";
 import { TRPCProvider } from "../src/utils/api";
 
 // This is the main layout of the app
@@ -16,7 +15,11 @@ const RootLayout = () => {
       <NotificationProvider>
         <SpotifyProvider>
           <SafeAreaProvider>
-            <Stack />
+            <Stack
+              screenOptions={{
+                header: (props) => <Header {...props} />,
+              }}
+            />
             <StatusBar />
             <ToastContainer />
           </SafeAreaProvider>
