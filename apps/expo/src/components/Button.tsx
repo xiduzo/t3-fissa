@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { theme } from "@fissa/tailwind-config";
 import { VariantProps, cva } from "@fissa/utils";
 
 import { Typography } from "./Typography";
@@ -22,6 +23,7 @@ export const Button: FC<Props> = ({
 
   const textInverted = useMemo(() => {
     if (inverted) {
+      return true;
     }
 
     return !variant || variant === "contained";
@@ -41,9 +43,15 @@ export const Button: FC<Props> = ({
       {...props}
       disabled={props.disabled}
       onPress={handlePress}
+      className="rounded-lg"
     >
       <View
         className={button({ inverted, disabled: !!props.disabled, variant })}
+        style={{
+          borderColor: theme["500"],
+          backgroundColor:
+            !variant || variant === "contained" ? theme["500"] : "transparent",
+        }}
       >
         {/* {start && <View style={styles.start}>{start}</View>} */}
         <Typography
@@ -70,27 +78,24 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   endIcon?: keyof typeof Ionicons.glyphMap;
 }
 
-const button = cva(
-  "flex flex-row items-center border-2 rounded-lg border-theme-500",
-  {
-    variants: {
-      variant: {
-        outlined: "py-5",
-        contained: "bg-theme-500 py-5",
-        text: "bg-transparent border-transparent",
-      },
-      inverted: {
-        true: "",
-        false: "",
-      },
-      disabled: {
-        true: "opacity-50",
-      },
+const button = cva(`flex flex-row items-center border-2 rounded-lg`, {
+  variants: {
+    variant: {
+      outlined: "py-5",
+      contained: "py-5",
+      text: "border-transparent",
     },
-    defaultVariants: {
-      variant: "contained",
-      inverted: false,
+    inverted: {
+      true: "",
+      false: "",
     },
-    compoundVariants: [],
+    disabled: {
+      true: "opacity-50",
+    },
   },
-);
+  defaultVariants: {
+    variant: "contained",
+    inverted: false,
+  },
+  compoundVariants: [],
+});

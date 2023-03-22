@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import { theme } from "@fissa/tailwind-config";
 
 import { Button } from "../src/components/Button";
 import { Typography } from "../src/components/Typography";
@@ -13,7 +14,7 @@ const Index = () => {
   const { promptAsync, user } = useAuth();
 
   return (
-    <SafeAreaView className="bg-theme-900">
+    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerShown: false }} />
       <View className="flex h-full w-full justify-between px-6">
         <View></View>

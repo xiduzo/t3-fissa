@@ -7,8 +7,8 @@ import {
   TextInputKeyPressEventData,
   View,
 } from "react-native";
-import * as Notifications from "expo-notifications";
 import { Stack, useRouter } from "expo-router";
+import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
 import { Button } from "../src/components/Button";
@@ -104,7 +104,7 @@ const Join = () => {
   }, [keys]);
 
   return (
-    <SafeAreaView className="bg-theme-900">
+    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen
         options={{
           header: (props) => <Header {...props} />,
@@ -125,27 +125,27 @@ const Join = () => {
                 onFocus={handleSelect(index)}
                 placeholder="⦚"
                 maxLength={1}
-                className="text-theme-100 p-4 text-center text-5xl font-extrabold"
+                className="p-4 text-center text-5xl font-extrabold"
+                style={{ color: theme["100"] }}
               />
               <View
-                className={underline({ active: pin.indexOf("") === index })}
+                className="border-2"
+                style={{
+                  borderColor: theme[pin.indexOf("") === index ? "500" : "100"],
+                }}
               />
             </View>
           ))}
         </View>
-        <Button variant="text" title="reset" disabled={!pin.includes("")} />
+        <Button
+          variant="text"
+          title="reset"
+          onPress={reset}
+          disabled={!pin.includes("")}
+        />
       </View>
     </SafeAreaView>
   );
 };
 
 export default Join;
-
-const underline = cva("border-2", {
-  variants: {
-    active: {
-      true: "border-theme-500",
-      false: "border-theme-100",
-    },
-  },
-});

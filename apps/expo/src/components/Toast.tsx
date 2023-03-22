@@ -4,6 +4,7 @@ import Toast, {
   ToastConfig,
   ToastConfigParams,
 } from "react-native-toast-message";
+import { theme } from "@fissa/tailwind-config";
 
 import { Typography } from "./Typography";
 
@@ -17,8 +18,9 @@ interface ToastProps extends ToastConfigParams<any> {
 const Toaster: FC<ToastProps> = ({ text1, text2 }) => {
   return (
     <View
-      className="bg-theme-100 mx-2 mt-2 flex flex-row items-center rounded-xl p-4 shadow-2xl"
+      className="mx-2 mt-2 flex flex-row items-center rounded-xl p-4 shadow-2xl"
       accessibilityRole="alert"
+      style={{ backgroundColor: theme["100"] }}
     >
       {text2 && (
         <Typography variant="h1" className="mr-2">

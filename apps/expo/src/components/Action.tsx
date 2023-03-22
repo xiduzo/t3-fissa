@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { ButtonProps, TouchableHighlight, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
 import { Typography } from "./Typography";
@@ -34,10 +35,12 @@ const Action: FC<ActionProps> = ({
         <View
           className={iconStyle({
             layout,
-            inverted: !!inverted,
             disabled: props.disabled,
-            active,
           })}
+          style={{
+            borderColor: theme[!!inverted ? "900" : "100"],
+            backgroundColor: active ? theme["900"] : "transparent",
+          }}
         >
           <Typography inverted={!active && inverted}>
             <Ionicons name={icon} size={24} />
@@ -88,16 +91,8 @@ const iconStyle = cva("rounded-xl border-2 p-2", {
       row: "flex-row",
       column: "flex-col",
     },
-    inverted: {
-      true: "border-theme-900",
-      false: "border-theme-100",
-    },
     disabled: {
       true: "opacity-30",
-    },
-    active: {
-      true: "bg-theme-900",
-      false: "bg-transparent",
     },
   },
 });

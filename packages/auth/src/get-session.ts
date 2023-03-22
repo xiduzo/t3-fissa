@@ -30,8 +30,6 @@ export const expoHackServerSession = async (ctx?: GetServerSessionContext) => {
     },
   });
 
-  console.log(session);
-
   if (!session) return null;
 
   return {

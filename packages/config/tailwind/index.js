@@ -47,14 +47,7 @@ const theme = themes[Math.floor(Math.random() * themes.length)];
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: ["./src/**/*.{ts,tsx}"],
-  theme: {
-    extend: {
-      colors: { theme },
-      textColor: { theme },
-      backgroundColor: { theme },
-      ringColor: { theme },
-    },
-  },
+  theme: {},
   plugins: [],
 };
 

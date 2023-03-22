@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 const Home: NextPage = () => {
   const { mutateAsync } = api.room.create.useMutation({
     onSuccess: (data) => {
-      console.log("data", data);
+      console.info("data", data);
     },
   });
   return (

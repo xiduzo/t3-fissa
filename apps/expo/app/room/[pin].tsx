@@ -20,7 +20,7 @@ const Room = () => {
   }, []);
 
   return (
-    <SafeAreaView className="bg-theme-900">
+    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerShown: false }} />
       <View className="mt-6 flex h-full w-full">
         <View className="flex-row items-center justify-between px-6">

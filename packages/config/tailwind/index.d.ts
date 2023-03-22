@@ -6,9 +6,7 @@ declare module "@fissa/tailwind-config" {
         900: string
     }
 
-    /**
-     * @deprecated This should only be used when we can not apply tailwind classes
-     */
+    
     const theme: Theme
 
     export {theme}

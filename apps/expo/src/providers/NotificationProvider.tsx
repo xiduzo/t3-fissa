@@ -47,7 +47,7 @@ export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        console.info(response);
       });
 
     return () => {
@@ -59,8 +59,6 @@ export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
         Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
-  console.log(notification);
 
   return (
     <NotificationContext.Provider value={{ notification }}>
@@ -92,12 +90,12 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== "granted") {
-      console.warn("Failed to get push token for push notification!");
+      console.info("Failed to get push token for push notification!");
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
-    console.warn("Must use physical device for Push Notifications");
+    console.info("Must use physical device for Push Notifications");
   }
 
   return token;

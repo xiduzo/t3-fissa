@@ -87,7 +87,7 @@ const ListItem: FC<ListItemProps> = ({
         ]}
         {...props}
       >
-        <View>
+        <View className="mr-4">
           <Image
             style={[
               styles.image,
@@ -171,7 +171,6 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
   },
   image: {
-    marginRight: 16,
     width: 80,
     height: 80,
   },
