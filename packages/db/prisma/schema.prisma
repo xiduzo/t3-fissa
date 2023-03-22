@@ -26,7 +26,7 @@ model Room {
 
 model Track {
     index  Int
-    trackId String @map("track_id")
+    trackId String @map("track_id") @db.VarChar(22)
     durationMs Int @map("duration_ms")
 
     room Room @relation(fields: [roomId], references: [pin])

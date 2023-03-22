@@ -14,8 +14,8 @@ interface Props
     | "keyExtractor"
   > {
   tracks: SpotifyApi.TrackObjectFull[];
-  selectedTracks?: SpotifyApi.TrackObjectFull["id"][];
-  onTrackPress?: ListItemProps["onPress"];
+  selectedTracks?: string[];
+  onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
 }
 
 export const TrackList: FC<Props> = ({
@@ -34,7 +34,7 @@ export const TrackList: FC<Props> = ({
       renderItem={({ item }) => (
         <TrackListItem
           track={item}
-          onPress={onTrackPress}
+          onPress={() => onTrackPress?.(item)}
           selected={selectedTracks?.includes(item.id)}
         />
       )}
