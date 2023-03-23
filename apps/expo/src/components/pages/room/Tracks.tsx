@@ -1,24 +1,19 @@
 import { useSearchParams } from "expo-router";
 import { useTracks } from "@fissa/utils";
 
-import { useSpotify } from "../../../providers";
 import { api } from "../../../utils/api";
 import { TrackList, Typography } from "../../shared";
 import { RoomListFooterComponent } from "./ListFooterComponent";
 
 export const RoomTracks = () => {
   const { pin } = useSearchParams();
-  const spotify = useSpotify();
 
   const { data } = api.track.byRoomId.useQuery(pin!, {
     enabled: !!pin,
     refetchInterval: 5000,
   });
 
-  const tracks = useTracks(
-    spotify,
-    data?.map((track) => track.trackId),
-  );
+  const tracks = useTracks(data?.map((track) => track.trackId));
 
   if (!data) return null;
 

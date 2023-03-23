@@ -13,10 +13,7 @@ const useSpotifyStore = create<SpotifyState>((set) => ({
     set((state) => ({ tracks: [...state.tracks, ...tracks] })),
 }));
 
-export const useTracks = (
-  spotify: SpotifyWebApi.SpotifyWebApiJs,
-  trackIds?: string[],
-) => {
+export const useTracks = (trackIds?: string[]) => {
   const spotifyStore = useSpotifyStore();
 
   const cachedTracks = trackIds
@@ -34,8 +31,12 @@ export const useTracks = (
 
     if (uncachedTrackIds.length === 0) return;
 
-    console.log("Fetching tracks from Spotify API", uncachedTrackIds);
-    const spotifyTracks = await spotify.getTracks(uncachedTrackIds);
+    // TODO: fetch in loop for > than 50 tracks
+    console.log(
+      `Fetching ${uncachedTrackIds.length} tracks from Spotify API`,
+      uncachedTrackIds,
+    );
+    const spotifyTracks = await new SpotifyWebApi().getTracks(uncachedTrackIds);
 
     spotifyStore.addTracks(spotifyTracks.tracks);
 

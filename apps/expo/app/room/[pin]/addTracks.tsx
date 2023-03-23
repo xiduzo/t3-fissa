@@ -3,7 +3,7 @@ import { SafeAreaView, TextInput, View } from "react-native";
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
-import { useDebounce } from "@fissa/utils";
+import { SpotifyWebApi, useDebounce } from "@fissa/utils";
 
 import {
   BottomDrawer,
@@ -12,14 +12,12 @@ import {
   Typography,
 } from "../../../src/components";
 import { useAddTracks } from "../../../src/hooks";
-import { useSpotify } from "../../../src/providers";
 import { toast } from "../../../src/utils";
 
 const AddTracks = () => {
   const { pin } = useSearchParams();
 
   const { back } = useRouter();
-  const spotify = useSpotify();
 
   const { mutateAsync } = useAddTracks(String(pin), {
     onSuccess: () => {
@@ -42,7 +40,7 @@ const AddTracks = () => {
   useEffect(() => {
     if (!debounced) return setTracks([]);
 
-    spotify.search(debounced, ["track"]).then((response) => {
+    new SpotifyWebApi().search(debounced, ["track"]).then((response) => {
       setTracks(response.tracks?.items || []);
     });
   }, [debounced]);
