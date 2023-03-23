@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { VirtualizedList, VirtualizedListProps } from "react-native";
 
-import { ListItemProps } from "./ListItem";
 import { TrackListItem } from "./TrackListItem";
 
 interface Props
@@ -33,6 +32,7 @@ export const TrackList: FC<Props> = ({
       initialNumToRender={5}
       renderItem={({ item }) => (
         <TrackListItem
+          key={item.id}
           track={item}
           onPress={() => onTrackPress?.(item)}
           selected={selectedTracks?.includes(item.id)}

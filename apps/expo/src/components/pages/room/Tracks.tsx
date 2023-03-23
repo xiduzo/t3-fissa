@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
 import { useSearchParams } from "expo-router";
+import { useTracks } from "@fissa/utils";
 
 import { useSpotify } from "../../../providers";
 import { api } from "../../../utils/api";
@@ -15,23 +15,22 @@ export const RoomTracks = () => {
     refetchInterval: 5000,
   });
 
-  const [tracks, setTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
-
-  useMemo(async () => {
-    if (!data) return null;
-
-    const trackIds = data.map((track) => track.trackId);
-    const { tracks } = await spotify.getTracks(trackIds);
-
-    setTracks(tracks);
-  }, [data, spotify]);
+  const tracks = useTracks(
+    spotify,
+    data?.map((track) => track.trackId),
+  );
 
   if (!data) return null;
 
   return (
     <TrackList
       tracks={tracks}
-      ListHeaderComponent={<Typography variant="h2">Tracks header</Typography>}
+      ListHeaderComponent={
+        <Typography variant="h2">Tracks header {tracks.length}</Typography>
+      }
+      onTrackPress={(track) => {
+        console.log(track.name);
+      }}
       ListEmptyComponent={<Typography variant="h3">No tracks found</Typography>}
       ListFooterComponent={RoomListFooterComponent}
     />

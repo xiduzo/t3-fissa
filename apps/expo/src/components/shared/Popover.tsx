@@ -10,7 +10,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
 
-import { useSwipe } from "../../hooks/useSwipe";
+import { useSwipe } from "../../hooks";
 import { BottomDrawer } from "./BottomDrawer";
 import { DraggableView } from "./DraggableView";
 

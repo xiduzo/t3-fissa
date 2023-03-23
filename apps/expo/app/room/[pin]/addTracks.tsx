@@ -11,8 +11,9 @@ import {
   TrackList,
   Typography,
 } from "../../../src/components";
+import { useAddTracks } from "../../../src/hooks";
 import { useSpotify } from "../../../src/providers";
-import { api, toast } from "../../../src/utils";
+import { toast } from "../../../src/utils";
 
 const AddTracks = () => {
   const { pin } = useSearchParams();
@@ -20,7 +21,16 @@ const AddTracks = () => {
   const { back } = useRouter();
   const spotify = useSpotify();
 
-  const queryClient = api.useContext();
+  const { mutateAsync } = useAddTracks(String(pin), {
+    onSuccess: () => {
+      toast.success({ message: "Tracks added to queue" });
+      back();
+    },
+    onError: () => {
+      toast.error({ message: "Failed to add tracks" });
+    },
+  });
+
   const [search, setSearch] = useState("");
   const debounced = useDebounce(search);
 
@@ -29,13 +39,9 @@ const AddTracks = () => {
     SpotifyApi.TrackObjectFull[]
   >([]);
 
-  const { mutateAsync } = api.track.addTracks.useMutation();
-
   useEffect(() => {
     if (!debounced) return setTracks([]);
 
-    // TODO: cache already fetched tracks
-    // TODO: split into multiple requests if more than 50 tracks
     spotify.search(debounced, ["track"]).then((response) => {
       setTracks(response.tracks?.items || []);
     });
@@ -53,24 +59,13 @@ const AddTracks = () => {
   }, []);
 
   const addTracks = useCallback(async () => {
-    // TODO: move to custom hook
     await mutateAsync(
-      {
-        roomId: pin!,
-        tracks: selectedTracks.map((track) => ({
-          durationMs: track.duration_ms,
-          trackId: track.id,
-        })),
-      },
-      {
-        onSuccess: async () => {
-          toast.success({ message: "Tracks added to queue" });
-          await queryClient.track.byRoomId.invalidate();
-          back();
-        },
-      },
+      selectedTracks.map((track) => ({
+        durationMs: track.duration_ms,
+        trackId: track.id,
+      })),
     );
-  }, [selectedTracks, pin, queryClient]);
+  }, [selectedTracks]);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>

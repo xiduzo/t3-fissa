@@ -19,7 +19,7 @@ import {
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
-import SpotifyWebApi from "spotify-web-api-js";
+import { SpotifyWebApi } from "@fissa/utils";
 
 import { useEncryptedStorage } from "../hooks/useEncryptedStorage";
 import { api } from "../utils/api";

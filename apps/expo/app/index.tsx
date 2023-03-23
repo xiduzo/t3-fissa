@@ -5,7 +5,7 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import { Button, Typography } from "../src/components";
-import { useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
+import { useEncryptedStorage } from "../src/hooks";
 import { useAuth } from "../src/providers";
 import { api } from "../src/utils/api";
 
