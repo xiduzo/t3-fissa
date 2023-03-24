@@ -97,7 +97,7 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
 
   return (
     <TouchableHighlight
-      className="absolute bottom-12 right-8 z-40 flex h-14 w-14 rounded-2xl bg-black shadow-xl"
+      className="absolute bottom-10 right-8 z-40 flex h-14 w-14 rounded-2xl bg-black shadow-xl"
       {...props}
       onPress={handlePress}
     >

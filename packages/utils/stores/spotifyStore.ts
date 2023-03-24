@@ -32,7 +32,7 @@ export const useTracks = (trackIds?: string[]) => {
     if (uncachedTrackIds.length === 0) return;
 
     // TODO: fetch in loop for > than 50 tracks
-    console.log(
+    console.info(
       `Fetching ${uncachedTrackIds.length} tracks from Spotify API`,
       uncachedTrackIds,
     );
@@ -48,6 +48,8 @@ export const useTracks = (trackIds?: string[]) => {
         return spotifyTracks.tracks.find((track) => track.id === trackId);
       })
       .filter(Boolean);
+
+    console.log(newTracks?.length);
 
     setTracks(newTracks ?? []);
   }, [trackIds, spotifyStore.addTracks, spotifyStore.tracks]);

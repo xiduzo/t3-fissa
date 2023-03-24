@@ -1,33 +1,42 @@
 import { useSearchParams } from "expo-router";
 import { useTracks } from "@fissa/utils";
 
+import { useGetRoom } from "../../../hooks";
 import { api } from "../../../utils/api";
-import { TrackList, Typography } from "../../shared";
-import { RoomListFooterComponent } from "./ListFooterComponent";
+import { TrackList } from "../../shared";
+import { ListEmptyComponent } from "./ListEmptyComponent";
+import { ListFooterComponent } from "./ListFooterComponent";
+import { ListHeaderComponent } from "./ListHeaderComponent";
 
 export const RoomTracks = () => {
   const { pin } = useSearchParams();
 
-  const { data } = api.track.byRoomId.useQuery(pin!, {
-    enabled: !!pin,
-    refetchInterval: 5000,
-  });
+  const { data, isInitialLoading } = api.track.byRoomId.useQuery(pin!);
+  const { data: room } = useGetRoom(pin!);
 
   const tracks = useTracks(data?.map((track) => track.trackId));
 
   if (!data) return null;
 
+  const isPlaying = (room?.currentIndex ?? -1) >= 0;
+
   return (
     <TrackList
-      tracks={tracks}
-      ListHeaderComponent={
-        <Typography variant="h2">Tracks header {tracks.length}</Typography>
-      }
+      tracks={isPlaying ? tracks : []}
+      ListHeaderComponent={<ListHeaderComponent tracks={tracks} />}
       onTrackPress={(track) => {
-        console.log(track.name);
+        console.info(track.name);
       }}
-      ListEmptyComponent={<Typography variant="h3">No tracks found</Typography>}
-      ListFooterComponent={RoomListFooterComponent}
+      ListEmptyComponent={
+        <ListEmptyComponent
+          isLoading={isInitialLoading || tracks.length !== data.length}
+        />
+      }
+      ListFooterComponent={() => {
+        if (!tracks.length) return null;
+        if (!isPlaying) return null;
+        return <ListFooterComponent />;
+      }}
     />
   );
 };

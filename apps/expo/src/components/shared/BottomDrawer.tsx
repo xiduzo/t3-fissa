@@ -22,7 +22,7 @@ export const BottomDrawer: FC<BottomDrawerProps> = ({
       colors={theme.gradient}
       start={[0, 0]}
       end={[1, 1]}
-      className="absolute bottom-0 w-full rounded-3xl p-3 pb-10"
+      className="absolute bottom-0 w-full rounded-3xl px-3 pt-6  pb-16"
     >
       <View className={bottomDrawer({ hasTitle: !!title })}>
         {title}

@@ -15,7 +15,7 @@ const Index = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerShown: false }} />
-      <View className="flex h-full w-full justify-between px-6">
+      <View className="flex h-full justify-between px-6">
         <View></View>
         <View>
           <Typography variant="h1" centered className="mb-4">

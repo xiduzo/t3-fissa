@@ -1,4 +1,5 @@
 import { type ConfigContext, type ExpoConfig } from "@expo/config";
+import { theme } from "@fissa/tailwind-config";
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
@@ -11,7 +12,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   splash: {
     image: "./assets/icon.png",
     resizeMode: "contain",
-    backgroundColor: "#1F104A",
+    backgroundColor: "#171717",
   },
   updates: {
     fallbackToCacheTimeout: 0,
@@ -27,7 +28,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
-      backgroundColor: "#1F104A",
+      backgroundColor: "#171717",
     },
   },
   extra: {

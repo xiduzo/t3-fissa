@@ -9,12 +9,13 @@ export const Typography: FC<Props> = ({
   variant,
   centered,
   inverted,
+  dimmed,
   ...props
 }) => {
   return (
     <Animated.Text
       {...props}
-      className={typography({ variant, centered, className })}
+      className={typography({ variant, centered, dimmed, className })}
       style={[props.style, { color: theme[!!inverted ? "900" : "100"] }]}
     >
       {children}
@@ -42,6 +43,10 @@ const typography = cva("", {
     inverted: {
       true: " ",
       false: " ",
+    },
+    dimmed: {
+      true: "opacity-60",
+      false: "",
     },
   },
   defaultVariants: {

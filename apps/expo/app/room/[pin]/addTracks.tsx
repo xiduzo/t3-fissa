@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView, TextInput, View } from "react-native";
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ import { SpotifyWebApi, useDebounce } from "@fissa/utils";
 import {
   BottomDrawer,
   Button,
+  Input,
   TrackList,
   Typography,
 } from "../../../src/components";
@@ -18,6 +19,8 @@ const AddTracks = () => {
   const { pin } = useSearchParams();
 
   const { back } = useRouter();
+
+  const inputRef = useRef<TextInput>(null);
 
   const { mutateAsync } = useAddTracks(String(pin), {
     onSuccess: () => {
@@ -46,6 +49,7 @@ const AddTracks = () => {
   }, [debounced]);
 
   const handleTrackPress = useCallback((track: SpotifyApi.TrackObjectFull) => {
+    inputRef.current?.blur();
     setSelectedTracks((prev) => {
       const mappedPrev = prev.map((track) => track.id);
       if (mappedPrev.includes(track.id)) {
@@ -66,7 +70,7 @@ const AddTracks = () => {
   }, [selectedTracks]);
 
   return (
-    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
+    <View style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen
         options={{
           animation: "fade_from_bottom",
@@ -78,17 +82,22 @@ const AddTracks = () => {
           ),
         }}
       />
-      <View className="mt-6 flex h-full w-full">
-        <TextInput
-          placeholder="search spotify"
-          value={search}
-          onChange={(e) => setSearch(e.nativeEvent.text)}
-        />
+      <View className="mt-4 h-full w-full">
+        <View className="px-6">
+          <Input
+            ref={inputRef}
+            variant="contained"
+            placeholder="search spotify"
+            value={search}
+            onChange={(e) => setSearch(e.nativeEvent.text)}
+          />
+        </View>
 
         <TrackList
           tracks={tracks}
           selectedTracks={selectedTracks.map((track) => track.id)}
           onTrackPress={handleTrackPress}
+          ListFooterComponent={<View className="pb-52" />}
         />
 
         <BottomDrawer>
@@ -103,7 +112,7 @@ const AddTracks = () => {
           />
         </BottomDrawer>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

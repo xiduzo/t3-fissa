@@ -3,19 +3,15 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import { Fab, PinCode, RoomTracks, Typography } from "../../../src/components";
+import { Fab, RoomTracks } from "../../../src/components";
 
 const Room = () => {
   const { pin } = useSearchParams();
 
   return (
-    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
+    <View className="pt-12" style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerShown: false }} />
-      <View className="mt-6 flex h-full w-full">
-        <View className="flex-row items-center justify-between px-6">
-          <Typography variant="h2">Now Playing</Typography>
-          <PinCode />
-        </View>
+      <View className="flex h-full w-full">
         <RoomTracks />
         <Fab title="add tracks" icon="add" linkTo={`room/${pin}/addTracks`} />
         <LinearGradient
@@ -23,7 +19,7 @@ const Room = () => {
           className="absolute bottom-0 h-24 w-full"
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

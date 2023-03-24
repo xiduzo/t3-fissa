@@ -3,12 +3,13 @@ import {
   Animated,
   ImageStyle,
   StyleProp,
-  StyleSheet,
   TouchableWithoutFeedback,
   TouchableWithoutFeedbackProps,
   View,
   ViewProps,
 } from "react-native";
+import { theme } from "@fissa/tailwind-config";
+import { cva } from "@fissa/utils";
 
 import { Image } from "./Image";
 import { Typography } from "./Typography";
@@ -21,11 +22,11 @@ export interface ListItemProps
   subtitle: string | boolean;
   subtitlePrefix?: JSX.Element;
   extra?: JSX.Element;
-  imageStyle?: StyleProp<Pick<ImageStyle, "width" | "height" | "borderRadius">>;
+  end?: JSX.Element;
   inverted?: boolean;
   hasBorder?: boolean;
-  end?: JSX.Element;
   selected?: boolean;
+  bigImage?: boolean;
 }
 
 export const ListItem: FC<ListItemProps> = ({
@@ -35,39 +36,38 @@ export const ListItem: FC<ListItemProps> = ({
   subtitlePrefix,
   extra,
   end,
-  imageStyle,
-  inverted = false,
-  hasBorder = false,
-  selected = false,
+  inverted,
+  hasBorder,
+  selected,
+  bigImage,
+  className,
   ...props
 }) => {
   const selectedAnimation = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    const animate = (config?: Partial<Animated.SpringAnimationConfig>) => {
+    const animate = (config: Partial<Animated.SpringAnimationConfig> = {}) => {
       Animated.spring(selectedAnimation, {
         toValue: 0,
         bounciness: 0,
         useNativeDriver: false,
-        ...(config ?? {}),
+        ...config,
       }).start();
     };
 
-    selected ? animate({ toValue: 1, bounciness: 12 }) : animate();
+    animate(selected ? { toValue: 1, bounciness: 12 } : {});
   }, [selected]);
 
-  const textOpacityInterpolation = selectedAnimation.interpolate({
+  const opacity = selectedAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0.4],
   });
 
-  const backgroundOpacityInterpolation = selectedAnimation.interpolate({
+  const backgroundColor = selectedAnimation.interpolate({
     inputRange: [0, 1],
-
-    outputRange: ["00", "80"],
-    // outputRange: [Color.dark + "00", Color.dark + "80"],
+    outputRange: [theme["900"] + "00", theme["900"] + "80"],
   });
 
-  const iconScaleInterpolation = selectedAnimation.interpolate({
+  const scale = selectedAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
@@ -75,86 +75,47 @@ export const ListItem: FC<ListItemProps> = ({
   return (
     <TouchableWithoutFeedback accessibilityRole="button" {...props}>
       <View
-        style={[
-          styles.container,
-          {
-            borderColor: hasBorder ? "10" : "transparent",
-            // borderColor: hasBorder ? Color.dark + "10" : "transparent",
-            borderWidth: 1,
-            borderRadius: 12,
-          },
-          props.style,
-        ]}
+        className={container({ hasBorder, className })}
+        style={{ borderColor: hasBorder ? theme["900"] + "10" : "transparent" }}
         {...props}
       >
         <View className="mr-4">
-          <Image
-            style={[
-              styles.image,
-              {
-                borderRadius: 12,
-                borderTopRightRadius: hasBorder ? 0 : 12,
-                borderBottomRightRadius: hasBorder ? 0 : 12,
-              },
-              //   imageStyle,
-            ]}
-            source={imageUri}
-          />
+          <Image className={image({ hasBorder, bigImage })} source={imageUri} />
           <Animated.View
-            style={[
-              styles.selected,
-              {
-                backgroundColor: backgroundOpacityInterpolation,
-              },
-            ]}
+            className="absolute h-20 w-20 items-center justify-center rounded-xl"
+            style={{ backgroundColor }}
           >
-            <Animated.View
-              style={{
-                transform: [{ scale: iconScaleInterpolation }],
-              }}
-            >
-              <Typography style={{ fontSize: 25, lineHeight: 35 }}>
-                ✅
-              </Typography>
+            <Animated.View style={{ transform: [{ scale }] }}>
+              <Typography className="text-2xl">✅</Typography>
             </Animated.View>
           </Animated.View>
         </View>
-        <Animated.View
-          style={{
-            opacity: textOpacityInterpolation,
-            flexShrink: 1,
-            flexGrow: 1,
-          }}
-        >
+        <Animated.View className="flex-shrink flex-grow" style={{ opacity }}>
           <Typography
             numberOfLines={2}
             variant="h4"
             inverted={inverted}
-            style={styles.title}
+            className="mb-1"
           >
             {title}
           </Typography>
-          <View style={{ flexDirection: "row" }}>
+          <View className="flex-row">
             {subtitlePrefix}
             {subtitle && (
               <Typography
                 inverted={inverted}
                 numberOfLines={1}
-                style={{ ...styles.subtitle, flex: 1 }}
+                dimmed
+                className="flex-grow"
                 variant="bodyM"
               >
                 {subtitle}
               </Typography>
             )}
           </View>
-          {extra}
+          {extra && <View className="mt-2">{extra}</View>}
         </Animated.View>
-        <Animated.View
-          style={{
-            opacity: textOpacityInterpolation,
-            marginLeft: 4,
-          }}
-        >
+        <Animated.View className="ml-1" style={{ opacity }}>
           {end}
         </Animated.View>
       </View>
@@ -162,29 +123,21 @@ export const ListItem: FC<ListItemProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    flexDirection: "row",
-    marginVertical: 12,
-    maxWidth: "100%",
+const container = cva("items-center flex-row my-3 max-w-full", {
+  variants: {
+    hasBorder: {
+      true: "border rounded-xl",
+    },
   },
-  image: {
-    width: 80,
-    height: 80,
-  },
-  selected: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-    width: 80,
-    height: 80,
-  },
-  title: {
-    marginBottom: 4,
-  },
-  subtitle: {
-    opacity: 0.6,
+});
+
+const image = cva("h-20 w-20", {
+  variants: {
+    hasBorder: {
+      true: "rounded-r-xl",
+    },
+    bigImage: {
+      true: "h-32 w-32",
+    },
   },
 });
