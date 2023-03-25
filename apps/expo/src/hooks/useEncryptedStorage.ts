@@ -19,3 +19,8 @@ export const useEncryptedStorage = (key: string) => {
 
   return { value, save, getValueFor };
 };
+
+export const ENCRYPTED_STORAGE_KEYS = {
+  refreshToken: "refreshToken",
+  sessionToken: "sessionToken",
+};

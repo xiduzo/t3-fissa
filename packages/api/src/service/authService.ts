@@ -15,20 +15,57 @@ export class AuthService extends ServiceWithContext {
 
     const spotifyUser = await service.me(tokens.body.access_token);
 
-    const existingUser = await this.db.user.findUnique({
+    let existingUser = await this.db.user.findUnique({
       where: { email: spotifyUser.body.email },
+      include: {
+        sessions: {
+          take: 1,
+          orderBy: { expires: "desc" },
+        },
+      },
     });
 
     if (!existingUser) {
       await this.createUser(spotifyUser.body, tokens);
+      existingUser = await this.db.user.findUniqueOrThrow({
+        where: { email: spotifyUser.body.email },
+        include: {
+          sessions: {
+            take: 1,
+            orderBy: { expires: "desc" },
+          },
+        },
+      });
     }
 
-    return tokens;
+    return {
+      ...tokens.body,
+      session_token: existingUser.sessions[0]?.sessionToken!,
+    };
   };
 
   refreshToken = async (refreshToken: string) => {
     const service = new SpotifyService();
-    return service.refresh(refreshToken);
+
+    // TODO update session token if needed
+
+    const tokens = await service.refresh(refreshToken);
+    const spotifyUser = await service.me(tokens.body.access_token);
+
+    const sessionToken = await this.db.user.findUniqueOrThrow({
+      where: { email: spotifyUser.body.email },
+      include: {
+        sessions: {
+          take: 1,
+          orderBy: { expires: "desc" },
+        },
+      },
+    });
+
+    return {
+      ...tokens.body,
+      session_token: sessionToken.sessions[0]?.sessionToken!,
+    };
   };
 
   private createUser = async (

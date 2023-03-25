@@ -4,26 +4,39 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import {
-  BottomDrawer,
   Button,
+  PlaylistList,
+  PlaylistListItem,
   Popover,
   Typography,
 } from "../../src/components";
-import { PlaylistList } from "../../src/components/shared/PlaylistList";
-import { PlaylistListItem } from "../../src/components/shared/PlaylistListItem";
+import { useCreateRoom } from "../../src/hooks";
 import { useAuth } from "../../src/providers";
+import { toast } from "../../src/utils";
 
 const FromPlaylist = () => {
   const { spotify } = useAuth();
+
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
-  const start = useCallback(() => {
+  const { mutateAsync } = useCreateRoom();
+
+  const start = useCallback(async () => {
     if (!selectedPlaylist) return;
-    spotify.getPlaylist(selectedPlaylist.id).then((playlist) => {
-      // TODO: fetch all tracks
-      console.log(playlist.tracks.items.map(({ track }) => track.id));
+
+    await mutateAsync(undefined, {
+      onSuccess: async () => {
+        toast.success({ message: "Room created" });
+      },
+      onError: (error) => {
+        toast.error({ message: error.message });
+      },
     });
+    // spotify.getPlaylist(selectedPlaylist.id).then((playlist) => {
+    //   // TODO: fetch all tracks
+    //   console.log(playlist.tracks.items.map(({ track }) => track.id));
+    // });
   }, [selectedPlaylist]);
 
   return (

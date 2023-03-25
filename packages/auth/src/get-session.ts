@@ -14,20 +14,24 @@ type GetServerSessionContext =
       res: GetServerSidePropsContext["res"];
     }
   | { req: NextApiRequest; res: NextApiResponse };
-export const getServerSession = (ctx: GetServerSessionContext) => {
-  return $getServerSession(ctx.req, ctx.res, authOptions);
+export const getServerSession = async (ctx: GetServerSessionContext) => {
+  let session = await $getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (!session) {
+    session = await expoHackServerSession(ctx);
+  }
+
+  return session;
 };
 
 export const expoHackServerSession = async (ctx?: GetServerSessionContext) => {
-  if (!ctx?.req) return null;
+  console.log("ctx", ctx?.req.headers);
+  if (!ctx?.req.headers.authorization) return null;
 
   // Hack for expo session
   const session = await prisma.session.findUnique({
     where: { sessionToken: ctx.req.headers.authorization },
-    select: {
-      user: true,
-      expires: true,
-    },
+    select: { user: true, expires: true },
   });
 
   if (!session) return null;

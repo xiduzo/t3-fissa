@@ -20,31 +20,28 @@ export const PlaylistList: FC<Props> = ({
     if (!user) return;
 
     spotify.getUserPlaylists(user.id).then((response) => {
-      spotify
-        .getMySavedTracks()
-        .then((savedTracks) => {
-          setPlaylists([
-            {
-              name: "Saved Tracks",
-              id: "SAVED_TRACKS_PLAYLIST_ID",
-              tracks: {
-                total: savedTracks.total,
+      setPlaylists(response.items);
+
+      spotify.getMySavedTracks().then((savedTracks) => {
+        setPlaylists((prev) => [
+          ...prev,
+          {
+            name: "Saved Tracks",
+            id: "SAVED_TRACKS_PLAYLIST_ID",
+            tracks: {
+              total: savedTracks.total,
+            },
+            owner: {
+              display_name: user.display_name,
+            },
+            images: [
+              {
+                url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
               },
-              owner: {
-                display_name: user.display_name,
-              },
-              images: [
-                {
-                  url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
-                },
-              ],
-            } as any as SpotifyApi.PlaylistObjectFull,
-            ...response.items,
-          ]);
-        })
-        .catch(() => {
-          setPlaylists(response.items);
-        });
+            ],
+          } as any as SpotifyApi.PlaylistObjectFull,
+        ]);
+      });
     });
   }, [user, spotify]);
 

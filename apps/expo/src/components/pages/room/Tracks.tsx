@@ -1,9 +1,10 @@
+import { View } from "react-native";
 import { useSearchParams } from "expo-router";
 import { useTracks } from "@fissa/utils";
 
 import { useGetRoom } from "../../../hooks";
 import { api } from "../../../utils/api";
-import { TrackList } from "../../shared";
+import { TrackList, Typography } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
@@ -21,23 +22,33 @@ export const RoomTracks = () => {
   const isPlaying = (room?.currentIndex ?? -1) >= 0;
 
   return (
-    <TrackList
-      tracks={isPlaying ? tracks : []}
-      ListHeaderComponent={<ListHeaderComponent tracks={tracks} />}
-      onTrackPress={(track) => {
-        console.info(track.name);
-      }}
-      ListEmptyComponent={
-        <ListEmptyComponent
-          isLoading={isInitialLoading || tracks.length !== data.length}
-        />
-      }
-      ListFooterComponent={() => {
-        if (!tracks.length) return null;
-        if (!isPlaying) return null;
-        if (isInitialLoading) return null;
-        return <ListFooterComponent />;
-      }}
-    />
+    <>
+      <ListHeaderComponent tracks={tracks} />
+      <TrackList
+        tracks={isPlaying ? tracks : []}
+        onTrackPress={(track) => {
+          console.info(track.name);
+        }}
+        ListHeaderComponent={
+          <View className="mb-2 mt-7 flex-row items-center justify-between">
+            <Typography variant="h2">Queue</Typography>
+            <Typography variant="bodyM" dimmed>
+              {tracks.length}
+            </Typography>
+          </View>
+        }
+        ListEmptyComponent={
+          <ListEmptyComponent
+            isLoading={isInitialLoading || tracks.length !== data.length}
+          />
+        }
+        ListFooterComponent={() => {
+          if (!tracks.length) return null;
+          if (!isPlaying) return null;
+          if (isInitialLoading) return null;
+          return <ListFooterComponent />;
+        }}
+      />
+    </>
   );
 };

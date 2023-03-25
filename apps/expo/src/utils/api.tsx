@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Constants from "expo-constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
@@ -6,6 +6,12 @@ import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@fissa/api";
 import { transformer } from "@fissa/api/transformer";
+
+// relative path import to prevent circular dependency
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useEncryptedStorage,
+} from "../hooks/useEncryptedStorage";
 
 /**
  * A set of typesafe hooks for consuming your API.
@@ -51,20 +57,23 @@ const getBaseUrl = () => {
 export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [queryClient] = React.useState(() => new QueryClient());
-  const [trpcClient] = React.useState(() =>
+  const { value, getValueFor } = useEncryptedStorage(
+    ENCRYPTED_STORAGE_KEYS.sessionToken,
+  );
+
+  const [queryClient] = useState(() => new QueryClient());
+
+  const [trpcClient] = useState(() =>
     api.createClient({
       transformer,
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
-          // TODO: send session token for next auth
-          // headers: () => {
-          //   return {
-          //     authorization: "test-auth",
-          //     // Cookie: `next-auth.callback-url=exp%3A%2F%2F192.168.2.27%3A19000; next-auth.session-token=cb3739bc-a3e1-4126-9c16-dbd0b4970628`,
-          //   };
-          // },
+          headers: async () => {
+            return {
+              authorization: (await getValueFor()) ?? "",
+            };
+          },
         }),
       ],
     }),

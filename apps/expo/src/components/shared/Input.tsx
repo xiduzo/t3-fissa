@@ -10,6 +10,8 @@ export const Input = forwardRef<TextInput, Props>(
         ref={ref}
         {...props}
         className={input({ variant, className })}
+        clearButtonMode="always"
+        blurOnSubmit
         style={{
           backgroundColor:
             variant === "contained" ? theme["100"] : "transparent",

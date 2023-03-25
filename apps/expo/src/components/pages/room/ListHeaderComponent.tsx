@@ -16,7 +16,7 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
   const track = tracks[room.currentIndex]!;
 
   return (
-    <>
+    <View className="px-6">
       <NowPlaying />
       <TrackListItem
         track={track}
@@ -29,13 +29,7 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
           />
         }
       />
-      <View className="mb-5 mt-8 flex-row items-center justify-between">
-        <Typography variant="h2">Queue</Typography>
-        <Typography variant="bodyM" dimmed>
-          {tracks.length}
-        </Typography>
-      </View>
-    </>
+    </View>
   );
 };
 

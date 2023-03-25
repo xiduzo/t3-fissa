@@ -49,7 +49,7 @@ export const useTracks = (trackIds?: string[]) => {
       })
       .filter(Boolean);
 
-    setTracks(newTracks ?? []);
+    setTracks(() => newTracks ?? []);
   }, [trackIds, spotifyStore.addTracks, spotifyStore.tracks]);
 
   return tracks;

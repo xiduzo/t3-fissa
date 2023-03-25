@@ -21,7 +21,10 @@ import {
 } from "expo-auth-session";
 import { SpotifyWebApi } from "@fissa/utils";
 
-import { useEncryptedStorage } from "../hooks/useEncryptedStorage";
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useEncryptedStorage,
+} from "../hooks/useEncryptedStorage";
 import { api } from "../utils/api";
 
 const SpotifyContext = createContext({
@@ -41,7 +44,12 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
 
-  const { save, getValueFor } = useEncryptedStorage("refreshToken");
+  const { save: saveRefreshToken, getValueFor } = useEncryptedStorage(
+    ENCRYPTED_STORAGE_KEYS.refreshToken,
+  );
+  const { save: saveSessionToken } = useEncryptedStorage(
+    ENCRYPTED_STORAGE_KEYS.sessionToken,
+  );
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
@@ -51,9 +59,10 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     if (!refreshToken) return;
 
     try {
-      const response = await refresh(refreshToken);
-      spotify.current.setAccessToken(response.body.access_token);
+      const { access_token, session_token } = await refresh(refreshToken);
+      spotify.current.setAccessToken(access_token);
       spotify.current.getMe().then(setUser);
+      await saveSessionToken(session_token);
     } catch (e) {
       console.error(e);
     }
@@ -65,14 +74,15 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     const { code } = response.params;
     if (!code) return;
 
-    const { body } = await mutateAsync({
+    const { access_token, refresh_token, session_token } = await mutateAsync({
       code,
       redirectUri: request!.redirectUri,
     });
 
-    spotify.current.setAccessToken(body.access_token);
+    spotify.current.setAccessToken(access_token);
     spotify.current.getMe().then(setUser);
-    save(body.refresh_token);
+    await saveRefreshToken(refresh_token);
+    await saveSessionToken(session_token);
   }, [response, request, setUser]);
 
   useEffect(() => {

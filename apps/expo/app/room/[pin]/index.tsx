@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import { Fab, RoomTracks } from "../../../src/components";
+import { Fab, ListHeaderComponent, RoomTracks } from "../../../src/components";
 
 const Room = () => {
   const { pin } = useSearchParams();

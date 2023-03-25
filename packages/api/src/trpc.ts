@@ -7,12 +7,12 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
-import { getServerSession, type Session } from "@fissa/auth";
-import { prisma } from "@fissa/db";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { getServerSession, type Session } from "@fissa/auth";
+import { prisma } from "@fissa/db";
 
 /**
  * 1. CONTEXT
@@ -53,6 +53,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerSession({ req, res });
+  console.log("session", session);
 
   return createInnerTRPCContext({
     session,

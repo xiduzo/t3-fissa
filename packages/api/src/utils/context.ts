@@ -1,11 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import {
-  expoHackServerSession,
-  getServerSession,
-  type Session,
-} from "@fissa/auth";
+import { getServerSession, type Session } from "@fissa/auth";
 import { prisma } from "@fissa/db";
 
 /**
@@ -33,10 +29,6 @@ export const createContextInner = async (opts: CreateContextOptions) => {
  **/
 export const createContext = async (opts?: CreateNextContextOptions) => {
   let session = await (opts ? getServerSession(opts) : null);
-
-  if (!session) {
-    session = await expoHackServerSession(opts);
-  }
 
   return await createContextInner({
     session,
