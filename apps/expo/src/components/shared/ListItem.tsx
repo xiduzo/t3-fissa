@@ -14,22 +14,7 @@ import { cva } from "@fissa/utils";
 import { Image } from "./Image";
 import { Typography } from "./Typography";
 
-export interface ListItemProps
-  extends TouchableWithoutFeedbackProps,
-    ViewProps {
-  imageUri?: string;
-  title: string;
-  subtitle: string | boolean;
-  subtitlePrefix?: JSX.Element;
-  extra?: JSX.Element;
-  end?: JSX.Element;
-  inverted?: boolean;
-  hasBorder?: boolean;
-  selected?: boolean;
-  bigImage?: boolean;
-}
-
-export const ListItem: FC<ListItemProps> = ({
+export const ListItem: FC<Props> = ({
   imageUri,
   title,
   subtitle,
@@ -129,6 +114,20 @@ export const ListItem: FC<ListItemProps> = ({
     </TouchableWithoutFeedback>
   );
 };
+export interface ListItemProps extends Props {}
+
+interface Props extends TouchableWithoutFeedbackProps, ViewProps {
+  imageUri?: string;
+  title: string;
+  subtitle: string | boolean;
+  subtitlePrefix?: JSX.Element;
+  extra?: JSX.Element;
+  end?: JSX.Element;
+  inverted?: boolean;
+  hasBorder?: boolean;
+  selected?: boolean;
+  bigImage?: boolean;
+}
 
 const container = cva("items-center flex-row my-3 max-w-full", {
   variants: {

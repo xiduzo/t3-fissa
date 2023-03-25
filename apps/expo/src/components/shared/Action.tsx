@@ -6,17 +6,7 @@ import { cva } from "@fissa/utils";
 
 import { Typography } from "./Typography";
 
-interface ActionProps extends Omit<ButtonProps, "color"> {
-  icon: keyof typeof Ionicons.glyphMap;
-  subtitle?: boolean | string;
-  active?: boolean;
-  inverted?: boolean;
-  reversed?: boolean;
-  hidden?: boolean;
-  layout?: "row" | "column";
-}
-
-export const Action: FC<ActionProps> = ({
+export const Action: FC<Props> = ({
   icon,
   title,
   subtitle,
@@ -70,6 +60,16 @@ export const Action: FC<ActionProps> = ({
     </TouchableHighlight>
   );
 };
+
+interface Props extends Omit<ButtonProps, "color"> {
+  icon: keyof typeof Ionicons.glyphMap;
+  subtitle?: boolean | string;
+  active?: boolean;
+  inverted?: boolean;
+  reversed?: boolean;
+  hidden?: boolean;
+  layout?: "row" | "column";
+}
 
 const text = cva("mx-4", {
   variants: {

@@ -1,15 +1,8 @@
 import { useRef, useState } from "react";
 import { GestureResponderEvent } from "react-native";
 
-interface SwipeProps {
-  onSwipeLeft?: (event: GestureResponderEvent) => void;
-  onSwipeRight?: (event: GestureResponderEvent) => void;
-  onSwipeUp?: (event: GestureResponderEvent) => void;
-  onSwipeDown?: (event: GestureResponderEvent) => void;
-}
-
 export const useSwipe = (
-  { onSwipeDown, onSwipeLeft, onSwipeRight, onSwipeUp }: SwipeProps,
+  { onSwipeDown, onSwipeLeft, onSwipeRight, onSwipeUp }: Props,
   triggerAmount = 100,
 ) => {
   const xRef = useRef(0);
@@ -58,3 +51,10 @@ export const useSwipe = (
     isActive,
   };
 };
+
+interface Props {
+  onSwipeLeft?: (event: GestureResponderEvent) => void;
+  onSwipeRight?: (event: GestureResponderEvent) => void;
+  onSwipeUp?: (event: GestureResponderEvent) => void;
+  onSwipeDown?: (event: GestureResponderEvent) => void;
+}

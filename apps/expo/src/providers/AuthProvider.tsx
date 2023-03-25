@@ -45,6 +45,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
+  // TODO: refresh token once in a while
   const readTokenFromStorage = useCallback(async () => {
     const refreshToken = await getValueFor();
     if (!refreshToken) return;

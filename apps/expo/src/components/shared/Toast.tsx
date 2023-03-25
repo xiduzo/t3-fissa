@@ -8,14 +8,19 @@ import { theme } from "@fissa/tailwind-config";
 
 import { Typography } from "./Typography";
 
-interface ToastProps extends ToastConfigParams<any> {
-  /**
-   * Emoji which is being shown
-   */
-  text2?: string;
-}
+export const ToastContainer: FC = () => {
+  const toastConfig: ToastConfig = {
+    success: (props) => <Toaster {...props} />,
+    error: (props) => <Toaster {...props} />,
+    warning: (props) => <Toaster {...props} />,
+    info: (props) => <Toaster {...props} />,
+  };
 
-const Toaster: FC<ToastProps> = ({ text1, text2 }) => {
+  if (Platform.OS === "android") return null;
+  return <Toast config={toastConfig} />;
+};
+
+const Toaster: FC<Props> = ({ text1, text2 }) => {
   return (
     <View
       className="mx-2 mt-2 flex flex-row items-center rounded-xl p-4 shadow-2xl"
@@ -34,14 +39,9 @@ const Toaster: FC<ToastProps> = ({ text1, text2 }) => {
   );
 };
 
-export const ToastContainer: FC = () => {
-  const toastConfig: ToastConfig = {
-    success: (props) => <Toaster {...props} />,
-    error: (props) => <Toaster {...props} />,
-    warning: (props) => <Toaster {...props} />,
-    info: (props) => <Toaster {...props} />,
-  };
-
-  if (Platform.OS === "android") return null;
-  return <Toast config={toastConfig} />;
-};
+interface Props extends ToastConfigParams<any> {
+  /**
+   * Emoji which is being shown
+   */
+  text2?: string;
+}

@@ -14,11 +14,7 @@ import { useSwipe } from "../../hooks";
 import { BottomDrawer } from "./BottomDrawer";
 import { DraggableView } from "./DraggableView";
 
-export interface PopOverProps extends Omit<ModalProps, "style"> {
-  title?: JSX.Element;
-}
-
-export const Popover: FC<PopOverProps> = ({
+export const Popover: FC<Props> = ({
   children,
   onRequestClose,
   title,
@@ -90,3 +86,9 @@ export const Popover: FC<PopOverProps> = ({
     </SafeAreaView>
   );
 };
+
+export interface PopOverProps extends Props {}
+
+interface Props extends Omit<ModalProps, "style"> {
+  title?: JSX.Element;
+}

@@ -1,16 +1,7 @@
 import React, { FC, useRef } from "react";
 import { Animated, PanResponder, ViewProps } from "react-native";
 
-interface DraggableViewProps extends ViewProps {
-  /**
-   * After how many pixels of dragging should the view drag along
-   *
-   * @default 10
-   */
-  touchThreshold?: number;
-}
-
-export const DraggableView: FC<DraggableViewProps> = ({
+export const DraggableView: FC<Props> = ({
   children,
   touchThreshold = 10,
   ...viewProps
@@ -56,3 +47,12 @@ export const DraggableView: FC<DraggableViewProps> = ({
     </Animated.View>
   );
 };
+
+interface Props extends ViewProps {
+  /**
+   * After how many pixels of dragging should the view drag along
+   *
+   * @default 10
+   */
+  touchThreshold?: number;
+}
