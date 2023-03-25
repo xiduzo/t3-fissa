@@ -8,8 +8,8 @@ export const Input = forwardRef<TextInput, Props>(
     return (
       <TextInput
         ref={ref}
-        className={input({ variant, className })}
         {...props}
+        className={input({ variant, className })}
         style={{
           backgroundColor:
             variant === "contained" ? theme["100"] : "transparent",

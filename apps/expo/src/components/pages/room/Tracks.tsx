@@ -35,6 +35,7 @@ export const RoomTracks = () => {
       ListFooterComponent={() => {
         if (!tracks.length) return null;
         if (!isPlaying) return null;
+        if (isInitialLoading) return null;
         return <ListFooterComponent />;
       }}
     />

@@ -58,9 +58,9 @@ export const Popover: FC<PopOverProps> = ({
   return (
     <SafeAreaView className="absolute flex-1">
       <Modal
+        {...props}
         animationType="slide"
         transparent
-        {...props}
         onRequestClose={close}
       >
         <View className="h-full justify-end">

@@ -22,7 +22,7 @@ export const BottomDrawer: FC<BottomDrawerProps> = ({
       colors={theme.gradient}
       start={[0, 0]}
       end={[1, 1]}
-      className="absolute bottom-0 w-full rounded-3xl px-3 pt-6  pb-16"
+      className="absolute bottom-0 w-full rounded-3xl px-3 pt-5  pb-16"
     >
       <View className={bottomDrawer({ hasTitle: !!title })}>
         {title}
@@ -33,7 +33,7 @@ export const BottomDrawer: FC<BottomDrawerProps> = ({
   );
 };
 
-const bottomDrawer = cva("flex-row items-center", {
+const bottomDrawer = cva("flex-row items-center mb-4", {
   variants: {
     hasTitle: {
       true: "justify-between",

@@ -16,7 +16,7 @@ const Index = () => {
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerShown: false }} />
       <View className="flex h-full justify-between px-6">
-        <View></View>
+        <View />
         <View>
           <Typography variant="h1" centered className="mb-4">
             Hi there{user?.display_name && " " + user.display_name},
@@ -32,11 +32,11 @@ const Index = () => {
               variant="text"
             />
           )}
-          {user && <Button title="host a fissa" variant="outlined" />}
+          {user && (
+            <Button title="host a fissa" variant="outlined" linkTo="/host" />
+          )}
         </View>
-        <View>
-          <Rejoin />
-        </View>
+        <Rejoin />
       </View>
     </SafeAreaView>
   );
@@ -50,14 +50,16 @@ const Rejoin = () => {
     enabled: !!value,
   });
 
-  if (!value) return null; // no pin stored
-  if (!data) return null; // no room found
+  if (!value) return <View />; // no pin stored
+  if (!data) return <View />; // no room found
 
   return (
-    <Button
-      variant="text"
-      title={`re-join ${value}`}
-      linkTo={`/room/${value}`}
-    />
+    <View>
+      <Button
+        variant="text"
+        title={`re-join ${value}`}
+        linkTo={`/room/${value}`}
+      />
+    </View>
   );
 };

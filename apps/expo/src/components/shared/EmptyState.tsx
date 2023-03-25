@@ -9,9 +9,8 @@ const EmptyState: FC<Props & PropsWithChildren> = ({
   subtitle,
   children,
 }) => {
-  // minHeight: "75%",
   return (
-    <View className="min-h-[75vh] flex-grow justify-center">
+    <View className="flex-grow justify-center py-20">
       <Typography
         style={{ textAlign: "center", fontSize: 90, lineHeight: 110 }}
         variant="h1"

@@ -3,20 +3,6 @@ import { VirtualizedList, VirtualizedListProps } from "react-native";
 
 import { TrackListItem } from "./TrackListItem";
 
-interface Props
-  extends Omit<
-    VirtualizedListProps<SpotifyApi.TrackObjectFull>,
-    | "getItemCount"
-    | "initialNumToRender"
-    | "renderItem"
-    | "getItem"
-    | "keyExtractor"
-  > {
-  tracks: SpotifyApi.TrackObjectFull[];
-  selectedTracks?: string[];
-  onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
-}
-
 export const TrackList: FC<Props> = ({
   tracks,
   onTrackPress,
@@ -43,6 +29,20 @@ export const TrackList: FC<Props> = ({
     />
   );
 };
+
+interface Props
+  extends Omit<
+    VirtualizedListProps<SpotifyApi.TrackObjectFull>,
+    | "getItemCount"
+    | "initialNumToRender"
+    | "renderItem"
+    | "getItem"
+    | "keyExtractor"
+  > {
+  tracks: SpotifyApi.TrackObjectFull[];
+  selectedTracks?: string[];
+  onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
+}
 
 const getItem = (data: SpotifyApi.TrackObjectFull[], index: number) =>
   data[index]!;

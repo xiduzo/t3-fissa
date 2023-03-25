@@ -49,8 +49,6 @@ export const useTracks = (trackIds?: string[]) => {
       })
       .filter(Boolean);
 
-    console.log(newTracks?.length);
-
     setTracks(newTracks ?? []);
   }, [trackIds, spotifyStore.addTracks, spotifyStore.tracks]);
 

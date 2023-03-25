@@ -12,11 +12,14 @@ import {
   TrackList,
   Typography,
 } from "../../../src/components";
+import EmptyState from "../../../src/components/shared/EmptyState";
 import { useAddTracks } from "../../../src/hooks";
+import { useAuth } from "../../../src/providers";
 import { toast } from "../../../src/utils";
 
 const AddTracks = () => {
   const { pin } = useSearchParams();
+  const { promptAsync, user } = useAuth();
 
   const { back } = useRouter();
 
@@ -98,6 +101,20 @@ const AddTracks = () => {
           selectedTracks={selectedTracks.map((track) => track.id)}
           onTrackPress={handleTrackPress}
           ListFooterComponent={<View className="pb-52" />}
+          ListEmptyComponent={
+            <EmptyState icon="🦭" title="No inspiration?">
+              {user && (
+                <Button title="browse your playlists" variant="outlined" />
+              )}
+              {!user && (
+                <Button
+                  title="Sign in to browse your playlists"
+                  variant="outlined"
+                  onPress={() => promptAsync()}
+                />
+              )}
+            </EmptyState>
+          }
         />
 
         <BottomDrawer>

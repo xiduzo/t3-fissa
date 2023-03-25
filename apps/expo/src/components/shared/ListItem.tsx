@@ -75,12 +75,19 @@ export const ListItem: FC<ListItemProps> = ({
   return (
     <TouchableWithoutFeedback accessibilityRole="button" {...props}>
       <View
-        className={container({ hasBorder, className })}
-        style={{ borderColor: hasBorder ? theme["900"] + "10" : "transparent" }}
         {...props}
+        className={container({ hasBorder, className })}
+        style={[
+          { borderColor: hasBorder ? theme["900"] + "10" : "transparent" },
+          props.style,
+        ]}
       >
         <View className="mr-4">
-          <Image className={image({ hasBorder, bigImage })} source={imageUri} />
+          <Image
+            className={image({ bigImage })}
+            hasBorder={hasBorder}
+            source={imageUri}
+          />
           <Animated.View
             className="absolute h-20 w-20 items-center justify-center rounded-xl"
             style={{ backgroundColor }}
@@ -128,14 +135,14 @@ const container = cva("items-center flex-row my-3 max-w-full", {
     hasBorder: {
       true: "border rounded-xl",
     },
+    inverted: {
+      true: "bg-white",
+    },
   },
 });
 
 const image = cva("h-20 w-20", {
   variants: {
-    hasBorder: {
-      true: "rounded-r-xl",
-    },
     bigImage: {
       true: "h-32 w-32",
     },
