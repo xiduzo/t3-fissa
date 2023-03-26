@@ -4,7 +4,7 @@ import { useSearchParams } from "expo-router";
 
 import { useAuth } from "../../../providers";
 import { api } from "../../../utils";
-import EmptyState from "../../shared/EmptyState";
+import { EmptyState } from "../../shared";
 
 export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { pin } = useSearchParams();

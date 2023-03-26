@@ -107,7 +107,7 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
         end={[1, 1]}
         className="h-full w-full items-center justify-center rounded-2xl"
       >
-        <Ionicons name={icon} size={32} />
+        <Ionicons name={icon} size={28} />
       </LinearGradient>
     </TouchableHighlight>
   );

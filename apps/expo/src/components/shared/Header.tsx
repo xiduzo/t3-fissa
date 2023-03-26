@@ -18,7 +18,7 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
       <View>
         {props.back && props.options.headerBackVisible && (
           <Typography>
-            <Ionicons name="arrow-back" size={24} title="back" onPress={back} />
+            <Ionicons name="arrow-back" size={28} title="back" onPress={back} />
           </Typography>
         )}
       </View>

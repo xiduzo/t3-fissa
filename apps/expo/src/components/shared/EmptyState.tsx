@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { Typography } from "./Typography";
 
-const EmptyState: FC<Props & PropsWithChildren> = ({
+export const EmptyState: FC<Props & PropsWithChildren> = ({
   icon,
   title,
   subtitle,
@@ -29,8 +29,6 @@ const EmptyState: FC<Props & PropsWithChildren> = ({
     </View>
   );
 };
-
-export default EmptyState;
 
 interface Props {
   icon: string;

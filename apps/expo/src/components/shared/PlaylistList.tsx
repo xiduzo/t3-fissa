@@ -3,7 +3,7 @@ import { VirtualizedList, VirtualizedListProps } from "react-native";
 import { savedTracksPlaylist } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
-import EmptyState from "./EmptyState";
+import { EmptyState } from "./EmptyState";
 import { PlaylistListItem } from "./PlaylistListItem";
 
 export const PlaylistList: FC<Props> = ({
@@ -20,6 +20,7 @@ export const PlaylistList: FC<Props> = ({
   useEffect(() => {
     if (!user) return;
 
+    // TODO: should we cache playlists?
     spotify.getUserPlaylists(user.id).then(({ items }) => {
       setPlaylists(items);
 
