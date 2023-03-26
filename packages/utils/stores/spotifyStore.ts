@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { create } from "zustand";
 
@@ -12,27 +12,39 @@ interface SpotifyState {
 const useSpotifyStore = create<SpotifyState>((set) => ({
   tracks: [],
   addTracks: (tracks) =>
-    set((state) => ({ tracks: [...state.tracks, ...tracks] })),
+    set((state) => ({
+      tracks: [
+        ...state.tracks.filter(
+          ({ id }) => !tracks.find((track) => track.id === id),
+        ),
+        ...tracks,
+      ],
+    })),
 }));
 
 export const useTracks = (trackIds?: string[]) => {
-  const spotifyStore = useSpotifyStore();
+  const { addTracks, tracks } = useSpotifyStore();
 
-  const cachedTracks = trackIds
-    ? spotifyStore.tracks.filter((track) => trackIds.includes(track.id))
-    : [];
+  const cachedTrackIds = useMemo(
+    () => tracks.map(({ id }) => id),
+    [trackIds, tracks],
+  );
 
-  const [tracks, setTracks] =
-    useState<SpotifyApi.TrackObjectFull[]>(cachedTracks);
+  const uncachedTrackIds = useMemo(() => {
+    return (
+      trackIds?.filter((trackId) => !cachedTrackIds.includes(trackId)) ?? []
+    );
+  }, [trackIds, cachedTrackIds]);
+
+  const requestedTracks = useMemo(() => {
+    return (
+      trackIds
+        ?.map((trackId) => tracks.find(({ id }) => id === trackId))
+        .filter(Boolean) ?? []
+    );
+  }, [trackIds, tracks]);
 
   useMemo(async () => {
-    const uncachedTrackIds =
-      trackIds?.filter(
-        (trackId) => !cachedTracks.map((track) => track.id).includes(trackId),
-      ) ?? [];
-
-    if (uncachedTrackIds.length === 0) return;
-
     const promises = splitInChunks(uncachedTrackIds).map(async (chunk) => {
       const { tracks } = await new SpotifyWebApi().getTracks(chunk);
       return tracks;
@@ -40,20 +52,8 @@ export const useTracks = (trackIds?: string[]) => {
 
     const tracks = (await Promise.all(promises)).flat();
 
-    spotifyStore.addTracks(tracks);
+    if (tracks.length) addTracks(tracks);
+  }, [uncachedTrackIds, addTracks]);
 
-    const newTracks =
-      trackIds
-        ?.map((trackId) => {
-          const track = spotifyStore.tracks.find(({ id }) => id === trackId);
-          if (track) return track;
-
-          return tracks.find(({ id }) => id === trackId);
-        })
-        .filter(Boolean) ?? [];
-
-    setTracks(() => newTracks);
-  }, [trackIds, spotifyStore.addTracks, spotifyStore.tracks]);
-
-  return tracks;
+  return requestedTracks;
 };

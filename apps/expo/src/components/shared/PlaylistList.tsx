@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { VirtualizedList, VirtualizedListProps } from "react-native";
+import { savedTracksPlaylist } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
 import EmptyState from "./EmptyState";
@@ -19,27 +20,13 @@ export const PlaylistList: FC<Props> = ({
   useEffect(() => {
     if (!user) return;
 
-    spotify.getUserPlaylists(user.id).then((response) => {
-      setPlaylists(response.items);
+    spotify.getUserPlaylists(user.id).then(({ items }) => {
+      setPlaylists(items);
 
       spotify.getMySavedTracks().then((savedTracks) => {
-        setPlaylists((prev) => [
-          ...prev,
-          {
-            name: "Saved Tracks",
-            id: "SAVED_TRACKS_PLAYLIST_ID",
-            tracks: {
-              total: savedTracks.total,
-            },
-            owner: {
-              display_name: user.display_name,
-            },
-            images: [
-              {
-                url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
-              },
-            ],
-          } as any as SpotifyApi.PlaylistObjectFull,
+        setPlaylists([
+          ...items,
+          savedTracksPlaylist(savedTracks.items.length, user.display_name),
         ]);
       });
     });

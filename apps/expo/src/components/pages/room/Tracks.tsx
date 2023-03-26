@@ -13,8 +13,7 @@ export const RoomTracks = () => {
 
   const { data, isInitialLoading } = useGetTracks(pin!);
   const { data: room } = useGetRoom(pin!);
-
-  const tracks = useTracks(data?.map((track) => track.trackId));
+  const tracks = useTracks(data?.map(({ trackId }) => trackId));
 
   if (!data) return null;
 

@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { SafeAreaView, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
+import { SAVED_TRACKS_PLAYLIST_ID } from "@fissa/utils";
 
 import {
   Button,
@@ -30,9 +31,16 @@ const FromPlaylist = () => {
   const { mutateAsync } = useCreateRoom();
 
   const start = useCallback(async () => {
-    // TODO: fetch all tracksIds if playlist has more than 50 tracks
-    // TODO: from saved tracks
-    const { items } = await spotify.getPlaylistTracks(selectedPlaylist!.id);
+    let items = [];
+    if (selectedPlaylist!.id === SAVED_TRACKS_PLAYLIST_ID) {
+      const savedTracks = await spotify.getMySavedTracks();
+      items = savedTracks.items;
+    } else {
+      const playlistTracks = await spotify.getPlaylistTracks(
+        selectedPlaylist!.id,
+      );
+      items = playlistTracks.items;
+    }
 
     const tracks = items.map(({ track }) => ({
       durationMs: track.duration_ms,

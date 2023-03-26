@@ -23,7 +23,7 @@ const Home: NextPage = () => {
             Create <span className="text-pink-400">T3</span> Turbo
           </h1>
           <AuthShowcase />
-          <button onClick={() => mutateAsync()}>Create Room</button>
+          <button onClick={() => mutateAsync([])}>Create Room</button>
         </div>
       </main>
     </>

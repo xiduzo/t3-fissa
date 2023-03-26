@@ -12,23 +12,24 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
   const { data: room } = useGetRoom(pin!);
 
   if (!room) return null;
-  if (!tracks.length) return <NowPlaying />;
-  const track = tracks[room.currentIndex]!;
+  const track = tracks[room.currentIndex];
 
   return (
     <View className="px-6">
       <NowPlaying />
-      <TrackListItem
-        track={track}
-        bigImage
-        extra={
-          <ProgressBar
-            track={track}
-            expectedEndTime={room.expectedEndTime}
-            enabled={room.currentIndex >= 0}
-          />
-        }
-      />
+      {track && (
+        <TrackListItem
+          track={track}
+          bigImage
+          extra={
+            <ProgressBar
+              track={track}
+              expectedEndTime={room.expectedEndTime}
+              enabled={room.currentIndex >= 0}
+            />
+          }
+        />
+      )}
     </View>
   );
 };

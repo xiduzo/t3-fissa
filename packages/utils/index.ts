@@ -11,5 +11,6 @@ export * from "./hooks";
 export * from "./stores";
 export * from "./types";
 export * from "./array";
+export * from "./constants";
 
 export { SpotifyWebApi };
