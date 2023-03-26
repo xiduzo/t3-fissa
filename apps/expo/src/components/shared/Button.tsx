@@ -45,7 +45,7 @@ export const Button: FC<Props> = ({
 
       if (props.linkTo) push(props.linkTo);
     },
-    [props.onPress, props.linkTo, push],
+    [props.onPress, props.linkTo],
   );
 
   return (
@@ -92,7 +92,7 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
 
       if (props.linkTo) push(props.linkTo);
     },
-    [props.onPress, props.linkTo, push],
+    [props.onPress, props.linkTo],
   );
 
   return (

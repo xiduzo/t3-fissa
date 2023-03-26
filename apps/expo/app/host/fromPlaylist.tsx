@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { SafeAreaView, View } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import {
@@ -11,11 +11,12 @@ import {
   Typography,
 } from "../../src/components";
 import { useCreateRoom } from "../../src/hooks";
-import { useAuth } from "../../src/providers";
+import { useSpotify } from "../../src/providers";
 import { toast } from "../../src/utils";
 
 const FromPlaylist = () => {
-  const { spotify } = useAuth();
+  const { push } = useRouter();
+  const spotify = useSpotify();
 
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
@@ -23,20 +24,24 @@ const FromPlaylist = () => {
   const { mutateAsync } = useCreateRoom();
 
   const start = useCallback(async () => {
-    if (!selectedPlaylist) return;
+    // TODO: fetch all tracksIds if playlist has more than 50 tracks
+    const { items } = await spotify.getPlaylistTracks(selectedPlaylist!.id);
 
-    await mutateAsync(undefined, {
-      onSuccess: async () => {
+    const tracks = items.map(({ track }) => ({
+      durationMs: track.duration_ms,
+      trackId: track.id,
+    }));
+
+    await mutateAsync(tracks, {
+      onSuccess: async ({ pin }) => {
         toast.success({ message: "Room created" });
+        setSelectedPlaylist(null);
+        push(`/room/${pin}`);
       },
       onError: (error) => {
         toast.error({ message: error.message });
       },
     });
-    // spotify.getPlaylist(selectedPlaylist.id).then((playlist) => {
-    //   // TODO: fetch all tracks
-    //   console.log(playlist.tracks.items.map(({ track }) => track.id));
-    // });
   }, [selectedPlaylist]);
 
   return (

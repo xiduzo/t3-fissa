@@ -25,7 +25,6 @@ export const getServerSession = async (ctx: GetServerSessionContext) => {
 };
 
 export const expoHackServerSession = async (ctx?: GetServerSessionContext) => {
-  console.log("ctx", ctx?.req.headers);
   if (!ctx?.req.headers.authorization) return null;
 
   // Hack for expo session

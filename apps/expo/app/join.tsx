@@ -69,7 +69,7 @@ const Join = () => {
         if (event.nativeEvent?.key.toLowerCase() !== "backspace") return;
         keys[index - 1]?.current?.focus();
       },
-    [pin],
+    [keys],
   );
 
   const handleSelect = useCallback(

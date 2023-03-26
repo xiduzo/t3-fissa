@@ -1,7 +1,6 @@
 import { MutationCallbacks } from "@fissa/utils";
 
 import { api } from "../utils";
-import { Track } from ".prisma/client";
 
 const endpoint = api.track.addTracks.useMutation;
 
@@ -20,10 +19,22 @@ export const useAddTracks = (
   });
 
   return {
-    mutate: (tracks: Omit<Track, "index" | "roomId">[]) =>
-      mutate({ roomId, tracks }),
-    mutateAsync: (tracks: Omit<Track, "index" | "roomId">[]) =>
-      mutateAsync({ roomId, tracks }),
+    mutate: (tracks: SpotifyApi.TrackObjectFull[]) =>
+      mutate({
+        roomId,
+        tracks: tracks.map((track) => ({
+          trackId: track.id,
+          durationMs: track.duration_ms,
+        })),
+      }),
+    mutateAsync: (tracks: SpotifyApi.TrackObjectFull[]) =>
+      mutateAsync({
+        roomId,
+        tracks: tracks.map((track) => ({
+          trackId: track.id,
+          durationMs: track.duration_ms,
+        })),
+      }),
     ...rest,
   };
 };

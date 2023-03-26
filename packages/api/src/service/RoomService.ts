@@ -1,24 +1,36 @@
+import { Room } from "@fissa/db";
 import { randomize } from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
+import { TrackService } from "./TrackService";
 
 export class RoomService extends ServiceWithContext {
-  create = async () => {
+  create = async (tracks: { trackId: string; durationMs: number }[]) => {
     let pin: string | undefined = undefined;
     let tries = 0;
-    const blockedPins: string[] = [];
+    const blockedPins = [...noNoWords];
 
     do {
       const _pin = this.generatePin();
 
-      if (noNoWords.includes(_pin.toLowerCase())) continue;
-      if (blockedPins.includes(_pin)) continue;
+      if (blockedPins.includes(_pin.toLowerCase())) continue;
 
+      console.log({ _pin });
       try {
         await this.db.room.create({
           data: {
             pin: _pin,
             by: { connect: { id: this.ctx.session?.user.id } },
+            // TODO: who does this throw an error
+            // tracks: {
+            //   createMany: {
+            //     data: tracks.map((track, index) => ({
+            //       ...track,
+            //       roomId: _pin,
+            //       index,
+            //     })),
+            //   },
+            // },
           },
         });
       } catch (e) {
@@ -27,7 +39,13 @@ export class RoomService extends ServiceWithContext {
       }
 
       pin = _pin;
-    } while (!pin && tries < 10);
+    } while (!pin && tries < 50);
+
+    const trackService = new TrackService(this.ctx);
+    await trackService.addTracks({
+      roomId: pin!,
+      tracks,
+    });
 
     return this.byId(pin!);
   };

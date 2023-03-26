@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { addTracks } from "../router/track";
 import { ServiceWithContext } from "../utils/context";
+import { SpotifyService } from "./SpotifyService";
 
 export class TrackService extends ServiceWithContext {
   byRoomId = async (roomId: string) => {
@@ -15,9 +16,6 @@ export class TrackService extends ServiceWithContext {
     const { roomId, tracks } = input;
 
     const totalTracks = await this.db.track.count({ where: { roomId } });
-
-    // TODO filter out tracks that are already in queue
-    // Give them a upvote instead
 
     return this.db.track.createMany({
       data: tracks.map((track, index) => ({

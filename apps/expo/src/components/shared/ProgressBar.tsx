@@ -26,7 +26,7 @@ export const ProgressBar: FC<Props> = ({ expectedEndTime, track, enabled }) => {
 
   return (
     <View
-      className={progressBar({ enabled: !!enabled })}
+      className={progressBar({ enabled: !!enabled || !progress })}
       style={{ backgroundColor: theme["100"] + "20" }}
     >
       <LinearGradient

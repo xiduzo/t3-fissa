@@ -1,11 +1,10 @@
-import { type ConfigContext, type ExpoConfig } from "@expo/config";
-import { theme } from "@fissa/tailwind-config";
+import { ConfigContext, ExpoConfig } from "@expo/config";
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
-  slug: "not only one person should decide what is playing on a party",
-  scheme: "xiduzo.fissa",
-  version: "1.0.0",
+  slug: "fissa",
+  scheme: "com.fissa",
+  version: "3.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
@@ -20,7 +19,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "xiduzo.fissa",
+    bundleIdentifier: "org.reactjs.native.example.fissa",
     config: {
       usesNonExemptEncryption: false,
     },

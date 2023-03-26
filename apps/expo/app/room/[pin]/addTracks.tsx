@@ -64,12 +64,7 @@ const AddTracks = () => {
   }, []);
 
   const addTracks = useCallback(async () => {
-    await mutateAsync(
-      selectedTracks.map((track) => ({
-        durationMs: track.duration_ms,
-        trackId: track.id,
-      })),
-    );
+    await mutateAsync(selectedTracks);
   }, [selectedTracks]);
 
   return (

@@ -25,6 +25,7 @@ import {
   ENCRYPTED_STORAGE_KEYS,
   useEncryptedStorage,
 } from "../hooks/useEncryptedStorage";
+import { toast } from "../utils";
 import { api } from "../utils/api";
 
 const SpotifyContext = createContext({
@@ -71,6 +72,9 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   useMemo(async () => {
     if (response?.type !== "success") return;
 
+    toast.success({
+      message: "Logged in successfully, setting account details.",
+    });
     const { code } = response.params;
     if (!code) return;
 

@@ -16,7 +16,7 @@ export const PinCode = () => {
   const goToHome = useCallback(() => {
     toggleRoomPopover();
     back();
-  }, [toggleRoomPopover, back]);
+  }, []);
 
   return (
     <>

@@ -2,20 +2,15 @@ import { z } from "zod";
 
 import { TrackService } from "../service/TrackService";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { Z_PIN, Z_TRACKS } from "./constants";
 
-const id = z.string().length(4);
 export const addTracks = z.object({
-  roomId: id,
-  tracks: z.array(
-    z.object({
-      trackId: z.string().length(22),
-      durationMs: z.number(),
-    }),
-  ),
+  roomId: Z_PIN,
+  tracks: Z_TRACKS,
 });
 
 export const trackRouter = createTRPCRouter({
-  byRoomId: publicProcedure.input(id).query(({ ctx, input }) => {
+  byRoomId: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new TrackService(ctx);
     return service.byRoomId(input);
   }),

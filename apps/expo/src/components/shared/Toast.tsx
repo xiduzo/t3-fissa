@@ -23,7 +23,7 @@ export const ToastContainer: FC = () => {
 const Toaster: FC<Props> = ({ text1, text2 }) => {
   return (
     <View
-      className="mx-2 mt-2 flex flex-row items-center rounded-xl p-4 shadow-2xl"
+      className="mx-auto mt-2 flex max-w-[95vw] flex-row items-center rounded-xl p-4 shadow-2xl"
       accessibilityRole="alert"
       style={{ backgroundColor: theme["100"] }}
     >
@@ -32,7 +32,7 @@ const Toaster: FC<Props> = ({ text1, text2 }) => {
           {text2}
         </Typography>
       )}
-      <Typography variant="h6" inverted className="flex-grow">
+      <Typography variant="h6" inverted className="max-w-[90%] flex-grow">
         {text1}
       </Typography>
     </View>

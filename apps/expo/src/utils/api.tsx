@@ -57,7 +57,7 @@ const getBaseUrl = () => {
 export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { value, getValueFor } = useEncryptedStorage(
+  const { getValueFor } = useEncryptedStorage(
     ENCRYPTED_STORAGE_KEYS.sessionToken,
   );
 
