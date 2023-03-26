@@ -18,6 +18,9 @@
     "lint:fix": "turbo lint:fix && manypkg fix",
     "type-check": "turbo type-check"
   },
+  "prisma": {
+    "schema": "packages/db/prisma/schema.prisma"
+  },
   "dependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^3.7.1",
     "@manypkg/cli": "^0.20.0",
