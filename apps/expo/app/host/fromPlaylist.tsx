@@ -31,6 +31,9 @@ const FromPlaylist = () => {
   const { mutateAsync } = useCreateRoom();
 
   const start = useCallback(async () => {
+    setSelectedPlaylist(null);
+    toast.info({ message: "Creating your fissa" });
+
     let items = [];
     if (selectedPlaylist!.id === SAVED_TRACKS_PLAYLIST_ID) {
       const savedTracks = await spotify.getMySavedTracks();
@@ -49,7 +52,6 @@ const FromPlaylist = () => {
 
     await mutateAsync(tracks, {
       onSuccess: async ({ pin }) => {
-        setSelectedPlaylist(null);
         await save(pin);
         push(`/room/${pin}`);
         toast.success({ message: "Enjoy your fissa", icon: "🎉" });

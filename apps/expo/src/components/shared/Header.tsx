@@ -12,7 +12,7 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
 
   return (
     <View
-      className="flex flex-row items-center justify-between px-6 pt-12"
+      className="flex flex-row items-center justify-between px-6 pt-12 pb-3"
       style={{ backgroundColor: theme["900"] }}
     >
       <View>
@@ -22,10 +22,10 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
           </Typography>
         )}
       </View>
-      <View>
-        <Typography centered className="flex-grow">
-          {props.options.title}
-        </Typography>
+      <View className="flex-grow">
+        {props.options.title && (
+          <Typography variant="h2">{props.options.title}</Typography>
+        )}
       </View>
       <View>
         {props.options.headerRight &&

@@ -21,31 +21,22 @@ export const RoomTracks = () => {
 
   return (
     <>
-      <ListHeaderComponent tracks={tracks} />
       <TrackList
         tracks={isPlaying ? tracks : []}
         onTrackPress={(track) => {
           console.info(track.name);
         }}
-        ListHeaderComponent={
-          <View className="mb-2 mt-7 flex-row items-center justify-between">
-            <Typography variant="h2">Queue</Typography>
-            <Typography variant="bodyM" dimmed>
-              {tracks.length}
-            </Typography>
-          </View>
-        }
+        ListHeaderComponent={<ListHeaderComponent tracks={tracks} />}
         ListEmptyComponent={
           <ListEmptyComponent
             isLoading={isInitialLoading || tracks.length !== data.length}
           />
         }
-        ListFooterComponent={() => {
-          if (!tracks.length) return null;
-          if (!isPlaying) return null;
-          if (isInitialLoading) return null;
-          return <ListFooterComponent />;
-        }}
+        ListFooterComponent={
+          Boolean(tracks.length) && isPlaying && !isInitialLoading ? (
+            <ListFooterComponent />
+          ) : null
+        }
       />
     </>
   );

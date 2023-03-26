@@ -15,8 +15,7 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
   const track = tracks[room.currentIndex];
 
   return (
-    <View className="px-6">
-      <NowPlaying />
+    <>
       {track && (
         <TrackListItem
           track={track}
@@ -30,19 +29,16 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
           }
         />
       )}
-    </View>
+      <View className="mb-2 mt-7 flex-row items-center justify-between">
+        <Typography variant="h2">Queue</Typography>
+        <Typography variant="bodyM" dimmed>
+          {tracks.length}
+        </Typography>
+      </View>
+    </>
   );
 };
 
 interface Props {
   tracks: SpotifyApi.TrackObjectFull[];
 }
-
-const NowPlaying = () => {
-  return (
-    <View className="flex-row items-center justify-between">
-      <Typography variant="h2">Now Playing</Typography>
-      <PinCode />
-    </View>
-  );
-};

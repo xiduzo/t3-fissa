@@ -9,6 +9,7 @@ import {
   BottomDrawer,
   Button,
   Input,
+  PlaylistList,
   TrackList,
   Typography,
 } from "../../../src/components";
@@ -80,7 +81,7 @@ const AddTracks = () => {
           ),
         }}
       />
-      <View className="mt-4 h-full w-full">
+      <View className="h-full w-full">
         <View className="px-6">
           <Input
             ref={inputRef}
@@ -96,20 +97,7 @@ const AddTracks = () => {
           selectedTracks={selectedTracks.map((track) => track.id)}
           onTrackPress={handleTrackPress}
           ListFooterComponent={<View className="pb-52" />}
-          ListEmptyComponent={
-            <EmptyState icon="🦭" title="No inspiration?">
-              {user && (
-                <Button title="browse your playlists" variant="outlined" />
-              )}
-              {!user && (
-                <Button
-                  title="Sign in to browse your playlists"
-                  variant="outlined"
-                  onPress={() => promptAsync()}
-                />
-              )}
-            </EmptyState>
-          }
+          ListEmptyComponent={<ListEmptyComponent />}
         />
 
         <BottomDrawer>
@@ -129,3 +117,27 @@ const AddTracks = () => {
 };
 
 export default AddTracks;
+
+const ListEmptyComponent = () => {
+  const { user, promptAsync } = useAuth();
+
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+
+  if (!user)
+    return (
+      <EmptyState
+        icon="🦭"
+        title="Not connected to spotify"
+        subtitle="and show them what you've got"
+      >
+        <Button title="Sign in" onPress={() => promptAsync()} />
+      </EmptyState>
+    );
+
+  return (
+    <View className="-mx-6">
+      {!selectedPlaylist && <PlaylistList />}
+      {selectedPlaylist && <TrackList tracks={[]} />}
+    </View>
+  );
+};
