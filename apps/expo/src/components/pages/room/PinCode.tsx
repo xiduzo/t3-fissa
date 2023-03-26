@@ -5,7 +5,7 @@ import { Action, Button, Popover } from "../../shared";
 
 export const PinCode = () => {
   const { pin } = useSearchParams();
-  const { back } = useRouter();
+  const { push } = useRouter();
 
   const [showRoomPopover, setShowRoomPopover] = useState(false);
 
@@ -15,7 +15,7 @@ export const PinCode = () => {
 
   const goToHome = useCallback(() => {
     toggleRoomPopover();
-    back();
+    push("/");
   }, []);
 
   return (

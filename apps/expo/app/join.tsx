@@ -11,19 +11,22 @@ import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import { Button, Typography } from "../src/components";
-import { useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useEncryptedStorage,
+} from "../src/hooks/useEncryptedStorage";
 import { toast } from "../src/utils/Toast";
 import { api } from "../src/utils/api";
 
 const Join = () => {
   const [pin, setPin] = useState(["", "", "", ""]);
   const { replace } = useRouter();
-  const { save } = useEncryptedStorage("pin");
+  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastRoomId);
 
   api.room.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),
-    onError: async (error) => {
-      toast.warn({ message: error.message });
+    onError: async ({ message }) => {
+      toast.warn({ message });
       reset();
     },
     onSuccess: async ({ pin }) => {

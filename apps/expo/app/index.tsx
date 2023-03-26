@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
+import { useTracks } from "@fissa/utils";
 
 import { Button, Typography } from "../src/components";
-import { useEncryptedStorage } from "../src/hooks";
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useEncryptedStorage,
+  useGetTracks,
+} from "../src/hooks";
 import { useAuth } from "../src/providers";
 import { api } from "../src/utils/api";
 
@@ -45,13 +50,20 @@ const Index = () => {
 export default Index;
 
 const Rejoin = () => {
-  const { value } = useEncryptedStorage("pin");
-  const { data } = api.room.byId.useQuery(value!, {
+  const { value, getValueFor } = useEncryptedStorage(
+    ENCRYPTED_STORAGE_KEYS.lastRoomId,
+  );
+  const { data: room } = api.room.byId.useQuery(value!, {
     enabled: !!value,
   });
 
+  const { data } = useGetTracks(value!);
+
+  // Pre-fetch tracks
+  useTracks(data?.map((track) => track.trackId));
+
   if (!value) return <View />; // no pin stored
-  if (!data) return <View />; // no room found
+  if (!room) return <View />; // no room found
 
   return (
     <View>

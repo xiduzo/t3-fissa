@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { create } from "zustand";
 
+import { splitInChunks } from "../array";
+
 interface SpotifyState {
   tracks: SpotifyApi.TrackObjectFull[];
   addTracks: (tracks: SpotifyApi.TrackObjectFull[]) => void;
@@ -31,25 +33,26 @@ export const useTracks = (trackIds?: string[]) => {
 
     if (uncachedTrackIds.length === 0) return;
 
-    // TODO: fetch in loop for > than 50 tracks
-    console.info(
-      `Fetching ${uncachedTrackIds.length} tracks from Spotify API`,
-      uncachedTrackIds,
-    );
-    const spotifyTracks = await new SpotifyWebApi().getTracks(uncachedTrackIds);
+    const promises = splitInChunks(uncachedTrackIds).map(async (chunk) => {
+      const { tracks } = await new SpotifyWebApi().getTracks(chunk);
+      return tracks;
+    });
 
-    spotifyStore.addTracks(spotifyTracks.tracks);
+    const tracks = (await Promise.all(promises)).flat();
 
-    const newTracks = trackIds
-      ?.map((trackId) => {
-        const track = spotifyStore.tracks.find((track) => track.id === trackId);
-        if (track) return track;
+    spotifyStore.addTracks(tracks);
 
-        return spotifyTracks.tracks.find((track) => track.id === trackId);
-      })
-      .filter(Boolean);
+    const newTracks =
+      trackIds
+        ?.map((trackId) => {
+          const track = spotifyStore.tracks.find(({ id }) => id === trackId);
+          if (track) return track;
 
-    setTracks(() => newTracks ?? []);
+          return tracks.find(({ id }) => id === trackId);
+        })
+        .filter(Boolean) ?? [];
+
+    setTracks(() => newTracks);
   }, [trackIds, spotifyStore.addTracks, spotifyStore.tracks]);
 
   return tracks;

@@ -15,7 +15,6 @@ export class RoomService extends ServiceWithContext {
 
       if (blockedPins.includes(_pin.toLowerCase())) continue;
 
-      console.log({ _pin });
       try {
         await this.db.room.create({
           data: {

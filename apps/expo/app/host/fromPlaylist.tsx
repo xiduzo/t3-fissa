@@ -10,13 +10,19 @@ import {
   Popover,
   Typography,
 } from "../../src/components";
-import { useCreateRoom } from "../../src/hooks";
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useCreateRoom,
+  useEncryptedStorage,
+} from "../../src/hooks";
 import { useSpotify } from "../../src/providers";
 import { toast } from "../../src/utils";
 
 const FromPlaylist = () => {
   const { push } = useRouter();
   const spotify = useSpotify();
+
+  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastRoomId);
 
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
@@ -25,6 +31,7 @@ const FromPlaylist = () => {
 
   const start = useCallback(async () => {
     // TODO: fetch all tracksIds if playlist has more than 50 tracks
+    // TODO: from saved tracks
     const { items } = await spotify.getPlaylistTracks(selectedPlaylist!.id);
 
     const tracks = items.map(({ track }) => ({
@@ -34,9 +41,10 @@ const FromPlaylist = () => {
 
     await mutateAsync(tracks, {
       onSuccess: async ({ pin }) => {
-        toast.success({ message: "Room created" });
         setSelectedPlaylist(null);
+        await save(pin);
         push(`/room/${pin}`);
+        toast.success({ message: "Enjoy your fissa", icon: "🎉" });
       },
       onError: (error) => {
         toast.error({ message: error.message });
