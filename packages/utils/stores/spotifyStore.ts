@@ -3,24 +3,34 @@ import SpotifyWebApi from "spotify-web-api-js";
 import { create } from "zustand";
 
 import { splitInChunks } from "../array";
+import { savedTracksPlaylist } from "../constants";
 
 interface SpotifyState {
   tracks: SpotifyApi.TrackObjectFull[];
   addTracks: (tracks: SpotifyApi.TrackObjectFull[]) => void;
+  playLists: SpotifyApi.PlaylistObjectSimplified[];
+  setPlayLists: (playLists: SpotifyApi.PlaylistObjectSimplified[]) => void;
 }
 
 const useSpotifyStore = create<SpotifyState>((set) => ({
   tracks: [],
   addTracks: (tracks) =>
-    set((state) => ({
-      tracks: [
-        ...state.tracks.filter(
-          ({ id }) => !tracks.find((track) => track.id === id),
-        ),
-        ...tracks,
-      ],
-    })),
+    set((state) => ({ tracks: newTracks(state.tracks, tracks) })),
+  playLists: [],
+  setPlayLists: (playLists) => set(() => ({ playLists })),
 }));
+
+const newTracks = (
+  currentTracks: SpotifyApi.TrackObjectFull[],
+  newTracks: SpotifyApi.TrackObjectFull[],
+) => {
+  return [
+    ...currentTracks.filter(
+      ({ id }) => !newTracks.find((track) => track.id === id),
+    ),
+    ...newTracks,
+  ];
+};
 
 export const useTracks = (trackIds?: string[]) => {
   const { addTracks, tracks } = useSpotifyStore();
@@ -56,4 +66,27 @@ export const useTracks = (trackIds?: string[]) => {
   }, [uncachedTrackIds, addTracks]);
 
   return requestedTracks;
+};
+
+export const usePlayLists = (
+  spotify: SpotifyWebApi.SpotifyWebApiJs = new SpotifyWebApi(),
+  user?: SpotifyApi.CurrentUsersProfileResponse,
+) => {
+  const { setPlayLists } = useSpotifyStore();
+
+  useMemo(async () => {
+    const { items } = await spotify.getUserPlaylists(user?.id);
+
+    try {
+      const savedTracks = await spotify.getMySavedTracks(user?.id);
+      setPlayLists([
+        ...items,
+        savedTracksPlaylist(savedTracks.items.length, user?.display_name),
+      ]);
+    } catch {
+      setPlayLists(items);
+    }
+  }, [setPlayLists, user]);
+
+  return useSpotifyStore((state) => state.playLists);
 };

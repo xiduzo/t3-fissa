@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { VirtualizedList, VirtualizedListProps } from "react-native";
-import { savedTracksPlaylist } from "@fissa/utils";
+import { usePlayLists } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
 import { EmptyState } from "./EmptyState";
@@ -13,25 +13,7 @@ export const PlaylistList: FC<Props> = ({
 }) => {
   const { user, spotify } = useAuth();
 
-  const [playlists, setPlaylists] = useState<
-    SpotifyApi.PlaylistObjectSimplified[]
-  >([]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    // TODO: should we cache playlists?
-    spotify.getUserPlaylists(user.id).then(({ items }) => {
-      setPlaylists(items);
-
-      spotify.getMySavedTracks().then((savedTracks) => {
-        setPlaylists([
-          ...items,
-          savedTracksPlaylist(savedTracks.items.length, user.display_name),
-        ]);
-      });
-    });
-  }, [user, spotify]);
+  const playlists = usePlayLists(spotify, user);
 
   return (
     <VirtualizedList
