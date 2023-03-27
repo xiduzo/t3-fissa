@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   GestureResponderEvent,
   NativeSyntheticEvent,
@@ -10,7 +10,7 @@ import {
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
-import { useDebounce } from "@fissa/utils";
+import { getPlaylistTracks, useDebounce } from "@fissa/utils";
 
 import {
   BottomDrawer,
@@ -118,17 +118,13 @@ const AddTracks = () => {
     );
   }, [debounced, selectedPlaylist, spotify, playlistTracks]);
 
-  useEffect(() => {
-    // TODO fetch all tracks
+  useMemo(async () => {
     if (!selectedPlaylist) return;
 
-    spotify.getPlaylistTracks(selectedPlaylist.id).then((response) => {
-      const items = response.items.map(
-        (item) => item.track as SpotifyApi.TrackObjectFull,
-      );
-      playlistTracks.current = items;
-      setFilteredTracks(items);
-    });
+    const tracks = await getPlaylistTracks(selectedPlaylist.id, spotify);
+
+    playlistTracks.current = tracks;
+    setFilteredTracks(tracks);
   }, [selectedPlaylist, spotify]);
 
   return (
@@ -173,6 +169,13 @@ const AddTracks = () => {
                     onTrackPress={handleTrackPress}
                     selectedTracks={selectedTracks.map((track) => track.id)}
                     ListFooterComponent={<View className="pb-40" />}
+                    ListEmptyComponent={
+                      <EmptyState
+                        icon="🐕"
+                        title="Fetching tracks"
+                        subtitle="good boy"
+                      />
+                    }
                   />
                 )}
               </View>

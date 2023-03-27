@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { SafeAreaView, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { SAVED_TRACKS_PLAYLIST_ID } from "@fissa/utils";
+import { SAVED_TRACKS_PLAYLIST_ID, getPlaylistTracks } from "@fissa/utils";
 
 import {
   Button,
@@ -34,18 +34,12 @@ const FromPlaylist = () => {
     setSelectedPlaylist(null);
     toast.info({ message: "Creating your fissa" });
 
-    let items = [];
-    if (selectedPlaylist!.id === SAVED_TRACKS_PLAYLIST_ID) {
-      const savedTracks = await spotify.getMySavedTracks();
-      items = savedTracks.items;
-    } else {
-      const playlistTracks = await spotify.getPlaylistTracks(
-        selectedPlaylist!.id,
-      );
-      items = playlistTracks.items;
-    }
+    const spotifyTracks = await getPlaylistTracks(
+      selectedPlaylist!.id,
+      spotify,
+    );
 
-    const tracks = items.map(({ track }) => ({
+    const tracks = spotifyTracks.map((track) => ({
       durationMs: track.duration_ms,
       trackId: track.id,
     }));
