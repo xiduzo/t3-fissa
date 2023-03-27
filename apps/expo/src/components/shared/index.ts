@@ -1,6 +1,7 @@
 export * from "./Action";
 export * from "./BottomDrawer";
 export * from "./Button";
+export * from "./Divider";
 export * from "./DraggableView";
 export * from "./EmptyState";
 export * from "./Header";

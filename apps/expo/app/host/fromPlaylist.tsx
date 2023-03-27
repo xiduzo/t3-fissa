@@ -28,7 +28,7 @@ const FromPlaylist = () => {
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
-  const { mutateAsync } = useCreateRoom();
+  const { mutateAsync, isLoading } = useCreateRoom();
 
   const start = useCallback(async () => {
     setSelectedPlaylist(null);
@@ -84,7 +84,12 @@ const FromPlaylist = () => {
           inverted
           className="mb-8"
         />
-        <Button title="Let's kick it" inverted onPress={start} />
+        <Button
+          title="Let's kick it"
+          inverted
+          onPress={start}
+          disabled={isLoading}
+        />
       </Popover>
     </SafeAreaView>
   );

@@ -1,12 +1,20 @@
-import { View } from "react-native";
+import { useState } from "react";
 import { useSearchParams } from "expo-router";
 import { useTracks } from "@fissa/utils";
 
 import { useGetRoom, useGetTracks } from "../../../hooks";
-import { TrackList, Typography } from "../../shared";
+import {
+  Action,
+  BottomDrawer,
+  Divider,
+  Popover,
+  TrackList,
+  TrackListItem,
+} from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
+import { VoteActions } from "./VoteActions";
 
 export const RoomTracks = () => {
   const { pin } = useSearchParams();
@@ -14,6 +22,9 @@ export const RoomTracks = () => {
   const { data, isInitialLoading } = useGetTracks(pin!);
   const { data: room } = useGetRoom(pin!);
   const tracks = useTracks(data?.map(({ trackId }) => trackId));
+
+  const [selectedTrack, setSelectedTrack] =
+    useState<SpotifyApi.TrackObjectFull | null>(null);
 
   if (!data) return null;
 
@@ -23,9 +34,7 @@ export const RoomTracks = () => {
     <>
       <TrackList
         tracks={isPlaying ? tracks : []}
-        onTrackPress={(track) => {
-          console.info(track.name);
-        }}
+        onTrackPress={setSelectedTrack}
         ListHeaderComponent={<ListHeaderComponent tracks={tracks} />}
         ListEmptyComponent={
           <ListEmptyComponent
@@ -38,6 +47,17 @@ export const RoomTracks = () => {
           ) : null
         }
       />
+      <Popover
+        visible={!!selectedTrack}
+        onRequestClose={() => setSelectedTrack(null)}
+      >
+        <TrackListItem inverted track={selectedTrack!} hasBorder />
+        <Divider />
+        <VoteActions
+          track={selectedTrack!}
+          onPress={() => setSelectedTrack(null)}
+        />
+      </Popover>
     </>
   );
 };

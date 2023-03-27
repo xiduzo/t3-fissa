@@ -34,7 +34,7 @@ const AddTracks = () => {
 
   const inputRef = useRef<TextInput>(null);
 
-  const { mutateAsync } = useAddTracks(String(pin), {
+  const { mutateAsync, isLoading } = useAddTracks(String(pin), {
     onSuccess: () => {
       toast.success({ message: "Tracks added to queue" });
       back();
@@ -197,7 +197,7 @@ const AddTracks = () => {
           <Button
             title={`Add ${selectedTracks.length} tracks`}
             inverted
-            disabled={!pin || !selectedTracks.length}
+            disabled={!pin || !selectedTracks.length || isLoading}
             onPress={addTracks}
           />
         </BottomDrawer>
