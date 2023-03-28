@@ -8,6 +8,7 @@ export * from "./Header";
 export * from "./Image";
 export * from "./Input";
 export * from "./ListItem";
+export * from "./PickTracks";
 export * from "./PlaylistList";
 export * from "./PlaylistListItem";
 export * from "./Popover";

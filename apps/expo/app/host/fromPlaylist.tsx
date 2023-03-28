@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { SafeAreaView, View } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { SAVED_TRACKS_PLAYLIST_ID, getPlaylistTracks } from "@fissa/utils";
+import { getPlaylistTracks } from "@fissa/utils";
 
 import {
   Button,
@@ -11,19 +11,12 @@ import {
   Popover,
   Typography,
 } from "../../src/components";
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useCreateRoom,
-  useEncryptedStorage,
-} from "../../src/hooks";
+import { useCreateRoom } from "../../src/components/pages/room/hooks/useCreateRoom";
 import { useSpotify } from "../../src/providers";
 import { toast } from "../../src/utils";
 
 const FromPlaylist = () => {
-  const { push } = useRouter();
   const spotify = useSpotify();
-
-  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastRoomId);
 
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
@@ -31,8 +24,10 @@ const FromPlaylist = () => {
   const { mutateAsync, isLoading } = useCreateRoom();
 
   const start = useCallback(async () => {
+    toast.info({
+      message: `Starting fissa based on ${selectedPlaylist!.name}`,
+    });
     setSelectedPlaylist(null);
-    toast.info({ message: "Creating your fissa" });
 
     const spotifyTracks = await getPlaylistTracks(
       selectedPlaylist!.id,
@@ -44,16 +39,7 @@ const FromPlaylist = () => {
       trackId: track.id,
     }));
 
-    await mutateAsync(tracks, {
-      onSuccess: async ({ pin }) => {
-        await save(pin);
-        push(`/room/${pin}`);
-        toast.success({ message: "Enjoy your fissa", icon: "🎉" });
-      },
-      onError: (error) => {
-        toast.error({ message: error.message });
-      },
-    });
+    await mutateAsync(tracks);
   }, [selectedPlaylist]);
 
   return (

@@ -25,14 +25,15 @@ const Join = () => {
 
   api.room.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),
+
+    onSuccess: async ({ pin }) => {
+      toast.success({ message: "Enjoy the fissa", icon: "🎉" });
+      await save(pin);
+      replace(`/room/${pin}`);
+    },
     onError: async ({ message }) => {
       toast.warn({ message });
       reset();
-    },
-    onSuccess: async ({ pin }) => {
-      await save(pin);
-
-      replace(`/room/${pin}`);
     },
   });
 

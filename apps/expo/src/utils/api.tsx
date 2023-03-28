@@ -42,7 +42,7 @@ const getBaseUrl = () => {
    */
   const localhost = Constants.manifest?.debuggerHost?.split(":")[0];
   if (!localhost) {
-    return process.env.VERCEL_URL;
+    return process.env.VERCEL_URL ?? Constants.expoConfig?.extra?.vercelUrl;
 
     throw new Error(
       "Failed to get localhost. Please point to your production server.",

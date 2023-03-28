@@ -1,32 +1,16 @@
 import * as React from "react";
-import {
-  FC,
-  PropsWithChildren,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  AuthRequestConfig,
-  AuthRequestPromptOptions,
-  AuthSessionResult,
-  DiscoveryDocument,
-  ResponseType,
-  makeRedirectUri,
-  useAuthRequest,
-} from "expo-auth-session";
+import { FC, PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Platform } from "react-native";
+import { AuthRequestConfig, AuthRequestPromptOptions, AuthSessionResult, DiscoveryDocument, ResponseType, makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import Constants from "expo-constants";
 import { SpotifyWebApi } from "@fissa/utils";
 
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-} from "../hooks/useEncryptedStorage";
+
+
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
 import { toast } from "../utils";
 import { api } from "../utils/api";
+
 
 const SpotifyContext = createContext({
   promptAsync: (options?: AuthRequestPromptOptions | undefined) => {
@@ -76,7 +60,10 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       message: "Logged in successfully, setting account details.",
     });
     const { code } = response.params;
-    if (!code) return;
+    if (!code)
+      return toast.warn({
+        message: `No code found ${JSON.stringify(response.params)}`,
+      });
 
     const { access_token, refresh_token, session_token } = await mutateAsync({
       code,
@@ -124,10 +111,14 @@ const config: AuthRequestConfig = {
     "user-library-modify",
   ],
   responseType: ResponseType.Code,
-  clientId: "a2a88c4618324942859ce3e1f888b938",
+  clientId: Constants.expoConfig?.extra?.spotifyClientId,
   usePKCE: false,
   redirectUri: makeRedirectUri({
-    scheme: "xiduzo.fissa:/redirect",
+    scheme: `${Constants.expoConfig?.scheme}://redirect`,
+    native: Platform.select({
+      ios: `${Constants.expoConfig?.scheme}://redirect`,
+      android: `${Constants.expoConfig?.scheme}://redirect`,
+    }),
   }),
 };
 
