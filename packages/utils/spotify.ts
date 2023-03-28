@@ -35,5 +35,6 @@ export const getPlaylistTracks = async (
     }
   } while (hasNext);
 
+  // TODO return unique tracks even though the user has them added multiple times to their playlist
   return tracks;
 };
