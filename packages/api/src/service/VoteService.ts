@@ -32,25 +32,16 @@ export class VoteService extends ServiceWithContext {
   createVote = async (roomId: string, trackId: string, vote: VOTE) => {
     const roomService = new RoomService(this.ctx);
 
-    // TODO: re-shuffle tracks based on votes
-    const response = await this.db.$transaction(async (transaction) => {
-      await this.db.vote.deleteMany({
-        where: { roomId, trackId, userId: this.ctx.session!.user.id! },
-      });
+    const userId = this.ctx.session?.user.id!;
 
-      return transaction.vote.create({
-        data: {
-          roomId,
-          trackId,
-          vote,
-          userId: this.ctx.session!.user.id!,
-        },
-      });
+    const response = await this.db.vote.upsert({
+      where: { trackId_userId_roomId: { roomId, trackId, userId } },
+      create: { roomId, trackId, vote, userId },
+      update: { vote },
     });
 
     await roomService.reorderPlaylist(roomId);
 
-    return response
+    return response;
   };
-
 }
