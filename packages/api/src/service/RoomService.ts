@@ -36,7 +36,12 @@ export class RoomService extends ServiceWithContext {
   };
 
   byId = async (pin: string) => {
-    return this.db.room.findUniqueOrThrow({ where: { pin } });
+    return this.db.room.findUniqueOrThrow({
+      where: { pin },
+      include: {
+        by: { select: { email: true } },
+      },
+    });
   };
 
   reorderPlaylist = async (pin: string) => {
