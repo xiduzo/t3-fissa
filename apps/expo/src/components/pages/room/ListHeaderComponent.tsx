@@ -31,7 +31,7 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
       <View className="mb-2 mt-7 flex-row items-center justify-between">
         <Typography variant="h2">Queue</Typography>
         <Typography variant="bodyM" dimmed>
-          {tracks.length}
+          {tracks.length - 2}
         </Typography>
       </View>
     </>
