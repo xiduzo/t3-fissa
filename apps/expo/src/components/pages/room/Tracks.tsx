@@ -4,6 +4,7 @@ import { useTracks } from "@fissa/utils";
 
 import { useGetRoom, useGetTracks, useGetVotes } from "../../../hooks";
 import { Divider, Popover, TrackList, TrackListItem } from "../../shared";
+import { Badge } from "../../shared/Badge";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
@@ -52,7 +53,16 @@ export const RoomTracks: FC<{ pin: string }> = ({ pin }) => {
         visible={!!selectedTrack}
         onRequestClose={() => setSelectedTrack(null)}
       >
-        <TrackListItem inverted track={selectedTrack!} hasBorder />
+        {selectedTrack && (
+          <TrackListItem
+            inverted
+            track={selectedTrack}
+            subtitlePrefix={
+              <Badge inverted amount={getTrackVotes(selectedTrack)} />
+            }
+            hasBorder
+          />
+        )}
         <Divider />
         <VoteActions
           track={selectedTrack!}
