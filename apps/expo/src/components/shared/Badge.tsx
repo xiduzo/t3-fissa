@@ -39,7 +39,7 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
 
   return (
     <Animated.View
-      className="my-0.5 mr-1 flex justify-center rounded-sm px-1"
+      className="my-0.5 justify-center rounded-sm px-1"
       style={{ backgroundColor, transform: [{ scale }] }}
     >
       <Typography

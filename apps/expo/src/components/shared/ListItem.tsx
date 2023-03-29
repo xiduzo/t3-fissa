@@ -91,7 +91,7 @@ export const ListItem: FC<Props> = ({
           >
             {title}
           </Typography>
-          <View className="flex-row">
+          <View className={subtitleStyle({ hasPrefix: !!subtitlePrefix })}>
             {subtitlePrefix}
             {subtitle && (
               <Typography
@@ -136,6 +136,14 @@ const container = cva("items-center flex-row my-3 max-w-full", {
     },
     inverted: {
       true: "bg-white",
+    },
+  },
+});
+
+const subtitleStyle = cva("flex-row space-x-2", {
+  variants: {
+    hasPrefix: {
+      true: "max-w-[90%]",
     },
   },
 });
