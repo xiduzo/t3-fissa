@@ -19,6 +19,10 @@ export const voteRouter = createTRPCRouter({
     const service = new VoteService(ctx);
     return service.getVotes(input.roomId, input.trackId);
   }),
+  byRoom: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
+    const service = new VoteService(ctx);
+    return service.getVotesByRoom(input);
+  }),
   byTrackFromUser: protectedProcedure.input(vote).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
     return service.getVoteFromUser(input.roomId, input.trackId);

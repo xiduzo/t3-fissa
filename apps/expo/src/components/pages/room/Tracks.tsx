@@ -1,25 +1,30 @@
-import { useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { useSearchParams } from "expo-router";
 import { useTracks } from "@fissa/utils";
 
-import { useGetRoom, useGetTracks } from "../../../hooks";
+import { useGetRoom, useGetTracks, useGetVotes } from "../../../hooks";
 import { Divider, Popover, TrackList, TrackListItem } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
 import { VoteActions } from "./VoteActions";
 
-export const RoomTracks = () => {
-  const { pin } = useSearchParams();
+export const RoomTracks: FC<{ pin: string }> = ({ pin }) => {
+  const { data, isInitialLoading } = useGetTracks(pin);
+  const { data: room } = useGetRoom(pin);
+  const { data: votes } = useGetVotes(pin);
 
-  const { data, isInitialLoading } = useGetTracks(pin!);
-  const { data: room } = useGetRoom(pin!);
   const tracks = useTracks(data?.map(({ trackId }) => trackId));
 
   const [selectedTrack, setSelectedTrack] =
     useState<SpotifyApi.TrackObjectFull | null>(null);
 
   const isPlaying = (room?.currentIndex ?? -1) >= 0;
+
+  const getTrackVotes = useCallback(
+    (track: SpotifyApi.TrackObjectFull) => votes?.get(track.id) ?? 0,
+    [votes],
+  );
 
   return (
     <>
@@ -29,6 +34,7 @@ export const RoomTracks = () => {
             ? tracks.slice((room?.currentIndex ?? 0) + 1, tracks.length)
             : []
         }
+        getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         ListHeaderComponent={<ListHeaderComponent tracks={tracks} />}
         ListEmptyComponent={

@@ -14,7 +14,9 @@ export const TrackListItem: FC<Props> = memo(
     );
   },
   (prev, next) =>
-    prev.track.id === next.track.id && prev.selected === next.selected,
+    prev.track.id === next.track.id &&
+    prev.selected === next.selected &&
+    prev.subtitlePrefix === next.subtitlePrefix,
 );
 
 interface Props extends Omit<ListItemProps, "title" | "subtitle" | "imageUri"> {

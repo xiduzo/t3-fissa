@@ -1,14 +1,16 @@
 import { FC, useCallback } from "react";
 import { useSearchParams } from "expo-router";
 
-import { useCreateVote } from "../../../hooks";
+import { useCreateVote, useGetVoteFromUser } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
-import { Action, Button, Divider, Typography } from "../../shared";
+import { Action, Button } from "../../shared";
 
 export const VoteActions: FC<Props> = ({ track, onPress }) => {
   const { pin } = useSearchParams();
   const { user, promptAsync } = useAuth();
+
+  const { data } = useGetVoteFromUser(pin!, track.id, user);
 
   const { mutateAsync, isLoading } = useCreateVote(pin!, track.id, {
     onSuccess: () => {
@@ -38,7 +40,8 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
       <Action
         onPress={handleVote("UP")}
         inverted
-        disabled={isLoading || !user}
+        active={data?.vote === "UP"}
+        disabled={isLoading || !user || data?.vote === "UP"}
         icon="arrow-up"
         title="Up-vote track"
         subtitle="It might move up in the queue"
@@ -47,7 +50,8 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
       <Action
         onPress={handleVote("DOWN")}
         inverted
-        disabled={isLoading || !user}
+        active={data?.vote === "DOWN"}
+        disabled={isLoading || !user || data?.vote === "DOWN"}
         icon="arrow-down"
         title="Down-vote track"
         subtitle="It might move down in the queue"

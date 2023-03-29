@@ -1,4 +1,3 @@
-import { VOTE } from "@fissa/db";
 import { MutationCallbacks } from "@fissa/utils";
 
 import { api } from "../utils";

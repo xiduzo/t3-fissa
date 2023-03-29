@@ -1,12 +1,14 @@
-import { FC } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { VirtualizedList, VirtualizedListProps } from "react-native";
 
+import { Badge } from "./Badge";
 import { TrackListItem } from "./TrackListItem";
 
 export const TrackList: FC<Props> = ({
   tracks,
   onTrackPress,
   selectedTracks,
+  getTrackVotes,
   ...props
 }) => {
   return (
@@ -20,6 +22,9 @@ export const TrackList: FC<Props> = ({
         <TrackListItem
           key={item.id}
           track={item}
+          subtitlePrefix={
+            <TrackVotes getTrackVotes={getTrackVotes} track={item} />
+          }
           onPress={() => onTrackPress?.(item)}
           selected={selectedTracks?.includes(item.id)}
         />
@@ -30,17 +35,35 @@ export const TrackList: FC<Props> = ({
   );
 };
 
+export type TrackListProps = Props;
+
+const TrackVotes: FC<
+  Pick<Props, "getTrackVotes"> & { track: SpotifyApi.TrackObjectFull }
+> = ({ getTrackVotes, track }) => {
+  const [votes, setVotes] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!getTrackVotes) return;
+    setVotes(getTrackVotes(track));
+  }, [getTrackVotes, track]);
+
+  if (votes === null) return null;
+
+  return <Badge amount={votes} />;
+};
+
 interface Props
   extends Omit<
     VirtualizedListProps<SpotifyApi.TrackObjectFull>,
     | "getItemCount"
     | "initialNumToRender"
-    | "renderItem"
     | "getItem"
     | "keyExtractor"
+    | "renderItem"
   > {
   tracks: SpotifyApi.TrackObjectFull[];
   selectedTracks?: string[];
+  getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number;
   onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
 }
 
