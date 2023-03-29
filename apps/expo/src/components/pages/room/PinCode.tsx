@@ -36,7 +36,7 @@ export const PinCode = () => {
         icon="information-circle-outline"
       />
       <Popover visible={showRoomPopover} onRequestClose={toggleRoomPopover}>
-        {user && (
+        {!user && (
           <Button
             inverted
             variant="text"
