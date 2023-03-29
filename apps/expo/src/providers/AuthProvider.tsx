@@ -96,8 +96,9 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [response, request, setUser]);
 
   useEffect(() => {
+    if (user) return;
     readTokenFromStorage();
-  }, [readTokenFromStorage]);
+  }, [readTokenFromStorage, user]);
 
   return (
     <SpotifyContext.Provider
