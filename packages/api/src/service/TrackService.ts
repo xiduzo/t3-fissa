@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-import { addTracks } from "../router/track";
+import { Z_TRACKS } from "../router/constants";
 import { ServiceWithContext } from "../utils/context";
-import { SpotifyService } from "./SpotifyService";
 
 export class TrackService extends ServiceWithContext {
   byRoomId = async (roomId: string) => {
@@ -12,9 +11,7 @@ export class TrackService extends ServiceWithContext {
     });
   };
 
-  addTracks = async (input: z.infer<typeof addTracks>) => {
-    const { roomId, tracks } = input;
-
+  addTracks = async (roomId: string, tracks: z.infer<typeof Z_TRACKS>) => {
     const totalTracks = await this.db.track.count({ where: { roomId } });
 
     // TODO: update tracks which are already in the room

@@ -22,7 +22,7 @@ export const authRouter = createTRPCRouter({
     .input(getAccessTokenSchema)
     .mutation(({ ctx, input }) => {
       const service = new AuthService(ctx);
-      return service.getAccessToken(input);
+      return service.getAccessToken(input.code, input.redirectUri);
     }),
   refreshToken: publicProcedure
     .input(refreshAccessTokenSchema)

@@ -2,51 +2,37 @@ import { Room } from "@fissa/db";
 import { randomize } from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
-import { TrackService } from "./TrackService";
 
 export class RoomService extends ServiceWithContext {
   create = async (tracks: { trackId: string; durationMs: number }[]) => {
-    let pin: string | undefined = undefined;
+    let room: Room | undefined = undefined;
     let tries = 0;
     const blockedPins = [...noNoWords];
 
     do {
-      const _pin = this.generatePin();
+      const pin = this.generatePin();
 
-      if (blockedPins.includes(_pin.toLowerCase())) continue;
+      if (blockedPins.includes(pin.toLowerCase())) continue;
 
       try {
-        await this.db.room.create({
+        room = await this.db.room.create({
           data: {
-            pin: _pin,
+            pin,
             by: { connect: { id: this.ctx.session?.user.id } },
-            // TODO: who does this throw an error
-            // tracks: {
-            //   createMany: {
-            //     data: tracks.map((track, index) => ({
-            //       ...track,
-            //       roomId: _pin,
-            //       index,
-            //     })),
-            //   },
-            // },
+            tracks: {
+              createMany: {
+                data: tracks.map((track, index) => ({ ...track, index })),
+              },
+            },
           },
         });
       } catch (e) {
         tries++;
-        blockedPins.push(_pin);
+        blockedPins.push(pin);
       }
+    } while (!room && tries < 50);
 
-      pin = _pin;
-    } while (!pin && tries < 50);
-
-    const trackService = new TrackService(this.ctx);
-    await trackService.addTracks({
-      roomId: pin!,
-      tracks,
-    });
-
-    return this.byId(pin!);
+    return this.byId(room?.pin!);
   };
 
   byId = async (pin: string) => {

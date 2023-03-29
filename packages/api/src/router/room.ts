@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import { RoomService } from "../service/RoomService";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";

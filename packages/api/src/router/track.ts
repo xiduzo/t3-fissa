@@ -4,7 +4,7 @@ import { TrackService } from "../service/TrackService";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
-export const addTracks = z.object({
+const addTracks = z.object({
   roomId: Z_PIN,
   tracks: Z_TRACKS,
 });
@@ -17,6 +17,6 @@ export const trackRouter = createTRPCRouter({
 
   addTracks: publicProcedure.input(addTracks).mutation(({ ctx, input }) => {
     const service = new TrackService(ctx);
-    return service.addTracks(input);
+    return service.addTracks(input.roomId, input.tracks);
   }),
 });

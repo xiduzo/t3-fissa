@@ -1,15 +1,10 @@
-import { z } from "zod";
-import { Session, User } from "@fissa/db";
 import { addMonths, addSeconds } from "@fissa/utils";
 
-import { getAccessTokenSchema } from "../router/auth";
 import { ServiceWithContext } from "../utils/context";
 import { SpotifyService } from "./SpotifyService";
 
 export class AuthService extends ServiceWithContext {
-  getAccessToken = async (input: z.infer<typeof getAccessTokenSchema>) => {
-    const { code, redirectUri } = input;
-
+  getAccessToken = async (code: string, redirectUri: string) => {
     const service = new SpotifyService();
     const tokens = await service.codeGrant(code, redirectUri);
 
@@ -18,10 +13,7 @@ export class AuthService extends ServiceWithContext {
     let existingUser = await this.db.user.findUnique({
       where: { email: spotifyUser.body.email },
       include: {
-        sessions: {
-          take: 1,
-          orderBy: { expires: "desc" },
-        },
+        sessions: { take: 1, orderBy: { expires: "desc" } },
       },
     });
 
@@ -30,10 +22,7 @@ export class AuthService extends ServiceWithContext {
       existingUser = await this.db.user.findUniqueOrThrow({
         where: { email: spotifyUser.body.email },
         include: {
-          sessions: {
-            take: 1,
-            orderBy: { expires: "desc" },
-          },
+          sessions: { take: 1, orderBy: { expires: "desc" } },
         },
       });
     }
@@ -55,10 +44,7 @@ export class AuthService extends ServiceWithContext {
     const sessionToken = await this.db.user.findUniqueOrThrow({
       where: { email: spotifyUser.body.email },
       include: {
-        sessions: {
-          take: 1,
-          orderBy: { expires: "desc" },
-        },
+        sessions: { take: 1, orderBy: { expires: "desc" } },
       },
     });
 

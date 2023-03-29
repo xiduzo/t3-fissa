@@ -1,16 +1,34 @@
 import * as React from "react";
-import { FC, PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Platform } from "react-native";
-import { AuthRequestConfig, AuthRequestPromptOptions, AuthSessionResult, DiscoveryDocument, ResponseType, makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import {
+  AuthRequestConfig,
+  AuthRequestPromptOptions,
+  AuthSessionResult,
+  DiscoveryDocument,
+  ResponseType,
+  makeRedirectUri,
+  useAuthRequest,
+} from "expo-auth-session";
 import Constants from "expo-constants";
 import { SpotifyWebApi } from "@fissa/utils";
 
-
-
-import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useEncryptedStorage,
+} from "../hooks/useEncryptedStorage";
 import { toast } from "../utils";
 import { api } from "../utils/api";
-
 
 const SpotifyContext = createContext({
   promptAsync: (options?: AuthRequestPromptOptions | undefined) => {
@@ -57,18 +75,19 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     if (response?.type !== "success") return;
 
     toast.success({
-      message: "Logged in successfully, setting account details.",
+      message: "Setting account details",
+      duration: 30 * 1000,
     });
+
     const { code } = response.params;
-    if (!code)
-      return toast.warn({
-        message: `No code found ${JSON.stringify(response.params)}`,
-      });
+    if (!code) return toast.error({ message: `Something went wrong...` });
 
     const { access_token, refresh_token, session_token } = await mutateAsync({
       code,
       redirectUri: request!.redirectUri,
     });
+
+    toast.hide();
 
     spotify.current.setAccessToken(access_token);
     spotify.current.getMe().then(setUser);

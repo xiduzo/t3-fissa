@@ -3,13 +3,10 @@ import { SafeAreaView, View } from "react-native";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-
-
 import { Button, Typography } from "../../src/components";
 import { useCreateRoom } from "../../src/components/pages/room/hooks/useCreateRoom";
 import { useSpotify } from "../../src/providers";
 import { toast } from "../../src/utils";
-
 
 const Host = () => {
   const spotify = useSpotify();
@@ -47,7 +44,7 @@ const Host = () => {
             linkTo="/host/fromPlaylist"
           />
           <Button
-            title="Curate some tracks"
+            title="Select some tracks"
             variant="outlined"
             linkTo="/host/fromTracks"
           />
