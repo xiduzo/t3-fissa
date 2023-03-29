@@ -3,14 +3,7 @@ import { useSearchParams } from "expo-router";
 import { useTracks } from "@fissa/utils";
 
 import { useGetRoom, useGetTracks } from "../../../hooks";
-import {
-  Action,
-  BottomDrawer,
-  Divider,
-  Popover,
-  TrackList,
-  TrackListItem,
-} from "../../shared";
+import { Divider, Popover, TrackList, TrackListItem } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
@@ -26,19 +19,21 @@ export const RoomTracks = () => {
   const [selectedTrack, setSelectedTrack] =
     useState<SpotifyApi.TrackObjectFull | null>(null);
 
-  if (!data) return null;
-
   const isPlaying = (room?.currentIndex ?? -1) >= 0;
 
   return (
     <>
       <TrackList
-        tracks={isPlaying ? tracks : []}
+        tracks={
+          isPlaying
+            ? tracks.slice((room?.currentIndex ?? 0) + 1, tracks.length)
+            : []
+        }
         onTrackPress={setSelectedTrack}
         ListHeaderComponent={<ListHeaderComponent tracks={tracks} />}
         ListEmptyComponent={
           <ListEmptyComponent
-            isLoading={isInitialLoading || tracks.length !== data.length}
+            isLoading={isInitialLoading || tracks.length !== data?.length}
           />
         }
         ListFooterComponent={

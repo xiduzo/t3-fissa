@@ -3,7 +3,6 @@ import {
   ButtonProps,
   GestureResponderEvent,
   TouchableHighlight,
-  TouchableOpacityBase,
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,6 +18,8 @@ export const Button: FC<Props> = ({
   inverted,
   variant,
   icon,
+  size,
+  dimmed,
   ...props
 }) => {
   const { push } = useRouter();
@@ -54,15 +55,18 @@ export const Button: FC<Props> = ({
       disabled={props.disabled}
       onPress={handlePress}
       className={`rounded-lg ${props.className}`}
+      underlayColor={theme[Boolean(inverted) ? "900" : "500"] + "10"}
     >
       <View
         className={button({
           inverted,
           disabled: !!props.disabled,
           variant,
+          size,
+          dimmed,
         })}
         style={{
-          borderColor: theme[!!inverted ? "900" : "500"],
+          borderColor: theme[Boolean(inverted) ? "900" : "500"],
           backgroundColor,
         }}
       >
@@ -97,7 +101,7 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
 
   return (
     <TouchableHighlight
-      className="absolute bottom-10 right-8 z-40 flex h-14 w-14 rounded-2xl bg-black shadow-xl"
+      className="absolute bottom-10 right-8 z-40 flex h-14 w-14 rounded-2xl shadow-xl"
       {...props}
       onPress={handlePress}
     >
@@ -123,8 +127,8 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
 const button = cva(`flex flex-row items-center border-2 rounded-lg`, {
   variants: {
     variant: {
-      outlined: "py-5",
-      contained: "py-5",
+      outlined: "",
+      contained: "",
       text: "border-transparent",
     },
     inverted: {
@@ -134,10 +138,17 @@ const button = cva(`flex flex-row items-center border-2 rounded-lg`, {
     disabled: {
       true: "opacity-50",
     },
+    size: {
+      sm: "",
+      base: "py-5",
+    },
+    dimmed: {
+      true: "opacity-60",
+    },
   },
   defaultVariants: {
     variant: "contained",
     inverted: false,
+    size: "base",
   },
-  compoundVariants: [],
 });

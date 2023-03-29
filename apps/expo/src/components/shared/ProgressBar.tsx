@@ -2,13 +2,17 @@ import { FC, useEffect, useState } from "react";
 import { View, ViewProps } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
-import { cva, differenceInMilliseconds } from "@fissa/utils";
+import { VariantProps, cva, differenceInMilliseconds } from "@fissa/utils";
 
-export const ProgressBar: FC<Props> = ({ expectedEndTime, track, enabled }) => {
+export const ProgressBar: FC<Props> = ({
+  expectedEndTime,
+  track,
+  disabled,
+}) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!!disabled) return;
 
     const updateFrequency = 1000;
     const interval = setInterval(() => {
@@ -22,11 +26,11 @@ export const ProgressBar: FC<Props> = ({ expectedEndTime, track, enabled }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [track.duration_ms, expectedEndTime, enabled]);
+  }, [track.duration_ms, expectedEndTime, disabled]);
 
   return (
     <View
-      className={progressBar({ enabled: !!enabled || !progress })}
+      className={progressBar({ disabled: Boolean(disabled) || !progress })}
       style={{ backgroundColor: theme["100"] + "20" }}
     >
       <LinearGradient
@@ -40,14 +44,13 @@ export const ProgressBar: FC<Props> = ({ expectedEndTime, track, enabled }) => {
 
 const progressBar = cva("flex-row overflow-hidden rounded-md", {
   variants: {
-    enabled: {
-      false: "opacity-60",
+    disabled: {
+      true: "opacity-60",
     },
   },
 });
 
-interface Props extends ViewProps {
+interface Props extends ViewProps, VariantProps<typeof progressBar> {
   expectedEndTime: Date;
-  enabled?: boolean;
   track: SpotifyApi.TrackObjectFull;
 }

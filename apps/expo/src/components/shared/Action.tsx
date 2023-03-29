@@ -49,7 +49,7 @@ export const Action: FC<Props> = ({
             <Typography
               centered={layout === "column"}
               variant="bodyM"
-              className="opacity-60"
+              dimmed
               inverted={inverted}
             >
               {subtitle}

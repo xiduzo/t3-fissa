@@ -64,7 +64,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     try {
       const { access_token, session_token } = await refresh(refreshToken);
       spotify.current.setAccessToken(access_token);
-      spotify.current.getMe().then(setUser);
+      // spotify.current.getMe().then(setUser);
       await saveSessionToken(session_token);
     } catch (e) {
       console.error(e);

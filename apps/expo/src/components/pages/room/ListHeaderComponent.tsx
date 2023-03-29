@@ -4,7 +4,6 @@ import { useSearchParams } from "expo-router";
 
 import { useGetRoom } from "../../../hooks/";
 import { ProgressBar, TrackListItem, Typography } from "../../shared";
-import { PinCode } from "./PinCode";
 
 export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
   const { pin } = useSearchParams();
@@ -24,7 +23,7 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
             <ProgressBar
               track={track}
               expectedEndTime={room.expectedEndTime}
-              enabled={room.currentIndex >= 0}
+              disabled={room.currentIndex < 0}
             />
           }
         />
