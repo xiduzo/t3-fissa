@@ -15,6 +15,7 @@ export const useCreateVote = (
     ...callbacks,
     onSuccess: async (...props) => {
       await queryClient.vote.invalidate();
+      await queryClient.room.byId.invalidate();
       callbacks.onSuccess?.(...props);
     },
   });

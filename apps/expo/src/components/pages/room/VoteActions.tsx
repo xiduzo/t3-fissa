@@ -13,8 +13,11 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
   const { data } = useGetVoteFromUser(pin!, track.id, user);
 
   const { mutateAsync, isLoading } = useCreateVote(pin!, track.id, {
-    onSuccess: () => {
-      toast.success({ message: `Voted for ${track.name}` });
+    onSuccess: ({ vote }) => {
+      toast.success({
+        message: `Voted for ${track.name}`,
+        icon: vote === "UP" ? "👆" : "👇",
+      });
       onPress();
     },
   });

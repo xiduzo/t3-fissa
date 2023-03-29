@@ -18,9 +18,10 @@ export const TrackList: FC<Props> = ({
       data={tracks}
       getItemCount={() => tracks.length}
       initialNumToRender={5}
-      renderItem={({ item }) => (
+      renderItem={({ item, index }) => (
         <TrackListItem
           key={item.id}
+          index={index}
           track={item}
           subtitlePrefix={
             <TrackVotes getTrackVotes={getTrackVotes} track={item} />

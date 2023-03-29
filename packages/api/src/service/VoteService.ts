@@ -1,6 +1,7 @@
 import { VOTE } from "@fissa/db";
 
 import { ServiceWithContext } from "../utils/context";
+import { RoomService } from "./RoomService";
 
 export class VoteService extends ServiceWithContext {
   getVotes = async (roomId: string, trackId: string) => {
@@ -29,8 +30,10 @@ export class VoteService extends ServiceWithContext {
   };
 
   createVote = async (roomId: string, trackId: string, vote: VOTE) => {
+    const roomService = new RoomService(this.ctx);
+
     // TODO: re-shuffle tracks based on votes
-    return this.db.$transaction(async (transaction) => {
+    const response = await this.db.$transaction(async (transaction) => {
       await this.db.vote.deleteMany({
         where: { roomId, trackId, userId: this.ctx.session!.user.id! },
       });
@@ -44,5 +47,10 @@ export class VoteService extends ServiceWithContext {
         },
       });
     });
+
+    await roomService.reorderPlaylist(roomId);
+
+    return response
   };
+
 }

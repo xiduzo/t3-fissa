@@ -15,7 +15,7 @@ export class TrackService extends ServiceWithContext {
     const totalTracks = await this.db.track.count({ where: { roomId } });
 
     // TODO: update tracks which are already in the room
-    // and don't add them again
+    // don't add them again, but give an upvote
     return this.db.track.createMany({
       data: tracks.map((track, index) => ({
         ...track,
