@@ -84,10 +84,12 @@ export class RoomService extends ServiceWithContext {
           });
         });
 
-        await transaction.room.update({
-          where: { pin },
-          data: { currentIndex: room.currentIndex - unshiftCurrentIndex },
-        });
+        if (room.currentIndex !== room.currentIndex - unshiftCurrentIndex) {
+          await transaction.room.update({
+            where: { pin },
+            data: { currentIndex: room.currentIndex - unshiftCurrentIndex },
+          });
+        }
 
         await Promise.all(promises);
       });
