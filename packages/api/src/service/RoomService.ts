@@ -1,4 +1,4 @@
-import { Room, VOTE } from "@fissa/db";
+import { Room } from "@fissa/db";
 import { randomize } from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
@@ -51,22 +51,19 @@ export class RoomService extends ServiceWithContext {
       select: {
         trackId: true,
         index: true,
-        votes: { select: { vote: true } },
+        score: true,
       },
       orderBy: { index: "asc" },
     });
 
     const sorted = [...tracks]
       .sort((a, b) => {
-        const aTotal = a.votes.reduce(this.countVotes, 0);
-        const bTotal = b.votes.reduce(this.countVotes, 0);
-
-        return bTotal - aTotal;
+        return b.score - a.score;
       })
       .filter((track) => {
         if (track.index > room.currentIndex) return true;
 
-        return track.votes.length > 0;
+        return track.score !== 0;
       });
 
     const unshiftCurrentIndex = sorted.filter(
@@ -123,9 +120,6 @@ export class RoomService extends ServiceWithContext {
   };
 
   private generatePin = () => randomize("A", 4);
-
-  private countVotes = (acc: number, { vote }: { vote: VOTE }) =>
-    acc + (vote === "UP" ? 1 : -1);
 }
 
 const noNoWords = [

@@ -21,9 +21,9 @@ const RootLayout = () => {
               }}
             />
             <StatusBar />
-            <ToastContainer />
           </SafeAreaProvider>
         </SpotifyProvider>
+        <ToastContainer />
       </NotificationProvider>
     </TRPCProvider>
   );

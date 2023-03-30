@@ -11,9 +11,9 @@ datasource db {
 }
 
 model Room {
-    pin     String @id @unique
-    currentIndex Int @map("current_index") @default(0)
-    lastPlayedIndex Int @map("last_played_index") @default(0)
+    pin     String @id @unique @db.VarChar(4)
+    currentIndex Int @db.SmallInt @map("current_index") @default(0)
+    lastPlayedIndex Int @db.SmallInt @map("last_played_index") @default(0)
     expectedEndTime DateTime @map("expected_end_time") @default(now())
 
     by User @relation(fields: [userId], references: [id])
@@ -25,34 +25,30 @@ model Room {
 }
 
 model Track {
-    index  Int
+    index  Int @db.SmallInt
     trackId String @map("track_id") @db.VarChar(22)
     durationMs Int @map("duration_ms")
 
     room Room @relation(fields: [pin], references: [pin], onDelete: Cascade)
-    pin String
+    pin String @db.VarChar(4)
     
     votes Vote[]
+    score Int @db.SmallInt @default(0)
 
     @@id([pin, trackId])
     @@unique([pin, index])
     @@map("tracks")
 }
 
-enum VOTE {
-    UP
-    DOWN
-}
-
 model Vote {
-    vote VOTE
+    vote Int @db.SmallInt
 
     by User @relation(fields: [userId], references: [id])
     userId String @map("user_id")
 
     track Track @relation(fields: [trackId, pin], references: [trackId, pin], onDelete: Cascade)
-    pin String @map("room_id")
-    trackId String @map("track_id")
+    pin String @map("room_id") @db.VarChar(4)
+    trackId String @map("track_id") @db.VarChar(22)
 
     @@id([trackId, userId, pin])
     @@map("votes")

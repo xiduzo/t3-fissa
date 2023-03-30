@@ -1,10 +1,7 @@
 import { z } from "zod";
-import { VOTE } from "@fissa/db";
 
 import { Z_TRACKS } from "../router/constants";
 import { ServiceWithContext } from "../utils/context";
-import { RoomService } from "./RoomService";
-import { VoteService } from "./VoteService";
 
 export class TrackService extends ServiceWithContext {
   byPin = async (pin: string) => {
@@ -15,9 +12,6 @@ export class TrackService extends ServiceWithContext {
   };
 
   addTracks = async (pin: string, tracks: z.infer<typeof Z_TRACKS>) => {
-    const roomService = new RoomService(this.ctx);
-    const voteService = new VoteService(this.ctx);
-
     const totalTracks = await this.db.track.count({ where: { pin } });
 
     const roomTracks = await this.db.track.findMany({
@@ -38,11 +32,6 @@ export class TrackService extends ServiceWithContext {
       })),
     });
 
-    const promises = existingTracks.map((trackId) =>
-      voteService.createVote(pin, trackId, VOTE.UP),
-    );
-    await Promise.all(promises);
-
-    await roomService.reorderPlaylist(pin);
+    return existingTracks;
   };
 }

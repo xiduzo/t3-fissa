@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { VOTE } from "@fissa/db";
 
+import { RoomService } from "../service/RoomService";
 import { VoteService } from "../service/VoteService";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { Z_PIN, Z_TRACK_ID } from "./constants";
@@ -11,7 +11,11 @@ const vote = z.object({
 });
 
 const createVote = vote.extend({
-  vote: z.nativeEnum(VOTE),
+  vote: z
+    .number()
+    .min(-1)
+    .max(1)
+    .refine((vote) => vote !== 0),
 });
 
 export const voteRouter = createTRPCRouter({
@@ -27,8 +31,20 @@ export const voteRouter = createTRPCRouter({
     const service = new VoteService(ctx);
     return service.getVoteFromUser(input.pin, input.trackId);
   }),
-  create: protectedProcedure.input(createVote).mutation(({ ctx, input }) => {
-    const service = new VoteService(ctx);
-    return service.createVote(input.pin, input.trackId, input.vote);
-  }),
+  create: protectedProcedure
+    .input(createVote)
+    .mutation(async ({ ctx, input }) => {
+      const service = new VoteService(ctx);
+      const roomService = new RoomService(ctx);
+
+      const vote = await service.createVote(
+        input.pin,
+        input.trackId,
+        input.vote,
+      );
+
+      await roomService.reorderPlaylist(input.pin);
+
+      return vote;
+    }),
 });

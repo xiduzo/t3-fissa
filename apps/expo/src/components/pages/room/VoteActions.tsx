@@ -16,14 +16,14 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
     onSuccess: ({ vote }) => {
       toast.success({
         message: track.name,
-        icon: vote === "UP" ? "👆" : "👇",
+        icon: vote ? "👆" : "👇",
       });
       onPress();
     },
   });
 
   const handleVote = useCallback(
-    (vote: "UP" | "DOWN") => async () => {
+    (vote: number) => async () => {
       await mutateAsync(vote);
     },
     [],
@@ -41,20 +41,20 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
         />
       )}
       <Action
-        onPress={handleVote("UP")}
+        onPress={handleVote(1)}
         inverted
-        active={data?.vote === "UP"}
-        disabled={isLoading || !user || data?.vote === "UP"}
+        active={data?.vote === 1}
+        disabled={isLoading || !user || data?.vote === 1}
         icon="arrow-up"
         title="Up-vote track"
         subtitle="It might move up in the queue"
       />
 
       <Action
-        onPress={handleVote("DOWN")}
+        onPress={handleVote(-1)}
         inverted
-        active={data?.vote === "DOWN"}
-        disabled={isLoading || !user || data?.vote === "DOWN"}
+        active={data?.vote === -1}
+        disabled={isLoading || !user || data?.vote === -1}
         icon="arrow-down"
         title="Down-vote track"
         subtitle="It might move down in the queue"

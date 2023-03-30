@@ -22,9 +22,8 @@ export const useCreateVote = (
 
   return {
     // TODO get vote type from BE
-    mutate: async (vote: "UP" | "DOWN") => mutate({ pin, trackId, vote }),
-    mutateAsync: async (vote: "UP" | "DOWN") =>
-      mutateAsync({ pin, trackId, vote }),
+    mutate: async (vote: number) => mutate({ pin, trackId, vote }),
+    mutateAsync: async (vote: number) => mutateAsync({ pin, trackId, vote }),
     ...rest,
   };
 };
