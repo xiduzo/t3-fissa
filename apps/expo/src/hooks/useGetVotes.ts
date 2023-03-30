@@ -1,8 +1,8 @@
 import { api } from "../utils";
 
-export const useGetVotes = (roomId: string) => {
-  return api.vote.byRoom.useQuery(roomId, {
-    enabled: !!roomId,
+export const useGetVotes = (pin: string) => {
+  return api.vote.byRoom.useQuery(pin, {
+    enabled: !!pin,
     refetchInterval: 5000,
   });
 };

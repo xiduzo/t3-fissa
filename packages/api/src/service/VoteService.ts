@@ -4,15 +4,15 @@ import { ServiceWithContext } from "../utils/context";
 import { RoomService } from "./RoomService";
 
 export class VoteService extends ServiceWithContext {
-  getVotes = async (roomId: string, trackId: string) => {
+  getVotes = async (pin: string, trackId: string) => {
     return this.db.vote.findMany({
-      where: { roomId, trackId },
+      where: { pin, trackId },
     });
   };
 
-  getVotesByRoom = async (roomId: string) => {
+  getVotesByRoom = async (pin: string) => {
     const votes = await this.db.vote.findMany({
-      where: { roomId },
+      where: { pin },
     });
 
     return votes.reduce((acc, { trackId, vote }) => {
@@ -23,24 +23,24 @@ export class VoteService extends ServiceWithContext {
     }, new Map<string, number>());
   };
 
-  getVoteFromUser = async (roomId: string, trackId: string) => {
+  getVoteFromUser = async (pin: string, trackId: string) => {
     return this.db.vote.findFirstOrThrow({
-      where: { roomId, trackId, userId: this.ctx.session?.user.id },
+      where: { pin, trackId, userId: this.ctx.session?.user.id },
     });
   };
 
-  createVote = async (roomId: string, trackId: string, vote: VOTE) => {
+  createVote = async (pin: string, trackId: string, vote: VOTE) => {
     const roomService = new RoomService(this.ctx);
 
     const userId = this.ctx.session?.user.id!;
 
     const response = await this.db.vote.upsert({
-      where: { trackId_userId_roomId: { roomId, trackId, userId } },
-      create: { roomId, trackId, vote, userId },
+      where: { trackId_userId_pin: { pin, trackId, userId } },
+      create: { pin, trackId, vote, userId },
       update: { vote },
     });
 
-    await roomService.reorderPlaylist(roomId);
+    await roomService.reorderPlaylist(pin);
 
     return response;
   };

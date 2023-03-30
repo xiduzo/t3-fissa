@@ -29,13 +29,13 @@ model Track {
     trackId String @map("track_id") @db.VarChar(22)
     durationMs Int @map("duration_ms")
 
-    room Room @relation(fields: [roomId], references: [pin], onDelete: Cascade)
-    roomId String @map("room_id")
+    room Room @relation(fields: [pin], references: [pin], onDelete: Cascade)
+    pin String
     
     votes Vote[]
 
-    @@id([roomId, trackId])
-    @@unique([roomId, index])
+    @@id([pin, trackId])
+    @@unique([pin, index])
     @@map("tracks")
 }
 
@@ -50,11 +50,11 @@ model Vote {
     by User @relation(fields: [userId], references: [id])
     userId String @map("user_id")
 
-    track Track @relation(fields: [trackId, roomId], references: [trackId, roomId], onDelete: Cascade)
-    roomId String @map("room_id")
+    track Track @relation(fields: [trackId, pin], references: [trackId, pin], onDelete: Cascade)
+    pin String @map("room_id")
     trackId String @map("track_id")
 
-    @@id([trackId, userId, roomId])
+    @@id([trackId, userId, pin])
     @@map("votes")
 }
 

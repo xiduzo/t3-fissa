@@ -50,7 +50,7 @@ const Index = () => {
 export default Index;
 
 const Rejoin = () => {
-  const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastRoomId);
+  const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
   const { data: room } = api.room.byId.useQuery(value!, {
     enabled: !!value,
   });

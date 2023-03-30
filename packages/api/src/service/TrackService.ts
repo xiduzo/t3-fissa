@@ -7,21 +7,21 @@ import { RoomService } from "./RoomService";
 import { VoteService } from "./VoteService";
 
 export class TrackService extends ServiceWithContext {
-  byRoomId = async (roomId: string) => {
+  byPin = async (pin: string) => {
     return this.db.track.findMany({
-      where: { roomId },
+      where: { pin },
       orderBy: { index: "asc" },
     });
   };
 
-  addTracks = async (roomId: string, tracks: z.infer<typeof Z_TRACKS>) => {
+  addTracks = async (pin: string, tracks: z.infer<typeof Z_TRACKS>) => {
     const roomService = new RoomService(this.ctx);
     const voteService = new VoteService(this.ctx);
 
-    const totalTracks = await this.db.track.count({ where: { roomId } });
+    const totalTracks = await this.db.track.count({ where: { pin } });
 
     const roomTracks = await this.db.track.findMany({
-      where: { roomId },
+      where: { pin },
     });
 
     const existingTracks = roomTracks.map(({ trackId }) => trackId);
@@ -33,16 +33,16 @@ export class TrackService extends ServiceWithContext {
     await this.db.track.createMany({
       data: newTracks.map((track, index) => ({
         ...track,
-        roomId,
+        pin,
         index: totalTracks + index,
       })),
     });
 
     const promises = existingTracks.map((trackId) =>
-      voteService.createVote(roomId, trackId, VOTE.UP),
+      voteService.createVote(pin, trackId, VOTE.UP),
     );
     await Promise.all(promises);
 
-    await roomService.reorderPlaylist(roomId);
+    await roomService.reorderPlaylist(pin);
   };
 }

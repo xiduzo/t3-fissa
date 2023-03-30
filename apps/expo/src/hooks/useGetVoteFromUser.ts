@@ -1,12 +1,12 @@
 import { api } from "../utils";
 
 export const useGetVoteFromUser = (
-  roomId: string,
+  pin: string,
   trackId: string,
   user?: unknown,
 ) => {
   return api.vote.byTrackFromUser.useQuery(
-    { roomId, trackId },
+    { pin, trackId },
     {
       enabled: !!user,
     },

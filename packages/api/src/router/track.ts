@@ -5,18 +5,18 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
 const addTracks = z.object({
-  roomId: Z_PIN,
+  pin: Z_PIN,
   tracks: Z_TRACKS,
 });
 
 export const trackRouter = createTRPCRouter({
-  byRoomId: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
+  byPin: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new TrackService(ctx);
-    return service.byRoomId(input);
+    return service.byPin(input);
   }),
 
   addTracks: publicProcedure.input(addTracks).mutation(({ ctx, input }) => {
     const service = new TrackService(ctx);
-    return service.addTracks(input.roomId, input.tracks);
+    return service.addTracks(input.pin, input.tracks);
   }),
 });

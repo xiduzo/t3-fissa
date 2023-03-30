@@ -42,5 +42,5 @@ export const useEncryptedStorage = (key: string) => {
 export const ENCRYPTED_STORAGE_KEYS = {
   refreshToken: "refreshToken",
   sessionToken: "sessionToken",
-  lastRoomId: "lastRoomId",
+  lastPin: "lastPin",
 };

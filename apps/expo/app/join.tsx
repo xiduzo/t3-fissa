@@ -21,7 +21,7 @@ import { api } from "../src/utils/api";
 const Join = () => {
   const [pin, setPin] = useState(["", "", "", ""]);
   const { replace } = useRouter();
-  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastRoomId);
+  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
 
   api.room.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),

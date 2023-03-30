@@ -5,7 +5,7 @@ import { api } from "../utils";
 const endpoint = api.track.addTracks.useMutation;
 
 export const useAddTracks = (
-  roomId: string,
+  pin: string,
   callbacks: MutationCallbacks<typeof endpoint> = {},
 ) => {
   const queryClient = api.useContext();
@@ -13,7 +13,7 @@ export const useAddTracks = (
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
     onSuccess: async (...props) => {
-      await queryClient.track.byRoomId.invalidate();
+      await queryClient.track.byPin.invalidate();
       callbacks.onSuccess?.(...props);
     },
   });
@@ -21,7 +21,7 @@ export const useAddTracks = (
   return {
     mutate: (tracks: SpotifyApi.TrackObjectFull[]) =>
       mutate({
-        roomId,
+        pin,
         tracks: tracks.map((track) => ({
           trackId: track.id,
           durationMs: track.duration_ms,
@@ -29,7 +29,7 @@ export const useAddTracks = (
       }),
     mutateAsync: (tracks: SpotifyApi.TrackObjectFull[]) =>
       mutateAsync({
-        roomId,
+        pin,
         tracks: tracks.map((track) => ({
           trackId: track.id,
           durationMs: track.duration_ms,

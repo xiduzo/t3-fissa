@@ -6,7 +6,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { Z_PIN, Z_TRACK_ID } from "./constants";
 
 const vote = z.object({
-  roomId: Z_PIN,
+  pin: Z_PIN,
   trackId: Z_TRACK_ID,
 });
 
@@ -17,7 +17,7 @@ const createVote = vote.extend({
 export const voteRouter = createTRPCRouter({
   byTrack: publicProcedure.input(vote).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
-    return service.getVotes(input.roomId, input.trackId);
+    return service.getVotes(input.pin, input.trackId);
   }),
   byRoom: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
@@ -25,10 +25,10 @@ export const voteRouter = createTRPCRouter({
   }),
   byTrackFromUser: protectedProcedure.input(vote).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
-    return service.getVoteFromUser(input.roomId, input.trackId);
+    return service.getVoteFromUser(input.pin, input.trackId);
   }),
   create: protectedProcedure.input(createVote).mutation(({ ctx, input }) => {
     const service = new VoteService(ctx);
-    return service.createVote(input.roomId, input.trackId, input.vote);
+    return service.createVote(input.pin, input.trackId, input.vote);
   }),
 });

@@ -47,7 +47,7 @@ export class RoomService extends ServiceWithContext {
   reorderPlaylist = async (pin: string) => {
     const room = await this.byId(pin);
     const tracks = await this.db.track.findMany({
-      where: { roomId: pin },
+      where: { pin },
       select: {
         trackId: true,
         index: true,
@@ -81,7 +81,7 @@ export class RoomService extends ServiceWithContext {
           if (index === updateIndexTo) return; // No need to update
 
           return {
-            where: { roomId_trackId: { roomId: pin, trackId } },
+            where: { pin_trackId: { pin, trackId } },
             data: { index: updateIndexTo },
           };
         })

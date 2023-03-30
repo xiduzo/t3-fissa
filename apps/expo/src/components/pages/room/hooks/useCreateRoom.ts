@@ -10,7 +10,7 @@ import { toast } from "../../../../utils";
 export const useCreateRoom = () => {
   const { push } = useRouter();
 
-  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastRoomId);
+  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
 
   return useBaseCreateRoom({
     onSuccess: async ({ pin }) => {
