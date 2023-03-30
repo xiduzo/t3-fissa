@@ -36,8 +36,6 @@ export class AuthService extends ServiceWithContext {
   refreshToken = async (refreshToken: string) => {
     const service = new SpotifyService();
 
-    // TODO update session token if needed
-
     const tokens = await service.refresh(refreshToken);
     const spotifyUser = await service.me(tokens.body.access_token);
 
@@ -45,6 +43,20 @@ export class AuthService extends ServiceWithContext {
       where: { email: spotifyUser.body.email },
       include: {
         sessions: { take: 1, orderBy: { expires: "desc" } },
+      },
+    });
+
+    // TODO: update session token when expired
+
+    await this.db.account.update({
+      where: {
+        provider_providerAccountId: {
+          provider: "spotify",
+          providerAccountId: spotifyUser.body.id,
+        },
+      },
+      data: {
+        access_token: tokens.body.access_token,
       },
     });
 

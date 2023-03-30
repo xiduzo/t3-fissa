@@ -56,8 +56,7 @@ export class RoomService extends ServiceWithContext {
       orderBy: { index: "asc" },
     });
 
-    // TODO sort tracks after current index
-    const sorted = tracks
+    const sorted = [...tracks]
       .sort((a, b) => {
         const aTotal = a.votes.reduce(this.countVotes, 0);
         const bTotal = b.votes.reduce(this.countVotes, 0);
@@ -73,20 +72,40 @@ export class RoomService extends ServiceWithContext {
     const unshiftCurrentIndex = sorted.filter(
       (track) => track.index < room.currentIndex,
     ).length;
-    console.log("unshift new current index", unshiftCurrentIndex);
 
     try {
-      await this.db.$transaction(async (transaction) => {
-        const promises = sorted.map(({ trackId, index }, newIndex) => {
+      const update = sorted
+        .map(({ trackId, index }, newIndex) => {
           const updateIndexTo =
             room.currentIndex - unshiftCurrentIndex + newIndex + 1;
           if (index === updateIndexTo) return; // No need to update
 
-          console.log(`Updating ${trackId} from ${index} to ${newIndex}`);
-          return transaction.track.update({
+          return {
             where: { roomId_trackId: { roomId: pin, trackId } },
             data: { index: updateIndexTo },
-          });
+          };
+        })
+        .filter(Boolean);
+
+      const updateToHighIndex = update.map((x, index) => ({
+        ...x,
+        data: {
+          ...x.data,
+          index: 10000 + index,
+        },
+      }));
+
+      await this.db.$transaction(async (transaction) => {
+        // (1) Clear out the indexes
+        await transaction.room.update({
+          where: { pin },
+          data: { tracks: { update: updateToHighIndex } },
+        });
+
+        // (2) Set the correct indexes
+        await transaction.room.update({
+          where: { pin },
+          data: { tracks: { update } },
         });
 
         if (room.currentIndex !== room.currentIndex - unshiftCurrentIndex) {
@@ -95,8 +114,6 @@ export class RoomService extends ServiceWithContext {
             data: { currentIndex: room.currentIndex - unshiftCurrentIndex },
           });
         }
-
-        await Promise.all(promises);
       });
     } catch (e) {
       console.log(e);

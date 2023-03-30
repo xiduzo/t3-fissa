@@ -20,19 +20,28 @@ export class TrackService extends ServiceWithContext {
 
     const totalTracks = await this.db.track.count({ where: { roomId } });
 
-    // TODO: don't add tracks which are already in the room
+    const roomTracks = await this.db.track.findMany({
+      where: { roomId },
+    });
+
+    const existingTracks = roomTracks.map(({ trackId }) => trackId);
+
+    const newTracks = tracks.filter(
+      ({ trackId }) => !existingTracks.includes(trackId),
+    );
+
     await this.db.track.createMany({
-      data: tracks.map((track, index) => ({
+      data: newTracks.map((track, index) => ({
         ...track,
         roomId,
         index: totalTracks + index,
       })),
     });
 
-    const votes = tracks.map(({ trackId }) =>
+    const promises = existingTracks.map((trackId) =>
       voteService.createVote(roomId, trackId, VOTE.UP),
     );
-    await Promise.all(votes);
+    await Promise.all(promises);
 
     await roomService.reorderPlaylist(roomId);
   };
