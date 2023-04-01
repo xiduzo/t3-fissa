@@ -48,13 +48,7 @@ export const RoomTracks: FC<{ pin: string }> = ({ pin }) => {
             activeTrack={localTracks[data?.currentIndex ?? 0]}
           />
         }
-        ListEmptyComponent={
-          <ListEmptyComponent
-            isLoading={
-              isInitialLoading || tracks.length !== data?.tracks.length
-            }
-          />
-        }
+        ListEmptyComponent={<ListEmptyComponent isLoading={isInitialLoading} /> }
         ListFooterComponent={
           Boolean(tracks.length) && isPlaying && !isInitialLoading ? (
             <ListFooterComponent />
