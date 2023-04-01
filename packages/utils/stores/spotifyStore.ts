@@ -65,7 +65,6 @@ export const useTracks = (trackIds?: string[]) => {
     if (tracks.length) addTracks(tracks);
   }, [uncachedTrackIds, addTracks]);
 
-  console.log(requestedTracks.map((x) => x.name));
   return requestedTracks;
 };
 

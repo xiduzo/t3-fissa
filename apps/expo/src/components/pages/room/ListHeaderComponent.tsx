@@ -2,28 +2,27 @@ import { FC } from "react";
 import { View } from "react-native";
 import { useSearchParams } from "expo-router";
 
-import { useGetRoom } from "../../../hooks/";
+import { useGetRoomDetails } from "../../../hooks/";
 import { ProgressBar, TrackListItem, Typography } from "../../shared";
 
-export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
+export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
   const { pin } = useSearchParams();
 
-  const { data: room } = useGetRoom(pin!);
+  const { data } = useGetRoomDetails(pin!);
 
-  if (!room) return null;
-  const track = tracks[room.currentIndex];
+  if (!data) return null;
 
   return (
     <>
-      {track && (
+      {activeTrack && (
         <TrackListItem
-          track={track}
+          track={activeTrack}
           bigImage
           extra={
             <ProgressBar
-              track={track}
-              expectedEndTime={room.expectedEndTime}
-              disabled={room.currentIndex < 0}
+              track={activeTrack}
+              expectedEndTime={data.expectedEndTime}
+              disabled={data.currentIndex < 0}
             />
           }
         />
@@ -31,7 +30,7 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
       <View className="mb-2 mt-7 flex-row items-center justify-between">
         <Typography variant="h2">Queue</Typography>
         <Typography variant="bodyM" dimmed>
-          {tracks.length - 1}
+          {queue}
         </Typography>
       </View>
     </>
@@ -39,5 +38,6 @@ export const ListHeaderComponent: FC<Props> = ({ tracks }) => {
 };
 
 interface Props {
-  tracks: SpotifyApi.TrackObjectFull[];
+  queue: number;
+  activeTrack?: SpotifyApi.TrackObjectFull;
 }

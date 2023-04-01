@@ -13,4 +13,8 @@ export const roomRouter = createTRPCRouter({
     const service = new RoomService(ctx);
     return service.byId(input);
   }),
+  detailsById: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
+    const service = new RoomService(ctx);
+    return service.detailsById(input);
+  }),
 });

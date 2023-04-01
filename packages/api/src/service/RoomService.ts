@@ -39,13 +39,30 @@ export class RoomService extends ServiceWithContext {
     return this.db.room.findUniqueOrThrow({
       where: { pin },
       include: {
+        tracks: {
+          select: {
+            trackId: true,
+            score: true,
+          },
+          orderBy: { index: "asc" },
+        },
+      },
+    });
+  };
+
+  detailsById = async (pin: string) => {
+    return this.db.room.findUniqueOrThrow({
+      where: { pin },
+      select: {
         by: { select: { email: true } },
+        expectedEndTime: true,
+        currentIndex: true,
       },
     });
   };
 
   reorderPlaylist = async (pin: string) => {
-    const room = await this.byId(pin);
+    const { currentIndex } = await this.byId(pin);
     const tracks = await this.db.track.findMany({
       where: { pin },
       select: {
@@ -57,24 +74,18 @@ export class RoomService extends ServiceWithContext {
     });
 
     const sorted = [...tracks]
-      .sort((a, b) => {
-        return b.score - a.score;
-      })
-      .filter((track) => {
-        if (track.index > room.currentIndex) return true;
-
-        return track.score !== 0;
-      });
+      .sort((a, b) => b.score - a.score)
+      .filter(({ index, score }) => index > currentIndex || score !== 0);
 
     const unshiftCurrentIndex = sorted.filter(
-      (track) => track.index < room.currentIndex,
+      (track) => track.index < currentIndex,
     ).length;
 
     try {
       const update = sorted
-        .map(({ trackId, index }, newIndex) => {
+        .map(({ trackId, index, score }, newIndex) => {
           const updateIndexTo =
-            room.currentIndex - unshiftCurrentIndex + newIndex + 1;
+            currentIndex - unshiftCurrentIndex + newIndex + 1;
           if (index === updateIndexTo) return; // No need to update
 
           return {
@@ -105,10 +116,10 @@ export class RoomService extends ServiceWithContext {
           data: { tracks: { update } },
         });
 
-        if (room.currentIndex !== room.currentIndex - unshiftCurrentIndex) {
+        if (currentIndex !== currentIndex - unshiftCurrentIndex) {
           await transaction.room.update({
             where: { pin },
-            data: { currentIndex: room.currentIndex - unshiftCurrentIndex },
+            data: { currentIndex: currentIndex - unshiftCurrentIndex },
           });
         }
       });

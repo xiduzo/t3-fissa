@@ -6,3 +6,10 @@ export const useGetRoom = (pin: string) => {
     enabled: !!pin,
   });
 };
+
+export const useGetRoomDetails = (pin: string) => {
+  return api.room.detailsById.useQuery(pin, {
+    refetchInterval: 5000,
+    enabled: !!pin,
+  });
+}

@@ -65,11 +65,26 @@ export class VoteService extends ServiceWithContext {
   private updateScores = async (
     pin: string,
     trackIds: string[],
-    increment: number,
+    vote: number,
   ) => {
-    return this.db.track.updateMany({
+    const scores = await this.db.vote.findMany({
       where: { pin, trackId: { in: trackIds } },
-      data: { score: { increment } },
+    });
+
+    const update = scores.reduce(
+      (acc, { trackId, vote }) =>
+        acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
+      new Map<string, number>(),
+    );
+
+    const updateMany = Array.from(update.entries()).map(([trackId, score]) => ({
+      where: { pin, trackId },
+      data: { score },
+    }));
+
+    return this.db.room.update({
+      where: { pin },
+      data: { tracks: { updateMany } },
     });
   };
 }

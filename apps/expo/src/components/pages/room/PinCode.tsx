@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "expo-router";
 import { splitInChunks, useTracks } from "@fissa/utils";
 
-import { useGetRoom, useGetTracks } from "../../../hooks";
+import { useGetRoomDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import { Action, Button, Popover } from "../../shared";
@@ -111,7 +111,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 
 const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
   const { user, spotify } = useAuth();
-  const { data } = useGetRoom(pin);
+  const { data } = useGetRoomDetails(pin);
 
   const [speakers, setSpeakers] = useState<SpotifyApi.UserDevice[]>([]);
 

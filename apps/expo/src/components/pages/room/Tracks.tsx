@@ -1,8 +1,7 @@
-import { FC, useCallback, useState } from "react";
-import { useSearchParams } from "expo-router";
+import { FC, useCallback, useMemo, useState } from "react";
 import { useTracks } from "@fissa/utils";
 
-import { useGetRoom, useGetTracks, useGetVotes } from "../../../hooks";
+import { useGetRoom } from "../../../hooks";
 import { Divider, Popover, TrackList, TrackListItem } from "../../shared";
 import { Badge } from "../../shared/Badge";
 import { ListEmptyComponent } from "./ListEmptyComponent";
@@ -11,36 +10,45 @@ import { ListHeaderComponent } from "./ListHeaderComponent";
 import { VoteActions } from "./VoteActions";
 
 export const RoomTracks: FC<{ pin: string }> = ({ pin }) => {
-  const { data, isInitialLoading } = useGetTracks(pin);
-  const { data: room } = useGetRoom(pin);
-  const { data: votes } = useGetVotes(pin);
+  const { data, isInitialLoading } = useGetRoom(pin);
 
-  const tracks = useTracks(data?.map(({ trackId }) => trackId));
+  const localTracks = useTracks(data?.tracks.map(({ trackId }) => trackId));
 
   const [selectedTrack, setSelectedTrack] =
     useState<SpotifyApi.TrackObjectFull | null>(null);
 
-  const isPlaying = (room?.currentIndex ?? -1) >= 0;
+  const isPlaying = (data?.currentIndex ?? -1) >= 0;
 
   const getTrackVotes = useCallback(
-    (track: SpotifyApi.TrackObjectFull) => votes?.get(track.id) ?? 0,
-    [votes],
+    (track: SpotifyApi.TrackObjectFull) => {
+      return (
+        data?.tracks.find(({ trackId }) => trackId === track.id)?.score ?? 0
+      );
+    },
+    [data?.tracks],
   );
+
+  const tracks = useMemo(() => {
+    return localTracks.slice((data?.currentIndex ?? 0) + 1, localTracks.length);
+  }, [localTracks, data?.currentIndex]);
 
   return (
     <>
       <TrackList
-        tracks={
-          isPlaying
-            ? tracks.slice((room?.currentIndex ?? 0) + 1, tracks.length)
-            : []
-        }
+        tracks={isPlaying ? tracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
-        ListHeaderComponent={<ListHeaderComponent tracks={tracks} />}
+        ListHeaderComponent={
+          <ListHeaderComponent
+            queue={tracks.length}
+            activeTrack={localTracks[data?.currentIndex ?? 0]}
+          />
+        }
         ListEmptyComponent={
           <ListEmptyComponent
-            isLoading={isInitialLoading || tracks.length !== data?.length}
+            isLoading={
+              isInitialLoading || tracks.length !== data?.tracks.length
+            }
           />
         }
         ListFooterComponent={
