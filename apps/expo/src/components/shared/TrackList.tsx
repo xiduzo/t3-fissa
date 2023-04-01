@@ -27,7 +27,7 @@ export const TrackList: FC<Props> = ({
           subtitlePrefix={
             <TrackVotes getTrackVotes={getTrackVotes} track={item} />
           }
-          end={trackEnd}
+          end={trackEnd && trackEnd(item)}
           onPress={() => onTrackPress?.(item)}
           selected={selectedTracks?.includes(item.id)}
         />
@@ -67,7 +67,7 @@ interface Props
   tracks: SpotifyApi.TrackObjectFull[];
   selectedTracks?: string[];
   getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number;
-  trackEnd?: JSX.Element;
+  trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element;
   onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
 }
 

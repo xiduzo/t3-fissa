@@ -1,7 +1,10 @@
 import { FC, useCallback, useMemo, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { theme } from "@fissa/tailwind-config";
 import { useTracks } from "@fissa/utils";
 
-import { useGetRoom } from "../../../hooks";
+import { useGetRoom, useGetVoteFromUser } from "../../../hooks";
+import { useAuth } from "../../../providers";
 import { Divider, Popover, TrackList, TrackListItem } from "../../shared";
 import { Badge } from "../../shared/Badge";
 import { ListEmptyComponent } from "./ListEmptyComponent";
@@ -38,6 +41,7 @@ export const RoomTracks: FC<{ pin: string }> = ({ pin }) => {
         tracks={isPlaying ? tracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
+        trackEnd={(track) => <TrackEnd trackId={track.id} pin={pin} />}
         ListHeaderComponent={
           <ListHeaderComponent
             queue={tracks.length}
@@ -79,4 +83,25 @@ export const RoomTracks: FC<{ pin: string }> = ({ pin }) => {
       </Popover>
     </>
   );
+};
+
+const TrackEnd: FC<{ trackId: string; pin: string }> = ({ pin, trackId }) => {
+  const { user } = useAuth();
+
+  const { data } = useGetVoteFromUser(pin, trackId, user);
+
+  if (!data)
+    return (
+      <Ionicons
+        name="ellipsis-horizontal"
+        color={theme["100"] + "60"}
+        size={18}
+      />
+    );
+  if (data.vote === 1)
+    return <Ionicons name="arrow-up" color={theme["500"]} size={18} />;
+  if (data.vote === -1)
+    return <Ionicons name="arrow-down" color={theme["500"]} size={18} />;
+
+  return null;
 };
