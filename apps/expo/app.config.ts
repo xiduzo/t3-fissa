@@ -4,7 +4,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
   slug: "fissa",
   scheme: "com.fissa",
-  version: "3.0.7", // EAS VERSION
+  version: "3.0.8", // EAS VERSION
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",

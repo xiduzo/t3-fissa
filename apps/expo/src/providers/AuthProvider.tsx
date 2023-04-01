@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 import {
   AuthRequestConfig,
   AuthRequestPromptOptions,
@@ -21,7 +21,7 @@ import {
   useAuthRequest,
 } from "expo-auth-session";
 import Constants from "expo-constants";
-import { SpotifyWebApi } from "@fissa/utils";
+import { SpotifyWebApi, differenceInMinutes, useInterval } from "@fissa/utils";
 
 import {
   ENCRYPTED_STORAGE_KEYS,
@@ -29,6 +29,8 @@ import {
 } from "../hooks/useEncryptedStorage";
 import { toast } from "../utils";
 import { api } from "../utils/api";
+
+const REFRESH_INTERVAL_MINUTES = 45;
 
 const SpotifyContext = createContext({
   promptAsync: (options?: AuthRequestPromptOptions | undefined) => {
@@ -44,6 +46,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const spotify = useRef(new SpotifyWebApi());
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
 
+  const lastRefreshTokenFetchTime = useRef(new Date());
+
   const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
 
@@ -56,7 +60,6 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
-  // TODO: refresh token once in a while
   const readTokenFromStorage = useCallback(async () => {
     const refreshToken = await getValueFor();
     if (!refreshToken) return;
@@ -66,10 +69,11 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       spotify.current.setAccessToken(access_token);
       spotify.current.getMe().then(setUser);
       await saveSessionToken(session_token);
+      lastRefreshTokenFetchTime.current = new Date();
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [user]);
 
   useMemo(async () => {
     if (response?.type !== "success") return;
@@ -99,6 +103,22 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     if (user) return;
     readTokenFromStorage();
   }, [readTokenFromStorage, user]);
+
+  useInterval(readTokenFromStorage, REFRESH_INTERVAL_MINUTES * 60 * 1000);
+
+  useEffect(() => {
+    const { remove } = AppState.addEventListener("change", () => {
+      if (AppState.currentState !== "active") return;
+      const difference = differenceInMinutes(
+        new Date(),
+        lastRefreshTokenFetchTime.current,
+      );
+      if (difference < REFRESH_INTERVAL_MINUTES) return;
+      readTokenFromStorage();
+    });
+
+    return remove;
+  }, [readTokenFromStorage]);
 
   return (
     <SpotifyContext.Provider

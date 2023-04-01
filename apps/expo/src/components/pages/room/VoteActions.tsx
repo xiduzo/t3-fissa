@@ -16,14 +16,14 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
     onSuccess: ({ vote }) => {
       toast.success({
         message: track.name,
-        icon: vote ? "👆" : "👇",
+        icon: vote > 0 ? "👆" : "👇",
       });
-      onPress();
     },
   });
 
   const handleVote = useCallback(
     (vote: number) => async () => {
+      onPress();
       await mutateAsync(vote);
     },
     [],
