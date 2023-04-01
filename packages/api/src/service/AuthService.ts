@@ -1,4 +1,5 @@
-import { addMonths, addSeconds } from "@fissa/utils";
+import { Prisma } from "@fissa/db";
+import { addMonths, addSeconds, differenceInDays } from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
 import { SpotifyService } from "./SpotifyService";
@@ -10,21 +11,18 @@ export class AuthService extends ServiceWithContext {
 
     const spotifyUser = await service.me(tokens.body.access_token);
 
-    let existingUser = await this.db.user.findUnique({
+    const findUser = {
       where: { email: spotifyUser.body.email },
       include: {
-        sessions: { take: 1, orderBy: { expires: "desc" } },
+        sessions: { take: 1, orderBy: { expires: Prisma.SortOrder.desc } },
       },
-    });
+    };
+
+    let existingUser = await this.db.user.findUnique(findUser);
 
     if (!existingUser) {
       await this.createUser(spotifyUser.body, tokens);
-      existingUser = await this.db.user.findUniqueOrThrow({
-        where: { email: spotifyUser.body.email },
-        include: {
-          sessions: { take: 1, orderBy: { expires: "desc" } },
-        },
-      });
+      existingUser = await this.db.user.findUniqueOrThrow(findUser);
     }
 
     return {
@@ -39,14 +37,22 @@ export class AuthService extends ServiceWithContext {
     const tokens = await service.refresh(refreshToken);
     const spotifyUser = await service.me(tokens.body.access_token);
 
-    const sessionToken = await this.db.user.findUniqueOrThrow({
+    const { sessions } = await this.db.user.findUniqueOrThrow({
       where: { email: spotifyUser.body.email },
-      include: {
-        sessions: { take: 1, orderBy: { expires: "desc" } },
-      },
+      select: { sessions: { take: 1, orderBy: { expires: "desc" } } },
     });
 
-    // TODO: update session token when expired
+    let session = sessions[0];
+
+    if (session) {
+      const difference = differenceInDays(session.expires, new Date());
+      if (difference <= 0) {
+        session = await this.db.session.update({
+          where: { id: session.id },
+          data: { expires: addMonths(new Date(), 1) },
+        });
+      }
+    }
 
     await this.db.account.update({
       where: {
@@ -55,14 +61,12 @@ export class AuthService extends ServiceWithContext {
           providerAccountId: spotifyUser.body.id,
         },
       },
-      data: {
-        access_token: tokens.body.access_token,
-      },
+      data: { access_token: tokens.body.access_token },
     });
 
     return {
       ...tokens.body,
-      session_token: sessionToken.sessions[0]?.sessionToken!,
+      session_token: session?.sessionToken!,
     };
   };
 

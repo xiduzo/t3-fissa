@@ -40,10 +40,7 @@ export class RoomService extends ServiceWithContext {
       where: { pin },
       include: {
         tracks: {
-          select: {
-            trackId: true,
-            score: true,
-          },
+          select: { trackId: true, score: true },
           orderBy: { index: "asc" },
         },
       },
@@ -65,11 +62,7 @@ export class RoomService extends ServiceWithContext {
     const { currentIndex } = await this.byId(pin);
     const tracks = await this.db.track.findMany({
       where: { pin },
-      select: {
-        trackId: true,
-        index: true,
-        score: true,
-      },
+      select: { trackId: true, index: true, score: true },
       orderBy: { index: "asc" },
     });
 
