@@ -10,31 +10,25 @@ export const getPlaylistTracks = async (
   let hasNext = false;
 
   do {
-    const options = {
-      limit: 50,
-      offset: tracks.length,
-    };
+    const options = { limit: 50, offset: tracks.length };
 
-    if (playlistId === SAVED_TRACKS_PLAYLIST_ID) {
-      const { next, items } = await spotify.getMySavedTracks(options);
+    const request =
+      playlistId === SAVED_TRACKS_PLAYLIST_ID
+        ? spotify.getMySavedTracks(options)
+        : spotify.getPlaylistTracks(playlistId, options);
 
-      items.forEach(({ track }) =>
-        tracks.push(track as SpotifyApi.TrackObjectFull),
-      );
-      hasNext = next !== null;
-    } else {
-      const { next, items } = await spotify.getPlaylistTracks(
-        playlistId,
-        options,
-      );
+    const { next, items } = await request;
 
-      items.forEach(({ track }) =>
-        tracks.push(track as SpotifyApi.TrackObjectFull),
-      );
-      hasNext = next !== null;
-    }
+    items.forEach(({ track }) =>
+      tracks.push(track as SpotifyApi.TrackObjectFull),
+    );
+
+    hasNext = next !== null;
   } while (hasNext);
 
-  // TODO return unique tracks even though the user has them added multiple times to their playlist
-  return tracks;
+  return tracks.reduce((acc, next) => {
+    if (acc.find(({ id }) => id === next.id)) return acc;
+
+    return [...acc, next];
+  }, [] as SpotifyApi.TrackObjectFull[]);
 };

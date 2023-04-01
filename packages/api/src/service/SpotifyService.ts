@@ -1,24 +1,23 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
 export class SpotifyService {
-  public api = new SpotifyWebApi({
+  public spotify = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
   });
 
   codeGrant = async (code: string, redirectUri: string) => {
-    this.api.setRedirectURI(redirectUri);
-    return this.api.authorizationCodeGrant(code);
+    this.spotify.setRedirectURI(redirectUri);
+    return this.spotify.authorizationCodeGrant(code);
   };
 
   refresh = async (refreshToken: string) => {
-    this.api.setRefreshToken(refreshToken);
-    // TODO: update tokens in db
-    return this.api.refreshAccessToken();
+    this.spotify.setRefreshToken(refreshToken);
+    return this.spotify.refreshAccessToken();
   };
 
   me = async (accessToken: string) => {
-    this.api.setAccessToken(accessToken);
-    return this.api.getMe();
+    this.spotify.setAccessToken(accessToken);
+    return this.spotify.getMe();
   };
 }
