@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { VirtualizedList, VirtualizedListProps } from "react-native";
 
 import { Badge } from "./Badge";
@@ -9,6 +9,7 @@ export const TrackList: FC<Props> = ({
   onTrackPress,
   selectedTracks,
   getTrackVotes,
+  trackEnd,
   ...props
 }) => {
   return (
@@ -26,6 +27,7 @@ export const TrackList: FC<Props> = ({
           subtitlePrefix={
             <TrackVotes getTrackVotes={getTrackVotes} track={item} />
           }
+          end={trackEnd}
           onPress={() => onTrackPress?.(item)}
           selected={selectedTracks?.includes(item.id)}
         />
@@ -65,6 +67,7 @@ interface Props
   tracks: SpotifyApi.TrackObjectFull[];
   selectedTracks?: string[];
   getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number;
+  trackEnd?: JSX.Element;
   onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
 }
 

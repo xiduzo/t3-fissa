@@ -1,8 +1,6 @@
 import { FC, useEffect, useRef } from "react";
 import {
   Animated,
-  ImageStyle,
-  StyleProp,
   TouchableWithoutFeedback,
   TouchableWithoutFeedbackProps,
   View,
@@ -107,9 +105,7 @@ export const ListItem: FC<Props> = ({
           </View>
           {extra && <View className="mt-2">{extra}</View>}
         </Animated.View>
-        <Animated.View className="ml-1" style={{ opacity }}>
-          {end}
-        </Animated.View>
+        <Animated.View className="ml-1">{end}</Animated.View>
       </View>
     </TouchableWithoutFeedback>
   );

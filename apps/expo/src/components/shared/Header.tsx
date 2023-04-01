@@ -21,6 +21,8 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
             <Ionicons name="arrow-back" size={28} title="back" onPress={back} />
           </Typography>
         )}
+        {props.options.headerLeft &&
+          props.options.headerLeft({ canGoBack: true })}
       </View>
       <View className="flex-grow">
         {props.options.title && (

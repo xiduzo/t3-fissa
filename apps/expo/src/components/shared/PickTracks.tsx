@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useMemo, useRef, useState } from "react";
 import {
   GestureResponderEvent,
   NativeSyntheticEvent,
@@ -16,6 +16,7 @@ import { useAuth } from "../../providers";
 import { BottomDrawer } from "./BottomDrawer";
 import { Button } from "./Button";
 import { EmptyState } from "./EmptyState";
+import { Image } from "./Image";
 import { Input } from "./Input";
 import { PlaylistList } from "./PlaylistList";
 import { TrackList } from "./TrackList";
@@ -72,12 +73,11 @@ export const PickTracks: FC<Props> = ({
     });
   }, []);
 
-  useEffect(() => {
+  useMemo(async () => {
     if (!selectedPlaylist) {
       if (!debounced) return setTracks([]);
-      spotify.search(debounced, ["track"]).then((response) => {
-        setTracks(response.tracks?.items || []);
-      });
+      const { tracks } = await spotify.search(debounced, ["track"]);
+      setTracks(tracks?.items || []);
       return;
     }
 
@@ -117,20 +117,19 @@ export const PickTracks: FC<Props> = ({
         options={{
           animation: "fade_from_bottom",
           animationDuration: 100,
-          headerRight: () => (
-            <HeaderRight
-              selectedPlaylist={!!selectedPlaylist}
-              onPress={selectedPlaylist ? clearSelectedPlaylist : back}
-            />
-          ),
+          headerLeft: () =>
+            selectedPlaylist && <HeaderLeft onPress={clearSelectedPlaylist} />,
+          headerRight: () => <HeaderRight onPress={back} />,
         }}
       />
       <View className="h-full w-full">
         <View className="px-6">
           <Input
+            startIcon="search"
             ref={inputRef}
+            editable={!!user}
             variant="contained"
-            placeholder={`Search ${selectedPlaylist?.name || "spotify"}`}
+            placeholder={`Search in ${selectedPlaylist?.name || "spotify"}`}
             value={search}
             onChange={handleSearch}
           />
@@ -145,29 +144,56 @@ export const PickTracks: FC<Props> = ({
             user ? (
               <View className="-mx-6">
                 {!selectedPlaylist && (
-                  <PlaylistList onPlaylistPress={setSelectedPlaylist} />
+                  <>
+                    <Typography variant="h1" className="m-6">
+                      Your playlists
+                    </Typography>
+                    <PlaylistList
+                      onPlaylistPress={setSelectedPlaylist}
+                      playlistEnd={
+                        <Ionicons
+                          name="chevron-forward"
+                          size={16}
+                          color={theme["100"] + "80"}
+                        />
+                      }
+                    />
+                  </>
                 )}
                 {selectedPlaylist && (
-                  <TrackList
-                    tracks={filteredTracks}
-                    onTrackPress={handleTrackPress}
-                    selectedTracks={selectedTracks.map((track) => track.id)}
-                    ListFooterComponent={<View className="pb-40" />}
-                    ListEmptyComponent={
-                      <EmptyState
-                        icon="🐕"
-                        title="Fetching tracks"
-                        subtitle="good boy"
-                      />
-                    }
-                  />
+                  <>
+                    <View className="m-6">
+                      <View className="h-40 w-40">
+                        <Image
+                          className="h-full w-full"
+                          source={selectedPlaylist.images[0]?.url}
+                        />
+                      </View>
+                      <Typography variant="h1" className="mt-6">
+                        {selectedPlaylist.name}
+                      </Typography>
+                    </View>
+                    <TrackList
+                      tracks={filteredTracks}
+                      onTrackPress={handleTrackPress}
+                      selectedTracks={selectedTracks.map((track) => track.id)}
+                      ListFooterComponent={<View className="pb-40" />}
+                      ListEmptyComponent={
+                        <EmptyState
+                          icon="🐕"
+                          title="Fetching tracks"
+                          subtitle="good boy"
+                        />
+                      }
+                    />
+                  </>
                 )}
               </View>
             ) : (
               <EmptyState
                 icon="🦭"
                 title="Not connected to spotify"
-                subtitle="and show them what you've got"
+                // subtitle="and show them what you've got"
               >
                 <Button title="Sign in" onPress={() => promptAsync()} />
               </EmptyState>
@@ -205,25 +231,25 @@ interface Props {
 type TrackList = SpotifyApi.TrackObjectFull[];
 
 const HeaderRight: FC<{
-  selectedPlaylist?: boolean;
   onPress: (event: GestureResponderEvent) => void;
-}> = ({ selectedPlaylist, onPress }) => {
+}> = ({ onPress }) => {
   return (
-    <TouchableOpacity
-      className="flex flex-row items-center space-x-2"
-      onPress={onPress}
-    >
-      {selectedPlaylist && (
-        <Typography>
-          <Ionicons name="arrow-back" size={24} title="close" />
-        </Typography>
-      )}
-      {selectedPlaylist && <Typography>Search spotify</Typography>}
-      {!selectedPlaylist && (
-        <Typography>
-          <Ionicons name="close" size={24} title="close" />
-        </Typography>
-      )}
+    <TouchableOpacity onPress={onPress}>
+      <Typography>
+        <Ionicons name="close" size={24} title="close" />
+      </Typography>
+    </TouchableOpacity>
+  );
+};
+
+const HeaderLeft: FC<{
+  onPress: (event: GestureResponderEvent) => void;
+}> = ({ onPress }) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Typography>
+        <Ionicons name="arrow-back" size={24} title="back" />
+      </Typography>
     </TouchableOpacity>
   );
 };

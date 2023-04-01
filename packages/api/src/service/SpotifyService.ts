@@ -5,7 +5,6 @@ export class SpotifyService {
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
   });
-  constructor() {}
 
   codeGrant = async (code: string, redirectUri: string) => {
     this.api.setRedirectURI(redirectUri);

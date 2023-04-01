@@ -9,6 +9,7 @@ import { PlaylistListItem } from "./PlaylistListItem";
 export const PlaylistList: FC<Props> = ({
   onPlaylistPress,
   inverted,
+  playlistEnd,
   ...props
 }) => {
   const { user, spotify } = useAuth();
@@ -28,6 +29,7 @@ export const PlaylistList: FC<Props> = ({
         <PlaylistListItem
           playlist={item}
           onPress={() => onPlaylistPress?.(item)}
+          end={playlistEnd}
         />
       )}
       ListEmptyComponent={
@@ -48,6 +50,7 @@ interface Props
   > {
   onPlaylistPress?: (playlist: SpotifyApi.PlaylistObjectSimplified) => void;
   inverted?: boolean;
+  playlistEnd?: JSX.Element;
 }
 
 const getItem = (data: SpotifyApi.PlaylistObjectSimplified[], index: number) =>
