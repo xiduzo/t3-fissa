@@ -1,5 +1,5 @@
 import { Room } from "@fissa/db";
-import { SpotifyService, randomize } from "@fissa/utils";
+import { SpotifyService, addMilliseconds, randomize } from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
 
@@ -12,9 +12,16 @@ export class RoomService extends ServiceWithContext {
   };
 
   create = async (tracks: { trackId: string; durationMs: number }[]) => {
+    const service = new SpotifyService();
+
     let room: Room | undefined = undefined;
     let tries = 0;
     const blockedPins = [...noNoWords];
+
+    const tokens = this.db.account.findFirstOrThrow({
+      where: { userId: this.ctx.session?.user.id },
+      select: { access_token: true },
+    });
 
     do {
       const pin = this.generatePin();
@@ -25,6 +32,7 @@ export class RoomService extends ServiceWithContext {
         room = await this.db.room.create({
           data: {
             pin,
+            expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
             by: { connect: { id: this.ctx.session?.user.id } },
             tracks: {
               createMany: {
@@ -38,6 +46,10 @@ export class RoomService extends ServiceWithContext {
         blockedPins.push(pin);
       }
     } while (!room && tries < 50);
+
+    const { access_token } = await tokens;
+
+    await service.playTrack(access_token!, tracks[0]!.trackId);
 
     return this.byId(room?.pin!);
   };
@@ -144,7 +156,7 @@ export class RoomService extends ServiceWithContext {
             },
           },
         },
-        tracks: { select: { trackId: true, index: true } },
+        tracks: { select: { trackId: true, index: true, durationMs: true } },
       },
     });
 
@@ -170,7 +182,11 @@ export class RoomService extends ServiceWithContext {
 
     return this.db.room.update({
       where: { pin },
-      data: { currentIndex: { increment: 1 } },
+      data: {
+        expectedEndTime: addMilliseconds(new Date(), nextTrack!.durationMs),
+        currentIndex: { increment: 1 },
+        lastPlayedIndex: { increment: 1 },
+      },
     });
   };
 
