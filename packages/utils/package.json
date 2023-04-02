@@ -18,6 +18,7 @@
     "zustand": "^4.3.6"
   },
   "devDependencies": {
+    "@types/node": "^18.0.0",
     "@types/randomatic": "^3.1.3"
   }
 }

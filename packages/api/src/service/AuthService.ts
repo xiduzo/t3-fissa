@@ -1,8 +1,13 @@
 import { Prisma } from "@fissa/db";
-import { addMonths, addSeconds, differenceInDays } from "@fissa/utils";
+import {
+  SpotifyService,
+  addMonths,
+  addSeconds,
+  getSeconds,
+  isPast,
+} from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
-import { SpotifyService } from "./SpotifyService";
 
 export class AuthService extends ServiceWithContext {
   getAccessToken = async (code: string, redirectUri: string) => {
@@ -44,14 +49,11 @@ export class AuthService extends ServiceWithContext {
 
     let session = sessions[0];
 
-    if (session) {
-      const difference = differenceInDays(session.expires, new Date());
-      if (difference <= 0) {
-        session = await this.db.session.update({
-          where: { id: session.id },
-          data: { expires: addMonths(new Date(), 1) },
-        });
-      }
+    if (session && isPast(session.expires)) {
+      session = await this.db.session.update({
+        where: { id: session.id },
+        data: { expires: addMonths(new Date(), 1) },
+      });
     }
 
     await this.db.account.update({
@@ -61,7 +63,10 @@ export class AuthService extends ServiceWithContext {
           providerAccountId: spotifyUser.body.id,
         },
       },
-      data: { access_token: tokens.body.access_token },
+      data: {
+        access_token: tokens.body.access_token,
+        expires_at: this.expiresAt(tokens.body.expires_in),
+      },
     });
 
     return {
@@ -81,10 +86,7 @@ export class AuthService extends ServiceWithContext {
         type: "oauth",
         access_token: tokens.body.access_token,
         refresh_token: tokens.body.refresh_token,
-        expires_at: Math.round(
-          // We need the time in seconds, not in milliseconds
-          addSeconds(new Date(), tokens.body.expires_in).getTime() / 1000,
-        ),
+        expires_at: this.expiresAt(tokens.body.expires_in),
         token_type: "Bearer",
         scope: tokens.body.scope,
         user: {
@@ -101,4 +103,7 @@ export class AuthService extends ServiceWithContext {
       },
     });
   };
+
+  private expiresAt = (expiresIn: number) =>
+    getSeconds(addSeconds(new Date(), expiresIn));
 }

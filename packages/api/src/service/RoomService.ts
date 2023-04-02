@@ -1,9 +1,16 @@
 import { Room } from "@fissa/db";
-import { randomize } from "@fissa/utils";
+import { SpotifyService, randomize } from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
 
 export class RoomService extends ServiceWithContext {
+  all = async () => {
+    return this.db.room.findMany({
+      where: { currentIndex: { gte: 0 } },
+      select: { pin: true, expectedEndTime: true },
+    });
+  };
+
   create = async (tracks: { trackId: string; durationMs: number }[]) => {
     let room: Room | undefined = undefined;
     let tries = 0;
@@ -121,6 +128,50 @@ export class RoomService extends ServiceWithContext {
     }
 
     return true;
+  };
+
+  nextTrack = async (pin: string) => {
+    const service = new SpotifyService();
+    const room = await this.db.room.findUniqueOrThrow({
+      where: { pin },
+      select: {
+        currentIndex: true,
+        by: {
+          select: {
+            accounts: {
+              select: { access_token: true, refresh_token: true },
+              take: 1,
+            },
+          },
+        },
+        tracks: { select: { trackId: true, index: true } },
+      },
+    });
+
+    const { access_token } = room.by.accounts[0]!;
+
+    const isPlaying = await service.isStillPlaying(access_token!);
+
+    console.log("isPlaying", isPlaying, pin);
+
+    if (!isPlaying) {
+      return this.db.room.update({
+        where: { pin },
+        data: { currentIndex: -1 },
+      });
+    }
+
+    const nextIndex = room.currentIndex + 1;
+    const nextTrack = room.tracks.find(({ index }) => index === nextIndex);
+
+    // TODO if there are only 3 tracks left in queue, add tracks
+
+    await service.playTrack(access_token!, nextTrack?.trackId!);
+
+    return this.db.room.update({
+      where: { pin },
+      data: { currentIndex: { increment: 1 } },
+    });
   };
 
   private generatePin = () => randomize("A", 4);
