@@ -63,7 +63,11 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
           }
         />
         <Divider />
-        <SkipTrackAction pin={pin!} owner={data.by.email!} />
+        <SkipTrackAction
+          pin={pin!}
+          owner={data.by.email!}
+          onPress={toggleTrackSelected}
+        />
       </Popover>
     </>
   );
@@ -74,13 +78,15 @@ interface Props {
   activeTrack?: SpotifyApi.TrackObjectFull;
 }
 
-const SkipTrackAction: FC<{ pin: string; owner: string }> = ({
-  pin,
-  owner,
-}) => {
+const SkipTrackAction: FC<{
+  pin: string;
+  owner: string;
+  onPress: () => void;
+}> = ({ pin, owner, onPress }) => {
   const { user } = useAuth();
-  const { mutateAsync } = useSkipTrack(pin, {
+  const { mutateAsync, isLoading } = useSkipTrack(pin, {
     onSuccess: () => {
+      onPress();
       toast.info({
         icon: "🐉",
         message: "Use your powers wisely",
@@ -95,9 +101,9 @@ const SkipTrackAction: FC<{ pin: string; owner: string }> = ({
   return (
     <Action
       title="Skip track"
-      subtitle="Show them who's the boss"
+      subtitle={isOwner ? "Skip the current track" : "Poke your host to skip"}
       inverted
-      disabled={!isOwner}
+      disabled={!isOwner || isLoading}
       onPress={mutateAsync}
       icon="play-skip-forward-sharp"
     />
