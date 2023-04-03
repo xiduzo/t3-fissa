@@ -59,7 +59,6 @@ export class RoomService extends ServiceWithContext {
   };
 
   byId = async (pin: string) => {
-    console.log("byId", pin);
     return this.db.room.findUniqueOrThrow({
       where: { pin },
       include: {
@@ -73,7 +72,6 @@ export class RoomService extends ServiceWithContext {
   };
 
   detailsById = async (pin: string) => {
-    console.log("detailsById", pin);
     return this.db.room.findUniqueOrThrow({
       where: { pin },
       select: {

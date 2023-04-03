@@ -6,7 +6,7 @@ COPY . .
 
 RUN npm install -g pnpm
 RUN pnpm install
-RUN npx turbo db:generate
+RUN pnpx prisma generate
 
 WORKDIR /usr/src/app/apps/docker
 

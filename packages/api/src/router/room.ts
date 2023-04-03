@@ -1,17 +1,14 @@
 import { z } from "zod";
 
-
-
 import { RoomService } from "../service/RoomService";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
-
 
 const trackIds = Z_TRACKS;
 
 const nextTrack = z.object({
   pin: Z_PIN,
-  currentIndex: z.number().positive()
+  currentIndex: z.number().min(0),
 });
 
 export const roomRouter = createTRPCRouter({

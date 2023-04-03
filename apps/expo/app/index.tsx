@@ -53,8 +53,6 @@ const Rejoin = () => {
   const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
   const { data } = useGetRoomDetails(value!);
 
-  console.log("rejoin", value);
-
   if (!value) return <View />; // no pin stored
   if (!data) return <View />; // no room found
 
