@@ -12,4 +12,4 @@ export const useGetRoomDetails = (pin: string) => {
     refetchInterval: 5000,
     enabled: !!pin,
   });
-}
+};

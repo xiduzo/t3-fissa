@@ -2,18 +2,19 @@ import { FC } from "react";
 import { Button } from "react-native";
 import { useSearchParams } from "expo-router";
 
+import { useGetRoom, useRestartRoom } from "../../../hooks";
 import { useAuth } from "../../../providers";
-import { api } from "../../../utils";
 import { EmptyState } from "../../shared";
 
 export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
 
-  const { data: room } = api.room.byId.useQuery(pin!);
+  const { data: room } = useGetRoom(pin!);
+  const { mutateAsync } = useRestartRoom(pin!);
 
   const isPlaying = (room?.currentIndex ?? -1) >= 0;
-  const isOwner = user?.id === room?.userId;
+  const isOwner = user?.email === room?.by.email;
 
   if (isLoading)
     return <EmptyState icon="🐕" title="Fetching tracks" subtitle="Good boy" />;
@@ -25,7 +26,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
         title="This fissa is asleep"
         subtitle={!isOwner && "Poke your host to continue"}
       >
-        {isOwner && <Button title="Continue fissa" />}
+        {isOwner && <Button onPress={mutateAsync} title="Continue fissa" />}
       </EmptyState>
     );
 

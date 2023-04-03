@@ -34,6 +34,8 @@ export const ProgressBar: FC<Props> = ({
       style={{ backgroundColor: theme["100"] + "20" }}
     >
       <LinearGradient
+        start={[0, 0]}
+        end={[1, 1]}
         colors={theme.gradient}
         className="h-1.5 rounded-r-md"
         style={{ flex: progress }}
