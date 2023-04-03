@@ -16,7 +16,9 @@ import { api } from "./utils/api";
 const timeouts = new Map<string, NodeJS.Timeout>();
 
 const startTimeouts = async () => {
+  console.info("Fetching rooms...");
   const rooms = await api.room.all.query();
+  console.info(`Found ${rooms.length} active rooms`);
 
   timeouts.forEach(clearTimeout);
   timeouts.clear();
