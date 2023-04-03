@@ -215,58 +215,66 @@ export class RoomService extends ServiceWithContext {
 
     const { access_token } = room.by.accounts[0]!;
 
-    const isPlaying = service.isStillPlaying(access_token!);
+    try {
+      const isPlaying = service.isStillPlaying(access_token!);
 
-    const currentTrack = room.tracks[room.currentIndex];
+      const currentTrack = room.tracks[room.currentIndex];
 
-    const removeVotes = this.db.vote.deleteMany({
-      where: { pin, trackId: currentTrack!.trackId },
-    });
-
-    const nextIndex = room.currentIndex + 1;
-    const nextTrack = room.tracks[nextIndex]!;
-    const shouldAddNewTracks = nextIndex + 3 > room.tracks.length;
-
-    if (shouldAddNewTracks) {
-      const recommendations = await service.getRecommendedTracks(
-        access_token!,
-        room.tracks
-          .slice(nextIndex, room.tracks.length)
-          .map(({ trackId }) => trackId),
-      );
-
-      await this.db.track.createMany({
-        data: recommendations.map((track, index) => ({
-          pin,
-          trackId: track.id,
-          durationMs: track.duration_ms,
-          index: room.tracks.length + index,
-        })),
+      const removeVotes = this.db.vote.deleteMany({
+        where: { pin, trackId: currentTrack!.trackId },
       });
-    }
 
-    if (!(await isPlaying)) {
+      const nextIndex = room.currentIndex + 1;
+      const nextTrack = room.tracks[nextIndex]!;
+      const shouldAddNewTracks = nextIndex + 3 > room.tracks.length;
+
+      if (shouldAddNewTracks) {
+        const recommendations = await service.getRecommendedTracks(
+          access_token!,
+          room.tracks
+            .slice(nextIndex, room.tracks.length)
+            .map(({ trackId }) => trackId),
+        );
+
+        await this.db.track.createMany({
+          data: recommendations.map((track, index) => ({
+            pin,
+            trackId: track.id,
+            durationMs: track.duration_ms,
+            index: room.tracks.length + index,
+          })),
+        });
+      }
+
+      if (!(await isPlaying)) {
+        return this.db.room.update({
+          where: { pin },
+          data: { currentIndex: -1 },
+        });
+      }
+
+      await service.playTrack(access_token!, nextTrack.trackId);
+
+      await this.db.room.update({
+        where: { pin },
+        data: {
+          expectedEndTime: addMilliseconds(new Date(), nextTrack.durationMs),
+          currentIndex: { increment: 1 },
+          lastPlayedIndex: { increment: 1 },
+        },
+      });
+
+      await removeVotes;
+
+      if (shouldAddNewTracks) {
+        await this.reorderPlaylist(pin);
+      }
+    } catch (e) {
+      console.error(e);
       return this.db.room.update({
         where: { pin },
         data: { currentIndex: -1 },
       });
-    }
-
-    await service.playTrack(access_token!, nextTrack.trackId);
-
-    await this.db.room.update({
-      where: { pin },
-      data: {
-        expectedEndTime: addMilliseconds(new Date(), nextTrack.durationMs),
-        currentIndex: { increment: 1 },
-        lastPlayedIndex: { increment: 1 },
-      },
-    });
-
-    await removeVotes;
-
-    if (shouldAddNewTracks) {
-      await this.reorderPlaylist(pin);
     }
   };
 
