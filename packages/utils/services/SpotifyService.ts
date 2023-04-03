@@ -37,6 +37,15 @@ export class SpotifyService {
     return body.is_playing;
   };
 
+  getRecommendedTracks = async (accessToken:string, seedTrackIds: string[]) => {
+    this.spotify.setAccessToken(accessToken);
+    const { body } = await this.spotify.getRecommendations({
+      seed_tracks: seedTrackIds,
+      limit: 5,
+    });
+    return body.tracks;
+  };
+
   private getActiveDevice = async (accessToken: string) => {
     this.spotify.setAccessToken(accessToken);
     const { body } = await this.spotify.getMyDevices();

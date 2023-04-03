@@ -1,9 +1,5 @@
 import cron from "node-cron";
-import {
-  addMinutes,
-  differenceInMilliseconds,
-  isFuture,
-} from "@fissa/utils";
+import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
 
 import { api } from "./utils/api";
 
@@ -17,26 +13,36 @@ import { api } from "./utils/api";
 //  # │ │ │ │ │ │
 //  # * * * * * *
 
-const INTERVAL = 1;
+const timeouts = new Map<string, NodeJS.Timeout>();
 
-// cron.schedule(`30 */${INTERVAL} * * * *`, async () => {
-cron.schedule(`*/10 * * * * *`, async () => {
-  console.log("fetch rooms");
+const startTimeouts = async () => {
   const rooms = await api.room.all.query();
 
-  console.log(rooms);
+  timeouts.forEach(clearTimeout);
+  timeouts.clear();
 
-  rooms.forEach(async (room) => {
-    const nextRound = addMinutes(room.expectedEndTime, INTERVAL);
+  rooms.forEach((room) => {
+    const endTime = addSeconds(room.expectedEndTime, -2);
 
-    if (isFuture(nextRound)) return;
-    console.log(differenceInMilliseconds(room.expectedEndTime, new Date()));
-
-    setTimeout(
-      () => api.room.nextTrack.mutate(room.pin),
-      differenceInMilliseconds(room.expectedEndTime, new Date()) - 5000,
+    console.info(
+      `next track for ${room.pin} in ${differenceInMilliseconds(
+        endTime,
+        new Date(),
+      )}ms`,
     );
-  });
-});
 
-console.log("started");
+    const timeout = setTimeout(async () => {
+      try {
+        await api.room.nextTrack.mutate(room);
+      } catch (error) {
+        console.error(error);
+      }
+    }, differenceInMilliseconds(endTime, new Date()));
+
+    timeouts.set(room.pin, timeout);
+  });
+};
+
+cron.schedule(`*/1 * * * *`, startTimeouts);
+
+startTimeouts();

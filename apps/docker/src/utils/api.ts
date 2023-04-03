@@ -12,10 +12,12 @@ const getBaseUrl = () => {
    * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
    * you don't have anything else running on it, or you'd have to change it.
    */
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
+  if (process.env.VERCEL_URL) return process.env.VERCEL_URL; // SSR should use vercel url
 
   return `http://localhost:3000`; // dev SSR should use localhost
 };
+
+console.log(getBaseUrl());
 
 export const api = createTRPCProxyClient<AppRouter>({
   transformer,
