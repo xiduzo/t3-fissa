@@ -1,12 +1,13 @@
 {
-  "name": "@fissa/docker",
+  "name": "@fissa/sync",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpx ts-node src/index.ts"
+    "dev": "pnpx ts-node src/index.ts",
+    "start": "echo \"start\""
   },
   "keywords": [],
   "author": "",
