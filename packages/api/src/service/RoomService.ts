@@ -159,7 +159,7 @@ export class RoomService extends ServiceWithContext {
     if (room.userId !== this.ctx.session?.user.id)
       throw new Error("Not authorized");
 
-    return this.nextTrack(pin, room.currentIndex);
+    return this.nextTrack(pin, room.currentIndex, true);
   };
 
   restart = async (pin: string) => {
@@ -199,23 +199,12 @@ export class RoomService extends ServiceWithContext {
     });
   };
 
-  nextTrack = async (pin: string, currentIndex: number) => {
-    const room = await this.db.room.findUniqueOrThrow({
-      where: { pin },
-      select: {
-        currentIndex: true,
-        expectedEndTime: true,
-        by: {
-          select: {
-            accounts: { select: { access_token: true }, take: 1 },
-          },
-        },
-        tracks: {
-          select: { trackId: true, durationMs: true },
-          orderBy: { index: "asc" },
-        },
-      },
-    });
+  nextTrack = async (
+    pin: string,
+    currentIndex: number,
+    instantPlay = false,
+  ) => {
+    const room = await this.getRoomDetailedInformation(pin);
 
     if (room.currentIndex !== currentIndex) return;
 
@@ -255,7 +244,7 @@ export class RoomService extends ServiceWithContext {
       if (!(await isPlaying)) return this.stopRoom(pin);
 
       await this.playTrack(
-        room.expectedEndTime,
+        instantPlay ? new Date() : room.expectedEndTime,
         nextTrack.trackId,
         access_token!,
       );
@@ -299,6 +288,25 @@ export class RoomService extends ServiceWithContext {
         expectedEndTime: addMilliseconds(new Date(), durationMs),
         currentIndex: { increment: 1 },
         lastPlayedIndex: { increment: 1 },
+      },
+    });
+  };
+
+  private getRoomDetailedInformation = async (pin: string) => {
+    return await this.db.room.findUniqueOrThrow({
+      where: { pin },
+      select: {
+        currentIndex: true,
+        expectedEndTime: true,
+        by: {
+          select: {
+            accounts: { select: { access_token: true }, take: 1 },
+          },
+        },
+        tracks: {
+          select: { trackId: true, durationMs: true },
+          orderBy: { index: "asc" },
+        },
       },
     });
   };
