@@ -1,7 +1,6 @@
 import randomize from "randomatic";
 import SpotifyWebApi from "spotify-web-api-js";
 
-export * from "date-fns";
 
 export { randomize };
 
@@ -14,5 +13,7 @@ export * from "./array";
 export * from "./services";
 export * from "./constants";
 export * from "./spotify";
+
+export * from './date';
 
 export { SpotifyWebApi };

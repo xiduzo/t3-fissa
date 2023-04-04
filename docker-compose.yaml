@@ -10,11 +10,6 @@ services:
     environment:
       POSTGRES_PASSWORD: ${PGPASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust
-  sync:
-    build:
-      context: .
-    environment:
-      VERCEL_URL: "https://t3-fissa-nextjs.vercel.app"
 
 volumes:
   db_data:

@@ -1,17 +1,7 @@
 import cron from "node-cron";
-import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
+import { addSeconds, differenceInMilliseconds } from "@fissa/utils/date";
 
 import { api } from "./utils/api";
-
-//  # ┌────────────── second (optional)
-//  # │ ┌──────────── minute
-//  # │ │ ┌────────── hour
-//  # │ │ │ ┌──────── day of month
-//  # │ │ │ │ ┌────── month
-//  # │ │ │ │ │ ┌──── day of week
-//  # │ │ │ │ │ │
-//  # │ │ │ │ │ │
-//  # * * * * * *
 
 const timeouts = new Map<string, NodeJS.Timeout>();
 
@@ -45,6 +35,15 @@ const startTimeouts = async () => {
   });
 };
 
+//  # ┌────────────── second (optional)
+//  # │ ┌──────────── minute
+//  # │ │ ┌────────── hour
+//  # │ │ │ ┌──────── day of month
+//  # │ │ │ │ ┌────── month
+//  # │ │ │ │ │ ┌──── day of week
+//  # │ │ │ │ │ │
+//  # │ │ │ │ │ │
+//  # * * * * * *
 cron.schedule(`*/1 * * * *`, startTimeouts);
 
 startTimeouts();
