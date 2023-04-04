@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SpotifyService } from "@fissa/utils";
 
 import { Z_TRACKS } from "../router/constants";
 import { ServiceWithContext } from "../utils/context";
@@ -33,5 +34,27 @@ export class TrackService extends ServiceWithContext {
     });
 
     return existingTracks;
+  };
+
+  addRecommendedTracks = async (
+    pin: string,
+    trackIds: string[],
+    startingIndex: number,
+    accessToken: string,
+  ) => {
+    const service = new SpotifyService();
+    const recommendations = await service.getRecommendedTracks(
+      accessToken,
+      trackIds,
+    );
+
+    return this.db.track.createMany({
+      data: recommendations.map((track, index) => ({
+        pin,
+        trackId: track.id,
+        durationMs: track.duration_ms,
+        index: startingIndex + index,
+      })),
+    });
   };
 }

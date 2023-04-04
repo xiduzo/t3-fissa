@@ -1,7 +1,13 @@
 import { Room } from "@fissa/db";
-import { SpotifyService, addMilliseconds, randomize } from "@fissa/utils";
+import {
+  SpotifyService,
+  addMilliseconds,
+  differenceInMilliseconds,
+  randomize,
+} from "@fissa/utils";
 
 import { ServiceWithContext } from "../utils/context";
+import { TrackService } from "./TrackService";
 
 export class RoomService extends ServiceWithContext {
   all = async () => {
@@ -194,11 +200,11 @@ export class RoomService extends ServiceWithContext {
   };
 
   nextTrack = async (pin: string, currentIndex: number) => {
-    const service = new SpotifyService();
     const room = await this.db.room.findUniqueOrThrow({
       where: { pin },
       select: {
         currentIndex: true,
+        expectedEndTime: true,
         by: {
           select: {
             accounts: { select: { access_token: true }, take: 1 },
@@ -214,71 +220,95 @@ export class RoomService extends ServiceWithContext {
     if (room.currentIndex !== currentIndex) return;
 
     const { access_token } = room.by.accounts[0]!;
+    const { tracks } = room;
 
     try {
-      const isPlaying = service.isStillPlaying(access_token!);
+      const spotifyService = new SpotifyService();
 
-      const currentTrack = room.tracks[room.currentIndex];
+      const isPlaying = spotifyService.isStillPlaying(access_token!);
+
+      const currentTrack = tracks[room.currentIndex];
 
       const removeVotes = this.db.vote.deleteMany({
         where: { pin, trackId: currentTrack!.trackId },
       });
 
       const nextIndex = room.currentIndex + 1;
-      const nextTrack = room.tracks[nextIndex]!;
-      const shouldAddNewTracks = nextIndex + 3 > room.tracks.length;
+      const nextTrack = tracks[nextIndex]!;
+      const shouldAddNewTracks = nextIndex + 3 > tracks.length;
 
       if (shouldAddNewTracks) {
-        const recommendations = await service.getRecommendedTracks(
+        const trackService = new TrackService(this.ctx);
+
+        const trackIds = tracks
+          .slice(nextIndex, tracks.length)
+          .map(({ trackId }) => trackId);
+
+        await trackService.addRecommendedTracks(
+          pin,
+          trackIds,
+          tracks.length,
           access_token!,
-          room.tracks
-            .slice(nextIndex, room.tracks.length)
-            .map(({ trackId }) => trackId),
         );
-
-        await this.db.track.createMany({
-          data: recommendations.map((track, index) => ({
-            pin,
-            trackId: track.id,
-            durationMs: track.duration_ms,
-            index: room.tracks.length + index,
-          })),
-        });
       }
 
-      if (!(await isPlaying)) {
-        return this.db.room.update({
-          where: { pin },
-          data: { currentIndex: -1 },
-        });
-      }
+      if (!(await isPlaying)) return this.stopRoom(pin);
 
-      await service.playTrack(access_token!, nextTrack.trackId);
+      const playPromise = this.playTrack(
+        room.expectedEndTime,
+        nextTrack.trackId,
+        access_token!,
+      );
 
-      await this.db.room.update({
-        where: { pin },
-        data: {
-          expectedEndTime: addMilliseconds(new Date(), nextTrack.durationMs),
-          currentIndex: { increment: 1 },
-          lastPlayedIndex: { increment: 1 },
-        },
-      });
+      await this.roomPlaysNextTrack(pin, nextTrack.durationMs);
 
       await removeVotes;
 
-      if (shouldAddNewTracks) {
-        await this.reorderPlaylist(pin);
-      }
+      if (shouldAddNewTracks) await this.reorderPlaylist(pin);
+
+      await playPromise;
     } catch (e) {
       console.error(e);
-      return this.db.room.update({
-        where: { pin },
-        data: { currentIndex: -1 },
-      });
+      return this.stopRoom(pin);
     }
   };
 
   private generatePin = () => randomize("A", 4);
+
+  private playTrack = async (
+    expectedEndTime: Date,
+    trackId: string,
+    accessToken: string,
+  ) => {
+    const service = new SpotifyService();
+    return new Promise((resolve) => {
+      setTimeout(async () => {
+        try {
+          await service.playTrack(accessToken, trackId);
+        } finally {
+          resolve(true);
+        }
+      }, differenceInMilliseconds(expectedEndTime, new Date()));
+    });
+  };
+
+  private stopRoom = async (pin: string) => {
+    return this.db.room.update({
+      where: { pin },
+      data: { currentIndex: -1 },
+    });
+  };
+
+  private roomPlaysNextTrack = async (pin: string, durationMs: number) => {
+    await this.db.room.update({
+      where: { pin },
+      data: {
+        expectedEndTime: addMilliseconds(new Date(), durationMs),
+        currentIndex: { increment: 1 },
+        lastPlayedIndex: { increment: 1 },
+      },
+    });
+  };
 }
 
 const noNoWords = [
