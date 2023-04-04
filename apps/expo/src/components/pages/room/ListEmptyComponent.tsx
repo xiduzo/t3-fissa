@@ -1,10 +1,9 @@
 import { FC } from "react";
-import { Button } from "react-native";
 import { useSearchParams } from "expo-router";
 
 import { useGetRoom, useRestartRoom } from "../../../hooks";
 import { useAuth } from "../../../providers";
-import { EmptyState } from "../../shared";
+import { Button, EmptyState } from "../../shared";
 
 export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { pin } = useSearchParams();
