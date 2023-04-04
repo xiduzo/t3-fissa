@@ -254,19 +254,16 @@ export class RoomService extends ServiceWithContext {
 
       if (!(await isPlaying)) return this.stopRoom(pin);
 
-      const playPromise = this.playTrack(
+      await this.playTrack(
         room.expectedEndTime,
         nextTrack.trackId,
         access_token!,
       );
-
       await this.roomPlaysNextTrack(pin, nextTrack.durationMs);
 
       await removeVotes;
 
       if (shouldAddNewTracks) await this.reorderPlaylist(pin);
-
-      await playPromise;
     } catch (e) {
       console.error(e);
       return this.stopRoom(pin);
@@ -281,21 +278,11 @@ export class RoomService extends ServiceWithContext {
     accessToken: string,
   ) => {
     const service = new SpotifyService();
-    console.log(
-      "Playing track in: ",
-      differenceInMilliseconds(expectedEndTime, new Date()),
-      performance.now(),
-    );
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        try {
-          console.log("Playing track now", performance.now());
-          await service.playTrack(accessToken, trackId);
-        } finally {
-          resolve(true);
-        }
-      }, differenceInMilliseconds(expectedEndTime, new Date()));
-    });
+    const playIn = differenceInMilliseconds(expectedEndTime, new Date());
+    console.log("Playing track in: ", playIn, performance.now());
+    await new Promise((resolve) => setTimeout(resolve, playIn));
+    console.log("Playing track now", performance.now());
+    await service.playTrack(accessToken, trackId);
   };
 
   private stopRoom = async (pin: string) => {
