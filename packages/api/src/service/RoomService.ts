@@ -284,10 +284,12 @@ export class RoomService extends ServiceWithContext {
     console.log(
       "Playing track in: ",
       differenceInMilliseconds(expectedEndTime, new Date()),
+      performance.now(),
     );
     return new Promise((resolve) => {
       setTimeout(async () => {
         try {
+          console.log("Playing track now", performance.now());
           await service.playTrack(accessToken, trackId);
         } finally {
           resolve(true);
