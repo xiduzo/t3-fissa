@@ -8,6 +8,7 @@ export const ProgressBar: FC<Props> = ({
   expectedEndTime,
   track,
   disabled,
+  inverted
 }) => {
   const [progress, setProgress] = useState(0);
 
@@ -31,7 +32,7 @@ export const ProgressBar: FC<Props> = ({
   return (
     <View
       className={progressBar({ disabled: Boolean(disabled) || !progress })}
-      style={{ backgroundColor: theme["100"] + "20" }}
+      style={{ backgroundColor: theme[inverted ? "900" : "100"] + "20" }}
     >
       <LinearGradient
         start={[0, 0]}
@@ -55,4 +56,5 @@ const progressBar = cva("flex-row overflow-hidden rounded-md", {
 interface Props extends ViewProps, VariantProps<typeof progressBar> {
   expectedEndTime: Date;
   track: SpotifyApi.TrackObjectFull;
+  inverted?: boolean
 }

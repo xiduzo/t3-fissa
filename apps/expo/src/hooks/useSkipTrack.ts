@@ -11,15 +11,16 @@ export const useSkipTrack = (
   const queryClient = api.useContext();
 
   const { mutate, mutateAsync, ...rest } = endpoint({
-    onSuccess: async (...props) => {
-      await queryClient.room.byId.invalidate();
+    ...callbacks,
+    onSuccess: (...props) => {
+      queryClient.room.byId.invalidate();
       callbacks.onSuccess?.(...props);
     },
   });
 
   return {
+    ...rest,
     mutate: () => mutate(pin),
     mutateAsync: async () => mutateAsync(pin),
-    ...rest,
   };
 };

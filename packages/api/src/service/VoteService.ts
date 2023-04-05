@@ -20,8 +20,14 @@ export class VoteService extends ServiceWithContext {
   };
 
   getVoteFromUser = async (pin: string, trackId: string) => {
-    return this.db.vote.findFirstOrThrow({
-      where: { pin, trackId, userId: this.ctx.session?.user.id },
+    return this.db.vote.findUnique({
+      where: {
+        trackId_userId_pin: {
+          pin,
+          trackId,
+          userId: this.ctx.session?.user.id!,
+        },
+      },
     });
   };
 

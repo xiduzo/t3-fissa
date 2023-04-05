@@ -56,6 +56,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
           inverted
           extra={
             <ProgressBar
+              inverted
               track={activeTrack!}
               expectedEndTime={data.expectedEndTime}
               disabled={data.currentIndex < 0}
@@ -86,17 +87,15 @@ const SkipTrackAction: FC<{
   const { user } = useAuth();
   const { mutateAsync, isLoading } = useSkipTrack(pin, {
     onSuccess: () => {
-      onPress();
       toast.info({
         icon: "🐉",
         message: "Use your powers wisely",
       });
     },
+    onMutate: onPress,
   });
 
-  const isOwner = useMemo(() => {
-    return owner === user?.email;
-  }, [owner, user]);
+  const isOwner = useMemo(() => owner === user?.email, [owner, user]);
 
   return (
     <Action

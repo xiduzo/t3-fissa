@@ -19,6 +19,7 @@ export const useAddTracks = (
   });
 
   return {
+    ...rest,
     mutate: (tracks: SpotifyApi.TrackObjectFull[]) =>
       mutate({
         pin,
@@ -35,6 +36,5 @@ export const useAddTracks = (
           durationMs: track.duration_ms,
         })),
       }),
-    ...rest,
   };
 };

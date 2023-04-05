@@ -14,15 +14,15 @@ export const useCreateVote = (
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
     onSuccess: async (...props) => {
-      await queryClient.vote.byTrackFromUser.invalidate();
-      await queryClient.room.byId.invalidate();
       callbacks.onSuccess?.(...props);
+      queryClient.vote.byTrackFromUser.invalidate();
+      queryClient.room.byId.invalidate();
     },
   });
 
   return {
+    ...rest,
     mutate: async (vote: number) => mutate({ pin, trackId, vote }),
     mutateAsync: async (vote: number) => mutateAsync({ pin, trackId, vote }),
-    ...rest,
   };
 };
