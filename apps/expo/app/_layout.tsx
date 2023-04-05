@@ -20,7 +20,7 @@ const RootLayout = () => {
                 header: (props) => <Header {...props} />,
               }}
             />
-            <StatusBar />
+            <StatusBar style="light" />
           </SafeAreaProvider>
         </SpotifyProvider>
         <ToastContainer />

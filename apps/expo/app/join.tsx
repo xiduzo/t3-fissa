@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   NativeSyntheticEvent,
   SafeAreaView,
   TextInput,
   TextInputChangeEventData,
-  TextInputKeyPressEventData,
+  TextInputTextInputEventData,
   View,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
@@ -19,13 +19,12 @@ import { toast } from "../src/utils/Toast";
 import { api } from "../src/utils/api";
 
 const Join = () => {
-  const [pin, setPin] = useState(["", "", "", ""]);
   const { replace } = useRouter();
   const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
+  const [pin, setPin] = useState(["", "", "", ""]);
 
   api.room.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),
-
     onSuccess: async ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
       await save(pin);
@@ -47,62 +46,45 @@ const Join = () => {
     [key1, key2, key3, key4],
   );
 
-  const handleChange = useCallback(
-    (index: number) => (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-      const newCode = [...pin];
-      const input = e.nativeEvent.text.toUpperCase();
-
-      if (!input.match(/\w/)) return;
-      if (input.match(/\d/)) return;
-
-      newCode[index] = input;
-      setPin(newCode);
-
-      if (index >= pin.length) return;
-
-      const next = keys[index + 1];
-      next?.current?.focus();
+  const handleSelect = useCallback(
+    (selectedIndex: number) => () => {
+      keys.forEach(({ current }, index) => {
+        if (index < selectedIndex) return;
+        current?.clear();
+      });
     },
-    [pin],
+    [],
   );
 
-  const handleBack = useCallback(
+  const handlePress = useCallback(
+    (index: number) => (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+      const { text } = e.nativeEvent;
+      const nextIndex = index + (text === "" ? -1 : 1);
+      const next = keys[nextIndex];
+      next?.current?.focus();
+
+      setPin((prev) => {
+        const newPin = [...prev];
+        newPin[index] = text;
+        return newPin;
+      });
+    },
+    [keys],
+  );
+
+  const handleTextInput = useCallback(
     (index: number) =>
-      (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-        if (index === 0) return;
-        if (event.nativeEvent?.key.toLowerCase() !== "backspace") return;
-        keys[index - 1]?.current?.focus();
+      (e: NativeSyntheticEvent<TextInputTextInputEventData>) => {
+        const { text, previousText } = e.nativeEvent;
+        if (text || previousText) return;
+
+        const next = keys[index - 1];
+        next?.current?.focus();
       },
     [keys],
   );
 
-  const handleSelect = useCallback(
-    (index: number) => () => {
-      const newCode = [...pin].map((code, codeIndex) => {
-        if (codeIndex >= index) return "";
-        return code;
-      });
-
-      setPin(newCode);
-
-      const emptyIndex = pin.findIndex((code) => code === "");
-      if (emptyIndex === -1) return;
-
-      keys[emptyIndex]?.current?.focus();
-    },
-    [pin],
-  );
-
-  const reset = useCallback(() => {
-    setPin(["", "", "", ""]);
-    setTimeout(() => {
-      keys[0]?.current?.focus();
-    }, 0);
-  }, [keys]);
-
-  useEffect(() => {
-    keys[0]?.current?.focus();
-  }, [keys]);
+  const reset = useCallback(() => keys[0]?.current?.focus(), [keys]);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
@@ -112,13 +94,17 @@ const Join = () => {
           Enter the fissa code
         </Typography>
         <View className="flex flex-row justify-around">
-          {pin.map((value, index) => (
-            <View className="flex w-[20vw] px-2" key={index}>
+          {keys.map((key, index) => (
+            <View
+              className="flex w-[20vw] px-2"
+              key={key.current?.props?.id ?? index}
+            >
               <TextInput
-                ref={keys[index]}
-                value={value}
-                onKeyPress={handleBack(index)}
-                onChange={handleChange(index)}
+                autoFocus={index === 0}
+                ref={key}
+                editable={pin.includes("")}
+                onTextInput={handleTextInput(index)}
+                onChange={handlePress(index)}
                 onFocus={handleSelect(index)}
                 placeholder="⦚"
                 maxLength={1}
