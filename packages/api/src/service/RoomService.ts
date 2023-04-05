@@ -315,10 +315,10 @@ export class RoomService extends ServiceWithContext {
       })
       .filter(Boolean);
 
-    const fakeUpdates = updates.map((update, index) => {
-      update.data.index = tracks.length + index + 100; // Set to an index which does not exist
-      return update;
-    });
+    const fakeUpdates = updates.map((update, index) => ({
+      ...update,
+      data: { ...update.data, index: index + tracks.length + 100 }, // Set to an index which does not exist
+    }));
 
     return { updates, fakeUpdates, newCurrentIndex };
   };
