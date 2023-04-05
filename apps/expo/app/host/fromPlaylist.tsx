@@ -2,18 +2,14 @@ import { useCallback, useState } from "react";
 import { SafeAreaView, View } from "react-native";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { getPlaylistTracks } from "@fissa/utils";
+import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 
-import {
-  Button,
-  PlaylistList,
-  PlaylistListItem,
-  Popover,
-  Typography,
-} from "../../src/components";
+
+
+import { Button, PlaylistList, PlaylistListItem, Popover, Typography } from "../../src/components";
 import { useCreateRoom } from "../../src/components/pages/room/hooks/useCreateRoom";
-import { useSpotify } from "../../src/providers";
 import { toast } from "../../src/utils";
+
 
 const FromPlaylist = () => {
   const spotify = useSpotify();

@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "expo-router";
-import { splitInChunks, useTracks } from "@fissa/utils";
+import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useGetRoomDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
@@ -10,7 +10,6 @@ import { Action, Button, Popover } from "../../shared";
 export const PinCode = () => {
   const { pin } = useSearchParams();
   const { push } = useRouter();
-  const { user, promptAsync } = useAuth();
 
   const [showRoomPopover, setShowRoomPopover] = useState(false);
 
@@ -33,18 +32,9 @@ export const PinCode = () => {
         title={pin!}
         size="sm"
         variant="text"
-        icon="information-circle-outline"
+        icon="info-circle"
       />
       <Popover visible={showRoomPopover} onRequestClose={toggleRoomPopover}>
-        {!user && (
-          <Button
-            inverted
-            variant="text"
-            title="Sign in to create a playlist"
-            className="mb-4"
-            onPress={() => promptAsync()}
-          />
-        )}
         <Action
           title="Leave session"
           subtitle="No worries, you can come back"
@@ -65,7 +55,8 @@ interface ActionProps {
 }
 
 const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
-  const { user, spotify } = useAuth();
+  const { user } = useAuth();
+  const spotify = useSpotify();
 
   const { data } = useGetTracks(pin);
 
@@ -74,12 +65,11 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
   const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
   const handleCreatePlaylist = useCallback(async () => {
-    if (!user) return;
     setIsCreatingPlaylist(true);
     toast.info({ message: "Creating playlist" });
     onRequestClose();
     spotify
-      .createPlaylist(user.id, {
+      .createPlaylist(user!.id, {
         name: `Fissa ${pin}`,
         description: "Playlist created by Fissa",
       })
@@ -102,30 +92,30 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
       title="Create playlist in spotify"
       subtitle="And keep this fissa's memories"
       inverted
-      disabled={!user || isCreatingPlaylist}
+      disabled={isCreatingPlaylist}
       onPress={handleCreatePlaylist}
-      icon="musical-note"
+      icon="spotify"
     />
   );
 };
 
 const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
-  const { user, spotify } = useAuth();
+  const spotify = useSpotify();
+  const { user } = useAuth();
+
   const { data } = useGetRoomDetails(pin);
 
   const [speakers, setSpeakers] = useState<SpotifyApi.UserDevice[]>([]);
 
   useEffect(() => {
-    if (!user) return;
-
     spotify.getMyDevices().then(({ devices }) => {
       setSpeakers(devices);
     });
-  }, [user, spotify]);
+  }, [spotify]);
 
   return (
     <Action
-      hidden={!data || !user || data.by.email !== user.email}
+      hidden={!data || data.by.email !== user!.email}
       title={
         speakers.find((speaker) => speaker.name)?.name ?? "No active speaker"
       }
@@ -133,7 +123,7 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
       inverted
       // disabled={!speakers.length}
       disabled
-      icon="headset"
+      icon="headphones"
     />
   );
 };

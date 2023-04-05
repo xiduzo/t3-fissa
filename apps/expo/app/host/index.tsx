@@ -2,11 +2,14 @@ import { useCallback } from "react";
 import { SafeAreaView, View } from "react-native";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
+import { useSpotify } from "@fissa/utils";
+
+
 
 import { Button, Typography } from "../../src/components";
 import { useCreateRoom } from "../../src/components/pages/room/hooks/useCreateRoom";
-import { useSpotify } from "../../src/providers";
 import { toast } from "../../src/utils";
+
 
 const Host = () => {
   const spotify = useSpotify();

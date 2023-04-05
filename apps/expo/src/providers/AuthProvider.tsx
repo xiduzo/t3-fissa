@@ -1,34 +1,16 @@
 import * as React from "react";
-import {
-  FC,
-  PropsWithChildren,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { FC, PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AppState, Platform } from "react-native";
-import {
-  AuthRequestConfig,
-  AuthRequestPromptOptions,
-  AuthSessionResult,
-  DiscoveryDocument,
-  ResponseType,
-  makeRedirectUri,
-  useAuthRequest,
-} from "expo-auth-session";
+import { AuthRequestConfig, AuthRequestPromptOptions, AuthSessionResult, DiscoveryDocument, ResponseType, makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import Constants from "expo-constants";
-import { SpotifyWebApi, differenceInMinutes, useInterval } from "@fissa/utils";
+import { differenceInMinutes, useInterval, useSpotify } from "@fissa/utils";
 
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-} from "../hooks/useEncryptedStorage";
+
+
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
 import { toast } from "../utils";
 import { api } from "../utils/api";
+
 
 const REFRESH_INTERVAL_MINUTES = 45;
 
@@ -39,11 +21,10 @@ const SpotifyContext = createContext({
     });
   },
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
-  spotify: new SpotifyWebApi(),
 });
 
 export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
-  const spotify = useRef(new SpotifyWebApi());
+  const spotify = useSpotify();
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
 
   const lastRefreshTokenFetchTime = useRef(new Date());
@@ -66,8 +47,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
     try {
       const { access_token, session_token } = await refresh(refreshToken);
-      spotify.current.setAccessToken(access_token);
-      spotify.current.getMe().then(setUser);
+      spotify.setAccessToken(access_token);
+      spotify.getMe().then(setUser);
       await saveSessionToken(session_token);
       lastRefreshTokenFetchTime.current = new Date();
     } catch (e) {
@@ -93,8 +74,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
     toast.hide();
 
-    spotify.current.setAccessToken(access_token);
-    spotify.current.getMe().then(setUser);
+    spotify.setAccessToken(access_token);
+    spotify.getMe().then(setUser);
     await saveRefreshToken(refresh_token);
     await saveSessionToken(session_token);
   }, [response, request, setUser]);
@@ -121,19 +102,13 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [readTokenFromStorage]);
 
   return (
-    <SpotifyContext.Provider
-      value={{ promptAsync, user, spotify: spotify.current }}
-    >
+    <SpotifyContext.Provider value={{ promptAsync, user }}>
       {children}
     </SpotifyContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(SpotifyContext);
-export const useSpotify = () => {
-  const { spotify } = useAuth();
-  return spotify;
-};
 
 const config: AuthRequestConfig = {
   scopes: [

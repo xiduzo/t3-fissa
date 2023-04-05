@@ -10,6 +10,7 @@ interface SpotifyState {
   addTracks: (tracks: SpotifyApi.TrackObjectFull[]) => void;
   playLists: SpotifyApi.PlaylistObjectSimplified[];
   setPlayLists: (playLists: SpotifyApi.PlaylistObjectSimplified[]) => void;
+  spotify: SpotifyWebApi.SpotifyWebApiJs;
 }
 
 const useSpotifyStore = create<SpotifyState>((set) => ({
@@ -18,22 +19,21 @@ const useSpotifyStore = create<SpotifyState>((set) => ({
     set((state) => ({ tracks: newTracks(state.tracks, tracks) })),
   playLists: [],
   setPlayLists: (playLists) => set(() => ({ playLists })),
+  spotify: new SpotifyWebApi(),
 }));
 
 const newTracks = (
   currentTracks: SpotifyApi.TrackObjectFull[],
   newTracks: SpotifyApi.TrackObjectFull[],
-) => {
-  return [
-    ...currentTracks.filter(
-      ({ id }) => !newTracks.find((track) => track.id === id),
-    ),
-    ...newTracks,
-  ];
-};
+) => [
+  ...currentTracks.filter(
+    ({ id }) => !newTracks.find((track) => track.id === id),
+  ),
+  ...newTracks,
+];
 
 export const useTracks = (trackIds?: string[]) => {
-  const { addTracks, tracks } = useSpotifyStore();
+  const { addTracks, tracks, spotify } = useSpotifyStore();
 
   const cachedTrackIds = useMemo(
     () => tracks.map(({ id }) => id),
@@ -56,23 +56,22 @@ export const useTracks = (trackIds?: string[]) => {
 
   useMemo(async () => {
     const promises = splitInChunks(uncachedTrackIds).map(async (chunk) => {
-      const { tracks } = await new SpotifyWebApi().getTracks(chunk);
+      console.log({ chunk });
+      // TODO: add chunk to ref so it wont be requested again
+      const { tracks } = await spotify.getTracks(chunk);
       return tracks;
     });
 
     const tracks = (await Promise.all(promises)).flat();
 
     if (tracks.length) addTracks(tracks);
-  }, [uncachedTrackIds, addTracks]);
+  }, [uncachedTrackIds, addTracks, spotify]);
 
   return requestedTracks;
 };
 
-export const usePlayLists = (
-  spotify: SpotifyWebApi.SpotifyWebApiJs = new SpotifyWebApi(),
-  user?: SpotifyApi.CurrentUsersProfileResponse,
-) => {
-  const { setPlayLists } = useSpotifyStore();
+export const usePlayLists = (user?: SpotifyApi.CurrentUsersProfileResponse) => {
+  const { setPlayLists, spotify } = useSpotifyStore();
 
   useMemo(async () => {
     const { items } = await spotify.getUserPlaylists(user?.id);
@@ -89,4 +88,9 @@ export const usePlayLists = (
   }, [setPlayLists, user]);
 
   return useSpotifyStore((state) => state.playLists);
+};
+
+export const useSpotify = () => {
+  const { spotify } = useSpotifyStore();
+  return spotify;
 };

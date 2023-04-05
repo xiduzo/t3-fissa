@@ -8,11 +8,10 @@ import {
   View,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
-import { getPlaylistTracks, useDebounce } from "@fissa/utils";
+import { getPlaylistTracks, useDebounce, useSpotify } from "@fissa/utils";
 
-import { useAuth } from "../../providers";
 import { BottomDrawer } from "./BottomDrawer";
 import { Button } from "./Button";
 import { EmptyState } from "./EmptyState";
@@ -28,7 +27,7 @@ export const PickTracks: FC<Props> = ({
   onAddTracks,
 }) => {
   const { back } = useRouter();
-  const { promptAsync, user, spotify } = useAuth();
+  const spotify = useSpotify();
 
   const inputRef = useRef<TextInput>(null);
   const [search, setSearch] = useState("");
@@ -127,7 +126,6 @@ export const PickTracks: FC<Props> = ({
           <Input
             startIcon="search"
             ref={inputRef}
-            editable={!!user}
             variant="contained"
             placeholder={`Search in ${selectedPlaylist?.name || "spotify"}`}
             value={search}
@@ -141,63 +139,53 @@ export const PickTracks: FC<Props> = ({
           onTrackPress={handleTrackPress}
           ListFooterComponent={<View className="pb-96" />}
           ListEmptyComponent={
-            user ? (
-              <View className="-mx-6">
-                {!selectedPlaylist && (
-                  <>
-                    <Typography variant="h1" className="m-6">
-                      Your playlists
-                    </Typography>
-                    <PlaylistList
-                      onPlaylistPress={setSelectedPlaylist}
-                      playlistEnd={
-                        <Ionicons
-                          name="chevron-forward"
-                          size={16}
-                          color={theme["100"] + "80"}
-                        />
-                      }
-                    />
-                  </>
-                )}
-                {selectedPlaylist && (
-                  <>
-                    <View className="m-6">
-                      <View className="h-40 w-40">
-                        <Image
-                          className="h-full w-full"
-                          source={selectedPlaylist.images[0]?.url}
-                        />
-                      </View>
-                      <Typography variant="h1" className="mt-6">
-                        {selectedPlaylist.name}
-                      </Typography>
+            <View className="-mx-6">
+              {!selectedPlaylist && (
+                <>
+                  <Typography variant="h1" className="m-6">
+                    Your playlists
+                  </Typography>
+                  <PlaylistList
+                    onPlaylistPress={setSelectedPlaylist}
+                    playlistEnd={
+                      <FontAwesome
+                        name="chevron-right"
+                        size={16}
+                        color={theme["100"] + "80"}
+                      />
+                    }
+                  />
+                </>
+              )}
+              {selectedPlaylist && (
+                <>
+                  <View className="m-6">
+                    <View className="h-40 w-40">
+                      <Image
+                        className="h-full w-full"
+                        source={selectedPlaylist.images[0]?.url}
+                      />
                     </View>
-                    <TrackList
-                      tracks={filteredTracks}
-                      onTrackPress={handleTrackPress}
-                      selectedTracks={selectedTracks.map((track) => track.id)}
-                      ListFooterComponent={<View className="pb-40" />}
-                      ListEmptyComponent={
-                        <EmptyState
-                          icon="🐕"
-                          title="Fetching tracks"
-                          subtitle="good boy"
-                        />
-                      }
-                    />
-                  </>
-                )}
-              </View>
-            ) : (
-              <EmptyState
-                icon="🦭"
-                title="Not connected to spotify"
-                // subtitle="and show them what you've got"
-              >
-                <Button title="Sign in" onPress={() => promptAsync()} />
-              </EmptyState>
-            )
+                    <Typography variant="h1" className="mt-6">
+                      {selectedPlaylist.name}
+                    </Typography>
+                  </View>
+                  <TrackList
+                    tracks={filteredTracks}
+                    onTrackPress={handleTrackPress}
+                    selectedTracks={selectedTracks.map((track) => track.id)}
+                    ListFooterComponent={<View className="pb-40" />}
+                    ListEmptyComponent={
+                      <EmptyState
+                        icon="🐕"
+                        title="Fetching tracks"
+                        subtitle="good boy"
+                      />
+                    }
+                  />
+                </>
+              )}
+            </View>
           }
         />
 
@@ -236,7 +224,7 @@ const HeaderRight: FC<{
   return (
     <TouchableOpacity onPress={onPress}>
       <Typography>
-        <Ionicons name="close" size={24} title="close" />
+        <FontAwesome name="close" size={24} title="close" />
       </Typography>
     </TouchableOpacity>
   );
@@ -248,7 +236,7 @@ const HeaderLeft: FC<{
   return (
     <TouchableOpacity onPress={onPress}>
       <Typography>
-        <Ionicons name="arrow-back" size={24} title="back" />
+        <FontAwesome name="arrow-left" size={24} title="back" />
       </Typography>
     </TouchableOpacity>
   );

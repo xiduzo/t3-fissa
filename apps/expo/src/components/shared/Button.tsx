@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { VariantProps, cva } from "@fissa/utils";
 
@@ -79,7 +79,7 @@ export const Button: FC<Props> = ({
         </Typography>
         {icon && (
           <Typography className="ml-2 mt-0.5" centered>
-            <Ionicons name={icon} size={16} />
+            <FontAwesome name={icon} size={16} />
           </Typography>
         )}
       </View>
@@ -111,7 +111,7 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
         end={[1, 1]}
         className="h-full w-full items-center justify-center rounded-2xl"
       >
-        <Ionicons name={icon} size={28} />
+        <FontAwesome name={icon} size={28} />
       </LinearGradient>
     </TouchableHighlight>
   );
@@ -121,7 +121,7 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   disabled?: boolean;
   className?: string;
   linkTo?: string;
-  icon?: keyof typeof Ionicons.glyphMap;
+  icon?: keyof typeof FontAwesome.glyphMap;
 }
 
 const button = cva(`flex flex-row items-center border-2 rounded-lg`, {

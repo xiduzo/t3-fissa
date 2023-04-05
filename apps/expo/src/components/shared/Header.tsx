@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { theme } from "@fissa/tailwind-config";
 
@@ -18,7 +18,7 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
       <View>
         {props.back && props.options.headerBackVisible && (
           <Typography>
-            <Ionicons name="arrow-back" size={28} title="back" onPress={back} />
+            <FontAwesome name="arrow-left" size={28} title="back" onPress={back} />
           </Typography>
         )}
         {props.options.headerLeft &&

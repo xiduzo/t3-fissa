@@ -1,10 +1,13 @@
 import { FC } from "react";
 import { ButtonProps, TouchableHighlight, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
+
+
 import { Typography } from "./Typography";
+
 
 export const Action: FC<Props> = ({
   icon,
@@ -33,7 +36,7 @@ export const Action: FC<Props> = ({
           }}
         >
           <Typography inverted={!active && inverted}>
-            <Ionicons name={icon} size={24} />
+            <FontAwesome name={icon} size={24} />
           </Typography>
         </View>
         <View className={text({ disabled: props.disabled, layout })}>
@@ -62,7 +65,7 @@ export const Action: FC<Props> = ({
 };
 
 interface Props extends Omit<ButtonProps, "color"> {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: keyof typeof FontAwesome.glyphMap;
   subtitle?: boolean | string;
   active?: boolean;
   inverted?: boolean;
