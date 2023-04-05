@@ -18,7 +18,12 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
       <View>
         {props.back && props.options.headerBackVisible && (
           <Typography>
-            <FontAwesome name="arrow-left" size={28} title="back" onPress={back} />
+            <FontAwesome
+              name="long-arrow-left"
+              size={28}
+              title="back"
+              onPress={back}
+            />
           </Typography>
         )}
         {props.options.headerLeft &&

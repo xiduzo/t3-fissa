@@ -56,8 +56,6 @@ export const useTracks = (trackIds?: string[]) => {
 
   useMemo(async () => {
     const promises = splitInChunks(uncachedTrackIds).map(async (chunk) => {
-      console.log({ chunk });
-      // TODO: add chunk to ref so it wont be requested again
       const { tracks } = await spotify.getTracks(chunk);
       return tracks;
     });

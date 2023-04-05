@@ -19,7 +19,7 @@ export const PinCode = () => {
 
   const goToHome = useCallback(() => {
     toggleRoomPopover();
-    push("/");
+    push("/home");
   }, []);
 
   if (!pin) return null;
@@ -32,7 +32,6 @@ export const PinCode = () => {
         title={pin!}
         size="sm"
         variant="text"
-        icon="info-circle"
       />
       <Popover visible={showRoomPopover} onRequestClose={toggleRoomPopover}>
         <Action
@@ -40,7 +39,7 @@ export const PinCode = () => {
           subtitle="No worries, you can come back"
           inverted
           onPress={goToHome}
-          icon="arrow-up"
+          icon="long-arrow-up"
         />
         <CreatePlaylistAction pin={pin} onRequestClose={toggleRoomPopover} />
         <SetSpeakerAction pin={pin} onRequestClose={toggleRoomPopover} />

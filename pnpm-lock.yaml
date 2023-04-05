@@ -58,6 +58,7 @@ importers:
       expo-status-bar: ~1.4.4
       expo-updates: ~0.16.3
       jwt-decode: ^3.1.2
+      lottie-react-native: 6.0.0-rc.3
       nativewind: ^2.0.11
       postcss: ^8.4.21
       react: 18.2.0
@@ -92,6 +93,7 @@ importers:
       expo-status-bar: 1.4.4
       expo-updates: 0.16.3_expo@48.0.4
       jwt-decode: 3.1.2
+      lottie-react-native: 6.0.0-rc.3_yqouayos4dnow7nnkhah4yzuzq
       nativewind: 2.0.11_dmdrd7wro7is5ymtgffolhsaq4
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -6893,6 +6895,20 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
+    dev: false
+
+  /lottie-react-native/6.0.0-rc.3_yqouayos4dnow7nnkhah4yzuzq:
+    resolution: {integrity: sha512-vhKgsvY7qQMmEEXYR+VOqyTI9g2uz/GoUa+vmZ+9yj8exmLxp/yiwjcTnDrbbxLX0i7iuPwEfJSZ24okURf6xQ==}
+    peerDependencies:
+      react: '*'
+      react-native: '>=0.46'
+      react-native-windows: '>=0.63.x'
+    peerDependenciesMeta:
+      react-native-windows:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-native: 0.71.3_oo5no556diumlvgcr27pvljqai
     dev: false
 
   /lowercase-keys/1.0.1:

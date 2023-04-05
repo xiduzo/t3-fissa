@@ -18,7 +18,7 @@ export class RoomService extends ServiceWithContext {
   };
 
   create = async (tracks: { trackId: string; durationMs: number }[]) => {
-    const service = new SpotifyService();
+    const spotifyService = new SpotifyService();
 
     let room: Room | undefined = undefined;
     let tries = 0;
@@ -59,7 +59,7 @@ export class RoomService extends ServiceWithContext {
 
     const { access_token } = await tokens;
 
-    await service.playTrack(access_token!, tracks[0]!.trackId);
+    await spotifyService.playTrack(access_token!, tracks[0]!.trackId);
 
     return this.byId(room?.pin!);
   };

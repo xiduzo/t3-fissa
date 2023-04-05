@@ -28,7 +28,7 @@ const Room = () => {
       />
       <View className="flex h-full w-full">
         <RoomTracks pin={pin} />
-        <Fab title="add tracks" icon="add" linkTo={`room/${pin}/addTracks`} />
+        <Fab title="add tracks" icon="plus" linkTo={`room/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"

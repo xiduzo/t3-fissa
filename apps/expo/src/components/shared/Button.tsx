@@ -70,18 +70,18 @@ export const Button: FC<Props> = ({
           backgroundColor,
         }}
       >
+        {icon && (
+          <Typography inverted={textInverted}>
+            <FontAwesome name={icon} size={24} />
+          </Typography>
+        )}
         <Typography
-          className="flex-grow font-bold"
+          className="space-x-3 font-bold"
           centered
           inverted={textInverted}
         >
           {title}
         </Typography>
-        {icon && (
-          <Typography className="ml-2 mt-0.5" centered>
-            <FontAwesome name={icon} size={16} />
-          </Typography>
-        )}
       </View>
     </TouchableHighlight>
   );
@@ -124,31 +124,34 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   icon?: keyof typeof FontAwesome.glyphMap;
 }
 
-const button = cva(`flex flex-row items-center border-2 rounded-lg`, {
-  variants: {
-    variant: {
-      outlined: "",
-      contained: "",
-      text: "border-transparent",
+const button = cva(
+  `flex flex-row items-center justify-center space-x-4 border-2 rounded-lg`,
+  {
+    variants: {
+      variant: {
+        outlined: "",
+        contained: "",
+        text: "border-transparent",
+      },
+      inverted: {
+        true: "",
+        false: "",
+      },
+      disabled: {
+        true: "opacity-50",
+      },
+      size: {
+        sm: "",
+        base: "py-5",
+      },
+      dimmed: {
+        true: "opacity-60",
+      },
     },
-    inverted: {
-      true: "",
-      false: "",
-    },
-    disabled: {
-      true: "opacity-50",
-    },
-    size: {
-      sm: "",
-      base: "py-5",
-    },
-    dimmed: {
-      true: "opacity-60",
+    defaultVariants: {
+      variant: "contained",
+      inverted: false,
+      size: "base",
     },
   },
-  defaultVariants: {
-    variant: "contained",
-    inverted: false,
-    size: "base",
-  },
-});
+);

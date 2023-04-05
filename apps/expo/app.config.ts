@@ -4,20 +4,20 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
   slug: "fissa",
   scheme: "com.fissa",
-  version: "3.0.11", // EAS VERSION
+  version: "3.0.12", // EAS VERSION
   orientation: "portrait",
   icon: "./assets/icon.png",
-  userInterfaceStyle: "light",
+  userInterfaceStyle: "dark",
   splash: {
-    image: "./assets/icon.png",
-    resizeMode: "contain",
-    backgroundColor: "#171717",
+    backgroundColor: "#000",
   },
+  backgroundColor: "#000",
   updates: {
     fallbackToCacheTimeout: 0,
   },
   assetBundlePatterns: ["**/*"],
   ios: {
+    backgroundColor: "#000",
     supportsTablet: true,
     bundleIdentifier: "org.reactjs.native.example.fissa",
     config: {
@@ -25,9 +25,10 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    backgroundColor: "#000",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
-      backgroundColor: "#171717",
+      backgroundColor: "#000",
     },
   },
   extra: {

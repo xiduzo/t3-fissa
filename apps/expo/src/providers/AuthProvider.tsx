@@ -1,16 +1,34 @@
 import * as React from "react";
-import { FC, PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { AppState, Platform } from "react-native";
-import { AuthRequestConfig, AuthRequestPromptOptions, AuthSessionResult, DiscoveryDocument, ResponseType, makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import {
+  AuthRequestConfig,
+  AuthRequestPromptOptions,
+  AuthSessionResult,
+  DiscoveryDocument,
+  ResponseType,
+  makeRedirectUri,
+  useAuthRequest,
+} from "expo-auth-session";
 import Constants from "expo-constants";
 import { differenceInMinutes, useInterval, useSpotify } from "@fissa/utils";
 
-
-
-import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useEncryptedStorage,
+} from "../hooks/useEncryptedStorage";
 import { toast } from "../utils";
 import { api } from "../utils/api";
-
 
 const REFRESH_INTERVAL_MINUTES = 45;
 
@@ -114,6 +132,7 @@ const config: AuthRequestConfig = {
   scopes: [
     // Read
     "user-read-email",
+    "user-read-private",
     "user-read-playback-state",
     "user-read-currently-playing",
     "user-top-read",
