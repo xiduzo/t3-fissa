@@ -87,12 +87,18 @@ const SkipTrackAction: FC<{
   const { user } = useAuth();
   const { mutateAsync, isLoading } = useSkipTrack(pin, {
     onSuccess: () => {
-      toast.info({
+      toast.success({
         icon: "🐉",
         message: "Use your powers wisely",
       });
     },
-    onMutate: onPress,
+    onMutate: () => {
+      onPress();
+      toast.info({
+        icon: "🐉",
+        message: "Skipping track...",
+      });
+    },
   });
 
   const isOwner = useMemo(() => owner === user?.email, [owner, user]);

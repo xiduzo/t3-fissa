@@ -3,6 +3,7 @@ import { useSearchParams } from "expo-router";
 
 import { useGetRoom, useRestartRoom } from "../../../hooks";
 import { useAuth } from "../../../providers";
+import { toast } from "../../../utils";
 import { Button, EmptyState } from "../../shared";
 
 export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
@@ -10,7 +11,19 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { user } = useAuth();
 
   const { data: room } = useGetRoom(pin!);
-  const { mutateAsync } = useRestartRoom(pin!);
+  const { mutateAsync } = useRestartRoom(pin!, {
+    onMutate: () => {
+      toast.info({
+        message: "Restarting fissa",
+      });
+    },
+    onSuccess: () => {
+      toast.success({
+        icon: "🎉",
+        message: "Let's go!",
+      });
+    },
+  });
 
   const isPlaying = room?.currentIndex && room.currentIndex >= 0;
   const isOwner = user?.email === room?.by.email;
@@ -33,7 +46,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
     <EmptyState
       icon="🦀"
       title="No tracks found"
-      subtitle="Add tracks to get the party started"
+      subtitle="Add tracks to get the fissa started"
     />
   );
 };
