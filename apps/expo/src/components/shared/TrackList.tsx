@@ -25,7 +25,7 @@ export const TrackList: FC<Props> = ({
           index={index}
           track={item}
           subtitlePrefix={
-            <TrackVotes getTrackVotes={getTrackVotes} track={item} />
+            getTrackVotes && <Badge amount={getTrackVotes(item)} />
           }
           end={trackEnd && trackEnd(item)}
           onPress={() => onTrackPress?.(item)}
@@ -39,21 +39,6 @@ export const TrackList: FC<Props> = ({
 };
 
 export type TrackListProps = Props;
-
-const TrackVotes: FC<
-  Pick<Props, "getTrackVotes"> & { track: SpotifyApi.TrackObjectFull }
-> = ({ getTrackVotes, track }) => {
-  const [votes, setVotes] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!getTrackVotes) return;
-    setVotes(getTrackVotes(track));
-  }, [getTrackVotes, track]);
-
-  if (votes === null) return null;
-
-  return <Badge amount={votes} />;
-};
 
 interface Props
   extends Omit<

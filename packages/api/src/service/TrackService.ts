@@ -13,27 +13,29 @@ export class TrackService extends ServiceWithContext {
   };
 
   addTracks = async (pin: string, tracks: z.infer<typeof Z_TRACKS>) => {
-    const totalTracks = await this.db.track.count({ where: { pin } });
-
-    const roomTracks = await this.db.track.findMany({
+    const room = await this.db.room.findUniqueOrThrow({
       where: { pin },
+      select: {
+        currentIndex: true,
+        tracks: { select: { trackId: true } },
+      },
     });
 
-    const existingTracks = roomTracks.map(({ trackId }) => trackId);
+    const roomTrackIds = room.tracks.map(({ trackId }) => trackId);
 
-    const newTracks = tracks.filter(
-      ({ trackId }) => !existingTracks.includes(trackId),
-    );
-
-    await this.db.track.createMany({
-      data: newTracks.map((track, index) => ({
+    const newTracks = tracks
+      .filter(({ trackId }) => !roomTrackIds.includes(trackId))
+      .map((track, index) => ({
         ...track,
         pin,
-        index: totalTracks + index,
-      })),
-    });
+        index: room.tracks.length + index,
+      }));
 
-    return existingTracks;
+    await this.db.track.createMany({ data: newTracks });
+
+    return tracks
+      .filter(({ trackId }) => roomTrackIds.includes(trackId))
+      .map(({ trackId }) => trackId); // Return track ids of duplicated tracks
   };
 
   addRecommendedTracks = async (
