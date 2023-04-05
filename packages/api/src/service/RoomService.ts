@@ -1,4 +1,4 @@
-import { Room } from "@fissa/db";
+import { Prisma, Room, Track } from "@fissa/db";
 import {
   SpotifyService,
   addMilliseconds,
@@ -89,68 +89,28 @@ export class RoomService extends ServiceWithContext {
   };
 
   reorderPlaylist = async (pin: string) => {
-    const { currentIndex } = await this.byId(pin);
-    const tracks = await this.db.track.findMany({
-      where: { pin },
-      select: { trackId: true, index: true, score: true },
-      orderBy: { index: "asc" },
-    });
-
-    const sorted = [...tracks]
-      .sort((a, b) => b.score - a.score)
-      .filter(({ index, score }) => index > currentIndex || score !== 0);
-
-    const unshiftCurrentIndex = sorted.filter(
-      (track) => track.index < currentIndex,
-    ).length;
-
+    const { currentIndex, tracks } = await this.getRoomDetailedInformation(pin);
     try {
-      const update = sorted
-        .map(({ trackId, index }, newIndex) => {
-          const updateIndexTo =
-            currentIndex - unshiftCurrentIndex + newIndex + 1;
-          if (index === updateIndexTo) return; // No need to update
-
-          return {
-            where: { pin_trackId: { pin, trackId } },
-            data: { index: updateIndexTo },
-          };
-        })
-        .filter(Boolean);
-
-      const updateToHighIndex = update.map((x, index) => ({
-        ...x,
-        data: {
-          ...x.data,
-          index: tracks.length + index,
-        },
-      }));
+      const { update, fakeUpdate, newCurrentIndex } =
+        this.generateTrackIndexUpdates(tracks, currentIndex);
 
       await this.db.$transaction(async (transaction) => {
-        // (1) Clear out the indexes
-        await transaction.room.update({
-          where: { pin },
-          data: { tracks: { update: updateToHighIndex } },
-        });
-
-        // (2) Set the correct indexes
-        await transaction.room.update({
-          where: { pin },
-          data: { tracks: { update } },
-        });
-
-        if (currentIndex !== currentIndex - unshiftCurrentIndex) {
+        if (currentIndex !== newCurrentIndex) {
           await transaction.room.update({
             where: { pin },
-            data: { currentIndex: currentIndex - unshiftCurrentIndex },
+            data: { currentIndex: newCurrentIndex },
           });
         }
+
+        // (1) Clear out the indexes
+        await this.updateTracksIndexes(pin, fakeUpdate, transaction);
+
+        // (2) Set the correct indexes
+        await this.updateTracksIndexes(pin, update, transaction);
       });
     } catch (e) {
       console.log(e);
     }
-
-    return true;
   };
 
   skipTrack = async (pin: string) => {
@@ -303,11 +263,51 @@ export class RoomService extends ServiceWithContext {
             accounts: { select: { access_token: true }, take: 1 },
           },
         },
-        tracks: {
-          select: { trackId: true, durationMs: true },
-          orderBy: { index: "asc" },
-        },
+        tracks: { orderBy: { index: "asc" } },
       },
+    });
+  };
+
+  private generateTrackIndexUpdates = (
+    tracks: Track[],
+    currentIndex: number,
+  ) => {
+    const sorted = tracks
+      .filter(({ index, score }) => index > currentIndex || score !== 0)
+      .sort((a, b) => b.score - a.score);
+
+    const newCurrentIndex =
+      currentIndex - sorted.filter(({ index }) => index < currentIndex).length;
+    const nextTrackIndex = newCurrentIndex + 1;
+
+    const update = sorted
+      .map(({ trackId, index }, newIndex) => {
+        const updateIndexTo = nextTrackIndex + newIndex;
+        if (index === updateIndexTo) return; // No need to update
+
+        return {
+          where: { trackId },
+          data: { index: updateIndexTo },
+        };
+      })
+      .filter(Boolean);
+
+    const fakeUpdate = update.map((x, index) => ({
+      ...x,
+      data: { ...x.data, index: tracks.length + index + 1 },
+    }));
+
+    return { update, fakeUpdate, newCurrentIndex };
+  };
+
+  private updateTracksIndexes = async (
+    pin: string,
+    update: any[],
+    transaction: Prisma.TransactionClient,
+  ) => {
+    return transaction.room.update({
+      where: { pin },
+      data: { tracks: { updateMany: update } },
     });
   };
 }

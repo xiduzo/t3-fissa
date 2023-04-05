@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useRouter, useSearchParams } from "expo-router";
 
 import { PickTracks } from "../../../src/components/shared";

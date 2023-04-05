@@ -5,6 +5,7 @@ import { SAVED_TRACKS_PLAYLIST_ID } from "./constants";
 export const getPlaylistTracks = async (
   playlistId: string,
   spotify = new SpotifyWebApi(),
+  updater: (tracks: SpotifyApi.TrackObjectFull[]) => void,
 ) => {
   const tracks: SpotifyApi.TrackObjectFull[] = [];
   let hasNext = false;
@@ -19,16 +20,15 @@ export const getPlaylistTracks = async (
 
     const { next, items } = await request;
 
-    items.forEach(({ track }) =>
-      tracks.push(track as SpotifyApi.TrackObjectFull),
-    );
+    items.forEach(({ track }) => {
+      if (tracks.find(({ id }) => id === track.id)) return;
+      tracks.push(track as SpotifyApi.TrackObjectFull);
+    });
+
+    updater(tracks);
 
     hasNext = next !== null;
   } while (hasNext);
 
-  return tracks.reduce((acc, next) => {
-    if (acc.find(({ id }) => id === next.id)) return acc;
-
-    return [...acc, next];
-  }, [] as SpotifyApi.TrackObjectFull[]);
+  return tracks;
 };

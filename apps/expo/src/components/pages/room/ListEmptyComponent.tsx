@@ -12,7 +12,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { data: room } = useGetRoom(pin!);
   const { mutateAsync } = useRestartRoom(pin!);
 
-  const isPlaying = (room?.currentIndex ?? -1) >= 0;
+  const isPlaying = room?.currentIndex && room.currentIndex >= 0;
   const isOwner = user?.email === room?.by.email;
 
   if (isLoading)

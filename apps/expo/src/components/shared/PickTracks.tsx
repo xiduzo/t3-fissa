@@ -105,10 +105,10 @@ export const PickTracks: FC<Props> = ({
   useMemo(async () => {
     if (!selectedPlaylist) return;
 
-    const tracks = await getPlaylistTracks(selectedPlaylist.id, spotify);
-
-    playlistTracks.current = tracks;
-    setFilteredTracks(tracks);
+    await getPlaylistTracks(selectedPlaylist.id, spotify, (tracks) => {
+      playlistTracks.current = tracks;
+      setFilteredTracks(tracks);
+    });
   }, [selectedPlaylist, spotify]);
 
   return (
