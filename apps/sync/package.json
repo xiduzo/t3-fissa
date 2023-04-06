@@ -6,7 +6,7 @@
   "types": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpx ts-node src/index.ts",
+    "dev": "pm2 start ecosystem.config.js --env development",
     "start": "pnpx ts-node src/index.ts"
   },
   "keywords": [],
