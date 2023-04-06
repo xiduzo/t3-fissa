@@ -125,7 +125,7 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
 }
 
 const button = cva(
-  `flex flex-row items-center justify-center space-x-4 border-2 rounded-lg`,
+  `flex flex-row items-center justify-center space-x-4 border-2 rounded-full`,
   {
     variants: {
       variant: {

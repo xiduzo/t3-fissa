@@ -3,15 +3,9 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { useSpotify, useTracks } from "@fissa/utils";
+import { useSpotify } from "@fissa/utils";
 
-import { Button, Typography } from "../src/components";
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-  useGetRoomDetails,
-  useGetTracks,
-} from "../src/hooks";
+import { Button, Rejoin, Typography } from "../src/components";
 import { useAuth } from "../src/providers";
 
 const Home = () => {
@@ -43,7 +37,7 @@ const Home = () => {
             title="host a fissa"
             disabled={!isPremium}
             variant="outlined"
-            linkTo="/host"
+            linkTo="/host/selectDevice"
           />
           {!isPremium && (
             <Typography dimmed centered className="mt-4" variant="bodyM">
@@ -58,31 +52,3 @@ const Home = () => {
 };
 
 export default Home;
-
-const Rejoin = () => {
-  const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
-  const { data } = useGetRoomDetails(value!);
-
-  if (!value) return <View />; // no pin stored
-  if (!data) return <View />; // no room found
-
-  return (
-    <View>
-      <PrefetchTracks pin={value} />
-      <Button
-        variant="text"
-        title={`re-join ${value}`}
-        linkTo={`/room/${value}`}
-      />
-    </View>
-  );
-};
-
-const PrefetchTracks: FC<{ pin: string }> = ({ pin }) => {
-  const { data } = useGetTracks(pin);
-
-  // Pre-fetch tracks
-  useTracks(data?.map((track) => track.trackId));
-
-  return null;
-};

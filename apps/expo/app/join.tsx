@@ -10,7 +10,7 @@ import {
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import { Button, Typography } from "../src/components";
+import { Button, Rejoin, Typography } from "../src/components";
 import {
   ENCRYPTED_STORAGE_KEYS,
   useEncryptedStorage,
@@ -89,8 +89,8 @@ const Join = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View className="mt-6 flex h-full w-full space-y-16 px-6">
-        <Typography variant="h5" centered>
+      <View className="mt-6 flex h-full w-full px-6">
+        <Typography variant="h5" centered className="mb-16">
           Enter the fissa code
         </Typography>
         <View className="flex flex-row justify-around">
@@ -120,12 +120,15 @@ const Join = () => {
             </View>
           ))}
         </View>
+
         <Button
           variant="text"
-          title="reset"
+          title="clear code"
+          className="mb-8 mt-4"
           onPress={reset}
           disabled={!pin.includes("")}
         />
+        <Rejoin />
       </View>
     </SafeAreaView>
   );

@@ -110,7 +110,7 @@ const SkipTrackAction: FC<{
       inverted
       disabled={!isOwner || isLoading}
       onPress={mutateAsync}
-      icon="play-skip-forward-sharp"
+      icon="magic"
     />
   );
 };

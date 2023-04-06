@@ -1,13 +1,15 @@
 {
   "name": "@fissa/sync",
   "version": "1.0.0",
-  "description": "",
+  "description": "Syncing currently playing tracks in spotify with the fissa playlists",
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
+    "clean": "rm -rf node_modules",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pm2 start ecosystem.config.js --env development",
-    "start": "pnpx ts-node src/index.ts"
+    "dev": "pnpm with-env ts-node src/index.ts",
+    "start": "ts-node src/index.ts",
+    "with-env": "dotenv -e ../../.env --"
   },
   "keywords": [],
   "author": "",
@@ -16,10 +18,14 @@
     "@fissa/api": "*",
     "@fissa/utils": "*",
     "@trpc/client": "^10.12.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-actuator": "^1.8.4",
     "node-cron": "^3.0.2",
     "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
+    "@types/express-actuator": "^1.8.0",
     "@types/node-cron": "^3.0.7",
     "eslint-config-acme": "0.0.0",
     "ts-node": "^10.9.1",
