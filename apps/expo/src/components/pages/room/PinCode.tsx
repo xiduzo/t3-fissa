@@ -39,7 +39,7 @@ export const PinCode = () => {
           subtitle="No worries, you can come back"
           inverted
           onPress={goToHome}
-          icon="long-arrow-up"
+          icon="arrow-up"
         />
         <CreatePlaylistAction pin={pin} onRequestClose={toggleRoomPopover} />
         <SetSpeakerAction pin={pin} onRequestClose={toggleRoomPopover} />

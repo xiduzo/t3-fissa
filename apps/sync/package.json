@@ -5,8 +5,10 @@
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
+    "clean": "rm -rf node_modules",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pm2 start ecosystem.config.js --env development",
+    "prod": "pm2 start ecosystem.config.js",
     "start": "pnpx ts-node src/index.ts"
   },
   "keywords": [],

@@ -25,10 +25,7 @@ export class SpotifyService {
     this.spotify.setAccessToken(accessToken);
 
     const { body } = await this.spotify.getTrack(trackId);
-    return this.spotify.play({
-      device_id: (await this.getActiveDevice(accessToken))?.id ?? undefined,
-      uris: [body.uri],
-    });
+    return this.spotify.play({ uris: [body.uri] });
   };
 
   isStillPlaying = async (accessToken: string) => {
@@ -37,20 +34,15 @@ export class SpotifyService {
     return body.is_playing;
   };
 
-  getRecommendedTracks = async (accessToken:string, seedTrackIds: string[]) => {
+  getRecommendedTracks = async (
+    accessToken: string,
+    seedTrackIds: string[],
+  ) => {
     this.spotify.setAccessToken(accessToken);
     const { body } = await this.spotify.getRecommendations({
       seed_tracks: seedTrackIds,
       limit: 5,
     });
     return body.tracks;
-  };
-
-  private getActiveDevice = async (accessToken: string) => {
-    this.spotify.setAccessToken(accessToken);
-    const { body } = await this.spotify.getMyDevices();
-    const activeDevice = body.devices.find((device) => device.is_active);
-    if (!activeDevice) return body.devices[0];
-    return activeDevice;
   };
 }
