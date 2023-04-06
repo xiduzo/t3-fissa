@@ -7,8 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpx ts-node src/index.ts",
-    "start": "pm2 start ecosystem.config.js",
-    "pm2": "npm install pm2 -g && pm2 install typescript && pm2 install ts-node"
+    "start": "pnpx ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
