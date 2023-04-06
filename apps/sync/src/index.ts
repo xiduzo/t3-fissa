@@ -55,4 +55,5 @@ cron.schedule(`*/1 * * * *`, startTimeouts);
 startTimeouts();
 
 const app = express();
+app.listen(Number(process.env.PORT));
 app.use(actuator());

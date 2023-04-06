@@ -71,7 +71,7 @@ const Rejoin = () => {
       <PrefetchTracks pin={value} />
       <Button
         variant="text"
-        title={`re-join ${value}`}
+        title={`Re-join last fissa (${value})`}
         linkTo={`/room/${value}`}
       />
     </View>
