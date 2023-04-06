@@ -57,6 +57,10 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     ENCRYPTED_STORAGE_KEYS.sessionToken,
   );
 
+  const { save: saveScopes, getValueFor: getScopes } = useEncryptedStorage(
+    ENCRYPTED_STORAGE_KEYS.scopes,
+  );
+
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
   const readTokenFromStorage = useCallback(async () => {
@@ -82,6 +86,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       duration: 30 * 1000,
     });
 
+    await saveScopes(scopes.join("_"));
+
     const { code } = response.params;
     if (!code) return toast.error({ message: `Something went wrong...` });
 
@@ -96,12 +102,16 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     spotify.getMe().then(setUser);
     await saveRefreshToken(refresh_token);
     await saveSessionToken(session_token);
-  }, [response, request, setUser]);
+  }, [response, request, setUser, saveScopes]);
 
   useEffect(() => {
     if (user) return;
-    readTokenFromStorage();
-  }, [readTokenFromStorage, user]);
+    getScopes().then((localScopes) => {
+      if (!localScopes) return;
+      if (localScopes !== scopes.join("_")) return;
+      readTokenFromStorage();
+    });
+  }, [readTokenFromStorage, user, getScopes]);
 
   useInterval(readTokenFromStorage, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
@@ -128,22 +138,24 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
 export const useAuth = () => useContext(SpotifyContext);
 
+const scopes = [
+  // Read
+  "user-read-email",
+  "user-read-private",
+  "user-read-playback-state",
+  "user-read-currently-playing",
+  "user-top-read",
+  "user-library-read",
+  "playlist-read-private",
+  "playlist-read-collaborative",
+  // Modify
+  "playlist-modify-public",
+  "user-modify-playback-state",
+  "user-library-modify",
+];
+
 const config: AuthRequestConfig = {
-  scopes: [
-    // Read
-    "user-read-email",
-    "user-read-private",
-    "user-read-playback-state",
-    "user-read-currently-playing",
-    "user-top-read",
-    "user-library-read",
-    "playlist-read-private",
-    "playlist-read-collaborative",
-    // Modify
-    "playlist-modify-public",
-    "user-modify-playback-state",
-    "user-library-modify",
-  ],
+  scopes,
   responseType: ResponseType.Code,
   clientId: Constants.expoConfig?.extra?.spotifyClientId,
   usePKCE: false,
