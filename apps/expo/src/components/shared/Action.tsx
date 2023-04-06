@@ -4,10 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
-
-
 import { Typography } from "./Typography";
-
 
 export const Action: FC<Props> = ({
   icon,
@@ -26,10 +23,7 @@ export const Action: FC<Props> = ({
     <TouchableHighlight {...props} underlayColor="transparent" className="py-4">
       <View className={content({ layout, reversed })}>
         <View
-          className={iconStyle({
-            layout,
-            disabled: props.disabled,
-          })}
+          className={iconStyle({ disabled: props.disabled })}
           style={{
             borderColor: theme[!!inverted ? "900" : "100"],
             backgroundColor: active ? theme["900"] : "transparent",
@@ -86,17 +80,16 @@ const text = cva("mx-4", {
   },
 });
 
-const iconStyle = cva("rounded-xl border-2 p-2", {
-  variants: {
-    layout: {
-      row: "flex-row",
-      column: "flex-col",
-    },
-    disabled: {
-      true: "opacity-30",
+const iconStyle = cva(
+  "rounded-xl border-2 w-11 h-11 justify-center items-center",
+  {
+    variants: {
+      disabled: {
+        true: "opacity-30",
+      },
     },
   },
-});
+);
 
 const content = cva("items-center", {
   variants: {

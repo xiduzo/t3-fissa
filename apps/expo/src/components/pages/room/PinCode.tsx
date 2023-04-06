@@ -1,10 +1,10 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "expo-router";
 import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useGetRoomDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
-import { toast } from "../../../utils";
+import { mapDeviceToIcon, toast } from "../../../utils";
 import { Action, Button, Popover } from "../../shared";
 
 export const PinCode = () => {
@@ -39,7 +39,7 @@ export const PinCode = () => {
           subtitle="No worries, you can come back"
           inverted
           onPress={goToHome}
-          icon="arrow-up"
+          icon="unlink"
         />
         <CreatePlaylistAction pin={pin} onRequestClose={toggleRoomPopover} />
         <SetSpeakerAction pin={pin} onRequestClose={toggleRoomPopover} />
@@ -106,6 +106,10 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
 
   const [speakers, setSpeakers] = useState<SpotifyApi.UserDevice[]>([]);
 
+  const activeSpeaker = useMemo(() => {
+    return speakers.find((speaker) => speaker.is_active);
+  }, [speakers]);
+
   useEffect(() => {
     spotify.getMyDevices().then(({ devices }) => {
       setSpeakers(devices);
@@ -115,14 +119,12 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
   return (
     <Action
       hidden={!data || data.by.email !== user!.email}
-      title={
-        speakers.find((speaker) => speaker.name)?.name ?? "No active speaker"
-      }
+      title={activeSpeaker?.name ?? "No active speaker"}
       subtitle="Current speaker"
       inverted
       // disabled={!speakers.length}
       disabled
-      icon="headphones"
+      icon={mapDeviceToIcon(activeSpeaker)}
     />
   );
 };

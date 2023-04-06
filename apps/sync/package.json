@@ -1,7 +1,7 @@
 {
   "name": "@fissa/sync",
   "version": "1.0.0",
-  "description": "",
+  "description": "Syncing currently playing tracks in spotify with the fissa playlists",
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {

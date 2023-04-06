@@ -89,9 +89,9 @@ const TrackEnd: FC<{ trackId: string; pin: string }> = ({ pin, trackId }) => {
       <FontAwesome name="ellipsis-v" color={theme["100"] + "60"} size={18} />
     );
   if (data.vote === 1)
-    return <FontAwesome name="arrow-up" color={theme["500"]} size={18} />;
+    return <FontAwesome name="hand-o-up" color={theme["500"]} size={18} />;
   if (data.vote === -1)
-    return <FontAwesome name="arrow-down" color={theme["500"]} size={18} />;
+    return <FontAwesome name="hand-o-down" color={theme["500"]} size={18} />;
 
   return null;
 };

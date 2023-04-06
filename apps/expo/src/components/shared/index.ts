@@ -14,6 +14,7 @@ export * from "./PlaylistList";
 export * from "./PlaylistListItem";
 export * from "./Popover";
 export * from "./ProgressBar";
+export * from "./Rejoin";
 export * from "./Toast";
 export * from "./TrackList";
 export * from "./TrackListItem";
