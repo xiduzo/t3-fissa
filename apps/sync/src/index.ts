@@ -1,5 +1,3 @@
-import express from "express";
-import actuator from "express-actuator";
 import cron from "node-cron";
 import { addSeconds, differenceInMilliseconds } from "@fissa/utils/date";
 
@@ -53,7 +51,3 @@ const startTimeouts = async () => {
 cron.schedule(`*/1 * * * *`, startTimeouts);
 
 startTimeouts();
-
-const app = express();
-app.listen(Number(process.env.PORT));
-app.use(actuator());
