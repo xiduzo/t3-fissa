@@ -17,7 +17,7 @@ const startTimeouts = async () => {
     // -X seconds to be safe because we check if the user is still listening
     // in spotify anything before playing the next track.
     // The service will account for this difference
-    const endTime = addSeconds(room.expectedEndTime, -5);
+    const endTime = addSeconds(room.expectedEndTime, -10);
 
     console.info(
       `next track for ${room.pin} in ${differenceInMilliseconds(
@@ -48,6 +48,6 @@ const startTimeouts = async () => {
 //  # │ │ │ │ │ │
 //  # │ │ │ │ │ │
 //  # * * * * * *
-cron.schedule(`*/1 * * * *`, startTimeouts);
+cron.schedule(`*/30 * * * * *`, startTimeouts);
 
 startTimeouts();
