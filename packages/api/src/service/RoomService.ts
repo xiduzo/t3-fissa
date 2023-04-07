@@ -97,21 +97,15 @@ export class RoomService extends ServiceWithContext {
 
       await this.db.$transaction(
         async (transaction) => {
-          console.info(
-            `Updating current index ${currentIndex} to ${newCurrentIndex}`,
-          );
-          if (currentIndex !== newCurrentIndex) {
-            await transaction.room.update({
-              where: { pin },
-              data: { currentIndex: newCurrentIndex },
-            });
-          }
-
           console.info(`updating fake indexes`);
           // (1) Clear out the indexes
           await transaction.room.update({
             where: { pin },
-            data: { tracks: { updateMany: fakeUpdates } },
+            data: {
+              tracks: { updateMany: fakeUpdates },
+              currentIndex: newCurrentIndex,
+              lastPlayedIndex: newCurrentIndex,
+            },
           });
 
           console.info(`updating real indexes`);
