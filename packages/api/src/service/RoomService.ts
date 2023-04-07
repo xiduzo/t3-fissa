@@ -89,31 +89,43 @@ export class RoomService extends ServiceWithContext {
   };
 
   reorderPlaylist = async (pin: string) => {
+    console.info(`Reordering playlist for room ${pin}`);
     const { currentIndex, tracks } = await this.getRoomDetailedInformation(pin);
     try {
       const { updates, fakeUpdates, newCurrentIndex } =
         this.generateTrackIndexUpdates(tracks, currentIndex);
 
-      await this.db.$transaction(async (transaction) => {
-        if (currentIndex !== newCurrentIndex) {
+      await this.db.$transaction(
+        async (transaction) => {
+          console.info(
+            `Updating current index ${currentIndex} to ${newCurrentIndex}`,
+          );
+          if (currentIndex !== newCurrentIndex) {
+            await transaction.room.update({
+              where: { pin },
+              data: { currentIndex: newCurrentIndex },
+            });
+          }
+
+          console.info(`updating fake indexes`);
+          // (1) Clear out the indexes
           await transaction.room.update({
             where: { pin },
-            data: { currentIndex: newCurrentIndex },
+            data: { tracks: { updateMany: fakeUpdates } },
           });
-        }
 
-        // (1) Clear out the indexes
-        await transaction.room.update({
-          where: { pin },
-          data: { tracks: { updateMany: fakeUpdates } },
-        });
-
-        // (2) Set the correct indexes
-        await transaction.room.update({
-          where: { pin },
-          data: { tracks: { updateMany: updates } },
-        });
-      });
+          console.info(`updating real indexes`);
+          // (2) Set the correct indexes
+          await transaction.room.update({
+            where: { pin },
+            data: { tracks: { updateMany: updates } },
+          });
+        },
+        {
+          maxWait: 20000, // default: 2000
+          timeout: 60000, // default: 5000
+        },
+      );
     } catch (e) {
       console.log(e);
     }
@@ -297,7 +309,7 @@ export class RoomService extends ServiceWithContext {
       ({ score, index }) => score === 0 && index <= currentIndex,
     );
 
-    const sortedTracks = tracksWithScoreOrAfterIndex.sort(
+    const sortedTracks = [...tracksWithScoreOrAfterIndex].sort(
       (a, b) => b.score - a.score,
     );
 
@@ -309,6 +321,10 @@ export class RoomService extends ServiceWithContext {
     const updates = sorted
       .map(({ trackId, index }, newIndex) => {
         if (index === newIndex) return; // No need to update
+
+        console.log(
+          `Updating index of ${trackId} from ${index} to ${newIndex}`,
+        );
 
         return {
           where: { trackId },

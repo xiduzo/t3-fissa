@@ -4,7 +4,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
   slug: "fissa",
   scheme: "com.fissa",
-  version: "3.0.14", // EAS VERSION
+  version: "3.0.15", // EAS VERSION
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",
@@ -32,7 +32,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   extra: {
-    vercelUrl: "https://t3-fissa-nextjs.vercel.app",
+    vercelUrl: "https://fissa-houseparty.vercel.app",
     spotifyClientId: "a2a88c4618324942859ce3e1f888b938",
     eas: {
       projectId: "89f5d2ef-e72d-4e2c-a88c-3fe56e30e601",
