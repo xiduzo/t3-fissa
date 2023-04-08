@@ -12,8 +12,8 @@ import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 
 import { Button, Popover, Typography } from "../../src/components";
-import { toast } from "../../src/utils";
 import { useOnActiveApp } from "../../src/hooks";
+import { toast } from "../../src/utils";
 
 const Host = () => {
   const spotify = useSpotify();
@@ -21,7 +21,6 @@ const Host = () => {
   const [devices, setDevices] = useState<SpotifyApi.UserDevice[]>([]);
 
   const [showHelp, setShowHelp] = useState(false);
-
 
   const fetchMyDevices = useCallback(async () => {
     try {
@@ -63,6 +62,10 @@ const Host = () => {
   }, [toggleHelp]);
 
   useOnActiveApp(fetchMyDevices);
+
+  useEffect(() => {
+    fetchMyDevices();
+  }, []);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
