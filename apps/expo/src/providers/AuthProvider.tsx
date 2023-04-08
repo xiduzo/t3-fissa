@@ -20,7 +20,9 @@ import {
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
+import * as BackgroundFetch from "expo-background-fetch";
 import Constants from "expo-constants";
+import * as TaskManager from "expo-task-manager";
 import { differenceInMinutes, useInterval, useSpotify } from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
@@ -32,6 +34,7 @@ import { toast } from "../utils";
 import { api } from "../utils/api";
 
 const REFRESH_INTERVAL_MINUTES = 45;
+const BACKGROUND_FETCH_TASK = "background-fetch";
 
 const SpotifyContext = createContext({
   promptAsync: (options?: AuthRequestPromptOptions | undefined) => {
@@ -105,17 +108,27 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     await saveSessionToken(session_token);
   }, [response, request, setUser, saveScopes]);
 
-  useEffect(() => {
-    if (user) return;
-    getScopes().then((localScopes) => {
-      if (!localScopes) return;
-      if (localScopes !== scopes.join("_")) return;
-      readTokenFromStorage();
-    });
-  }, [readTokenFromStorage, user, getScopes]);
+  TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    console.log("background fetch token");
+    await readTokenFromStorage();
 
-  // TODO this should be a background task
-  useInterval(readTokenFromStorage, REFRESH_INTERVAL_MINUTES * 60 * 1000);
+    // Be sure to return the successful result type!
+    return BackgroundFetch.BackgroundFetchResult.NoData;
+  });
+
+  useMemo(async () => {
+    if (user) return;
+    const localScopes = await getScopes();
+
+    if (!localScopes) return;
+    if (localScopes !== scopes.join("_")) return;
+
+    await readTokenFromStorage();
+
+    const unregister = await registerBackgroundFetchAsync();
+
+    return unregister;
+  }, [readTokenFromStorage, user, getScopes]);
 
   useOnActiveApp(() => {
     const difference = differenceInMinutes(
@@ -168,4 +181,19 @@ const config: AuthRequestConfig = {
 const discovery: DiscoveryDocument = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
   tokenEndpoint: "https://accounts.spotify.com/api/token",
+};
+
+const registerBackgroundFetchAsync = async () => {
+  await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    minimumInterval: 60 * 1,
+    stopOnTerminate: false, // android only,
+    startOnBoot: true, // android only
+  });
+
+  console.log("registered background fetch task");
+
+  return () => {
+    console.log("unregistered background fetch task");
+    BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+  };
 };

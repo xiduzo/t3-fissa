@@ -31,6 +31,7 @@ export class AuthService extends ServiceWithContext {
   };
 
   refreshToken = async (refreshToken: string) => {
+    console.log("refresh token", new Date().toISOString());
     const service = new SpotifyService();
 
     const tokens = await service.refresh(refreshToken);

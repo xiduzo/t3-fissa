@@ -46,6 +46,7 @@ importers:
       eslint-config-acme: 0.0.0
       expo: ^48.0.4
       expo-auth-session: ^4.0.3
+      expo-background-fetch: ^11.1.1
       expo-constants: ~14.2.1
       expo-device: ~5.2.1
       expo-image: ~1.0.0
@@ -82,6 +83,7 @@ importers:
       '@trpc/server': 10.12.0
       expo: 48.0.4_@babel+core@7.20.12
       expo-auth-session: 4.0.3_expo@48.0.4
+      expo-background-fetch: 11.1.1_expo@48.0.4
       expo-constants: 14.2.1_expo@48.0.4
       expo-device: 5.2.1_expo@48.0.4
       expo-image: 1.0.0_expo@48.0.4
@@ -174,6 +176,7 @@ importers:
       '@fissa/utils': '*'
       '@trpc/client': ^10.12.0
       '@types/node-cron': ^3.0.7
+      dotenv: ^16.0.3
       eslint-config-acme: 0.0.0
       node-cron: ^3.0.2
       ts-node: ^10.9.1
@@ -185,6 +188,7 @@ importers:
       node-cron: 3.0.2
     devDependencies:
       '@types/node-cron': 3.0.7
+      dotenv: 16.0.3
       eslint-config-acme: link:../../packages/config/eslint
       ts-node: 10.9.1_typescript@4.9.5
       typescript: 4.9.5
@@ -5414,6 +5418,15 @@ packages:
       - supports-color
     dev: false
 
+  /expo-background-fetch/11.1.1_expo@48.0.4:
+    resolution: {integrity: sha512-5X63ogpCqEqdqXYk4Sl4J8Lt/ZWcQCboS1pq3uprqD1KUi4ICl1P3gwPo+il3rYPV6xYb74Wv1KyyEEYj2vklg==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 48.0.4_@babel+core@7.20.12
+      expo-task-manager: 11.1.1_expo@48.0.4
+    dev: false
+
   /expo-constants/14.2.1_expo@48.0.4:
     resolution: {integrity: sha512-DD5u4QmBds2U7uYo409apV7nX+XjudARcgqe7S9aRFJ/6kyftmuxvk1DpaU4X42Av8z/tfKwEpuxl+vl7HHx/Q==}
     peerDependencies:
@@ -5624,6 +5637,15 @@ packages:
 
   /expo-structured-headers/3.1.1:
     resolution: {integrity: sha512-oV6yNGsJxQt7S9HYZTr+4L0I/yRwOF38USJ81I1KiN3GQI4C2z7P5OosyREA2VL9O+kUZVCCpNYsBLSa3/5bAQ==}
+    dev: false
+
+  /expo-task-manager/11.1.1_expo@48.0.4:
+    resolution: {integrity: sha512-Ot4wq0fVd8+I1W7MsJz0rNdX0ma/zdnBvAppxDX1Oo0o0exo4qs1FmgrTnh3OBnn18aB4cX3wBJoXIatIgNMZQ==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 48.0.4_@babel+core@7.20.12
+      unimodules-app-loader: 4.1.1
     dev: false
 
   /expo-updates-interface/0.9.1_expo@48.0.4:
@@ -10834,6 +10856,10 @@ packages:
   /unicode-property-aliases-ecmascript/2.1.0:
     resolution: {integrity: sha512-6t3foTQI9qne+OZoVQB/8x8rk2k1eVy1gRXhV3oFQ5T6R1dqQ1xtin3XqSlx3+ATBkliTaR/hHyJBm+LVPNM8w==}
     engines: {node: '>=4'}
+
+  /unimodules-app-loader/4.1.1:
+    resolution: {integrity: sha512-K0vuriaD1Zft2dKwYSER/eoiTEPINL6cASed42/QuWeV9jqfQ7Y6OAHM4zIyhXVdro/IS2L6pPnnqZFIH2xoKg==}
+    dev: false
 
   /union-value/1.0.1:
     resolution: {integrity: sha512-tJfXmxMeWYnczCVs7XAEvIV7ieppALdyepWMkHkwciRpZraG/xwT+s2JN8+pr1+8jCRf80FFzvr+MpQeeoF4Xg==}

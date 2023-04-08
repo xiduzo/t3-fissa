@@ -7,18 +7,27 @@
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "infoPlist": {
+          "UIBackgroundModes": ["fetch"]
+        }
       }
     },
     "preview": {
       "distribution": "internal",
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "infoPlist": {
+          "UIBackgroundModes": ["fetch"]
+        }
       }
     },
     "production": {
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "infoPlist": {
+          "UIBackgroundModes": ["fetch"]
+        }
       }
     }
   },

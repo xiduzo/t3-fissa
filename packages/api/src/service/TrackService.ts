@@ -72,28 +72,34 @@ export class TrackService extends ServiceWithContext {
   };
 
   reorderTracks = async () => {
-    const rooms = await this.db.room.findMany({
-      where: { shouldReorder: true },
-      select: { pin: true },
-    });
+    try {
+      const rooms = await this.db.room.findMany({
+        where: { shouldReorder: true },
+        select: { pin: true, currentIndex: true, tracks: true },
+      });
 
-    const pins = rooms.map(({ pin }) => pin);
-    await Promise.all(
-      pins.map(async (pin) => this.reorderTracksFromPlaylist(pin)),
-    );
+      for (const room of rooms) {
+        await this.reorderTracksFromPlaylist(
+          room.pin,
+          room.currentIndex,
+          room.tracks,
+        );
+      }
 
-    return this.db.room.updateMany({
-      where: { pin: { in: pins } },
-      data: { shouldReorder: false },
-    });
+      await this.db.room.updateMany({
+        where: { pin: { in: rooms.map(({ pin }) => pin) } },
+        data: { shouldReorder: false },
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  private reorderTracksFromPlaylist = async (pin: string) => {
-    const { currentIndex, tracks } = await this.db.room.findUniqueOrThrow({
-      where: { pin },
-      select: { currentIndex: true, tracks: true },
-    });
-
+  private reorderTracksFromPlaylist = async (
+    pin: string,
+    currentIndex: number,
+    tracks: Track[],
+  ) => {
     const { updates, fakeUpdates, newCurrentIndex } =
       this.generateTrackIndexUpdates(tracks, currentIndex);
 
