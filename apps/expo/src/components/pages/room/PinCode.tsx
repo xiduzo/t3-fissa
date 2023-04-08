@@ -2,13 +2,10 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "expo-router";
 import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
-
-
 import { useGetRoomDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
 import { Action, Button, Popover } from "../../shared";
-
 
 export const PinCode = () => {
   const { pin } = useSearchParams();
@@ -23,7 +20,6 @@ export const PinCode = () => {
   const goToHome = useCallback(() => {
     toggleRoomPopover();
     push("/home");
-      console.log("goto home");
   }, []);
 
   if (!pin) return null;

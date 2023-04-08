@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Animated, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useNavigation, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
@@ -9,13 +8,12 @@ import { useAuth } from "../src/providers";
 
 const Index = () => {
   const { promptAsync, user } = useAuth();
-  const { push } = useRouter();
+  const { replace } = useRouter();
 
   const colorAnimation = useRef(new Animated.Value(0)).current;
   const notSignedInAnimation = useRef(new Animated.Value(0)).current;
   const signedInAnimation = useRef(new Animated.Value(0)).current;
   const animationsDone = useRef(false);
-  const [signingIn, setSigningIn] = useState(false);
   const canSkipToHome = useRef(false);
 
   const color = colorAnimation.interpolate({
@@ -56,11 +54,10 @@ const Index = () => {
   useEffect(() => {
     if (!user) return;
     canSkipToHome.current = true;
-    if (animationsDone.current) {
-      push("/home");
-      console.log("goto home")
-    }
-  }, [user, push]);
+    if (!animationsDone.current) return;
+
+    replace("/home");
+  }, [user, replace]);
 
   useEffect(() => {
     Animated.timing(colorAnimation, {
@@ -84,11 +81,10 @@ const Index = () => {
         useNativeDriver: false,
       }).start(() => {
         animationsDone.current = true;
-        push("/home");
-        console.log("goto home")
+        replace("/home");
       });
     });
-  }, [push]);
+  }, [replace]);
 
   return (
     <Animated.View
