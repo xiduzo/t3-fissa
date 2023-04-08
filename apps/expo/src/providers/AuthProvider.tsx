@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { AppState, Platform } from "react-native";
+import { Platform } from "react-native";
 import {
   AuthRequestConfig,
   AuthRequestPromptOptions,
@@ -23,6 +23,7 @@ import {
 import Constants from "expo-constants";
 import { differenceInMinutes, useInterval, useSpotify } from "@fissa/utils";
 
+import { useOnActiveApp } from "../hooks";
 import {
   ENCRYPTED_STORAGE_KEYS,
   useEncryptedStorage,
@@ -113,21 +114,17 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     });
   }, [readTokenFromStorage, user, getScopes]);
 
+  // TODO this should be a background task
   useInterval(readTokenFromStorage, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
-  useEffect(() => {
-    const { remove } = AppState.addEventListener("change", () => {
-      if (AppState.currentState !== "active") return;
-      const difference = differenceInMinutes(
-        new Date(),
-        lastRefreshTokenFetchTime.current,
-      );
-      if (difference < REFRESH_INTERVAL_MINUTES) return;
-      readTokenFromStorage();
-    });
-
-    return remove;
-  }, [readTokenFromStorage]);
+  useOnActiveApp(() => {
+    const difference = differenceInMinutes(
+      new Date(),
+      lastRefreshTokenFetchTime.current,
+    );
+    if (difference < REFRESH_INTERVAL_MINUTES) return;
+    readTokenFromStorage();
+  });
 
   return (
     <SpotifyContext.Provider value={{ promptAsync, user }}>

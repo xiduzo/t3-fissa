@@ -17,8 +17,6 @@ const getBaseUrl = () => {
   return `http://localhost:3000`; // dev SSR should use localhost
 };
 
-console.log(getBaseUrl());
-
 export const api = createTRPCProxyClient<AppRouter>({
   transformer,
   links: [

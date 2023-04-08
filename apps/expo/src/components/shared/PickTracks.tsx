@@ -122,7 +122,7 @@ export const PickTracks: FC<Props> = ({
         }}
       />
       <View className="h-full w-full">
-        <View className="px-6">
+        <View className="mb-4 px-6">
           <Input
             startIcon="search"
             ref={inputRef}

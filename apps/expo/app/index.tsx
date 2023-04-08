@@ -58,6 +58,7 @@ const Index = () => {
     canSkipToHome.current = true;
     if (animationsDone.current) {
       push("/home");
+      console.log("goto home")
     }
   }, [user, push]);
 
@@ -84,6 +85,7 @@ const Index = () => {
       }).start(() => {
         animationsDone.current = true;
         push("/home");
+        console.log("goto home")
       });
     });
   }, [push]);

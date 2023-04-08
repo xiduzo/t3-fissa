@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Track } from "@fissa/db";
-import { SpotifyService } from "@fissa/utils";
+import { SpotifyService, Timer } from "@fissa/utils";
 
 import { Z_TRACKS } from "../router/constants";
 import { Context, ServiceWithContext } from "../utils/context";
@@ -78,7 +78,9 @@ export class TrackService extends ServiceWithContext {
     });
 
     const pins = rooms.map(({ pin }) => pin);
-    await Promise.all(pins.map(this.reorderTracksFromPlaylist));
+    await Promise.all(
+      pins.map(async (pin) => this.reorderTracksFromPlaylist(pin)),
+    );
 
     return this.db.room.updateMany({
       where: { pin: { in: pins } },
@@ -87,24 +89,26 @@ export class TrackService extends ServiceWithContext {
   };
 
   private reorderTracksFromPlaylist = async (pin: string) => {
-    console.info(`Reordering playlist for room ${pin}`);
     const { currentIndex, tracks } = await this.db.room.findUniqueOrThrow({
       where: { pin },
       select: { currentIndex: true, tracks: true },
     });
 
+    const { updates, fakeUpdates, newCurrentIndex } =
+      this.generateTrackIndexUpdates(tracks, currentIndex);
+
+    if (!updates.length) {
+      console.info(`No updates needed for room ${pin}`);
+      return;
+    }
+
+    const timer = new Timer(
+      `Reordering ${updates.length} tracks for room ${pin}`,
+    );
+
     try {
-      const { updates, fakeUpdates, newCurrentIndex } =
-        this.generateTrackIndexUpdates(tracks, currentIndex);
-
-      if (!updates.length) {
-        console.info(`No updates needed for room ${pin}`);
-        return;
-      }
-
       await this.db.$transaction(
         async (transaction) => {
-          console.info(`updating fake indexes`);
           // (1) Clear out the indexes
           await transaction.room.update({
             where: { pin },
@@ -115,7 +119,6 @@ export class TrackService extends ServiceWithContext {
             },
           });
 
-          console.info(`updating real indexes`);
           // (2) Set the correct indexes
           await transaction.room.update({
             where: { pin },
@@ -129,6 +132,8 @@ export class TrackService extends ServiceWithContext {
       );
     } catch (e) {
       console.log(e);
+    } finally {
+      console.log(timer.duration());
     }
   };
 
@@ -155,10 +160,6 @@ export class TrackService extends ServiceWithContext {
     const updates = sorted
       .map(({ trackId, index }, newIndex) => {
         if (index === newIndex) return; // No need to update
-
-        console.log(
-          `Updating index of ${trackId} from ${index} to ${newIndex}`,
-        );
 
         return {
           where: { trackId },

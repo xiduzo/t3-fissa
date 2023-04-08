@@ -8,7 +8,7 @@ export const ProgressBar: FC<Props> = ({
   expectedEndTime,
   track,
   disabled,
-  inverted
+  inverted,
 }) => {
   const [progress, setProgress] = useState(0);
 
@@ -23,7 +23,7 @@ export const ProgressBar: FC<Props> = ({
       const max = 100;
       const progress = (max - (difference * max) / track.duration_ms) / max;
       setProgress(Math.min(1, progress));
-    }
+    };
 
     const interval = setInterval(updateProgress, updateFrequency);
 
@@ -42,7 +42,7 @@ export const ProgressBar: FC<Props> = ({
       <LinearGradient
         start={[0, 0]}
         end={[1, 1]}
-        colors={theme.gradient}
+        colors={inverted ? [theme["900"]] : theme.gradient}
         className="h-1.5 rounded-r-md"
         style={{ flex: progress }}
       />
@@ -61,5 +61,5 @@ const progressBar = cva("flex-row overflow-hidden rounded-md", {
 interface Props extends ViewProps, VariantProps<typeof progressBar> {
   expectedEndTime: Date;
   track: SpotifyApi.TrackObjectFull;
-  inverted?: boolean
+  inverted?: boolean;
 }

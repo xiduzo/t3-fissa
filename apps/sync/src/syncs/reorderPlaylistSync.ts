@@ -15,9 +15,11 @@ export const reorderPlaylistSync = async () => {
 
       try {
         console.log(`reordering playlist for ${room.pin}...`);
-        return api.track.sync.reorder.mutate(room.pin);
+        await api.track.sync.reorder.mutate(room.pin);
+        console.log(`reordering done for ${room.pin}...`);
       } catch (error) {
         console.error(error);
+      } finally {
         return Promise.resolve();
       }
     }),

@@ -5,10 +5,14 @@ import { Stack, useRouter, useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import { Fab, PinCode, RoomTracks } from "../../../src/components";
+import { useInvalidateRoom, useOnActiveApp } from "../../../src/hooks";
 
 const Room = () => {
   const { back } = useRouter();
   const { pin } = useSearchParams();
+
+  const invalidate = useInvalidateRoom();
+  useOnActiveApp(invalidate);
 
   useEffect(() => {
     if (pin) return;

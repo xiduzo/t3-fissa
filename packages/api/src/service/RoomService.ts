@@ -218,9 +218,7 @@ export class RoomService extends ServiceWithContext {
     accessToken: string,
   ) => {
     const playIn = differenceInMilliseconds(expectedEndTime, new Date());
-    console.log("Playing in", playIn, "ms", performance.now());
     await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
-    console.log("Playing", performance.now());
     await this.spotifyService.playTrack(accessToken, trackId);
   };
 

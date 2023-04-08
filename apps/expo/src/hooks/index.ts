@@ -6,6 +6,8 @@ export * from "./useGetRoom";
 export * from "./useGetTracks";
 export * from "./useGetVoteFromUser";
 export * from "./useGetVotes";
+export * from "./useInvalidateRoom";
+export * from "./useOnActiveApp";
 export * from "./useRestartRoom";
 export * from "./useSkipTrack";
 export * from "./useSwipe";

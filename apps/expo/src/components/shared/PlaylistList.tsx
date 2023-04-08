@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { VirtualizedList, VirtualizedListProps } from "react-native";
-import { usePlayLists } from "@fissa/utils";
+import { usePlayLists, useSpotify } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
 import { EmptyState } from "./EmptyState";
@@ -12,9 +12,9 @@ export const PlaylistList: FC<Props> = ({
   playlistEnd,
   ...props
 }) => {
-  const { user, spotify } = useAuth();
+  const { user } = useAuth();
 
-  const playlists = usePlayLists(spotify, user);
+  const playlists = usePlayLists(user);
 
   return (
     <VirtualizedList

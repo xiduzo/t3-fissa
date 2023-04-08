@@ -3,7 +3,7 @@ import SpotifyWebApi from "spotify-web-api-js";
 import { create } from "zustand";
 
 import { splitInChunks } from "../array";
-import { savedTracksPlaylist } from "../constants";
+import { getPlaylists } from "../spotify";
 
 interface SpotifyState {
   tracks: SpotifyApi.TrackObjectFull[];
@@ -72,17 +72,8 @@ export const usePlayLists = (user?: SpotifyApi.CurrentUsersProfileResponse) => {
   const { setPlayLists, spotify } = useSpotifyStore();
 
   useMemo(async () => {
-    const { items } = await spotify.getUserPlaylists(user?.id);
-
-    try {
-      const savedTracks = await spotify.getMySavedTracks(user?.id);
-      setPlayLists([
-        ...items,
-        savedTracksPlaylist(savedTracks.items.length, user?.display_name),
-      ]);
-    } catch {
-      setPlayLists(items);
-    }
+    if(!user) return
+    await getPlaylists(user, spotify, setPlayLists)
   }, [setPlayLists, user]);
 
   return useSpotifyStore((state) => state.playLists);
