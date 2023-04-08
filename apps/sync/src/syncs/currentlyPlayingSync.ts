@@ -14,7 +14,7 @@ export const currentlyPlayingSync = async () => {
     // -X seconds to be safe because we check if the user is still listening
     // in spotify anything before playing the next track.
     // The service will account for this difference
-    const endTime = addSeconds(room.expectedEndTime, -10);
+    const endTime = addSeconds(room.expectedEndTime, -5);
 
     console.info(
       `next track for ${room.pin} in ${differenceInMilliseconds(

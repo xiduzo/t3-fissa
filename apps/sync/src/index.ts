@@ -11,7 +11,7 @@ import { currentlyPlayingSync, reorderPlaylistSync } from "./syncs";
 //  # │ │ │ │ │ │
 //  # │ │ │ │ │ │
 //  # * * * * * *
-cron.schedule(`*/30 * * * * *`, currentlyPlayingSync);
-cron.schedule(`*/5 * * * * *`, reorderPlaylistSync);
+cron.schedule(`*/1 * * * *`, currentlyPlayingSync);
+cron.schedule(`*/10 * * * * *`, reorderPlaylistSync);
 
 currentlyPlayingSync();
