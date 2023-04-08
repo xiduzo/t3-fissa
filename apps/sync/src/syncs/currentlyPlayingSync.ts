@@ -27,9 +27,9 @@ export const currentlyPlayingSync = async () => {
       try {
         console.log(`starting next track for ${room.pin}...`);
         await api.room.sync.next.mutate(room);
-        console.log(`next track started for ${room.pin}...`);
+        console.log(`next track started for ${room.pin}`);
       } catch (error) {
-        console.error(`next track failed for ${room.pin}...`, error);
+        console.error(`next track failed for ${room.pin}`, error);
       }
     }, differenceInMilliseconds(endTime, new Date()));
 

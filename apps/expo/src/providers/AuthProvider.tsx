@@ -73,7 +73,6 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       refresh_token?: string;
       session_token?: string;
     }) => {
-      console.log("setting tokens", props);
       const { access_token, refresh_token, session_token } = props;
 
       spotify.setAccessToken(access_token);
