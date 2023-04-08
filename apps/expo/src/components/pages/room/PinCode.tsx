@@ -35,7 +35,7 @@ export const PinCode = () => {
       />
       <Popover visible={showRoomPopover} onRequestClose={toggleRoomPopover}>
         <Action
-          title="Leave session"
+          title="Leave fissa"
           subtitle="No worries, you can come back"
           inverted
           onPress={goToHome}

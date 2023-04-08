@@ -3,7 +3,6 @@ import { addSeconds, isPast } from "@fissa/utils";
 import { api } from "../utils/api";
 
 export const reorderPlaylistSync = async () => {
-  console.log(`Running ${reorderPlaylistSync.name}...`)
   const rooms = await api.room.sync.active.query();
 
   for (const room of rooms) {
@@ -17,7 +16,7 @@ export const reorderPlaylistSync = async () => {
       await api.track.sync.reorder.mutate(room.pin);
       console.log(`reordering done for ${room.pin}...`);
     } catch (error) {
-      console.error(error);
+      console.error(`reordering failed for ${room.pin}...`, error)
     }
   }
 };
