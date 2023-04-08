@@ -1,14 +1,11 @@
 import { Prisma, Room, Track } from "@fissa/db";
-import {
-  NotTheHost,
-  SpotifyService,
-  addMilliseconds,
-  differenceInMilliseconds,
-  randomize,
-} from "@fissa/utils";
+import { NotTheHost, SpotifyService, addMilliseconds, differenceInMilliseconds, randomize } from "@fissa/utils";
+
+
 
 import { Context, ServiceWithContext } from "../utils/context";
 import { TrackService } from "./TrackService";
+
 
 export class RoomService extends ServiceWithContext {
   private spotifyService: SpotifyService;
@@ -45,7 +42,7 @@ export class RoomService extends ServiceWithContext {
 
     const tokens = this.db.account.findFirstOrThrow({
       where: { userId: this.ctx.session?.user.id },
-      select: { access_token: true },
+      select: { access_token: true, refresh_token: true },
     });
 
     await this.db.room.deleteMany({
@@ -137,12 +134,10 @@ export class RoomService extends ServiceWithContext {
     if (room.userId !== this.ctx.session?.user.id)
       throw new Error("Not authorized");
 
-    const service = new SpotifyService();
-
     const { access_token } = room.by.accounts[0]!;
     const track = room.tracks[room.lastPlayedIndex]!;
 
-    await service.playTrack(access_token!, track.trackId);
+    await this.spotifyService.playTrack(access_token!, track.trackId);
 
     return this.db.room.update({
       where: { pin },
@@ -196,11 +191,9 @@ export class RoomService extends ServiceWithContext {
 
       if (!(await isPlaying)) return this.stopRoom(pin);
 
-      await this.playTrack(
-        instantPlay ? new Date() : room.expectedEndTime,
-        nextTrack.trackId,
-        access_token!,
-      );
+      const playIn = differenceInMilliseconds(instantPlay ? new Date() : room.expectedEndTime, new Date());
+      await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
+      await this.spotifyService.playTrack(access_token!, nextTrack.trackId);
       await this.updateRoomIndexes(pin, currentIndex, nextTrack.durationMs);
 
       await removeVotes;
@@ -211,16 +204,6 @@ export class RoomService extends ServiceWithContext {
   };
 
   private generatePin = () => randomize("A", 4);
-
-  private playTrack = async (
-    expectedEndTime: Date,
-    trackId: string,
-    accessToken: string,
-  ) => {
-    const playIn = differenceInMilliseconds(expectedEndTime, new Date());
-    await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
-    await this.spotifyService.playTrack(accessToken, trackId);
-  };
 
   private stopRoom = async (pin: string) => {
     return this.db.room.update({

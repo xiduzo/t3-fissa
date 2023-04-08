@@ -138,7 +138,7 @@ const button = cva(
         false: "",
       },
       disabled: {
-        true: "opacity-50",
+        true: "opacity-40",
       },
       size: {
         sm: "",

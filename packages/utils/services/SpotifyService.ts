@@ -21,17 +21,17 @@ export class SpotifyService {
     return this.spotify.getMe();
   };
 
+  isStillPlaying = async (accessToken: string) => {
+    this.spotify.setAccessToken(accessToken);
+    const { body } = await this.spotify.getMyCurrentPlaybackState();
+    return body.is_playing;
+  };
+
   playTrack = async (accessToken: string, trackId: string) => {
     this.spotify.setAccessToken(accessToken);
 
     const { body } = await this.spotify.getTrack(trackId);
     return this.spotify.play({ uris: [body.uri] });
-  };
-
-  isStillPlaying = async (accessToken: string) => {
-    this.spotify.setAccessToken(accessToken);
-    const { body } = await this.spotify.getMyCurrentPlaybackState();
-    return body.is_playing;
   };
 
   getRecommendedTracks = async (

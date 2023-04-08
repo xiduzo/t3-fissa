@@ -2,7 +2,8 @@ import { useEffect, useRef } from "react";
 
 import { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 
-export const useInterval = (callback: () => void, delay: number | null) => {
+// Will use a minimum of 1ms delay to avoid infinite loops
+export const useInterval = (callback: () => void, delayInMs = 1000) => {
   const savedCallback = useRef(callback);
 
   useIsomorphicLayoutEffect(() => {
@@ -10,10 +11,8 @@ export const useInterval = (callback: () => void, delay: number | null) => {
   }, [callback]);
 
   useEffect(() => {
-    if (!delay && delay !== 0) return;
-
-    const id = setInterval(() => savedCallback.current(), delay);
+    const id = setInterval(() => savedCallback.current(), Math.max(1, delayInMs));
 
     return () => clearInterval(id);
-  }, [delay]);
+  }, [delayInMs]);
 };

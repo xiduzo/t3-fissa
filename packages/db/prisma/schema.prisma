@@ -19,6 +19,8 @@ model Room {
     by User @relation(fields: [userId], references: [id])
     userId String @map("user_id")
 
+    lastUpdateAt DateTime @map("last_update_at") @updatedAt @default(now())
+
     tracks Track[]
 
     shouldReorder Boolean @map("should_reorder") @default(false)
@@ -69,7 +71,7 @@ model Account {
     providerAccountId String
     refresh_token     String? // @db.Text
     access_token      String? // @db.Text
-    expires_at        Int?
+    expires_at        Int? // In seconds
     token_type        String?
     scope             String?
     id_token          String? // @db.Text

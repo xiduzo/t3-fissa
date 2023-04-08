@@ -5,6 +5,8 @@ import { api } from "../utils/api";
 const timeouts = new Map<string, NodeJS.Timeout>();
 
 export const currentlyPlayingSync = async () => {
+  console.log(`Running ${currentlyPlayingSync.name}...`)
+
   const rooms = await api.room.sync.active.query();
 
   timeouts.forEach(clearTimeout);
@@ -27,6 +29,7 @@ export const currentlyPlayingSync = async () => {
       try {
         console.log(`starting next track for ${room.pin}...`);
         await api.room.sync.next.mutate(room);
+        console.log(`next track started for ${room.pin}...`);
       } catch (error) {
         console.error(error);
       }

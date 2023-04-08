@@ -74,6 +74,22 @@ export const getPlaylists = async (
   return playlists;
 };
 
+export const scopes = [
+  // Read
+  "user-read-email",
+  "user-read-private",
+  "user-read-playback-state",
+  "user-read-currently-playing",
+  "user-top-read",
+  "user-library-read",
+  "playlist-read-private",
+  "playlist-read-collaborative",
+  // Modify
+  "playlist-modify-public",
+  "user-modify-playback-state",
+  "user-library-modify",
+];
+
 const SAVED_TRACKS_PLAYLIST_ID = "SAVED_TRACKS_PLAYLIST_ID";
 
 const savedTracksPlaylist = (total: number, display_name?: string) =>

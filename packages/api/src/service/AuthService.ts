@@ -1,14 +1,26 @@
 import { Prisma } from "@fissa/db";
-import { SpotifyService, addMonths, addSeconds, isPast } from "@fissa/utils";
+import {
+  SpotifyService,
+  addMonths,
+  addSeconds,
+  differenceInMinutes,
+  isPast,
+} from "@fissa/utils";
 
-import { ServiceWithContext } from "../utils/context";
+import { Context, ServiceWithContext } from "../utils/context";
 
 export class AuthService extends ServiceWithContext {
-  getAccessToken = async (code: string, redirectUri: string) => {
-    const service = new SpotifyService();
-    const tokens = await service.codeGrant(code, redirectUri);
+  private spotifyService: SpotifyService;
 
-    const spotifyUser = await service.me(tokens.body.access_token);
+  constructor(ctx: Context, spotifyService?: SpotifyService) {
+    super(ctx);
+    this.spotifyService = spotifyService ?? new SpotifyService();
+  }
+
+  getAccessToken = async (code: string, redirectUri: string) => {
+    const tokens = await this.spotifyService.codeGrant(code, redirectUri);
+
+    const spotifyUser = await this.spotifyService.me(tokens.body.access_token);
 
     const findUser = {
       where: { email: spotifyUser.body.email },
@@ -32,10 +44,9 @@ export class AuthService extends ServiceWithContext {
 
   refreshToken = async (refreshToken: string) => {
     console.log("refresh token", new Date().toISOString());
-    const service = new SpotifyService();
 
-    const tokens = await service.refresh(refreshToken);
-    const spotifyUser = await service.me(tokens.body.access_token);
+    const tokens = await this.spotifyService.refresh(refreshToken);
+    const spotifyUser = await this.spotifyService.me(tokens.body.access_token);
 
     const { sessions } = await this.db.user.findUniqueOrThrow({
       where: { email: spotifyUser.body.email },
@@ -68,6 +79,35 @@ export class AuthService extends ServiceWithContext {
       ...tokens.body,
       session_token: session?.sessionToken!,
     };
+  };
+
+  refreshRoomToken = async (pin: string) => {
+    const room = await this.db.room.findUniqueOrThrow({
+      where: { pin },
+      select: {
+        lastUpdateAt: true,
+        by: {
+          select: {
+            accounts: {
+              select: { expires_at: true, refresh_token: true },
+              take: 1,
+            },
+          },
+        },
+      },
+    });
+
+    const { lastUpdateAt } = room;
+
+    if (differenceInMinutes(lastUpdateAt, new Date()) > 20) return;
+
+    const { accounts } = room.by;
+    const { expires_at, refresh_token } = accounts[0]!;
+
+    // Token is still valid
+    if (differenceInMinutes(expires_at!, new Date()) >= 20) return;
+
+    return this.refreshToken(refresh_token!);
   };
 
   private createUser = async (

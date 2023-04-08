@@ -11,9 +11,8 @@ export * from "./types";
 export * from "./array";
 export * from "./services";
 export * from "./spotify";
+export * from "./classes";
 
 export * from "./date";
-export * from "./error";
-export * from "./Timer";
 
 export { SpotifyWebApi };

@@ -5,7 +5,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -20,10 +19,13 @@ import {
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
-import * as BackgroundFetch from "expo-background-fetch";
 import Constants from "expo-constants";
-import * as TaskManager from "expo-task-manager";
-import { differenceInMinutes, useInterval, useSpotify } from "@fissa/utils";
+import {
+  differenceInMinutes,
+  scopes,
+  useInterval,
+  useSpotify,
+} from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
 import {
@@ -34,10 +36,9 @@ import { toast } from "../utils";
 import { api } from "../utils/api";
 
 const REFRESH_INTERVAL_MINUTES = 45;
-const BACKGROUND_FETCH_TASK = "background-fetch";
 
 const SpotifyContext = createContext({
-  promptAsync: (options?: AuthRequestPromptOptions | undefined) => {
+  promptAsync: (_?: AuthRequestPromptOptions | undefined) => {
     return new Promise<AuthSessionResult>((resolve, reject) => {
       reject("Not implemented");
     });
@@ -49,14 +50,13 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const spotify = useSpotify();
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
 
-  const lastRefreshTokenFetchTime = useRef(new Date());
+  const lastTokenSaveTime = useRef(new Date());
 
   const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
 
-  const { save: saveRefreshToken, getValueFor } = useEncryptedStorage(
-    ENCRYPTED_STORAGE_KEYS.refreshToken,
-  );
+  const { save: saveRefreshToken, getValueFor: getRefreshToken } =
+    useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.refreshToken);
   const { save: saveSessionToken } = useEncryptedStorage(
     ENCRYPTED_STORAGE_KEYS.sessionToken,
   );
@@ -67,16 +67,32 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
-  const readTokenFromStorage = useCallback(async () => {
-    const refreshToken = await getValueFor();
+  const saveTokens = useCallback(
+    async (props: {
+      access_token: string;
+      refresh_token?: string;
+      session_token?: string;
+    }) => {
+      console.log("setting tokens", props);
+      const { access_token, refresh_token, session_token } = props;
+
+      spotify.setAccessToken(access_token);
+      spotify.getMe().then(setUser);
+
+      session_token && (await saveSessionToken(session_token));
+      refresh_token && (await saveRefreshToken(refresh_token));
+      lastTokenSaveTime.current = new Date();
+    },
+    [spotify],
+  );
+
+  const updateTokens = useCallback(async () => {
+    const refreshToken = await getRefreshToken();
     if (!refreshToken) return;
 
     try {
-      const { access_token, session_token } = await refresh(refreshToken);
-      spotify.setAccessToken(access_token);
-      spotify.getMe().then(setUser);
-      await saveSessionToken(session_token);
-      lastRefreshTokenFetchTime.current = new Date();
+      const tokens = await refresh(refreshToken);
+      await saveTokens(tokens);
     } catch (e) {
       console.error(e);
     }
@@ -95,49 +111,32 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     const { code } = response.params;
     if (!code) return toast.error({ message: `Something went wrong...` });
 
-    const { access_token, refresh_token, session_token } = await mutateAsync({
-      code,
-      redirectUri: request!.redirectUri,
-    });
+    const { redirectUri } = request!;
+    const tokens = await mutateAsync({ code, redirectUri });
 
     toast.hide();
 
-    spotify.setAccessToken(access_token);
-    spotify.getMe().then(setUser);
-    await saveRefreshToken(refresh_token);
-    await saveSessionToken(session_token);
-  }, [response, request, setUser, saveScopes]);
-
-  TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    console.log("background fetch token");
-    await readTokenFromStorage();
-
-    // Be sure to return the successful result type!
-    return BackgroundFetch.BackgroundFetchResult.NoData;
-  });
+    await saveTokens(tokens);
+  }, [response, request, saveScopes, saveTokens]);
 
   useMemo(async () => {
     if (user) return;
     const localScopes = await getScopes();
 
-    if (!localScopes) return;
-    if (localScopes !== scopes.join("_")) return;
+    if (String(localScopes) !== scopes.join("_")) return;
 
-    await readTokenFromStorage();
+    await updateTokens();
+  }, [updateTokens, user, getScopes]);
 
-    const unregister = await registerBackgroundFetchAsync();
+  useOnActiveApp(async () => {
+    const { current } = lastTokenSaveTime;
+    const difference = differenceInMinutes(new Date(), current);
 
-    return unregister;
-  }, [readTokenFromStorage, user, getScopes]);
-
-  useOnActiveApp(() => {
-    const difference = differenceInMinutes(
-      new Date(),
-      lastRefreshTokenFetchTime.current,
-    );
     if (difference < REFRESH_INTERVAL_MINUTES) return;
-    readTokenFromStorage();
+    await updateTokens();
   });
+
+  useInterval(updateTokens, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
   return (
     <SpotifyContext.Provider value={{ promptAsync, user }}>
@@ -148,24 +147,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
 export const useAuth = () => useContext(SpotifyContext);
 
-const scopes = [
-  // Read
-  "user-read-email",
-  "user-read-private",
-  "user-read-playback-state",
-  "user-read-currently-playing",
-  "user-top-read",
-  "user-library-read",
-  "playlist-read-private",
-  "playlist-read-collaborative",
-  // Modify
-  "playlist-modify-public",
-  "user-modify-playback-state",
-  "user-library-modify",
-];
-
 const config: AuthRequestConfig = {
-  scopes,
+  scopes: scopes,
   responseType: ResponseType.Code,
   clientId: Constants.expoConfig?.extra?.spotifyClientId,
   usePKCE: false,
@@ -181,19 +164,4 @@ const config: AuthRequestConfig = {
 const discovery: DiscoveryDocument = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
   tokenEndpoint: "https://accounts.spotify.com/api/token",
-};
-
-const registerBackgroundFetchAsync = async () => {
-  await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-    minimumInterval: 60 * 1,
-    stopOnTerminate: false, // android only,
-    startOnBoot: true, // android only
-  });
-
-  console.log("registered background fetch task");
-
-  return () => {
-    console.log("unregistered background fetch task");
-    BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-  };
 };

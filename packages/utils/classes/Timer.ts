@@ -1,5 +1,4 @@
-// Will start whenever class is instantiated
-// But can be overridden with the `start()` method
+// Will start time whenever class is instantiated
 export class Timer {
   private _startedAt: number;
   private _name: string;
@@ -7,10 +6,6 @@ export class Timer {
   constructor(name = "Unknown timer") {
     this._startedAt = performance.now();
     this._name = name;
-  }
-
-  start() {
-    this._startedAt = performance.now();
   }
 
   duration() {

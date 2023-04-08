@@ -11,10 +11,7 @@ import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import { Button, Rejoin, Typography } from "../src/components";
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-} from "../src/hooks/useEncryptedStorage";
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
 import { toast } from "../src/utils/Toast";
 import { api } from "../src/utils/api";
 

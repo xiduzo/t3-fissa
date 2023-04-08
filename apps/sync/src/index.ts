@@ -1,6 +1,10 @@
 import cron from "node-cron";
 
-import { currentlyPlayingSync, reorderPlaylistSync } from "./syncs";
+import {
+  accessTokenSync,
+  currentlyPlayingSync,
+  reorderPlaylistSync,
+} from "./syncs";
 
 //  # ┌────────────── second (optional)
 //  # │ ┌──────────── minute
@@ -11,5 +15,6 @@ import { currentlyPlayingSync, reorderPlaylistSync } from "./syncs";
 //  # │ │ │ │ │ │
 //  # │ │ │ │ │ │
 //  # * * * * * *
+cron.schedule(`*/20 * * * *`, accessTokenSync);
 cron.schedule(`*/1 * * * *`, currentlyPlayingSync);
-cron.schedule(`*/10 * * * * *`, reorderPlaylistSync);
+cron.schedule(`*/5 * * * * *`, reorderPlaylistSync);
