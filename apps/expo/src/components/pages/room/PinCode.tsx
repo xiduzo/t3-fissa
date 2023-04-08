@@ -29,7 +29,7 @@ export const PinCode = () => {
       <Button
         onPress={toggleRoomPopover}
         dimmed
-        title={pin!}
+        title={pin}
         size="sm"
         variant="text"
       />

@@ -18,7 +18,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
   const { pin } = useSearchParams();
   const [trackSelected, setTrackSelected] = useState(false);
 
-  const { data } = useGetRoomDetails(pin!);
+  const { data } = useGetRoomDetails(String(pin));
 
   const toggleTrackSelected = useCallback(() => {
     setTrackSelected((prev) => !prev);
@@ -65,7 +65,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
         />
         <Divider />
         <SkipTrackAction
-          pin={pin!}
+          pin={String(pin)}
           owner={data.by.email!}
           onPress={toggleTrackSelected}
         />

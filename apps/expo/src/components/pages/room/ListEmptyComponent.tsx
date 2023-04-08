@@ -10,8 +10,8 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
 
-  const { data: room } = useGetRoom(pin!);
-  const { mutateAsync } = useRestartRoom(pin!, {
+  const { data: room } = useGetRoom(String(pin));
+  const { mutateAsync } = useRestartRoom(String(pin), {
     onMutate: () => {
       toast.info({
         message: "Restarting fissa",

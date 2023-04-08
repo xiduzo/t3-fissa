@@ -10,9 +10,9 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
 
-  const { data } = useGetVoteFromUser(pin!, track.id, user);
+  const { data } = useGetVoteFromUser(String(pin), track.id, user);
 
-  const { mutateAsync, isLoading } = useCreateVote(pin!, track.id, {
+  const { mutateAsync, isLoading } = useCreateVote(String(pin), track.id, {
     onMutate: ({ vote }) => {
       toast.success({
         message: track.name,
