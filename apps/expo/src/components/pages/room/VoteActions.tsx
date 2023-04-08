@@ -36,7 +36,7 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
         inverted
         active={data?.vote === 1}
         disabled={isLoading || data?.vote === 1}
-        icon="hand-o-up"
+        icon="arrow-up"
         title="Up-vote track"
         subtitle="It might move up in the queue"
       />
@@ -46,7 +46,7 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
         inverted
         active={data?.vote === -1}
         disabled={isLoading || data?.vote === -1}
-        icon="hand-o-down"
+        icon="arrow-down"
         title="Down-vote track"
         subtitle="It might move down in the queue"
       />

@@ -54,7 +54,7 @@ export const Button: FC<Props> = ({
       {...props}
       disabled={props.disabled}
       onPress={handlePress}
-      className={`rounded-lg ${props.className}`}
+      className={`rounded-full ${props.className}`}
       underlayColor={theme[Boolean(inverted) ? "900" : "500"] + "10"}
     >
       <View

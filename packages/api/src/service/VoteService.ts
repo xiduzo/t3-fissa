@@ -40,7 +40,7 @@ export class VoteService extends ServiceWithContext {
       update: { vote },
     });
 
-    await this.updateScores(pin, [trackId], vote);
+    await this.updateScores(pin, [trackId]);
 
     return response;
   };
@@ -65,14 +65,10 @@ export class VoteService extends ServiceWithContext {
       });
     });
 
-    return this.updateScores(pin, trackIds, vote);
+    return this.updateScores(pin, trackIds);
   };
 
-  private updateScores = async (
-    pin: string,
-    trackIds: string[],
-    vote: number,
-  ) => {
+  private updateScores = async (pin: string, trackIds: string[]) => {
     const scores = await this.db.vote.findMany({
       where: { pin, trackId: { in: trackIds } },
     });
@@ -90,7 +86,10 @@ export class VoteService extends ServiceWithContext {
 
     return this.db.room.update({
       where: { pin },
-      data: { tracks: { updateMany } },
+      data: {
+        shouldReorder: true,
+        tracks: { updateMany },
+      },
     });
   };
 }

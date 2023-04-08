@@ -21,6 +21,8 @@ model Room {
 
     tracks Track[]
 
+    shouldReorder Boolean @map("should_reorder") @default(false)
+
     @@map("rooms")
 }
 

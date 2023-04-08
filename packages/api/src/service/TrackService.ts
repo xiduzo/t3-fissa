@@ -1,10 +1,19 @@
 import { z } from "zod";
+import { Track } from "@fissa/db";
 import { SpotifyService } from "@fissa/utils";
 
 import { Z_TRACKS } from "../router/constants";
-import { ServiceWithContext } from "../utils/context";
+import { Context, ServiceWithContext } from "../utils/context";
+import { VoteService } from "./VoteService";
 
 export class TrackService extends ServiceWithContext {
+  private voteService: VoteService;
+
+  constructor(ctx: Context, voteService?: VoteService) {
+    super(ctx);
+    this.voteService = voteService ?? new VoteService(ctx);
+  }
+
   byPin = async (pin: string) => {
     return this.db.track.findMany({
       where: { pin },
@@ -31,11 +40,13 @@ export class TrackService extends ServiceWithContext {
         index: room.tracks.length + index,
       }));
 
-    await this.db.track.createMany({ data: newTracks });
+    await this.voteService.createVotes(
+      pin,
+      tracks.map(({ trackId }) => trackId),
+      1,
+    );
 
-    return tracks
-      .filter(({ trackId }) => roomTrackIds.includes(trackId))
-      .map(({ trackId }) => trackId); // Return track ids of duplicated tracks
+    return this.db.track.createMany({ data: newTracks });
   };
 
   addRecommendedTracks = async (
@@ -58,5 +69,109 @@ export class TrackService extends ServiceWithContext {
         index: startingIndex + index,
       })),
     });
+  };
+
+  reorderTracks = async () => {
+    const rooms = await this.db.room.findMany({
+      where: { shouldReorder: true },
+      select: { pin: true },
+    });
+
+    const pins = rooms.map(({ pin }) => pin);
+    await Promise.all(pins.map(this.reorderTracksFromPlaylist));
+
+    return this.db.room.updateMany({
+      where: { pin: { in: pins } },
+      data: { shouldReorder: false },
+    });
+  };
+
+  private reorderTracksFromPlaylist = async (pin: string) => {
+    console.info(`Reordering playlist for room ${pin}`);
+    const { currentIndex, tracks } = await this.db.room.findUniqueOrThrow({
+      where: { pin },
+      select: { currentIndex: true, tracks: true },
+    });
+
+    try {
+      const { updates, fakeUpdates, newCurrentIndex } =
+        this.generateTrackIndexUpdates(tracks, currentIndex);
+
+      if (!updates.length) {
+        console.info(`No updates needed for room ${pin}`);
+        return;
+      }
+
+      await this.db.$transaction(
+        async (transaction) => {
+          console.info(`updating fake indexes`);
+          // (1) Clear out the indexes
+          await transaction.room.update({
+            where: { pin },
+            data: {
+              tracks: { updateMany: fakeUpdates },
+              currentIndex: newCurrentIndex,
+              lastPlayedIndex: newCurrentIndex,
+            },
+          });
+
+          console.info(`updating real indexes`);
+          // (2) Set the correct indexes
+          await transaction.room.update({
+            where: { pin },
+            data: { tracks: { updateMany: updates } },
+          });
+        },
+        {
+          maxWait: 20000, // default: 2000
+          timeout: 60000, // default: 5000
+        },
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  private generateTrackIndexUpdates = (
+    tracks: Track[],
+    currentIndex: number,
+  ) => {
+    const tracksWithScoreOrAfterIndex = tracks.filter(
+      ({ score, index }) => score !== 0 || index > currentIndex,
+    );
+    const tracksWithoutScoreAndBeforeIndex = tracks.filter(
+      ({ score, index }) => score === 0 && index <= currentIndex,
+    );
+
+    const sortedTracks = [...tracksWithScoreOrAfterIndex].sort(
+      (a, b) => b.score - a.score,
+    );
+
+    const sorted = tracksWithoutScoreAndBeforeIndex.concat(sortedTracks);
+    const newCurrentIndex = sorted.findIndex(
+      ({ index }) => index === currentIndex,
+    );
+
+    const updates = sorted
+      .map(({ trackId, index }, newIndex) => {
+        if (index === newIndex) return; // No need to update
+
+        console.log(
+          `Updating index of ${trackId} from ${index} to ${newIndex}`,
+        );
+
+        return {
+          where: { trackId },
+          data: { index: newIndex },
+        };
+      })
+      .filter(Boolean);
+
+    const fakeUpdates = updates.map((update, index) => ({
+      ...update,
+      data: { ...update.data, index: index + tracks.length + 100 }, // Set to an index which does not exist
+    }));
+
+    return { updates, fakeUpdates, newCurrentIndex };
   };
 }

@@ -1,19 +1,38 @@
 import { Prisma, Room, Track } from "@fissa/db";
 import {
+  NotTheHost,
   SpotifyService,
   addMilliseconds,
   differenceInMilliseconds,
   randomize,
 } from "@fissa/utils";
 
-import { ServiceWithContext } from "../utils/context";
+import { Context, ServiceWithContext } from "../utils/context";
 import { TrackService } from "./TrackService";
 
 export class RoomService extends ServiceWithContext {
-  all = async () => {
+  private spotifyService: SpotifyService;
+  private trackService: TrackService;
+
+  constructor(
+    ctx: Context,
+    spotifyService?: SpotifyService,
+    trackService?: TrackService,
+  ) {
+    super(ctx);
+    this.spotifyService = spotifyService ?? new SpotifyService();
+    this.trackService = trackService ?? new TrackService(ctx);
+  }
+
+  activeRooms = async () => {
     return this.db.room.findMany({
       where: { currentIndex: { gte: 0 } },
-      select: { pin: true, expectedEndTime: true, currentIndex: true },
+      select: {
+        pin: true,
+        expectedEndTime: true,
+        currentIndex: true,
+        shouldReorder: true,
+      },
     });
   };
 
@@ -59,7 +78,7 @@ export class RoomService extends ServiceWithContext {
 
     const { access_token } = await tokens;
 
-    await spotifyService.playTrack(access_token!, tracks[0]!.trackId);
+    await this.spotifyService.playTrack(access_token!, tracks[0]!.trackId);
 
     return this.byId(room?.pin!);
   };
@@ -88,50 +107,13 @@ export class RoomService extends ServiceWithContext {
     });
   };
 
-  reorderPlaylist = async (pin: string) => {
-    console.info(`Reordering playlist for room ${pin}`);
-    const { currentIndex, tracks } = await this.getRoomDetailedInformation(pin);
-    try {
-      const { updates, fakeUpdates, newCurrentIndex } =
-        this.generateTrackIndexUpdates(tracks, currentIndex);
-
-      await this.db.$transaction(
-        async (transaction) => {
-          console.info(`updating fake indexes`);
-          // (1) Clear out the indexes
-          await transaction.room.update({
-            where: { pin },
-            data: {
-              tracks: { updateMany: fakeUpdates },
-              currentIndex: newCurrentIndex,
-              lastPlayedIndex: newCurrentIndex,
-            },
-          });
-
-          console.info(`updating real indexes`);
-          // (2) Set the correct indexes
-          await transaction.room.update({
-            where: { pin },
-            data: { tracks: { updateMany: updates } },
-          });
-        },
-        {
-          maxWait: 20000, // default: 2000
-          timeout: 60000, // default: 5000
-        },
-      );
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   skipTrack = async (pin: string) => {
     const room = await this.byId(pin);
 
     if (room.userId !== this.ctx.session?.user.id)
       throw new Error("Not authorized");
 
-    return this.nextTrack(pin, room.currentIndex, true);
+    return this.playNextTrack(pin, room.currentIndex, true);
   };
 
   restart = async (pin: string) => {
@@ -171,7 +153,7 @@ export class RoomService extends ServiceWithContext {
     });
   };
 
-  nextTrack = async (
+  playNextTrack = async (
     pin: string,
     currentIndex: number,
     instantPlay = false,
@@ -184,14 +166,13 @@ export class RoomService extends ServiceWithContext {
     const { tracks } = room;
 
     try {
-      const spotifyService = new SpotifyService();
-
-      const isPlaying = spotifyService.isStillPlaying(access_token!);
+      const isPlaying = this.spotifyService.isStillPlaying(access_token!);
 
       const currentTrack = tracks[room.currentIndex]!;
       const nextIndex = room.currentIndex + 1;
       const nextTrack = tracks[nextIndex]!;
 
+      // TODO this can maybe also be updated in the `this.updateRoomIndexes`
       const removeVotes = this.db.vote.deleteMany({
         where: {
           pin,
@@ -199,24 +180,13 @@ export class RoomService extends ServiceWithContext {
         },
       });
 
-      const updateScores = this.db.track.updateMany({
-        where: {
-          pin,
-          trackId: { in: [currentTrack.trackId, nextTrack.trackId] },
-        },
-        data: { score: 0 },
-      });
-
-      const shouldAddNewTracks = nextIndex + 3 > tracks.length;
-
-      if (shouldAddNewTracks) {
-        const trackService = new TrackService(this.ctx);
-
+      // Automatically add more tracks to the playlist
+      if (nextIndex + 3 > tracks.length) {
         const trackIds = tracks
           .slice(nextIndex, tracks.length)
           .map(({ trackId }) => trackId);
 
-        await trackService.addRecommendedTracks(
+        await this.trackService.addRecommendedTracks(
           pin,
           trackIds,
           tracks.length,
@@ -231,12 +201,9 @@ export class RoomService extends ServiceWithContext {
         nextTrack.trackId,
         access_token!,
       );
-      await this.roomPlaysNextTrack(pin, nextTrack.durationMs);
+      await this.updateRoomIndexes(pin, currentIndex, nextTrack.durationMs);
 
       await removeVotes;
-      await updateScores;
-
-      if (shouldAddNewTracks) await this.reorderPlaylist(pin);
     } catch (e) {
       console.error(e);
       return this.stopRoom(pin);
@@ -250,12 +217,11 @@ export class RoomService extends ServiceWithContext {
     trackId: string,
     accessToken: string,
   ) => {
-    const service = new SpotifyService();
     const playIn = differenceInMilliseconds(expectedEndTime, new Date());
     console.log("Playing in", playIn, "ms", performance.now());
     await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
     console.log("Playing", performance.now());
-    await service.playTrack(accessToken, trackId);
+    await this.spotifyService.playTrack(accessToken, trackId);
   };
 
   private stopRoom = async (pin: string) => {
@@ -265,13 +231,23 @@ export class RoomService extends ServiceWithContext {
     });
   };
 
-  private roomPlaysNextTrack = async (pin: string, durationMs: number) => {
-    await this.db.room.update({
+  private updateRoomIndexes = async (
+    pin: string,
+    currentIndex: number,
+    durationMs: number,
+  ) => {
+    return this.db.room.update({
       where: { pin },
       data: {
         expectedEndTime: addMilliseconds(new Date(), durationMs),
         currentIndex: { increment: 1 },
         lastPlayedIndex: { increment: 1 },
+        tracks: {
+          updateMany: {
+            where: { index: { in: [currentIndex, currentIndex + 1] } },
+            data: { score: 0 },
+          },
+        },
       },
     });
   };
@@ -290,49 +266,6 @@ export class RoomService extends ServiceWithContext {
         tracks: { orderBy: { index: "asc" } },
       },
     });
-  };
-
-  private generateTrackIndexUpdates = (
-    tracks: Track[],
-    currentIndex: number,
-  ) => {
-    const tracksWithScoreOrAfterIndex = tracks.filter(
-      ({ score, index }) => score !== 0 || index > currentIndex,
-    );
-    const tracksWithoutScoreAndBeforeIndex = tracks.filter(
-      ({ score, index }) => score === 0 && index <= currentIndex,
-    );
-
-    const sortedTracks = [...tracksWithScoreOrAfterIndex].sort(
-      (a, b) => b.score - a.score,
-    );
-
-    const sorted = tracksWithoutScoreAndBeforeIndex.concat(sortedTracks);
-    const newCurrentIndex = sorted.findIndex(
-      ({ index }) => index === currentIndex,
-    );
-
-    const updates = sorted
-      .map(({ trackId, index }, newIndex) => {
-        if (index === newIndex) return; // No need to update
-
-        console.log(
-          `Updating index of ${trackId} from ${index} to ${newIndex}`,
-        );
-
-        return {
-          where: { trackId },
-          data: { index: newIndex },
-        };
-      })
-      .filter(Boolean);
-
-    const fakeUpdates = updates.map((update, index) => ({
-      ...update,
-      data: { ...update.data, index: index + tracks.length + 100 }, // Set to an index which does not exist
-    }));
-
-    return { updates, fakeUpdates, newCurrentIndex };
   };
 }
 

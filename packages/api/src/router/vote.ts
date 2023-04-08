@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-import { RoomService } from "../service/RoomService";
 import { VoteService } from "../service/VoteService";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { Z_PIN, Z_TRACK_ID } from "./constants";
 
 const vote = z.object({
@@ -19,11 +18,11 @@ const createVote = vote.extend({
 });
 
 export const voteRouter = createTRPCRouter({
-  byTrack: publicProcedure.input(vote).query(({ ctx, input }) => {
+  byTrack: protectedProcedure.input(vote).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
     return service.getVotes(input.pin, input.trackId);
   }),
-  byRoom: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
+  byRoom: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
     return service.getVotesByRoom(input);
   }),
@@ -35,16 +34,6 @@ export const voteRouter = createTRPCRouter({
     .input(createVote)
     .mutation(async ({ ctx, input }) => {
       const service = new VoteService(ctx);
-      const roomService = new RoomService(ctx);
-
-      const vote = await service.createVote(
-        input.pin,
-        input.trackId,
-        input.vote,
-      );
-
-      await roomService.reorderPlaylist(input.pin);
-
-      return vote;
+      return await service.createVote(input.pin, input.trackId, input.vote);
     }),
 });

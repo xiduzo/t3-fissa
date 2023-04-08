@@ -15,5 +15,6 @@ export * from "./constants";
 export * from "./spotify";
 
 export * from './date';
+export * from './error';
 
 export { SpotifyWebApi };

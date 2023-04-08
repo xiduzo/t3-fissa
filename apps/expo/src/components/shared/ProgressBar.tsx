@@ -16,13 +16,18 @@ export const ProgressBar: FC<Props> = ({
     if (!!disabled) return;
 
     const updateFrequency = 1000;
-    const interval = setInterval(() => {
+
+    const updateProgress = () => {
       const difference = differenceInMilliseconds(expectedEndTime, new Date());
 
       const max = 100;
       const progress = (max - (difference * max) / track.duration_ms) / max;
       setProgress(Math.min(1, progress));
-    }, updateFrequency);
+    }
+
+    const interval = setInterval(updateProgress, updateFrequency);
+
+    updateProgress();
 
     return () => {
       clearInterval(interval);

@@ -58,7 +58,6 @@ export const ListItem: FC<Props> = ({
   return (
     <TouchableWithoutFeedback accessibilityRole="button" {...props}>
       <View
-        {...props}
         className={container({ hasBorder, className })}
         style={[
           { borderColor: hasBorder ? theme["900"] + "10" : "transparent" },
