@@ -25,7 +25,7 @@ export const api = createTRPCProxyClient<AppRouter>({
       // You can pass any HTTP headers you wish here
       async headers() {
         return {
-            authorization: process.env.NEXT_AUTH_SECRET,
+          authorization: process.env.NEXTAUTH_SECRET,
         };
       },
     }),
