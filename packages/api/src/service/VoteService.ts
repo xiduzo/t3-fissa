@@ -46,14 +46,19 @@ export class VoteService extends ServiceWithContext {
   };
 
   createVotes = async (pin: string, trackIds: string[], vote: number) => {
-    await this.db.vote.createMany({
-      data: trackIds.map((trackId) => ({
-        pin,
-        trackId,
-        vote,
-        userId: this.ctx.session?.user.id!,
-      })),
-      skipDuplicates: true,
+    await this.db.$transaction(async (transaction) => {
+      const userId = this.ctx.session?.user.id!;
+      await transaction.vote.deleteMany({
+        where: { pin, trackId: { in: trackIds }, userId },
+      });
+      await this.db.vote.createMany({
+        data: trackIds.map((trackId) => ({
+          pin,
+          trackId,
+          vote,
+          userId,
+        })),
+      });
     });
 
     return this.updateScores(pin, trackIds);
