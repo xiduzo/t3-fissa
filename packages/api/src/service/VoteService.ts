@@ -7,7 +7,7 @@ export class VoteService extends ServiceWithContext {
     });
   };
 
-  getVotesByRoom = async (pin: string) => {
+  getVotesByFissa = async (pin: string) => {
     const votes = await this.db.vote.findMany({
       where: { pin },
     });
@@ -80,7 +80,7 @@ export class VoteService extends ServiceWithContext {
       data: { score },
     }));
 
-    return this.db.room.update({
+    return this.db.fissa.update({
       where: { pin },
       data: {
         shouldReorder: true,

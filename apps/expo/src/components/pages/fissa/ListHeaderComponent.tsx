@@ -2,7 +2,7 @@ import { FC, useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 import { useSearchParams } from "expo-router";
 
-import { useGetRoomDetails, useSkipTrack } from "../../../hooks/";
+import { useGetFissaDetails, useSkipTrack } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import {
@@ -18,7 +18,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
   const { pin } = useSearchParams();
   const [trackSelected, setTrackSelected] = useState(false);
 
-  const { data } = useGetRoomDetails(String(pin));
+  const { data } = useGetFissaDetails(String(pin));
 
   const toggleTrackSelected = useCallback(() => {
     setTrackSelected((prev) => !prev);

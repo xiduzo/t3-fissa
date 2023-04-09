@@ -5,17 +5,17 @@ import { useTracks } from "@fissa/utils";
 import {
   ENCRYPTED_STORAGE_KEYS,
   useEncryptedStorage,
-  useGetRoomDetails,
+  useGetFissaDetails,
   useGetTracks,
 } from "../../hooks";
 import { Button } from "./Button";
 
 export const Rejoin = () => {
   const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
-  const { data } = useGetRoomDetails(value!);
+  const { data } = useGetFissaDetails(value!);
 
   if (!value) return <View />; // no pin stored
-  if (!data) return <View />; // no room found
+  if (!data) return <View />; // no fissa found
 
   return (
     <View>
@@ -23,7 +23,7 @@ export const Rejoin = () => {
       <Button
         variant="text"
         title={`Re-join last fissa (${value})`}
-        linkTo={`/room/${value}`}
+        linkTo={`/fissa/${value}`}
       />
     </View>
   );

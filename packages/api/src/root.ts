@@ -1,12 +1,12 @@
 import { authRouter } from "./router/auth";
-import { roomRouter } from "./router/room";
+import { fissaRouter } from "./router/fissa";
 import { trackRouter } from "./router/track";
 import { voteRouter } from "./router/vote";
 import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
   auth: authRouter,
-  room: roomRouter,
+  fissa: fissaRouter,
   track: trackRouter,
   vote: voteRouter,
 });

@@ -1,4 +1,4 @@
-import { Room } from "@fissa/db";
+import { Fissa } from "@fissa/db";
 import {
   NotTheHost,
   SpotifyService,
@@ -10,7 +10,7 @@ import {
 import { Context, ServiceWithContext } from "../utils/context";
 import { TrackService } from "./TrackService";
 
-export class RoomService extends ServiceWithContext {
+export class FissaService extends ServiceWithContext {
   private spotifyService: SpotifyService;
   private trackService: TrackService;
 
@@ -24,8 +24,8 @@ export class RoomService extends ServiceWithContext {
     this.trackService = trackService ?? new TrackService(ctx);
   }
 
-  activeRooms = async () => {
-    return this.db.room.findMany({
+  activeFissas = async () => {
+    return this.db.fissa.findMany({
       where: { currentIndex: { gte: 0 } },
       select: {
         pin: true,
@@ -37,7 +37,7 @@ export class RoomService extends ServiceWithContext {
   };
 
   create = async (tracks: { trackId: string; durationMs: number }[]) => {
-    let room: Room | undefined = undefined;
+    let fissa: Fissa | undefined = undefined;
     let tries = 0;
     const blockedPins: string[] = [];
 
@@ -46,7 +46,7 @@ export class RoomService extends ServiceWithContext {
       select: { access_token: true, refresh_token: true },
     });
 
-    await this.db.room.deleteMany({
+    await this.db.fissa.deleteMany({
       where: { userId: this.ctx.session?.user.id },
     });
 
@@ -56,7 +56,7 @@ export class RoomService extends ServiceWithContext {
       if (blockedPins.includes(pin)) continue;
 
       try {
-        room = await this.db.room.create({
+        fissa = await this.db.fissa.create({
           data: {
             pin,
             expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
@@ -72,17 +72,17 @@ export class RoomService extends ServiceWithContext {
         tries++;
         blockedPins.push(pin);
       }
-    } while (!room && tries < 50);
+    } while (!fissa && tries < 50);
 
     const { access_token } = await tokens;
 
     await this.spotifyService.playTrack(access_token!, tracks[0]!.trackId);
 
-    return this.byId(room?.pin!);
+    return this.byId(fissa?.pin!);
   };
 
   byId = async (pin: string) => {
-    return this.db.room.findUniqueOrThrow({
+    return this.db.fissa.findUniqueOrThrow({
       where: { pin },
       include: {
         by: { select: { email: true } },
@@ -95,7 +95,7 @@ export class RoomService extends ServiceWithContext {
   };
 
   detailsById = async (pin: string) => {
-    return this.db.room.findUnique({
+    return this.db.fissa.findUnique({
       where: { pin },
       select: {
         by: { select: { email: true } },
@@ -106,16 +106,15 @@ export class RoomService extends ServiceWithContext {
   };
 
   skipTrack = async (pin: string) => {
-    const room = await this.byId(pin);
+    const fissa = await this.byId(pin);
 
-    if (room.userId !== this.ctx.session?.user.id)
-      throw new NotTheHost();
+    if (fissa.userId !== this.ctx.session?.user.id) throw new NotTheHost();
 
-    return this.playNextTrack(pin, room.currentIndex, true);
+    return this.playNextTrack(pin, fissa.currentIndex, true);
   };
 
   restart = async (pin: string) => {
-    const room = await this.db.room.findUniqueOrThrow({
+    const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       select: {
         lastPlayedIndex: true,
@@ -132,18 +131,18 @@ export class RoomService extends ServiceWithContext {
       },
     });
 
-    if (room.userId !== this.ctx.session?.user.id)
+    if (fissa.userId !== this.ctx.session?.user.id)
       throw new Error("Not authorized");
 
-    const { access_token } = room.by.accounts[0]!;
-    const track = room.tracks[room.lastPlayedIndex]!;
+    const { access_token } = fissa.by.accounts[0]!;
+    const track = fissa.tracks[fissa.lastPlayedIndex]!;
 
     await this.spotifyService.playTrack(access_token!, track.trackId);
 
-    return this.db.room.update({
+    return this.db.fissa.update({
       where: { pin },
       data: {
-        currentIndex: room.lastPlayedIndex,
+        currentIndex: fissa.lastPlayedIndex,
         expectedEndTime: addMilliseconds(new Date(), track.durationMs),
       },
     });
@@ -154,21 +153,20 @@ export class RoomService extends ServiceWithContext {
     currentIndex: number,
     instantPlay = false,
   ) => {
-    const room = await this.getRoomDetailedInformation(pin);
+    const fissa = await this.getFissaDetailedInformation(pin);
 
-    if (room.currentIndex !== currentIndex) return;
+    if (fissa.currentIndex !== currentIndex) return;
 
-    const { access_token } = room.by.accounts[0]!;
-    const { tracks } = room;
+    const { access_token } = fissa.by.accounts[0]!;
+    const { tracks } = fissa;
 
     try {
       const isPlaying = this.spotifyService.isStillPlaying(access_token!);
 
-      const currentTrack = tracks[room.currentIndex]!;
-      const nextIndex = room.currentIndex + 1;
+      const currentTrack = tracks[fissa.currentIndex]!;
+      const nextIndex = fissa.currentIndex + 1;
       const nextTrack = tracks[nextIndex]!;
 
-      // TODO this can maybe also be updated in the `this.updateRoomIndexes`
       const removeVotes = this.db.vote.deleteMany({
         where: {
           pin,
@@ -190,38 +188,38 @@ export class RoomService extends ServiceWithContext {
         );
       }
 
-      if (!(await isPlaying)) return this.stopRoom(pin);
+      if (!(await isPlaying)) return this.stopFissa(pin);
 
       const playIn = differenceInMilliseconds(
-        instantPlay ? new Date() : room.expectedEndTime,
+        instantPlay ? new Date() : fissa.expectedEndTime,
         new Date(),
       );
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
       await this.spotifyService.playTrack(access_token!, nextTrack.trackId);
-      await this.updateRoomIndexes(pin, currentIndex, nextTrack.durationMs);
+      await this.updateFissaIndexes(pin, currentIndex, nextTrack.durationMs);
 
       await removeVotes;
     } catch (e) {
       console.error(e);
-      return this.stopRoom(pin);
+      return this.stopFissa(pin);
     }
   };
 
   private generatePin = () => randomize("0", 4);
 
-  private stopRoom = async (pin: string) => {
-    return this.db.room.update({
+  private stopFissa = async (pin: string) => {
+    return this.db.fissa.update({
       where: { pin },
       data: { currentIndex: -1 },
     });
   };
 
-  private updateRoomIndexes = async (
+  private updateFissaIndexes = async (
     pin: string,
     currentIndex: number,
     durationMs: number,
   ) => {
-    return this.db.room.update({
+    return this.db.fissa.update({
       where: { pin },
       data: {
         expectedEndTime: addMilliseconds(new Date(), durationMs),
@@ -237,8 +235,8 @@ export class RoomService extends ServiceWithContext {
     });
   };
 
-  private getRoomDetailedInformation = async (pin: string) => {
-    return await this.db.room.findUniqueOrThrow({
+  private getFissaDetailedInformation = async (pin: string) => {
+    return await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       select: {
         currentIndex: true,

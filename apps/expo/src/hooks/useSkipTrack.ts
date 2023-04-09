@@ -2,7 +2,7 @@ import { MutationCallbacks } from "@fissa/utils";
 
 import { api } from "../utils";
 
-const endpoint = api.room.skipTrack.useMutation;
+const endpoint = api.fissa.skipTrack.useMutation;
 
 export const useSkipTrack = (
   pin: string,
@@ -13,7 +13,7 @@ export const useSkipTrack = (
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
     onSuccess: (...props) => {
-      queryClient.room.byId.invalidate();
+      queryClient.fissa.byId.invalidate();
       callbacks.onSuccess?.(...props);
     },
   });

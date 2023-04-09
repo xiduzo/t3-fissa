@@ -23,12 +23,12 @@ const Join = () => {
   const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
   const [pin, setPin] = useState(["", "", "", ""]);
 
-  api.room.byId.useQuery(pin.join(""), {
+  api.fissa.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),
     onSuccess: async ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
       await save(pin);
-      replace(`/room/${pin}`);
+      replace(`/fissa/${pin}`);
     },
     onError: async ({ message }) => {
       toast.warn({ message });

@@ -70,8 +70,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const saveTokens = useCallback(
     async (props: {
       access_token: string;
+      session_token: string;
       refresh_token?: string;
-      session_token?: string;
     }) => {
       const { access_token, refresh_token, session_token } = props;
 

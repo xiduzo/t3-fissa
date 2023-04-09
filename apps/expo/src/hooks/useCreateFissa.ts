@@ -2,9 +2,9 @@ import { MutationCallbacks } from "@fissa/utils";
 
 import { api } from "../utils";
 
-const endpoint = api.room.create.useMutation;
+const endpoint = api.fissa.create.useMutation;
 
-export const useCreateRoom = (
+export const useCreateFissa = (
   callbacks: MutationCallbacks<typeof endpoint> = {},
 ) => {
   return endpoint(callbacks);

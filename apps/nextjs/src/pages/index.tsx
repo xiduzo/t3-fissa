@@ -5,7 +5,7 @@ import { signIn, signOut } from "next-auth/react";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const { mutateAsync } = api.room.create.useMutation({
+  const { mutateAsync } = api.fissa.create.useMutation({
     onSuccess: (data) => {
       console.info("data", data);
     },
@@ -23,7 +23,7 @@ const Home: NextPage = () => {
             Create <span className="text-pink-400">T3</span> Turbo
           </h1>
           <AuthShowcase />
-          <button onClick={() => mutateAsync([])}>Create Room</button>
+          <button onClick={() => mutateAsync([])}>Create fissa</button>
         </div>
       </main>
     </>

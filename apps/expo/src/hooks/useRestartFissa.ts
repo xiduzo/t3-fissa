@@ -2,9 +2,9 @@ import { MutationCallbacks } from "@fissa/utils";
 
 import { api } from "../utils";
 
-const endpoint = api.room.restart.useMutation;
+const endpoint = api.fissa.restart.useMutation;
 
-export const useRestartRoom = (
+export const useRestartFissa = (
   pin: string,
   callbacks: MutationCallbacks<typeof endpoint> = {},
 ) => {
@@ -14,7 +14,7 @@ export const useRestartRoom = (
     ...callbacks,
     onSuccess: async (...props) => {
       callbacks.onSuccess?.(...props);
-      queryClient.room.invalidate();
+      queryClient.fissa.invalidate();
     },
   });
 

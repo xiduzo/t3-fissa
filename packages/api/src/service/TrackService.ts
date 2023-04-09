@@ -21,7 +21,7 @@ export class TrackService extends ServiceWithContext {
   };
 
   addTracks = async (pin: string, tracks: z.infer<typeof Z_TRACKS>) => {
-    const room = await this.db.room.findUniqueOrThrow({
+    const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       select: {
         currentIndex: true,
@@ -29,14 +29,14 @@ export class TrackService extends ServiceWithContext {
       },
     });
 
-    const roomTrackIds = room.tracks.map(({ trackId }) => trackId);
+    const fissaTrackIds = fissa.tracks.map(({ trackId }) => trackId);
 
     const newTracks = tracks
-      .filter(({ trackId }) => !roomTrackIds.includes(trackId))
+      .filter(({ trackId }) => !fissaTrackIds.includes(trackId))
       .map((track, index) => ({
         ...track,
         pin,
-        index: room.tracks.length + index,
+        index: fissa.tracks.length + index,
       }));
 
     const addedTracks = await this.db.track.createMany({ data: newTracks });

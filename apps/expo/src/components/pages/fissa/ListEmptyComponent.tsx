@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useSearchParams } from "expo-router";
 
-import { useGetRoom, useRestartRoom } from "../../../hooks";
+import { useGetFissa, useRestartFissa } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import { Button, EmptyState } from "../../shared";
@@ -10,8 +10,8 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
 
-  const { data: room } = useGetRoom(String(pin));
-  const { mutateAsync } = useRestartRoom(String(pin), {
+  const { data: fissa } = useGetFissa(String(pin));
+  const { mutateAsync } = useRestartFissa(String(pin), {
     onMutate: () => {
       toast.info({
         message: "Restarting fissa",
@@ -25,8 +25,8 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
     },
   });
 
-  const isPlaying = room?.currentIndex && room.currentIndex >= 0;
-  const isOwner = user?.email === room?.by.email;
+  const isPlaying = fissa?.currentIndex && fissa.currentIndex >= 0;
+  const isOwner = user?.email === fissa?.by.email;
 
   if (isLoading)
     return <EmptyState icon="🐕" title="Fetching tracks" subtitle="Good boy" />;

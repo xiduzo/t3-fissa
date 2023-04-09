@@ -4,23 +4,23 @@ import { Timer } from "@fissa/utils";
 import { api } from "../utils/api";
 
 export const reorderPlaylistSync = async () => {
-  const rooms = await api.room.sync.active.query();
+  const fissas = await api.fissa.sync.active.query();
 
-  for (const room of rooms) {
-    if (!room.shouldReorder) return;
+  for (const fissa of fissas) {
+    if (!fissa.shouldReorder) return;
 
     try {
-      console.log(`reordering playlist for ${room.pin}...`);
-      await reorderTracksFromPlaylist(room.pin);
-      console.log(`reordering done for ${room.pin}`);
+      console.log(`reordering playlist for ${fissa.pin}...`);
+      await reorderTracksFromPlaylist(fissa.pin);
+      console.log(`reordering done for ${fissa.pin}`);
     } catch (error) {
-      console.error(`reordering failed for ${room.pin}`, error);
+      console.error(`reordering failed for ${fissa.pin}`, error);
     }
   }
 };
 
 const reorderTracksFromPlaylist = async (pin: string) => {
-  const { tracks, currentIndex } = await prisma.room.findUniqueOrThrow({
+  const { tracks, currentIndex } = await prisma.fissa.findUniqueOrThrow({
     where: { pin },
     select: { tracks: true, currentIndex: true },
   });
@@ -29,24 +29,24 @@ const reorderTracksFromPlaylist = async (pin: string) => {
     generateTrackIndexUpdates(tracks, currentIndex);
 
   if (!updateMany.length) {
-    console.info(`No updates needed for room ${pin}`);
+    console.info(`No updates needed for fissa ${pin}`);
     return;
   }
 
   const timer = new Timer(
-    `Reordering ${updateMany.length} tracks for room ${pin}`,
+    `Reordering ${updateMany.length} tracks for fissa ${pin}`,
   );
 
   await prisma.$transaction(
     async (transaction) => {
       // (1) Clear out the indexes
-      await transaction.room.update({
+      await transaction.fissa.update({
         where: { pin },
         data: { tracks: { updateMany: fakeUpdates } },
       });
 
       // (2) Set the correct indexes
-      await transaction.room.update({
+      await transaction.fissa.update({
         where: { pin },
         data: {
           tracks: { updateMany },

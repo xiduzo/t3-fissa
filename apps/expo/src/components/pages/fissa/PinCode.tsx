@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "expo-router";
 import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
-import { useGetRoomDetails, useGetTracks } from "../../../hooks";
+import { useGetFissaDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
 import { Action, Button, Popover } from "../../shared";
@@ -11,14 +11,14 @@ export const PinCode = () => {
   const { pin } = useSearchParams();
   const { push } = useRouter();
 
-  const [showRoomPopover, setShowRoomPopover] = useState(false);
+  const [showPopover, setShowPopover] = useState(false);
 
-  const toggleRoomPopover = useCallback(() => {
-    setShowRoomPopover((prev) => !prev);
+  const togglePopover = useCallback(() => {
+    setShowPopover((prev) => !prev);
   }, []);
 
   const goToHome = useCallback(() => {
-    toggleRoomPopover();
+    togglePopover();
     push("/home");
   }, []);
 
@@ -27,13 +27,13 @@ export const PinCode = () => {
   return (
     <>
       <Button
-        onPress={toggleRoomPopover}
+        onPress={togglePopover}
         dimmed
         title={pin}
         size="sm"
         variant="text"
       />
-      <Popover visible={showRoomPopover} onRequestClose={toggleRoomPopover}>
+      <Popover visible={showPopover} onRequestClose={togglePopover}>
         <Action
           title="Leave fissa"
           subtitle="No worries, you can come back"
@@ -41,8 +41,8 @@ export const PinCode = () => {
           onPress={goToHome}
           icon="unlink"
         />
-        <CreatePlaylistAction pin={pin} onRequestClose={toggleRoomPopover} />
-        <SetSpeakerAction pin={pin} onRequestClose={toggleRoomPopover} />
+        <CreatePlaylistAction pin={pin} onRequestClose={togglePopover} />
+        <SetSpeakerAction pin={pin} onRequestClose={togglePopover} />
       </Popover>
     </>
   );
@@ -102,7 +102,7 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
   const spotify = useSpotify();
   const { user } = useAuth();
 
-  const { data } = useGetRoomDetails(pin);
+  const { data } = useGetFissaDetails(pin);
 
   const [speakers, setSpeakers] = useState<SpotifyApi.UserDevice[]>([]);
 

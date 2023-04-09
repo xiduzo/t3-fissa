@@ -81,8 +81,8 @@ export class AuthService extends ServiceWithContext {
     };
   };
 
-  refreshRoomToken = async (pin: string) => {
-    const room = await this.db.room.findUniqueOrThrow({
+  refreshFissaAccessToken = async (pin: string) => {
+    const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       select: {
         lastUpdateAt: true,
@@ -97,11 +97,11 @@ export class AuthService extends ServiceWithContext {
       },
     });
 
-    const { lastUpdateAt } = room;
+    const { lastUpdateAt } = fissa;
 
     if (differenceInMinutes(lastUpdateAt, new Date()) > 20) return;
 
-    const { accounts } = room.by;
+    const { accounts } = fissa.by;
     const { expires_at, refresh_token } = accounts[0]!;
 
     // Token is still valid

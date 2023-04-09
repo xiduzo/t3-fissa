@@ -4,14 +4,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import { Fab, PinCode, RoomTracks } from "../../../src/components";
-import { useInvalidateRoom, useOnActiveApp } from "../../../src/hooks";
+import { Fab, FissaTracks, PinCode } from "../../../src/components";
+import { useInvalidateFissa, useOnActiveApp } from "../../../src/hooks";
 
-const Room = () => {
+const Fissa = () => {
   const { back } = useRouter();
   const { pin } = useSearchParams();
 
-  const invalidate = useInvalidateRoom();
+  const invalidate = useInvalidateFissa();
   useOnActiveApp(invalidate);
 
   useEffect(() => {
@@ -31,8 +31,8 @@ const Room = () => {
         }}
       />
       <View className="flex h-full w-full">
-        <RoomTracks pin={pin} />
-        <Fab title="add tracks" icon="plus" linkTo={`room/${pin}/addTracks`} />
+        <FissaTracks pin={pin} />
+        <Fab title="add tracks" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"
@@ -42,4 +42,4 @@ const Room = () => {
   );
 };
 
-export default Room;
+export default Fissa;

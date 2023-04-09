@@ -5,13 +5,13 @@ import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 
 import { Button, Typography } from "../../src/components";
-import { useCreateRoom } from "../../src/components/pages/room/hooks/useCreateRoom";
+import { useCreateFissa } from "../../src/components/pages/fissa/hooks/useCreateFissa";
 import { toast } from "../../src/utils";
 
 const Host = () => {
   const spotify = useSpotify();
 
-  const { mutateAsync, isLoading } = useCreateRoom();
+  const { mutateAsync, isLoading } = useCreateFissa();
 
   const handleSurpriseMe = useCallback(async () => {
     toast.info({ message: "Starting a surprise fissa" });

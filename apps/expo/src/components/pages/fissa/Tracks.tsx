@@ -3,7 +3,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { useTracks } from "@fissa/utils";
 
-import { useGetRoom, useGetVoteFromUser } from "../../../hooks";
+import { useGetFissa, useGetVoteFromUser } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { Divider, Popover, TrackList, TrackListItem } from "../../shared";
 import { Badge } from "../../shared/Badge";
@@ -12,8 +12,8 @@ import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
 import { VoteActions } from "./VoteActions";
 
-export const RoomTracks: FC<{ pin: string }> = ({ pin }) => {
-  const { data, isInitialLoading } = useGetRoom(pin);
+export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
+  const { data, isInitialLoading } = useGetFissa(pin);
 
   const localTracks = useTracks(data?.tracks.map(({ trackId }) => trackId));
 

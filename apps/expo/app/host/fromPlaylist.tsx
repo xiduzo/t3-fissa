@@ -4,12 +4,15 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 
-
-
-import { Button, PlaylistList, PlaylistListItem, Popover, Typography } from "../../src/components";
-import { useCreateRoom } from "../../src/components/pages/room/hooks/useCreateRoom";
+import {
+  Button,
+  PlaylistList,
+  PlaylistListItem,
+  Popover,
+  Typography,
+} from "../../src/components";
+import { useCreateFissa } from "../../src/components/pages/fissa/hooks/useCreateFissa";
 import { toast } from "../../src/utils";
-
 
 const FromPlaylist = () => {
   const spotify = useSpotify();
@@ -17,7 +20,7 @@ const FromPlaylist = () => {
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
-  const { mutateAsync, isLoading } = useCreateRoom();
+  const { mutateAsync, isLoading } = useCreateFissa();
 
   const start = useCallback(async () => {
     toast.info({

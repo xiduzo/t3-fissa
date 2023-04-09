@@ -2,21 +2,21 @@ import { useRouter } from "expo-router";
 
 import {
   ENCRYPTED_STORAGE_KEYS,
-  useCreateRoom as useBaseCreateRoom,
+  useCreateFissa as useBaseCreateFissa,
   useEncryptedStorage,
 } from "../../../../hooks";
 import { toast } from "../../../../utils";
 
-export const useCreateRoom = () => {
+export const useCreateFissa = () => {
   const { push } = useRouter();
 
   const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
 
-  return useBaseCreateRoom({
+  return useBaseCreateFissa({
     onSuccess: async ({ pin }) => {
       toast.success({ message: "Enjoy your fissa", icon: "🎉" });
       await save(pin);
-      push(`/room/${pin}`);
+      push(`/fissa/${pin}`);
     },
     onError: (error) => {
       toast.error({ message: error.message });
