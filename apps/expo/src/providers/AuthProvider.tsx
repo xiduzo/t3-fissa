@@ -75,10 +75,12 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     }) => {
       const { access_token, refresh_token, session_token } = props;
 
+      if(!session_token) return
       spotify.setAccessToken(access_token);
       spotify.getMe().then(setUser);
 
-      session_token && (await saveSessionToken(session_token));
+      await saveSessionToken(session_token);
+      
       refresh_token && (await saveRefreshToken(refresh_token));
       lastTokenSaveTime.current = new Date();
     },
