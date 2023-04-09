@@ -71,7 +71,9 @@ export class TrackService extends ServiceWithContext {
     });
   };
 
-  reorderTracksFromPlaylist = async (pin: string) => {
+  reorderTracksFromPlaylist = async (
+    pin: string
+  ) => {
     const { tracks, currentIndex } = await this.db.room.findUniqueOrThrow({
       where: { pin },
       select: { tracks: true, currentIndex: true },
@@ -88,40 +90,31 @@ export class TrackService extends ServiceWithContext {
     const timer = new Timer(
       `Reordering ${updateMany.length} tracks for room ${pin}`,
     );
+ 
+      await this.db.$transaction(
+        async (transaction) => {
+          console.log("fake updates", fakeUpdates)
+          // (1) Clear out the indexes
+          await transaction.room.update({
+            where: { pin },
+            data: { tracks: { updateMany: fakeUpdates } },
+          });
 
-    await this.db.room.update({
-      where: { pin },
-      data: {
-        tracks: { updateMany },
-        currentIndex: newCurrentIndex,
-        lastPlayedIndex: newCurrentIndex,
-        shouldReorder: false,
-      },
-    });
-
-    // TODO figure out how to make vercel go brrr
-    // await this.db.$transaction(async (transaction) => {
-    //   console.log("fake updates", fakeUpdates);
-    //   // (1) Clear out the indexes
-    //   await transaction.room.update({
-    //     where: { pin },
-    //     data: { tracks: { updateMany: fakeUpdates } },
-    //   });
-
-    //   console.log("real updates", updateMany);
-    //   // (2) Set the correct indexes
-    //   await transaction.room.update({
-    //     where: { pin },
-    //     data: {
-    //       tracks: { updateMany },
-    //       currentIndex: newCurrentIndex,
-    //       lastPlayedIndex: newCurrentIndex,
-    //       shouldReorder: false,
-    //     },
-    //   });
-    // });
-
-    timer.duration();
+          console.log("real updates", updateMany)
+          // (2) Set the correct indexes
+          await transaction.room.update({
+            where: { pin },
+            data: {
+              tracks: { updateMany },
+              currentIndex: newCurrentIndex,
+              lastPlayedIndex: newCurrentIndex,
+              shouldReorder: false,
+            },
+          });
+        },
+      );
+      
+      timer.duration();
   };
 
   private generateTrackIndexUpdates = (

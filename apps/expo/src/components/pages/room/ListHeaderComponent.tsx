@@ -88,14 +88,14 @@ const SkipTrackAction: FC<{
   const { mutateAsync, isLoading } = useSkipTrack(pin, {
     onSuccess: () => {
       toast.success({
-        icon: "🐉",
+        icon: "🐍",
         message: "Use your powers wisely",
       });
     },
     onMutate: () => {
       onPress();
       toast.info({
-        icon: "🐉",
+        icon: "🐍",
         message: "Skipping track...",
       });
     },

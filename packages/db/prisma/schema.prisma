@@ -40,7 +40,7 @@ model Track {
     score Int @db.SmallInt @default(0)
 
     @@id([pin, trackId])
-    // @@unique([pin, index]) // I can't do the double update in vercel because it times out
+    @@unique([pin, index])
     @@map("tracks")
 }
 
