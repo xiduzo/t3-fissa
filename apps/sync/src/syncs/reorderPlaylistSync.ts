@@ -1,5 +1,3 @@
-import { differenceInSeconds } from "@fissa/utils";
-
 import { api } from "../utils/api";
 
 export const reorderPlaylistSync = async () => {
