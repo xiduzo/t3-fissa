@@ -39,13 +39,15 @@ export class TrackService extends ServiceWithContext {
         index: room.tracks.length + index,
       }));
 
+    const addedTracks = await this.db.track.createMany({ data: newTracks });
+
     await this.voteService.createVotes(
       pin,
       tracks.map(({ trackId }) => trackId),
       1,
     );
 
-    return this.db.track.createMany({ data: newTracks });
+    return addedTracks;
   };
 
   addRecommendedTracks = async (
