@@ -35,11 +35,11 @@ import {
 import { toast } from "../utils";
 import { api } from "../utils/api";
 
-const REFRESH_INTERVAL_MINUTES = 45;
+const REFRESH_INTERVAL_MINUTES = 30;
 
 const SpotifyContext = createContext({
   promptAsync: (_?: AuthRequestPromptOptions | undefined) => {
-    return new Promise<AuthSessionResult>((resolve, reject) => {
+    return new Promise<AuthSessionResult>((_, reject) => {
       reject("Not implemented");
     });
   },
@@ -70,17 +70,17 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const saveTokens = useCallback(
     async (props: {
       access_token: string;
-      session_token: string;
+      session_token?: string;
       refresh_token?: string;
     }) => {
       const { access_token, refresh_token, session_token } = props;
 
-      if(!session_token) return
+      if (!session_token) return;
       spotify.setAccessToken(access_token);
       spotify.getMe().then(setUser);
 
       await saveSessionToken(session_token);
-      
+
       refresh_token && (await saveRefreshToken(refresh_token));
       lastTokenSaveTime.current = new Date();
     },

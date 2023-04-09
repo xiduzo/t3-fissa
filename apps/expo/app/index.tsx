@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Animated, View } from "react-native";
-import { Stack, useNavigation, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
+import * as SystemUI from "expo-system-ui";
 import { theme } from "@fissa/tailwind-config";
 
 import { Button, Logo, Typography } from "../src/components";
@@ -58,6 +59,10 @@ const Index = () => {
 
     replace("/home");
   }, [user, replace]);
+
+  useMemo(async () => {
+    await SystemUI.setBackgroundColorAsync(theme["900"]);
+  }, []);
 
   useEffect(() => {
     Animated.timing(colorAnimation, {
