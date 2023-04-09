@@ -6,9 +6,13 @@ export class Timer {
   constructor(name = "Unknown timer") {
     this._startedAt = performance.now();
     this._name = name;
+    console.info(`[TIMER] ${this._name}`);
   }
 
   duration() {
-    return `${this._name} ran for ${performance.now() - this._startedAt}ms`;
+    const duration = performance.now() - this._startedAt;
+
+    console.info(`[DURATION] ${this._name} - ${duration}ms`);
+    return duration;
   }
 }

@@ -91,15 +91,16 @@ export class TrackService extends ServiceWithContext {
       `Reordering ${updateMany.length} tracks for room ${pin}`,
     );
 
-    try {
       await this.db.$transaction(
         async (transaction) => {
+          console.log("fake updates", fakeUpdates)
           // (1) Clear out the indexes
           await transaction.room.update({
             where: { pin },
             data: { tracks: { updateMany: fakeUpdates } },
           });
 
+          console.log("real updates", updateMany)
           // (2) Set the correct indexes
           await transaction.room.update({
             where: { pin },
@@ -111,16 +112,9 @@ export class TrackService extends ServiceWithContext {
             },
           });
         },
-        {
-          maxWait: 20000, // default: 2000
-          timeout: 60000, // default: 5000
-        },
       );
-    } catch (e) {
-      console.log(e);
-    } finally {
-      console.log(timer.duration());
-    }
+      
+      timer.duration();
   };
 
   private generateTrackIndexUpdates = (
