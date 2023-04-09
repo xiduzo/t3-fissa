@@ -71,45 +71,24 @@ export class TrackService extends ServiceWithContext {
     });
   };
 
-  reorderTracks = async () => {
-    try {
-      const rooms = await this.db.room.findMany({
-        where: { shouldReorder: true },
-        select: { pin: true, currentIndex: true, tracks: true },
-      });
-
-      for (const room of rooms) {
-        await this.reorderTracksFromPlaylist(
-          room.pin,
-          room.currentIndex,
-          room.tracks,
-        );
-      }
-
-      await this.db.room.updateMany({
-        where: { pin: { in: rooms.map(({ pin }) => pin) } },
-        data: { shouldReorder: false },
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  private reorderTracksFromPlaylist = async (
-    pin: string,
-    currentIndex: number,
-    tracks: Track[],
+  reorderTracksFromPlaylist = async (
+    pin: string
   ) => {
-    const { updates, fakeUpdates, newCurrentIndex } =
+    const { tracks, currentIndex } = await this.db.room.findUniqueOrThrow({
+      where: { pin },
+      select: { tracks: true, currentIndex: true },
+    });
+
+    const { updateMany, fakeUpdates, newCurrentIndex } =
       this.generateTrackIndexUpdates(tracks, currentIndex);
 
-    if (!updates.length) {
+    if (!updateMany.length) {
       console.info(`No updates needed for room ${pin}`);
       return;
     }
 
     const timer = new Timer(
-      `Reordering ${updates.length} tracks for room ${pin}`,
+      `Reordering ${updateMany.length} tracks for room ${pin}`,
     );
 
     try {
@@ -118,17 +97,18 @@ export class TrackService extends ServiceWithContext {
           // (1) Clear out the indexes
           await transaction.room.update({
             where: { pin },
-            data: {
-              tracks: { updateMany: fakeUpdates },
-              currentIndex: newCurrentIndex,
-              lastPlayedIndex: newCurrentIndex,
-            },
+            data: { tracks: { updateMany: fakeUpdates } },
           });
 
           // (2) Set the correct indexes
           await transaction.room.update({
             where: { pin },
-            data: { tracks: { updateMany: updates } },
+            data: {
+              tracks: { updateMany },
+              currentIndex: newCurrentIndex,
+              lastPlayedIndex: newCurrentIndex,
+              shouldReorder: false,
+            },
           });
         },
         {
@@ -163,7 +143,7 @@ export class TrackService extends ServiceWithContext {
       ({ index }) => index === currentIndex,
     );
 
-    const updates = sorted
+    const updateMany = sorted
       .map(({ trackId, index }, newIndex) => {
         if (index === newIndex) return; // No need to update
 
@@ -174,11 +154,11 @@ export class TrackService extends ServiceWithContext {
       })
       .filter(Boolean);
 
-    const fakeUpdates = updates.map((update, index) => ({
+    const fakeUpdates = updateMany.map((update, index) => ({
       ...update,
       data: { ...update.data, index: index + tracks.length + 100 }, // Set to an index which does not exist
     }));
 
-    return { updates, fakeUpdates, newCurrentIndex };
+    return { updateMany, fakeUpdates, newCurrentIndex };
   };
 }

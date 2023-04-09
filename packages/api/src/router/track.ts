@@ -11,9 +11,9 @@ const addTracks = z.object({
 
 const sync = createTRPCRouter({
   // TODO: protect this and only admins should be able to do this
-  reorder: publicProcedure.input(Z_PIN).mutation(({ ctx }) => {
+  reorder: publicProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new TrackService(ctx);
-    return service.reorderTracks();
+    return service.reorderTracksFromPlaylist(input);
   }),
 });
 

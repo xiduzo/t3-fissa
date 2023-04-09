@@ -1,11 +1,13 @@
-import { Prisma, Room, Track } from "@fissa/db";
-import { NotTheHost, SpotifyService, addMilliseconds, differenceInMilliseconds, randomize } from "@fissa/utils";
-
-
+import { Room } from "@fissa/db";
+import {
+  SpotifyService,
+  addMilliseconds,
+  differenceInMilliseconds,
+  randomize,
+} from "@fissa/utils";
 
 import { Context, ServiceWithContext } from "../utils/context";
 import { TrackService } from "./TrackService";
-
 
 export class RoomService extends ServiceWithContext {
   private spotifyService: SpotifyService;
@@ -34,11 +36,9 @@ export class RoomService extends ServiceWithContext {
   };
 
   create = async (tracks: { trackId: string; durationMs: number }[]) => {
-    const spotifyService = new SpotifyService();
-
     let room: Room | undefined = undefined;
     let tries = 0;
-    const blockedPins = [...noNoWords];
+    const blockedPins: string[] = [];
 
     const tokens = this.db.account.findFirstOrThrow({
       where: { userId: this.ctx.session?.user.id },
@@ -52,7 +52,7 @@ export class RoomService extends ServiceWithContext {
     do {
       const pin = this.generatePin();
 
-      if (blockedPins.includes(pin.toLowerCase())) continue;
+      if (blockedPins.includes(pin)) continue;
 
       try {
         room = await this.db.room.create({
@@ -191,7 +191,10 @@ export class RoomService extends ServiceWithContext {
 
       if (!(await isPlaying)) return this.stopRoom(pin);
 
-      const playIn = differenceInMilliseconds(instantPlay ? new Date() : room.expectedEndTime, new Date());
+      const playIn = differenceInMilliseconds(
+        instantPlay ? new Date() : room.expectedEndTime,
+        new Date(),
+      );
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
       await this.spotifyService.playTrack(access_token!, nextTrack.trackId);
       await this.updateRoomIndexes(pin, currentIndex, nextTrack.durationMs);
@@ -203,7 +206,7 @@ export class RoomService extends ServiceWithContext {
     }
   };
 
-  private generatePin = () => randomize("A", 4);
+  private generatePin = () => randomize("0", 4);
 
   private stopRoom = async (pin: string) => {
     return this.db.room.update({
@@ -249,58 +252,3 @@ export class RoomService extends ServiceWithContext {
     });
   };
 }
-
-const noNoWords = [
-  "anal",
-  "anus",
-  "arse",
-  "bdsm",
-  "boob",
-  "butt",
-  "clit",
-  "cock",
-  "coon",
-  "crap",
-  "cunt",
-  "dick",
-  "dumb",
-  "dvda",
-  "dyke",
-  "fuck",
-  "gook",
-  "guro",
-  "hell",
-  "homo",
-  "jerk",
-  "jizz",
-  "junk",
-  "jugs",
-  "kike",
-  "milf",
-  "mong",
-  "nsfw",
-  "orgy",
-  "paki",
-  "piss",
-  "poof",
-  "poon",
-  "porn",
-  "pthc",
-  "quim",
-  "rape",
-  "scat",
-  "scum",
-  "sexo",
-  "sexy",
-  "shag",
-  "shit",
-  "slag",
-  "slut",
-  "smut",
-  "spic",
-  "suck",
-  "tits",
-  "turd",
-  "twat",
-  "wank",
-];
