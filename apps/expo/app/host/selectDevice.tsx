@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  AppState,
-  Linking,
-  SafeAreaView,
-  TouchableHighlight,
-  View,
-} from "react-native";
+import { Linking, SafeAreaView, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";

@@ -17,7 +17,6 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   },
   assetBundlePatterns: ["**/*"],
   ios: {
-    backgroundColor: "#000",
     supportsTablet: true,
     bundleIdentifier: "org.reactjs.native.example.fissa",
     config: {
@@ -25,7 +24,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    backgroundColor: "#000",
+    package: "com.fissa",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
       backgroundColor: "#000",
