@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { AuthService } from "../service/AuthService";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure, serviceProcedure } from "../trpc";
 import { Z_PIN } from "./constants";
 
 export const getAccessTokenSchema = z.object({
@@ -10,7 +10,7 @@ export const getAccessTokenSchema = z.object({
 });
 
 const sync = createTRPCRouter({
-  refreshToken: publicProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
+  refreshToken: serviceProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new AuthService(ctx);
     return service.refreshRoomToken(input);
   }),

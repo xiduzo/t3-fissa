@@ -118,6 +118,17 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 /**
+ * Reusable middleware that enforces the call comes from an authenticated server
+ */
+const enforceIsTrustedServer = t.middleware(({ ctx, next }) => {
+  if (ctx.session?.user?.id !== "TRUSTED_SERVER_SESSION_ID") {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next();
+});
+
+/**
  * Protected (authed) procedure
  *
  * If you want a query or mutation to ONLY be accessible to logged in users, use
@@ -127,3 +138,5 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const serviceProcedure = t.procedure.use(enforceIsTrustedServer);

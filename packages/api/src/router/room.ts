@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { RoomService } from "../service/RoomService";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, serviceProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
 const trackIds = Z_TRACKS;
@@ -12,13 +12,12 @@ const nextTrack = z.object({
 });
 
 const sync = createTRPCRouter({
-  // TODO: protect this and only admins should be able to do this
-  active: publicProcedure.query(({ ctx }) => {
+  active: serviceProcedure.query(({ ctx }) => {
     const service = new RoomService(ctx);
     return service.activeRooms();
   }),
   // TODO: protect this and only admins should be able to do this
-  next: publicProcedure.input(nextTrack).mutation(({ ctx, input }) => {
+  next: serviceProcedure.input(nextTrack).mutation(({ ctx, input }) => {
     const service = new RoomService(ctx);
     return service.playNextTrack(input.pin, input.currentIndex);
   }),

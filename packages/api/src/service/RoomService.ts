@@ -1,5 +1,6 @@
 import { Room } from "@fissa/db";
 import {
+  NotTheHost,
   SpotifyService,
   addMilliseconds,
   differenceInMilliseconds,
@@ -108,7 +109,7 @@ export class RoomService extends ServiceWithContext {
     const room = await this.byId(pin);
 
     if (room.userId !== this.ctx.session?.user.id)
-      throw new Error("Not authorized");
+      throw new NotTheHost();
 
     return this.playNextTrack(pin, room.currentIndex, true);
   };

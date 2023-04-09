@@ -3,7 +3,7 @@ import type {
   NextApiRequest,
   NextApiResponse,
 } from "next";
-import { getServerSession as $getServerSession } from "next-auth";
+import { getServerSession as $getServerSession, Session } from "next-auth";
 import { prisma } from "@fissa/db";
 
 import { authOptions } from "./auth-options";
@@ -21,10 +21,14 @@ export const getServerSession = async (ctx: GetServerSessionContext) => {
     session = await expoHackServerSession(ctx);
   }
 
+  if (!session) {
+    session = await trustedServerSession(ctx);
+  }
+
   return session;
 };
 
-export const expoHackServerSession = async (ctx?: GetServerSessionContext) => {
+const expoHackServerSession = async (ctx?: GetServerSessionContext) => {
   if (!ctx?.req.headers.authorization) return null;
 
   // Hack for expo session
@@ -39,4 +43,18 @@ export const expoHackServerSession = async (ctx?: GetServerSessionContext) => {
     ...session,
     expires: session?.expires?.toISOString(),
   };
+};
+
+const trustedServerSession = async (ctx?: GetServerSessionContext) => {
+  if (!ctx?.req.headers.authorization) return null;
+
+  if (ctx.req.headers.authorization !== process.env.NEXTAUTH_SECRET)
+    return null;
+
+  const session: Partial<Session> = {
+    user: {
+      id: "TRUSTED_SERVER_SESSION_ID",
+    },
+  };
+  return session as Session;
 };
