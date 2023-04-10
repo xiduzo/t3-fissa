@@ -31,6 +31,7 @@ export class SpotifyService {
     this.spotify.setAccessToken(accessToken);
 
     const { body } = await this.spotify.getTrack(trackId);
+    console.log("playing", body.name);
     return this.spotify.play({ uris: [body.uri] });
   };
 

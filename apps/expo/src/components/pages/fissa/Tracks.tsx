@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
-import { Dimensions, GestureResponderEvent } from "react-native";
+import { Dimensions, GestureResponderEvent, View } from "react-native";
 import { useTracks } from "@fissa/utils";
 
 import { useCreateVote, useGetFissa } from "../../../hooks";
@@ -107,7 +107,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
             activeTrack={localTracks[data?.currentIndex ?? 0]}
           />
         }
-        ListEmptyComponent={<ListEmptyComponent isLoading={isInitialLoading} />}
+        ListEmptyComponent={
+          <View className="mx-6">
+            <ListEmptyComponent isLoading={isInitialLoading} />
+          </View>
+        }
         ListFooterComponent={
           Boolean(tracks.length) && isPlaying && !isInitialLoading ? (
             <ListFooterComponent />

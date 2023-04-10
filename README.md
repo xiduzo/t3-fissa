@@ -189,3 +189,11 @@ Deploying your Expo application works slightly differently compared to Next.js o
 The stack originates from [create-t3-app](https://github.com/t3-oss/create-t3-app).
 
 A [blog post](https://jumr.dev/blog/t3-turbo) where I wrote how to migrate a T3 app into this.
+
+## Known issues
+
+### Spotify does not play the track while Fissa is saying the track is playing
+
+Sometimes a track can not be played via the account of the host, currently there is no way of validating this.
+
+If a playlist is started which includes such a track, remove the track from the playlist and restart a fissa.

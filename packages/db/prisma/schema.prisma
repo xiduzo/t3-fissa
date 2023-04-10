@@ -102,7 +102,7 @@ model User {
     sessions      Session[]
 
     votes         Vote[]
-    fissas         Fissa[]
+    fissas        Fissa[]
 
     @@map("users")
 }

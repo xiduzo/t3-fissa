@@ -195,7 +195,9 @@ export class FissaService extends ServiceWithContext {
         new Date(),
       );
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
+        
       await this.spotifyService.playTrack(access_token!, nextTrack.trackId);
+      
       await this.updateFissaIndexes(pin, currentIndex, nextTrack.durationMs);
 
       await removeVotes;

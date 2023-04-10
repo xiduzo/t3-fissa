@@ -16,7 +16,6 @@ export const useCreateVoteForTrack = (
     onSuccess: async (...props) => {
       callbacks.onSuccess?.(...props);
       queryClient.vote.invalidate();
-      queryClient.fissa.byId.invalidate();
     },
   });
 
@@ -38,7 +37,6 @@ export const useCreateVote = (
     onSuccess: async (...props) => {
       callbacks.onSuccess?.(...props);
       queryClient.vote.invalidate();
-      queryClient.fissa.byId.invalidate();
     },
   });
 

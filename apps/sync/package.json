@@ -6,7 +6,7 @@
   "types": "index.ts",
   "scripts": {
     "clean": "rm -rf node_modules",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "dev": "pnpm with-env nodemon src/index.ts",
     "start": "ts-node src/index.ts",
     "with-env": "dotenv -e ../../.env --"
@@ -22,6 +22,7 @@
     "node-cron": "^3.0.2"
   },
   "devDependencies": {
+    "@fissa/test": "*",
     "@types/node-cron": "^3.0.7",
     "dotenv": "^16.0.3",
     "eslint-config-acme": "0.0.0",
