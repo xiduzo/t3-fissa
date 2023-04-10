@@ -50,6 +50,7 @@ importers:
       expo-auth-session: ^4.0.3
       expo-constants: ~14.2.1
       expo-device: ~5.2.1
+      expo-haptics: ^12.2.1
       expo-image: ~1.0.0
       expo-linear-gradient: ~12.1.2
       expo-linking: ~4.0.1
@@ -84,6 +85,7 @@ importers:
       expo-auth-session: 4.0.3_expo@48.0.4
       expo-constants: 14.2.1_expo@48.0.4
       expo-device: 5.2.1_expo@48.0.4
+      expo-haptics: 12.2.1_expo@48.0.4
       expo-image: 1.0.0_expo@48.0.4
       expo-linear-gradient: 12.1.2_expo@48.0.4
       expo-linking: 4.0.1_expo@48.0.4
@@ -5597,6 +5599,14 @@ packages:
     dependencies:
       expo: 48.0.4_@babel+core@7.20.12
       fontfaceobserver: 2.3.0
+    dev: false
+
+  /expo-haptics/12.2.1_expo@48.0.4:
+    resolution: {integrity: sha512-XRZtmIQi901Q4+/cZnVrULRFOqShsgCuSP0SCbVEhnq8sK0OA4jgun12O93Pu5aGvTyoqsAcIArE8tX+8AEqRA==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 48.0.4_@babel+core@7.20.12
     dev: false
 
   /expo-image/1.0.0_expo@48.0.4:

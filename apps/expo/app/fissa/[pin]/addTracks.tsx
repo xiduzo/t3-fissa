@@ -10,14 +10,11 @@ const AddTracks = () => {
   const { back } = useRouter();
 
   const { mutateAsync, isLoading } = useAddTracks(String(pin), {
-    onSuccess: () => {
-      toast.success({ message: "Tracks added to queue" });
-    },
     onError: () => {
       toast.error({ message: "Failed to add tracks" });
     },
     onMutate: ({ tracks }) => {
-      toast.info({ message: `Adding ${tracks.length} tracks` });
+      toast.success({ message: `Added ${tracks.length} tracks` });
       back();
     },
   });

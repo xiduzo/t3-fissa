@@ -1,5 +1,5 @@
 import { Track, prisma } from "@fissa/db";
-import { Timer } from "@fissa/utils";
+import { Timer, differenceInSeconds } from "@fissa/utils";
 
 import { api } from "../utils/api";
 import { generateTrackIndexUpdates } from "../utils/generateTrackIndexUpdates";
@@ -27,10 +27,15 @@ export const reorderPlaylistSync = async () => {
 };
 
 const reorderTracksFromPlaylist = async (pin: string) => {
-  const { tracks, currentIndex } = await prisma.fissa.findUniqueOrThrow({
-    where: { pin },
-    select: { tracks: true, currentIndex: true },
-  });
+  const { tracks, currentIndex, expectedEndTime } =
+    await prisma.fissa.findUniqueOrThrow({
+      where: { pin },
+      select: { tracks: true, currentIndex: true, expectedEndTime: true },
+    });
+
+  // Don't reorder in the last X seconds of the current track
+  // To prevent f*cking up the order with the currentlyPlayingSync
+  if (differenceInSeconds(expectedEndTime, new Date()) < 20) return;
 
   const { updateMany, fakeUpdates, newCurrentIndex } =
     generateTrackIndexUpdates(tracks, currentIndex);

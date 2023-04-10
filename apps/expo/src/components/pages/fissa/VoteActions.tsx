@@ -1,9 +1,9 @@
 import { FC, useCallback } from "react";
+import * as Haptics from "expo-haptics";
 import { useSearchParams } from "expo-router";
 
 import { useCreateVoteForTrack, useGetVoteFromUser } from "../../../hooks";
 import { useAuth } from "../../../providers";
-import { toast } from "../../../utils";
 import { Action } from "../../shared";
 
 export const VoteActions: FC<Props> = ({ track, onPress }) => {
@@ -17,10 +17,11 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
     track.id,
     {
       onMutate: ({ vote }) => {
-        toast.success({
-          message: track.name,
-          icon: vote > 0 ? "👆" : "👇",
-        });
+        Haptics.notificationAsync(
+          vote > 0
+            ? Haptics.NotificationFeedbackType.Success
+            : Haptics.NotificationFeedbackType.Warning,
+        );
       },
     },
   );

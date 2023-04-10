@@ -1,22 +1,19 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
+import * as Haptics from "expo-haptics";
 import { useTracks } from "@fissa/utils";
 
+
+
 import { useCreateVote, useGetFissa } from "../../../hooks";
-import { toast } from "../../../utils";
-import {
-  Divider,
-  Popover,
-  TrackEnd,
-  TrackList,
-  TrackListItem,
-} from "../../shared";
+import { Divider, Popover, TrackEnd, TrackList, TrackListItem } from "../../shared";
 import { Badge } from "../../shared/Badge";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
 import { QuickVoteModal } from "./QuickVoteModal";
 import { VoteActions } from "./VoteActions";
+
 
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
@@ -35,10 +32,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const { mutateAsync } = useCreateVote(String(pin), {
     onMutate: ({ vote }) => {
-      toast.success({
-        message: focussedTrack!.name,
-        icon: vote > 0 ? "👆" : "👇",
-      });
+      Haptics.notificationAsync(
+          vote > 0
+            ? Haptics.NotificationFeedbackType.Success
+            : Haptics.NotificationFeedbackType.Warning,
+        );
     },
   });
 
