@@ -1,24 +1,46 @@
-import { FC, useCallback, useMemo, useState } from "react";
-import { FontAwesome } from "@expo/vector-icons";
-import { theme } from "@fissa/tailwind-config";
+import { FC, useCallback, useMemo, useRef, useState } from "react";
+import { Dimensions, GestureResponderEvent } from "react-native";
 import { useTracks } from "@fissa/utils";
 
-import { useGetFissa, useGetVoteFromUser } from "../../../hooks";
-import { useAuth } from "../../../providers";
-import { Divider, Popover, TrackList, TrackListItem } from "../../shared";
+import { useCreateVote, useGetFissa } from "../../../hooks";
+import { toast } from "../../../utils";
+import {
+  Divider,
+  Popover,
+  TrackEnd,
+  TrackList,
+  TrackListItem,
+} from "../../shared";
 import { Badge } from "../../shared/Badge";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
+import { QuickVoteModal } from "./QuickVoteModal";
 import { VoteActions } from "./VoteActions";
+
+const windowHeight = Dimensions.get("window").height;
+const windowCenter = windowHeight / 2;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const { data, isInitialLoading } = useGetFissa(pin);
+  const focussedPosition = useRef(0);
+  const [vote, setVote] = useState(0);
+  const [focussedTrack, setFocussedTrack] =
+    useState<SpotifyApi.TrackObjectFull>();
 
   const localTracks = useTracks(data?.tracks.map(({ trackId }) => trackId));
 
   const [selectedTrack, setSelectedTrack] =
     useState<SpotifyApi.TrackObjectFull | null>(null);
+
+  const { mutateAsync } = useCreateVote(String(pin), {
+    onMutate: ({ vote }) => {
+      toast.success({
+        message: focussedTrack!.name,
+        icon: vote > 0 ? "👆" : "👇",
+      });
+    },
+  });
 
   const isPlaying = (data?.currentIndex ?? -1) >= 0;
 
@@ -35,12 +57,51 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     return localTracks.slice((data?.currentIndex ?? 0) + 1, localTracks.length);
   }, [localTracks, data?.currentIndex]);
 
+  const toggleLongPress = useCallback(
+    (track?: SpotifyApi.TrackObjectFull) =>
+      async (event: GestureResponderEvent) => {
+        focussedPosition.current = event.nativeEvent.pageY;
+
+        setFocussedTrack(track);
+        setVote(0);
+      },
+    [],
+  );
+
+  const handleTouchEnd = useCallback(
+    (event: GestureResponderEvent) => {
+      console.log("handleTouchEnd");
+      console.log(vote, focussedTrack);
+      if (vote !== 0 && focussedTrack) {
+        mutateAsync(vote, focussedTrack.id);
+      }
+
+      toggleLongPress(undefined)(event);
+    },
+    [toggleLongPress, focussedTrack, vote],
+  );
+
+  const handleTouchMove = useCallback((event: GestureResponderEvent) => {
+    const TRIGGER_DIFF = 100;
+
+    const { pageY } = event.nativeEvent;
+
+    if (pageY < windowCenter - TRIGGER_DIFF) return setVote(1);
+    if (pageY > windowCenter + TRIGGER_DIFF) return setVote(-1);
+
+    setVote(0);
+  }, []);
+
   return (
     <>
       <TrackList
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        scrollEnabled={!focussedTrack}
         tracks={isPlaying ? tracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
+        onTrackLongPress={toggleLongPress}
         trackEnd={(track) => <TrackEnd trackId={track.id} pin={pin} />}
         ListHeaderComponent={
           <ListHeaderComponent
@@ -75,23 +136,13 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           onPress={() => setSelectedTrack(null)}
         />
       </Popover>
+      <QuickVoteModal
+        focussedPosition={focussedPosition.current}
+        getTrackVotes={getTrackVotes}
+        vote={vote}
+        track={focussedTrack}
+        onTouchEnd={handleTouchEnd}
+      />
     </>
   );
-};
-
-const TrackEnd: FC<{ trackId: string; pin: string }> = ({ pin, trackId }) => {
-  const { user } = useAuth();
-
-  const { data } = useGetVoteFromUser(pin, trackId, user);
-
-  if (!data)
-    return (
-      <FontAwesome name="ellipsis-v" color={theme["100"] + "60"} size={18} />
-    );
-  if (data.vote === 1)
-    return <FontAwesome name="arrow-up" color={theme["500"]} size={18} />;
-  if (data.vote === -1)
-    return <FontAwesome name="arrow-down" color={theme["500"]} size={18} />;
-
-  return null;
 };

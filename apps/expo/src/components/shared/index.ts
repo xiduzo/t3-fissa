@@ -16,6 +16,7 @@ export * from "./Popover";
 export * from "./ProgressBar";
 export * from "./Rejoin";
 export * from "./Toast";
+export * from "./TrackEnd";
 export * from "./TrackList";
 export * from "./TrackListItem";
 export * from "./Typography";

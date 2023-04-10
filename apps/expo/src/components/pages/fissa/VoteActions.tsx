@@ -1,7 +1,7 @@
 import { FC, useCallback } from "react";
 import { useSearchParams } from "expo-router";
 
-import { useCreateVote, useGetVoteFromUser } from "../../../hooks";
+import { useCreateVoteForTrack, useGetVoteFromUser } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import { Action } from "../../shared";
@@ -12,14 +12,18 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
 
   const { data } = useGetVoteFromUser(String(pin), track.id, user);
 
-  const { mutateAsync, isLoading } = useCreateVote(String(pin), track.id, {
-    onMutate: ({ vote }) => {
-      toast.success({
-        message: track.name,
-        icon: vote > 0 ? "👆" : "👇",
-      });
+  const { mutateAsync, isLoading } = useCreateVoteForTrack(
+    String(pin),
+    track.id,
+    {
+      onMutate: ({ vote }) => {
+        toast.success({
+          message: track.name,
+          icon: vote > 0 ? "👆" : "👇",
+        });
+      },
     },
-  });
+  );
 
   const handleVote = useCallback(
     (vote: number) => async () => {

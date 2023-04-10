@@ -1,5 +1,9 @@
 import { FC } from "react";
-import { VirtualizedList, VirtualizedListProps } from "react-native";
+import {
+  GestureResponderEvent,
+  VirtualizedList,
+  VirtualizedListProps,
+} from "react-native";
 
 import { Badge } from "./Badge";
 import { TrackListItem } from "./TrackListItem";
@@ -7,6 +11,7 @@ import { TrackListItem } from "./TrackListItem";
 export const TrackList: FC<Props> = ({
   tracks,
   onTrackPress,
+  onTrackLongPress,
   selectedTracks,
   getTrackVotes,
   trackEnd,
@@ -29,6 +34,7 @@ export const TrackList: FC<Props> = ({
           }
           end={trackEnd && trackEnd(item)}
           onPress={() => onTrackPress?.(item)}
+          onLongPress={onTrackLongPress?.(item)}
           selected={selectedTracks?.includes(item.id)}
         />
       )}
@@ -54,6 +60,9 @@ interface Props
   getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number;
   trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element;
   onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
+  onTrackLongPress?: (
+    track: SpotifyApi.TrackObjectFull,
+  ) => (event: GestureResponderEvent) => void;
 }
 
 const getItem = (data: SpotifyApi.TrackObjectFull[], index: number) =>

@@ -8,7 +8,7 @@ export const useGetVoteFromUser = (
   return api.vote.byTrackFromUser.useQuery(
     { pin, trackId },
     {
-      enabled: !!user,
+      enabled: !!user && !!trackId,
     },
   );
 };

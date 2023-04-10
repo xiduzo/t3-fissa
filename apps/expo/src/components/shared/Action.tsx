@@ -108,5 +108,10 @@ const content = cva("items-center", {
       reversed: true,
       className: "flex-col-reverse",
     },
+    {
+      layout: "row",
+      reversed: true,
+      className: "flex-row-reverse",
+    },
   ],
 });
