@@ -10,9 +10,15 @@ export const getPlaylistTracks = async (
 ) => {
   const tracks: SpotifyApi.TrackObjectFull[] = [];
   let hasNext = false;
+  let offset = 0;
 
   do {
-    const options = { limit: 50, offset: tracks.length };
+    const options = {
+      offset,
+      limit: 50,
+      fields:
+        "items(track(id,name,artists(name),album(images(url)),type,is_local)),next",
+    };
 
     const request =
       playlistId === SAVED_TRACKS_PLAYLIST_ID
@@ -21,9 +27,20 @@ export const getPlaylistTracks = async (
 
     const { next, items } = await request;
 
+    offset += items.length;
+
     items.forEach(({ track }) => {
+      const isTestTrack = track.name.toLowerCase().includes("hoe");
+      if (isTestTrack) console.log(track);
+      if (track.type !== "track") return; // We can only allow tracks (not episodes
+      if (track.is_local) return; // We can only allow tracks that are not local
+
+      // if (!track.is_playable) return; // We can only allow tracks that are playable
+      // if (!track.preview_url) return; // We can only allow tracks that have a preview url
       if (tracks.find(({ id }) => id === track.id)) return;
-      tracks.push(track as SpotifyApi.TrackObjectFull);
+
+      // if (!_track.available_markets?.length) return; // We can only allow tracks that are available in at least one market
+      tracks.push(track);
     });
 
     updater && updater(tracks);
@@ -44,13 +61,21 @@ export const getPlaylists = async (
 ) => {
   const playlists: SpotifyApi.PlaylistObjectSimplified[] = [];
   let hasNext = false;
+  let offset = 0;
 
   do {
-    const options = { limit: 50, offset: playlists.length };
+    const options = {
+      offset,
+      limit: 50,
+      fields:
+        "items(id,name,owner(display_name),images(url),tracks(total)),next",
+    };
 
     const request = spotify.getUserPlaylists(user.id, options);
 
     const { next, items } = await request;
+
+    offset += items.length;
 
     items.forEach((playlist) => playlists.push(playlist));
 
@@ -61,10 +86,7 @@ export const getPlaylists = async (
 
   try {
     const savedTracks = await spotify.getMySavedTracks(user.id);
-    const playlist = savedTracksPlaylist(
-      savedTracks.items.length,
-      user.display_name,
-    );
+    const playlist = savedTracksPlaylist(savedTracks.total, user.display_name);
 
     playlists.push(playlist);
   } catch {
