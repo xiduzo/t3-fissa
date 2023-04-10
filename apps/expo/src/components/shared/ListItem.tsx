@@ -104,7 +104,7 @@ export const ListItem: FC<Props> = ({
           </View>
           {extra && <View className="mt-2">{extra}</View>}
         </Animated.View>
-        <Animated.View className="ml-1">{end}</Animated.View>
+        <View className="w-4 items-center">{end}</View>
       </View>
     </TouchableWithoutFeedback>
   );

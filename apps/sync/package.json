@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf node_modules",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm with-env ts-node src/index.ts",
+    "dev": "pnpm with-env nodemon src/index.ts",
     "start": "ts-node src/index.ts",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -25,6 +25,7 @@
     "@types/node-cron": "^3.0.7",
     "dotenv": "^16.0.3",
     "eslint-config-acme": "0.0.0",
+    "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   }

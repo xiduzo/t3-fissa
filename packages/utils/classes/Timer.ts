@@ -1,4 +1,5 @@
 // Will start time whenever class is instantiated
+// Time will be rounded to the nearest millisecond
 export class Timer {
   private _startedAt: number;
   private _name: string;
@@ -10,7 +11,7 @@ export class Timer {
   }
 
   duration() {
-    const duration = performance.now() - this._startedAt;
+    const duration = Math.round(performance.now() - this._startedAt);
 
     console.info(`[DURATION] ${this._name} - ${duration}ms`);
     return duration;

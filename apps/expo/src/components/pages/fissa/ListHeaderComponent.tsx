@@ -27,7 +27,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
   if (!data) return null;
 
   return (
-    <>
+    <View className="px-6">
       {activeTrack && (
         <TrackListItem
           key={data?.expectedEndTime.toString()}
@@ -70,7 +70,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
           onPress={toggleTrackSelected}
         />
       </Popover>
-    </>
+    </View>
   );
 };
 

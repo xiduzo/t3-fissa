@@ -70,8 +70,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const handleTouchEnd = useCallback(
     (event: GestureResponderEvent) => {
-      console.log("handleTouchEnd");
-      console.log(vote, focussedTrack);
       if (vote !== 0 && focussedTrack) {
         mutateAsync(vote, focussedTrack.id);
       }

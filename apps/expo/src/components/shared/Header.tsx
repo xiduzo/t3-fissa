@@ -12,7 +12,7 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
 
   return (
     <View
-      className="flex flex-row items-center justify-between px-6 pt-12 pb-3"
+      className="flex flex-row items-center justify-between px-6 pt-14 pb-4"
       style={{ backgroundColor: theme["900"] }}
     >
       <View>

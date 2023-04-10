@@ -77,13 +77,13 @@ export const QuickVoteModal: FC<Props> = ({
   const upVoteGradient = useMemo(() => {
     const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);
 
-    return [theme[isUpVote ? "500" : "900"] + "10", theme["900"] + "10"];
+    return [theme[isUpVote ? "100" : "900"] + "20", theme["900"] + "10"];
   }, [vote, data?.vote]);
 
   const downVoteGradient = useMemo(() => {
     const isDownVote = vote === -1 || (data?.vote === -1 && vote !== 1);
 
-    return [theme["900"] + "10", theme[isDownVote ? "500" : "900"] + "10"];
+    return [theme["900"] + "10", theme[isDownVote ? "100" : "900"] + "20"];
   }, [vote, data?.vote]);
 
   return (
@@ -111,7 +111,12 @@ export const QuickVoteModal: FC<Props> = ({
               transform: [{ scale }],
             }}
           >
-            <Action layout="column" title="Up-vote track" icon="arrow-up" />
+            <Action
+              layout="column"
+              title="Up-vote track"
+              icon="arrow-up"
+              active={data?.vote === 1}
+            />
           </Animated.View>
         </LinearGradient>
         <Animated.View className="px-6" style={{ top: focussedAnimation }}>
@@ -136,6 +141,7 @@ export const QuickVoteModal: FC<Props> = ({
             <Action
               layout="column"
               reversed
+              active={data?.vote === -1}
               icon="arrow-down"
               title="Down-vote track"
             />

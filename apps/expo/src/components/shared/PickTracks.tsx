@@ -139,7 +139,7 @@ export const PickTracks: FC<Props> = ({
           onTrackPress={handleTrackPress}
           ListFooterComponent={<View className="pb-96" />}
           ListEmptyComponent={
-            <View className="-mx-6">
+            <View>
               {!selectedPlaylist && (
                 <>
                   <Typography variant="h1" className="m-6">

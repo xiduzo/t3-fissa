@@ -20,12 +20,12 @@ export const TrackList: FC<Props> = ({
   return (
     <VirtualizedList
       {...props}
-      className="px-6"
       data={tracks}
       getItemCount={() => tracks.length}
       initialNumToRender={5}
       renderItem={({ item, index }) => (
         <TrackListItem
+          className="px-6"
           key={item.id}
           index={index}
           track={item}

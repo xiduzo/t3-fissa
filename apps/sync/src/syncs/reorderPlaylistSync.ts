@@ -3,18 +3,24 @@ import { Timer } from "@fissa/utils";
 
 import { api } from "../utils/api";
 
+const isUpdating = new Map<string, boolean>();
+
 export const reorderPlaylistSync = async () => {
   const fissas = await api.fissa.sync.active.query();
 
   for (const fissa of fissas) {
     if (!fissa.shouldReorder) return;
+    if (isUpdating.get(fissa.pin)) return;
 
     try {
+      isUpdating.set(fissa.pin, true);
       console.log(`reordering playlist for ${fissa.pin}...`);
       await reorderTracksFromPlaylist(fissa.pin);
       console.log(`reordering done for ${fissa.pin}`);
     } catch (error) {
       console.error(`reordering failed for ${fissa.pin}`, error);
+    } finally {
+      isUpdating.set(fissa.pin, false);
     }
   }
 };
