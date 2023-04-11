@@ -17,9 +17,17 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
     inputRange: [0, 0.1, 0.7, 1],
     outputRange: [
       inverted ? theme["900"] + "65" : theme["100"] + "70",
-      inverted ? theme["900"] : theme["500"],
-      inverted ? theme["900"] : theme["500"],
+      theme[inverted ? "900" : "500"],
+      theme[inverted ? "900" : "500"],
       inverted ? theme["900"] + "60" : theme["100"] + "70",
+    ],
+  });
+
+  const color = amountAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [
+      theme[inverted ? "100" : "900"],
+      theme[inverted ? "100" : "900"],
     ],
   });
 
@@ -27,7 +35,7 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
     if (amountRef.current === amount) return;
     const animation = Animated.spring(amountAnimation, {
       toValue: Number(amount !== 0),
-      friction: 10,
+      velocity: 0.1,
       useNativeDriver: false,
     });
 
@@ -43,9 +51,9 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
       style={{ backgroundColor, transform: [{ scale }] }}
     >
       <Typography
-        inverted={inverted}
         centered
         className="text-xs font-extrabold"
+        animatedColor={color}
         style={{ minWidth: 16 + (amount > 10 ? 6 : 0) }}
       >
         {amount > 0 && "+"}

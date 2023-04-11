@@ -13,9 +13,30 @@ export const useCreateVoteForTrack = (
 
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
-    onSuccess: async (...props) => {
-      callbacks.onSuccess?.(...props);
-      queryClient.vote.invalidate();
+    onMutate: async (newVote) => {
+      await queryClient.vote.byTrackFromUser.cancel(newVote);
+
+      const vote = {
+        pin: newVote.pin,
+        trackId: newVote.trackId,
+      };
+      const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
+
+      // TODO: also update the track's score
+      queryClient.vote.byTrackFromUser.setData(vote, (prev) => {
+        return {
+          ...prev,
+          ...newVote,
+          userId: "optimistic",
+        };
+      });
+
+      await callbacks.onMutate?.(newVote);
+      return previousVote;
+    },
+    onSettled: async (data, error, variables, context) => {
+      const vote = error ? context : data;
+      queryClient.vote.byTrackFromUser.setData(variables, () => vote);
     },
   });
 
@@ -34,9 +55,29 @@ export const useCreateVote = (
 
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
-    onSuccess: async (...props) => {
-      callbacks.onSuccess?.(...props);
-      queryClient.vote.invalidate();
+    onMutate: async (newVote) => {
+      await queryClient.vote.byTrackFromUser.cancel(newVote);
+
+      const vote = {
+        pin: newVote.pin,
+        trackId: newVote.trackId,
+      };
+      const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
+
+      queryClient.vote.byTrackFromUser.setData(vote, (prev) => {
+        return {
+          ...prev,
+          ...newVote,
+          userId: "optimistic",
+        };
+      });
+
+      await callbacks.onMutate?.(newVote);
+      return previousVote;
+    },
+    onSettled: async (data, error, variables, context) => {
+      const vote = error ? context : data;
+      queryClient.vote.byTrackFromUser.setData(variables, () => vote);
     },
   });
 

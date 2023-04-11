@@ -35,7 +35,7 @@ const reorderTracksFromPlaylist = async (pin: string) => {
 
   // Don't reorder in the last X seconds of the current track
   // To prevent f*cking up the order with the currentlyPlayingSync
-  if (differenceInSeconds(expectedEndTime, new Date()) < 20) return;
+  if (differenceInSeconds(expectedEndTime, new Date()) < 5) return;
 
   const { updateMany, fakeUpdates, newCurrentIndex } =
     generateTrackIndexUpdates(tracks, currentIndex);

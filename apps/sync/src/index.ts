@@ -17,4 +17,4 @@ import {
 //  # * * * * * *
 cron.schedule(`*/20 * * * *`, accessTokenSync);
 cron.schedule(`*/1 * * * *`, currentlyPlayingSync);
-cron.schedule(`*/5 * * * * *`, reorderPlaylistSync);
+cron.schedule(`*/2 * * * * *`, reorderPlaylistSync);

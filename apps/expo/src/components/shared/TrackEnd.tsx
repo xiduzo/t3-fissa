@@ -1,10 +1,14 @@
+import { FC } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
-import { FC } from "react";
+
 import { useGetVoteFromUser } from "../../hooks";
 import { useAuth } from "../../providers";
 
-export const TrackEnd: FC<{ trackId: string; pin: string }> = ({ pin, trackId }) => {
+export const TrackEnd: FC<{ trackId: string; pin: string }> = ({
+  pin,
+  trackId,
+}) => {
   const { user } = useAuth();
 
   const { data } = useGetVoteFromUser(pin, trackId, user);
@@ -20,4 +24,3 @@ export const TrackEnd: FC<{ trackId: string; pin: string }> = ({ pin, trackId })
 
   return null;
 };
-

@@ -50,7 +50,7 @@ export const TrackListItem: FC<Props> = memo(
   (prev, next) =>
     prev.track.id === next.track.id &&
     prev.selected === next.selected &&
-    prev.index === next.index,
+    prev.index === next.index
 );
 
 interface Props extends Omit<ListItemProps, "title" | "subtitle" | "imageUri"> {
