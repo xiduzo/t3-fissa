@@ -8,8 +8,6 @@ import {
 } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
-const trackIds = Z_TRACKS;
-
 const nextTrack = z.object({
   pin: Z_PIN,
   currentIndex: z.number().min(0),
@@ -36,7 +34,7 @@ export const fissaRouter = createTRPCRouter({
     const service = new FissaService(ctx);
     return service.restart(input);
   }),
-  create: protectedProcedure.input(trackIds).mutation(({ ctx, input }) => {
+  create: protectedProcedure.input(Z_TRACKS).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx);
     return service.create(input);
   }),

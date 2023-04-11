@@ -4,3 +4,10 @@ export class NotTheHost extends Error {
     this.name = NotTheHost.name;
   }
 }
+
+export class NoActiveDevice extends Error {
+  public constructor(message = 'No active device') {
+    super(message);
+    this.name = NoActiveDevice.name;
+  }
+}

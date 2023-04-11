@@ -13,7 +13,11 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   },
   backgroundColor: "#000",
   updates: {
-    fallbackToCacheTimeout: 0,
+    fallbackToCacheTimeout: 10 * 1000,
+    url: "https://u.expo.dev/89f5d2ef-e72d-4e2c-a88c-3fe56e30e601",
+  },
+  runtimeVersion: {
+    policy: "sdkVersion",
   },
   assetBundlePatterns: ["**/*"],
   ios: {
@@ -37,7 +41,15 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
       projectId: "89f5d2ef-e72d-4e2c-a88c-3fe56e30e601",
     },
   },
-  plugins: ["./expo-plugins/with-modify-gradle.js"],
+  plugins: [
+    "./expo-plugins/with-modify-gradle.js",
+    [
+      "expo-updates",
+      {
+        username: "xiduzo",
+      },
+    ],
+  ],
 });
 
 export default defineConfig;
