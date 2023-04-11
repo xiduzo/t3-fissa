@@ -20,6 +20,7 @@ import {
   useAuthRequest,
 } from "expo-auth-session";
 import Constants from "expo-constants";
+import { useNavigation, useRouter } from "expo-router";
 import {
   differenceInMinutes,
   scopes,
@@ -49,6 +50,8 @@ const SpotifyContext = createContext({
 export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const spotify = useSpotify();
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
+  const { replace } = useRouter();
+  const { getState } = useNavigation();
 
   const lastTokenSaveTime = useRef(new Date());
 
@@ -95,9 +98,13 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       const tokens = await refresh(refreshToken);
       await saveTokens(tokens);
     } catch (e) {
-      console.error(e);
+      setUser(undefined);
+      const state = getState();
+
+      if (state.routes[0]?.name === "index") return;
+      replace("");
     }
-  }, [user]);
+  }, [user, replace, getState]);
 
   useMemo(async () => {
     if (response?.type !== "success") return;
