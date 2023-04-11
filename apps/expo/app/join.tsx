@@ -7,6 +7,7 @@ import {
   TextInputTextInputEventData,
   View,
 } from "react-native";
+import * as Haptics from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
@@ -27,6 +28,7 @@ const Join = () => {
     enabled: !pin.includes(""),
     onSuccess: async ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await save(pin);
       replace(`/fissa/${pin}`);
     },

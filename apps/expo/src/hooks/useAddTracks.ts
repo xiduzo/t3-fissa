@@ -8,14 +8,9 @@ export const useAddTracks = (
   pin: string,
   callbacks: MutationCallbacks<typeof endpoint> = {},
 ) => {
-  const queryClient = api.useContext();
-
+  // TODO optimistically update the tracks
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
-    onSuccess: async (...props) => {
-      await queryClient.track.byPin.invalidate();
-      callbacks.onSuccess?.(...props);
-    },
   });
 
   return {
