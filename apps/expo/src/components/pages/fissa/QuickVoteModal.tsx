@@ -6,6 +6,7 @@ import {
   Modal,
   View,
 } from "react-native";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
@@ -44,6 +45,7 @@ export const QuickVoteModal: FC<Props> = ({
 
   useEffect(() => {
     if (!track) return;
+    Haptics.selectionAsync();
     const offset = focussedPosition - windowCenter;
     Animated.timing(focussedAnimation, {
       toValue: offset,

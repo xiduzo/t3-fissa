@@ -17,6 +17,8 @@ export const useAutoSkipTrack = (pin: string) => {
 
         if(data.by.email !== user.email) return
 
+        // Give the BE some time to start playing the track
+        await new Promise(resolve => setTimeout(resolve, 1000))
         const { is_playing } = await spotify.getMyCurrentPlaybackState()
         if(is_playing) return
 

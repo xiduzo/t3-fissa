@@ -3,17 +3,20 @@ import { Dimensions, GestureResponderEvent, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useTracks } from "@fissa/utils";
 
-
-
 import { useCreateVote, useGetFissa } from "../../../hooks";
-import { Divider, Popover, TrackEnd, TrackList, TrackListItem } from "../../shared";
+import {
+  Divider,
+  Popover,
+  TrackEnd,
+  TrackList,
+  TrackListItem,
+} from "../../shared";
 import { Badge } from "../../shared/Badge";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
 import { QuickVoteModal } from "./QuickVoteModal";
 import { VoteActions } from "./VoteActions";
-
 
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
@@ -33,10 +36,10 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const { mutateAsync } = useCreateVote(String(pin), {
     onMutate: ({ vote }) => {
       Haptics.notificationAsync(
-          vote > 0
-            ? Haptics.NotificationFeedbackType.Success
-            : Haptics.NotificationFeedbackType.Warning,
-        );
+        vote > 0
+          ? Haptics.NotificationFeedbackType.Success
+          : Haptics.NotificationFeedbackType.Warning,
+      );
     },
   });
 
@@ -77,16 +80,35 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [toggleLongPress, focussedTrack, vote],
   );
 
-  const handleTouchMove = useCallback((event: GestureResponderEvent) => {
-    const TRIGGER_DIFF = 100;
+  const handleTouchMove = useCallback(
+    (event: GestureResponderEvent) => {
+      if (!focussedTrack) return;
 
-    const { pageY } = event.nativeEvent;
+      const TRIGGER_DIFF = 100;
 
-    if (pageY < windowCenter - TRIGGER_DIFF) return setVote(1);
-    if (pageY > windowCenter + TRIGGER_DIFF) return setVote(-1);
+      const { pageY } = event.nativeEvent;
 
-    setVote(0);
-  }, []);
+      if (pageY < windowCenter - TRIGGER_DIFF) {
+        setVote((prev) => {
+          if (prev !== 1) Haptics.selectionAsync();
+          return 1;
+        });
+
+        return;
+      }
+      if (pageY > windowCenter + TRIGGER_DIFF) {
+        setVote((prev) => {
+          if (prev !== -1) Haptics.selectionAsync();
+          return -1;
+        });
+
+        return;
+      }
+
+      setVote(0);
+    },
+    [focussedTrack],
+  );
 
   return (
     <>

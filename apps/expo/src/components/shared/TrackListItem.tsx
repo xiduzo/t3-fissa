@@ -1,5 +1,6 @@
 import { FC, memo, useCallback, useEffect, useRef } from "react";
 import { Animated, LayoutChangeEvent } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import { ListItem, ListItemProps } from "./ListItem";
 
@@ -12,6 +13,11 @@ export const TrackListItem: FC<Props> = memo(
     const setHeight = useCallback((e: LayoutChangeEvent) => {
       height.current = e.nativeEvent.layout.height;
     }, []);
+
+    useEffect(() => {
+      if (!props.selected) return;
+      Haptics.selectionAsync();
+    }, [props.selected]);
 
     useEffect(() => {
       const diff = previousIndex.current - (index ?? 0);
