@@ -4,8 +4,7 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 
-import { Button, Typography } from "../../src/components";
-import { useCreateFissa } from "../../src/components/pages/fissa/hooks/useCreateFissa";
+import { Button, Typography, useCreateFissa } from "../../src/components";
 import { toast } from "../../src/utils";
 
 const Host = () => {

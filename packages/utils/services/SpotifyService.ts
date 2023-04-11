@@ -27,12 +27,22 @@ export class SpotifyService {
     return body.is_playing;
   };
 
-  playTrack = async (accessToken: string, trackId: string) => {
+  activeDevice = async (accessToken: string) => {
+    this.spotify.setAccessToken(accessToken);
+    const { body } = await this.spotify.getMyDevices();
+    return body.devices.find(({ is_active }) => is_active);
+  };
+
+  playTrack = async (
+    accessToken: string,
+    trackId: string,
+    deviceId?: string,
+  ) => {
     this.spotify.setAccessToken(accessToken);
 
-    const { body } = await this.spotify.getTrack(trackId);
-    console.log("playing", body.name);
-    return this.spotify.play({ uris: [body.uri] });
+    const { body, statusCode } = await this.spotify.getTrack(trackId);
+    console.log("playing", body, " status: ", statusCode);
+    return this.spotify.play({ uris: [body.uri], device_id: deviceId });
   };
 
   getRecommendedTracks = async (

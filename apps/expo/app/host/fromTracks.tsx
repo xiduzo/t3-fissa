@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 
-import { PickTracks } from "../../src/components";
-import { useCreateFissa } from "../../src/components/pages/fissa/hooks/useCreateFissa";
+import { PickTracks, useCreateFissa } from "../../src/components";
 import { toast } from "../../src/utils";
 
 const FromTracks = () => {

@@ -17,7 +17,7 @@ export const getPlaylistTracks = async (
       offset,
       limit: 50,
       // fields:
-      //   "items(track(id,name,artists(name),album(images(url)),type,is_local)),next",
+      //   "items(track(id,name,type,is_local,is_playable,artists(name),album(images(url)))),next",
     };
 
     const request =
@@ -34,9 +34,8 @@ export const getPlaylistTracks = async (
       if (isTestTrack) console.log(JSON.stringify(track));
       if (track.type !== "track") return; // We can only allow tracks (not episodes
       if (track.is_local) return; // We can only allow tracks that are not local
-      if (!track.album.available_markets?.length) return;
+      if (track.is_playable !== undefined && !track.is_playable) return; // We can only allow tracks that are playable
 
-      // if (!track.is_playable) return; // We can only allow tracks that are playable
       // if (!track.preview_url) return; // We can only allow tracks that have a preview url
       if (tracks.find(({ id }) => id === track.id)) return;
 

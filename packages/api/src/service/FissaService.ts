@@ -1,5 +1,6 @@
-import { Fissa } from "@fissa/db";
+import { Fissa, Track } from "@fissa/db";
 import {
+  NoActiveDevice,
   NotTheHost,
   SpotifyService,
   addMilliseconds,
@@ -41,10 +42,16 @@ export class FissaService extends ServiceWithContext {
     let tries = 0;
     const blockedPins: string[] = [];
 
-    const tokens = this.db.account.findFirstOrThrow({
+    const tokens = await this.db.account.findFirstOrThrow({
       where: { userId: this.ctx.session?.user.id },
       select: { access_token: true, refresh_token: true },
     });
+
+    const { access_token } = tokens;
+
+    const device = await this.spotifyService.activeDevice(access_token!);
+
+    if (!device) throw new NoActiveDevice();
 
     await this.db.fissa.deleteMany({
       where: { userId: this.ctx.session?.user.id },
@@ -59,6 +66,7 @@ export class FissaService extends ServiceWithContext {
         fissa = await this.db.fissa.create({
           data: {
             pin,
+            deviceId: device.id!,
             expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
             by: { connect: { id: this.ctx.session?.user.id } },
             tracks: {
@@ -74,11 +82,9 @@ export class FissaService extends ServiceWithContext {
       }
     } while (!fissa && tries < 50);
 
-    const { access_token } = await tokens;
+    await this.playTrack(fissa!, tracks, access_token!, true);
 
-    await this.spotifyService.playTrack(access_token!, tracks[0]!.trackId);
-
-    return this.byId(fissa?.pin!);
+    return fissa!;
   };
 
   byId = async (pin: string) => {
@@ -116,36 +122,12 @@ export class FissaService extends ServiceWithContext {
   restart = async (pin: string) => {
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
-      select: {
-        lastPlayedIndex: true,
-        userId: true,
-        by: {
-          select: {
-            accounts: { select: { access_token: true }, take: 1 },
-          },
-        },
-        tracks: {
-          select: { trackId: true, durationMs: true },
-          orderBy: { index: "asc" },
-        },
-      },
+      select: { lastPlayedIndex: true, userId: true },
     });
 
-    if (fissa.userId !== this.ctx.session?.user.id)
-      throw new Error("Not authorized");
+    if (fissa.userId !== this.ctx.session?.user.id) throw new NotTheHost();
 
-    const { access_token } = fissa.by.accounts[0]!;
-    const track = fissa.tracks[fissa.lastPlayedIndex]!;
-
-    await this.spotifyService.playTrack(access_token!, track.trackId);
-
-    return this.db.fissa.update({
-      where: { pin },
-      data: {
-        currentIndex: fissa.lastPlayedIndex,
-        expectedEndTime: addMilliseconds(new Date(), track.durationMs),
-      },
-    });
+    return this.playNextTrack(pin, fissa.lastPlayedIndex, true);
   };
 
   playNextTrack = async (
@@ -158,49 +140,24 @@ export class FissaService extends ServiceWithContext {
     if (fissa.currentIndex !== currentIndex) return;
 
     const { access_token } = fissa.by.accounts[0]!;
-    const { tracks } = fissa;
+    const { tracks, deviceId } = fissa;
 
     try {
       const isPlaying = this.spotifyService.isStillPlaying(access_token!);
 
-      const currentTrack = tracks[fissa.currentIndex]!;
-      const nextIndex = fissa.currentIndex + 1;
-      const nextTrack = tracks[nextIndex]!;
-
-      const removeVotes = this.db.vote.deleteMany({
-        where: {
-          pin,
-          trackId: { in: [currentTrack.trackId, nextTrack.trackId] },
-        },
-      });
-
-      // Automatically add more tracks to the playlist
-      if (nextIndex + 3 > tracks.length) {
-        const trackIds = tracks
-          .slice(nextIndex, tracks.length)
-          .map(({ trackId }) => trackId);
-
-        await this.trackService.addRecommendedTracks(
-          pin,
-          trackIds,
-          tracks.length,
-          access_token!,
-        );
-      }
-
-      if (!(await isPlaying)) return this.stopFissa(pin);
+      if (!instantPlay && !(await isPlaying)) return this.stopFissa(pin);
 
       const playIn = differenceInMilliseconds(
         instantPlay ? new Date() : fissa.expectedEndTime,
         new Date(),
       );
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
-        
-      await this.spotifyService.playTrack(access_token!, nextTrack.trackId);
-      
-      await this.updateFissaIndexes(pin, currentIndex, nextTrack.durationMs);
 
-      await removeVotes;
+      await this.playTrack(
+        { pin, currentIndex, deviceId },
+        tracks,
+        access_token!,
+      );
     } catch (e) {
       console.error(e);
       return this.stopFissa(pin);
@@ -218,18 +175,18 @@ export class FissaService extends ServiceWithContext {
 
   private updateFissaIndexes = async (
     pin: string,
-    currentIndex: number,
+    newIndex: number,
     durationMs: number,
   ) => {
     return this.db.fissa.update({
       where: { pin },
       data: {
         expectedEndTime: addMilliseconds(new Date(), durationMs),
-        currentIndex: { increment: 1 },
-        lastPlayedIndex: { increment: 1 },
+        currentIndex: newIndex,
+        lastPlayedIndex: newIndex - 1,
         tracks: {
           updateMany: {
-            where: { index: { in: [currentIndex, currentIndex + 1] } },
+            where: { index: { lte: newIndex } },
             data: { score: 0 },
           },
         },
@@ -243,6 +200,7 @@ export class FissaService extends ServiceWithContext {
       select: {
         currentIndex: true,
         expectedEndTime: true,
+        deviceId: true,
         by: {
           select: {
             accounts: { select: { access_token: true }, take: 1 },
@@ -251,5 +209,51 @@ export class FissaService extends ServiceWithContext {
         tracks: { orderBy: { index: "asc" } },
       },
     });
+  };
+
+  private playTrack = async (
+    {
+      currentIndex,
+      pin,
+      deviceId,
+    }: Pick<Fissa, "currentIndex" | "pin" | "deviceId">,
+    tracks: { trackId: string; durationMs: number }[],
+    accessToken: string,
+    /**
+     * When the playlist is first created we do not want to skip the first track
+     */
+    initial = false,
+  ) => {
+    const newIndex = currentIndex + (initial ? 0 : 1);
+
+    const currentTrack = tracks[currentIndex]!;
+
+    const { trackId, durationMs } = tracks[newIndex]!;
+    const removeVotes = this.db.vote.deleteMany({
+      where: {
+        pin,
+        trackId: { in: [currentTrack.trackId, trackId] },
+      },
+    });
+
+    // See: https://community.spotify.com/t5/Spotify-for-Developers/Get-playlist-items-can-not-filter-out-tracks-which-are-unable-to/td-p/5537250
+    await this.spotifyService.playTrack(accessToken, trackId, deviceId);
+
+    await this.updateFissaIndexes(pin, newIndex, durationMs);
+    await removeVotes;
+
+    // Automatically add more tracks to the playlist
+    if (newIndex + 3 >= tracks.length) {
+      const trackIds = tracks
+        .slice(newIndex, tracks.length)
+        .map(({ trackId }) => trackId);
+
+      await this.trackService.addRecommendedTracks(
+        pin,
+        trackIds,
+        tracks.length,
+        accessToken,
+      );
+    }
   };
 }

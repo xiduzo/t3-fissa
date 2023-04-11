@@ -10,8 +10,8 @@ import {
   PlaylistListItem,
   Popover,
   Typography,
+  useCreateFissa,
 } from "../../src/components";
-import { useCreateFissa } from "../../src/components/pages/fissa/hooks/useCreateFissa";
 import { toast } from "../../src/utils";
 
 const FromPlaylist = () => {
