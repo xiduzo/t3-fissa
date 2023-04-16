@@ -5,7 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 
-import { Button, Popover, Typography } from "../../src/components";
+import { Button, EmptyState, Popover, Typography } from "../../src/components";
 import { useOnActiveApp } from "../../src/hooks";
 import { toast } from "../../src/utils";
 
@@ -40,7 +40,7 @@ const Host = () => {
         });
 
         push("/host");
-      } catch {
+      } catch (e) {
         fetchMyDevices();
         toast.error({
           message: `Failed to connect to ${device.name}`,
@@ -74,15 +74,18 @@ const Host = () => {
           </Typography>
         </View>
         <View className="space-y-2">
-          {devices.map((device) => (
-            <Button
-              key={device.id}
-              icon={mapDeviceToIcon(device)}
-              variant="text"
-              title={device.name}
-              onPress={handleDeviceSelect(device)}
-            />
-          ))}
+          {!devices.length && <EmptyState title="No devices found" icon="🦀" />}
+          {devices
+            .filter(({ id }) => !!id)
+            .map((device) => (
+              <Button
+                key={device.id}
+                icon={mapDeviceToIcon(device)}
+                variant="text"
+                title={device.name}
+                onPress={handleDeviceSelect(device)}
+              />
+            ))}
         </View>
         <Button
           icon="question"

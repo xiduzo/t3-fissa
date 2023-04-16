@@ -1,4 +1,4 @@
-import { Track, prisma } from "@fissa/db";
+import { prisma } from "@fissa/db";
 import { Timer, differenceInSeconds } from "@fissa/utils";
 
 import { api } from "../utils/api";

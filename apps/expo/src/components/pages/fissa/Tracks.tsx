@@ -113,6 +113,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   return (
     <>
       <TrackList
+        onScroll={(e) => console.log(e.nativeEvent.contentOffset.y)}
+        scrollEventThrottle={200}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         scrollEnabled={!focussedTrack}

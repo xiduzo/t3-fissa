@@ -7,6 +7,7 @@ export class SpotifyService {
   });
 
   codeGrant = async (code: string, redirectUri: string) => {
+    console.log({ code, redirectUri });
     this.spotify.setRedirectURI(redirectUri);
     return this.spotify.authorizationCodeGrant(code);
   };
