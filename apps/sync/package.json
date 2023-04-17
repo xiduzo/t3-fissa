@@ -5,7 +5,7 @@
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js && pnpx prisma generate --schema ../../packages/db/prisma/schema.prisma && ./prisma.sh",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js && ./prisma.sh",
     "clean": "rm -rf node_modules",
     "test": "vitest",
     "dev": "ts-node src/index.ts",
