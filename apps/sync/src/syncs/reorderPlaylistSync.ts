@@ -1,5 +1,4 @@
-import { prisma } from "@fissa/db";
-import { Timer, differenceInSeconds } from "@fissa/utils";
+import { differenceInSeconds } from "@fissa/utils";
 
 import { api } from "../utils/api";
 import { generateTrackIndexUpdates } from "../utils/generateTrackIndexUpdates";
@@ -9,71 +8,38 @@ const isUpdating = new Map<string, boolean>();
 export const reorderPlaylistSync = async () => {
   const fissas = await api.fissa.sync.active.query();
 
+  console.log("fissas", fissas.length);
   for (const fissa of fissas) {
+    console.log("fissa", fissa.pin);
     if (!fissa.shouldReorder) continue;
-    console.log("updating fissas", isUpdating.values());
+    console.log("updating fissas", isUpdating.size);
     if (isUpdating.get(fissa.pin)) continue;
-
     try {
       isUpdating.set(fissa.pin, true);
       console.log(`reordering playlist for ${fissa.pin}...`);
-      await reorderTracksFromPlaylist(fissa.pin);
+      if (differenceInSeconds(fissa.expectedEndTime, new Date()) < 5) continue;
+
+      const { updates, newCurrentIndex } = generateTrackIndexUpdates(
+        fissa.tracks,
+        fissa.currentIndex,
+      );
+
+      if (!updates.length) {
+        console.info(`No updates needed for fissa ${fissa.pin}`);
+        continue;
+      }
+
+      await api.fissa.sync.reorder.mutate({
+        pin: fissa.pin,
+        updates,
+        newCurrentIndex,
+      });
+
       console.log(`reordering done for ${fissa.pin}`);
     } catch (error) {
       console.error(`reordering failed for ${fissa.pin}`, error);
     } finally {
-      isUpdating.set(fissa.pin, false);
+      isUpdating.delete(fissa.pin);
     }
   }
-};
-
-const reorderTracksFromPlaylist = async (pin: string) => {
-  const { tracks, currentIndex, expectedEndTime } =
-    await prisma.fissa.findUniqueOrThrow({
-      where: { pin },
-      select: { tracks: true, currentIndex: true, expectedEndTime: true },
-    });
-
-  // Don't reorder in the last X seconds of the current track
-  // To prevent f*cking up the order with the currentlyPlayingSync
-  if (differenceInSeconds(expectedEndTime, new Date()) < 5) return;
-
-  const { updateMany, fakeUpdates, newCurrentIndex } =
-    generateTrackIndexUpdates(tracks, currentIndex);
-
-  if (!updateMany.length) {
-    console.info(`No updates needed for fissa ${pin}`);
-    return;
-  }
-
-  const timer = new Timer(
-    `Reordering ${updateMany.length} tracks for fissa ${pin}`,
-  );
-
-  await prisma.$transaction(
-    async (transaction) => {
-      // (1) Clear out the indexes
-      await transaction.fissa.update({
-        where: { pin },
-        data: { tracks: { updateMany: fakeUpdates } },
-      });
-
-      // (2) Set the correct indexes
-      await transaction.fissa.update({
-        where: { pin },
-        data: {
-          tracks: { updateMany },
-          currentIndex: newCurrentIndex,
-          lastPlayedIndex: newCurrentIndex,
-          shouldReorder: false,
-        },
-      });
-    },
-    {
-      maxWait: 20 * 1000,
-      timeout: 60 * 1000,
-    },
-  );
-
-  timer.duration();
 };

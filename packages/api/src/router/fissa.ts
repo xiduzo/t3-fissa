@@ -13,6 +13,15 @@ const nextTrack = z.object({
   currentIndex: z.number().min(0),
 });
 
+const reorder = z.object({
+  pin: Z_PIN,
+  newCurrentIndex: z.number().min(0),
+  updates: z.array(z.object({
+    where: z.object({ trackId: z.string() }),
+    data: z.object({ index: z.number().min(0) }),
+  })),
+})
+
 const sync = createTRPCRouter({
   active: serviceProcedure.query(({ ctx }) => {
     const service = new FissaService(ctx);
@@ -22,6 +31,10 @@ const sync = createTRPCRouter({
   next: serviceProcedure.input(nextTrack).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx);
     return service.playNextTrack(input.pin, input.currentIndex);
+  }),
+  reorder: serviceProcedure.input(reorder).mutation(({ ctx, input }) => {
+    const service = new FissaService(ctx);
+    return service.reorder(input.pin, input.newCurrentIndex, input.updates);
   }),
 });
 

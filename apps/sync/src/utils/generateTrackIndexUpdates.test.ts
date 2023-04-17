@@ -15,9 +15,9 @@ describe(generateTrackIndexUpdates.name, () => {
         new TrackBuilder("5").withIndex(5).withScore(1).build(),
       ];
 
-      const { updateMany } = generateTrackIndexUpdates(tracks, 1);
+      const { updates } = generateTrackIndexUpdates(tracks, 1);
 
-      expect(updateMany).toMatchObject([
+      expect(updates).toMatchObject([
         { where: { trackId: "5" }, data: { index: 2 } },
         { where: { trackId: "2" }, data: { index: 3 } },
         { where: { trackId: "3" }, data: { index: 4 } },
@@ -35,9 +35,9 @@ describe(generateTrackIndexUpdates.name, () => {
         new TrackBuilder("5").withIndex(5).build(),
       ];
 
-      const { updateMany } = generateTrackIndexUpdates(tracks, 1);
+      const { updates } = generateTrackIndexUpdates(tracks, 1);
 
-      expect(updateMany).toMatchObject([
+      expect(updates).toMatchObject([
         { where: { trackId: "3" }, data: { index: 2 } },
         { where: { trackId: "4" }, data: { index: 3 } },
         { where: { trackId: "5" }, data: { index: 4 } },
@@ -55,9 +55,9 @@ describe(generateTrackIndexUpdates.name, () => {
         new TrackBuilder("5").withIndex(5).withScore(1).build(),
       ];
 
-      const { updateMany } = generateTrackIndexUpdates(tracks, 0);
+      const { updates } = generateTrackIndexUpdates(tracks, 0);
 
-      expect(updateMany).toMatchObject([
+      expect(updates).toMatchObject([
         { where: { trackId: "3" }, data: { index: 1 } },
         { where: { trackId: "5" }, data: { index: 2 } },
         { where: { trackId: "4" }, data: { index: 3 } },
@@ -97,9 +97,9 @@ describe(generateTrackIndexUpdates.name, () => {
         new TrackBuilder("9").withIndex(9).build(),
       ];
 
-      const { updateMany } = generateTrackIndexUpdates(tracks, 6);
+      const { updates } = generateTrackIndexUpdates(tracks, 6);
 
-      expect(updateMany).toMatchObject([
+      expect(updates).toMatchObject([
         { where: { trackId: "5" }, data: { index: 1 } },
         { where: { trackId: "6" }, data: { index: 2 } },
         { where: { trackId: "1" }, data: { index: 4 } },

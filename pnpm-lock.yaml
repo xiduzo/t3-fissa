@@ -172,7 +172,6 @@ importers:
   apps/sync:
     specifiers:
       '@fissa/api': '*'
-      '@fissa/db': '*'
       '@fissa/test': '*'
       '@fissa/utils': '*'
       '@trpc/client': ^10.12.0
@@ -186,7 +185,6 @@ importers:
       typescript: ^4.9.5
     dependencies:
       '@fissa/api': link:../../packages/api
-      '@fissa/db': link:../../packages/db
       '@fissa/utils': link:../../packages/utils
       '@trpc/client': 10.12.0
       esbuild: 0.17.17

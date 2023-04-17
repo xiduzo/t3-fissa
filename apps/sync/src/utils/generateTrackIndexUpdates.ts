@@ -20,7 +20,7 @@ export const generateTrackIndexUpdates = (
     ({ index }) => index === currentIndex,
   );
 
-  const updateMany = sorted
+  const updates = sorted
     .map(({ trackId, index }, newIndex) => {
       if (index === newIndex) return; // No need to update
 
@@ -31,10 +31,5 @@ export const generateTrackIndexUpdates = (
     })
     .filter(Boolean);
 
-  const fakeUpdates = updateMany.map((update, index) => ({
-    ...update,
-    data: { ...update.data, index: index + tracks.length + 100 }, // Set to an index which does not exist
-  }));
-
-  return { updateMany, fakeUpdates, newCurrentIndex };
+  return { updates, newCurrentIndex };
 };

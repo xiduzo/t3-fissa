@@ -1,15 +1,11 @@
 import { Fissa, Track } from "@fissa/db";
-import {
-  NoActiveDevice,
-  NotTheHost,
-  SpotifyService,
-  addMilliseconds,
-  differenceInMilliseconds,
-  randomize,
-} from "@fissa/utils";
+import { NoActiveDevice, NotTheHost, SpotifyService, Timer, addMilliseconds, differenceInMilliseconds, randomize } from "@fissa/utils";
+
+
 
 import { Context, ServiceWithContext } from "../utils/context";
 import { TrackService } from "./TrackService";
+
 
 export class FissaService extends ServiceWithContext {
   private spotifyService: SpotifyService;
@@ -33,6 +29,7 @@ export class FissaService extends ServiceWithContext {
         expectedEndTime: true,
         currentIndex: true,
         shouldReorder: true,
+        tracks: true
       },
     });
   };
@@ -162,6 +159,51 @@ export class FissaService extends ServiceWithContext {
       console.error(e);
       return this.stopFissa(pin);
     }
+  };
+
+  reorder = async (
+    pin: string,
+    newCurrentIndex: number,
+    updates: { where: { trackId: string }; data: { index: number } }[],
+  ) => {
+    return this.db.$transaction(
+      async (transaction) => {
+        const timer = new Timer(
+          `Reordering ${updates.length} tracks for fissa ${pin}`,
+        );
+        // (1) Clear out the indexes
+        await transaction.fissa.update({
+          where: { pin },
+          data: {
+            tracks: {
+              updateMany: updates.map((update, index) => ({
+                ...update,
+                data: {
+                  index: update.data.index + 10000 + index + 1,
+                },
+              })),
+            },
+          },
+        });
+
+        // (2) Set the correct indexes
+        await transaction.fissa.update({
+          where: { pin },
+          data: {
+            tracks: { updateMany: updates },
+            currentIndex: newCurrentIndex,
+            lastPlayedIndex: newCurrentIndex,
+            shouldReorder: false,
+          },
+        });
+
+        timer.duration();
+      },
+      {
+        maxWait: 20 * 1000,
+        timeout: 60 * 1000,
+      },
+    );
   };
 
   private generatePin = () => randomize("0", 4);
