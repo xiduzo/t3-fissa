@@ -8,15 +8,14 @@ const isUpdating = new Map<string, boolean>();
 export const reorderPlaylistSync = async () => {
   const fissas = await api.fissa.sync.active.query();
 
-  console.log("fissas", fissas.length);
   for (const fissa of fissas) {
-    console.log("fissa", fissa.pin);
     if (!fissa.shouldReorder) continue;
-    console.log("updating fissas", isUpdating.size);
     if (isUpdating.get(fissa.pin)) continue;
+
     try {
       isUpdating.set(fissa.pin, true);
       console.log(`reordering playlist for ${fissa.pin}...`);
+      
       if (differenceInSeconds(fissa.expectedEndTime, new Date()) < 5) continue;
 
       const { updates, newCurrentIndex } = generateTrackIndexUpdates(
