@@ -10,8 +10,9 @@ export const reorderPlaylistSync = async () => {
   const fissas = await api.fissa.sync.active.query();
 
   for (const fissa of fissas) {
-    if (!fissa.shouldReorder) return;
-    if (isUpdating.get(fissa.pin)) return;
+    if (!fissa.shouldReorder) continue;
+    console.log("updating fissas", isUpdating.values());
+    if (isUpdating.get(fissa.pin)) continue;
 
     try {
       isUpdating.set(fissa.pin, true);
