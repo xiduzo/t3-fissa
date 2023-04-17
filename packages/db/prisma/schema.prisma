@@ -43,7 +43,7 @@ model Track {
     score Int @db.SmallInt @default(0)
 
     @@id([pin, trackId])
-    @@unique([pin, index])
+    // @@unique([pin, index])
     @@map("tracks")
 }
 

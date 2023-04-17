@@ -171,42 +171,15 @@ export class FissaService extends ServiceWithContext {
     newCurrentIndex: number,
     updates: { where: { trackId: string }; data: { index: number } }[],
   ) => {
-    return this.db.$transaction(
-      async (transaction) => {
-        const timer = new Timer(`[${pin}] Reordering ${updates.length} tracks`);
-        // (1) Clear out the indexes
-        await transaction.fissa.update({
-          where: { pin },
-          data: {
-            tracks: {
-              updateMany: updates.map((update, index) => ({
-                ...update,
-                data: {
-                  index: update.data.index + 10000 + index + 1,
-                },
-              })),
-            },
-          },
-        });
-
-        // (2) Set the correct indexes
-        await transaction.fissa.update({
-          where: { pin },
-          data: {
-            tracks: { updateMany: updates },
-            currentIndex: newCurrentIndex,
-            lastPlayedIndex: newCurrentIndex,
-            shouldReorder: false,
-          },
-        });
-
-        timer.duration();
+    return this.db.fissa.update({
+      where: { pin },
+      data: {
+        tracks: { updateMany: updates },
+        currentIndex: newCurrentIndex,
+        lastPlayedIndex: newCurrentIndex,
+        shouldReorder: false,
       },
-      {
-        maxWait: 20 * 1000,
-        timeout: 60 * 1000,
-      },
-    );
+    });
   };
 
   private generatePin = () => randomize("0", 4);

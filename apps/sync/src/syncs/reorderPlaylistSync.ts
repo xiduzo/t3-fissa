@@ -24,7 +24,7 @@ export const reorderPlaylistSync = async () => {
       );
 
       if (!updates.length) {
-        console.info(`No updates needed for fissa ${fissa.pin}`);
+        console.info(`[${fissa.pin}] no updates needed`);
         continue;
       }
 
