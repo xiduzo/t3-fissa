@@ -18,3 +18,5 @@ import {
 cron.schedule(`*/20 * * * *`, accessTokenSync);
 cron.schedule(`*/1 * * * *`, currentlyPlayingSync);
 cron.schedule(`*/2 * * * * *`, reorderPlaylistSync);
+
+console.info("Sync server is running");

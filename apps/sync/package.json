@@ -5,10 +5,11 @@
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js && cp ../../packages/db/prisma/schema.prisma dist/schema.prisma",
     "clean": "rm -rf node_modules",
     "test": "vitest",
-    "dev": "pnpm with-env nodemon src/index.ts",
-    "start": "ts-node src/index.ts",
+    "dev": "ts-node src/index.ts",
+    "start": "pnpm build && node --experimental-specifier-resolution=node dist",
     "with-env": "dotenv -e ../../.env --"
   },
   "keywords": [],
@@ -19,6 +20,7 @@
     "@fissa/db": "*",
     "@fissa/utils": "*",
     "@trpc/client": "^10.12.0",
+    "esbuild": "^0.17.17",
     "node-cron": "^3.0.2"
   },
   "devDependencies": {
