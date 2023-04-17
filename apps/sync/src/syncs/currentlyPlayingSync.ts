@@ -16,22 +16,19 @@ export const currentlyPlayingSync = async () => {
     // The service will account for this difference
     const endTime = addSeconds(fissa.expectedEndTime, -5);
 
-    console.info(
-      `next track for ${fissa.pin} in ${differenceInMilliseconds(
-        endTime,
-        new Date(),
-      )}ms`,
-    );
+    const delay = differenceInMilliseconds(endTime, new Date());
+
+    console.info(`[${fissa.pin}] next track in ${delay}ms`);
 
     const timeout = setTimeout(async () => {
       try {
-        console.log(`starting next track for ${fissa.pin}...`);
+        console.log(`[${fissa.pin}] starting next track`);
         await api.fissa.sync.next.mutate(fissa);
-        console.log(`next track started for ${fissa.pin}`);
+        console.log(`[${fissa.pin}] next track started`);
       } catch (error) {
-        console.error(`next track failed for ${fissa.pin}`, error);
+        console.error(`[${fissa.pin}] next track failed`, error);
       }
-    }, differenceInMilliseconds(endTime, new Date()));
+    }, delay);
 
     timeouts.set(fissa.pin, timeout);
   }

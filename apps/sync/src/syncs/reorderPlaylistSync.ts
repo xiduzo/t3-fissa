@@ -14,8 +14,8 @@ export const reorderPlaylistSync = async () => {
 
     try {
       isUpdating.set(fissa.pin, true);
-      console.log(`reordering playlist for ${fissa.pin}...`);
-      
+      console.log(`[${fissa.pin}] reordering playlist`);
+
       if (differenceInSeconds(fissa.expectedEndTime, new Date()) < 5) continue;
 
       const { updates, newCurrentIndex } = generateTrackIndexUpdates(
@@ -34,9 +34,9 @@ export const reorderPlaylistSync = async () => {
         newCurrentIndex,
       });
 
-      console.log(`reordering done for ${fissa.pin}`);
+      console.log(`[${fissa.pin}] reordering done`);
     } catch (error) {
-      console.error(`reordering failed for ${fissa.pin}`, error);
+      console.error(`[${fissa.pin}] reordering failed`, error);
     } finally {
       isUpdating.delete(fissa.pin);
     }

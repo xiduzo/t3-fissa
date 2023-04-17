@@ -5,11 +5,11 @@ export const accessTokenSync = async () => {
 
   for (const fissa of fissas) {
     try {
-      console.log(`refreshing access token for ${fissa.pin}...`);
+      console.log(`[${fissa.pin}] refreshing access token`);
       await api.auth.sync.refreshToken.mutate(fissa.pin);
-      console.log(`access token refreshed for ${fissa.pin}`);
+      console.log(`[${fissa.pin}] access token refreshed`);
     } catch (error) {
-      console.error(`access token refresh failed for ${fissa.pin}`, error);
+      console.error(`[${fissa.pin}] access token refresh failed`, error);
     }
   }
 };

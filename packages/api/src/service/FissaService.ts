@@ -1,11 +1,16 @@
 import { Fissa, Track } from "@fissa/db";
-import { NoActiveDevice, NotTheHost, SpotifyService, Timer, addMilliseconds, differenceInMilliseconds, randomize } from "@fissa/utils";
-
-
+import {
+  NoActiveDevice,
+  NotTheHost,
+  SpotifyService,
+  Timer,
+  addMilliseconds,
+  differenceInMilliseconds,
+  randomize,
+} from "@fissa/utils";
 
 import { Context, ServiceWithContext } from "../utils/context";
 import { TrackService } from "./TrackService";
-
 
 export class FissaService extends ServiceWithContext {
   private spotifyService: SpotifyService;
@@ -29,7 +34,7 @@ export class FissaService extends ServiceWithContext {
         expectedEndTime: true,
         currentIndex: true,
         shouldReorder: true,
-        tracks: true
+        tracks: true,
       },
     });
   };
@@ -168,9 +173,7 @@ export class FissaService extends ServiceWithContext {
   ) => {
     return this.db.$transaction(
       async (transaction) => {
-        const timer = new Timer(
-          `Reordering ${updates.length} tracks for fissa ${pin}`,
-        );
+        const timer = new Timer(`[${pin}] Reordering ${updates.length} tracks`);
         // (1) Clear out the indexes
         await transaction.fissa.update({
           where: { pin },
