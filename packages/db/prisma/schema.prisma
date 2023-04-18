@@ -13,8 +13,11 @@ datasource db {
 
 model Fissa {
     pin     String @id @unique @db.VarChar(4)
-    currentIndex Int @db.SmallInt @map("current_index") @default(0)
-    lastPlayedIndex Int @db.SmallInt @map("last_played_index") @default(0)
+
+    currentlyPlaying Track? @relation(fields: [currentlyPlayingId, currentlyPlayingPin], references: [trackId, pin], name: "currently_playing")
+    currentlyPlayingId String? @map("currently_playing_id")
+    currentlyPlayingPin String? @map("currently_playing_pin")
+
     expectedEndTime DateTime @map("expected_end_time") @default(now())
 
     deviceId String @map("device_id") // The device the host is using
@@ -26,24 +29,25 @@ model Fissa {
 
     tracks Track[]
 
-    shouldReorder Boolean @map("should_reorder") @default(false)
-
     @@map("fissas")
 }
 
 model Track {
-    index  Int @db.SmallInt
     trackId String @map("track_id") @db.VarChar(22)
     durationMs Int @map("duration_ms")
 
+    createdAt DateTime @map("created_at") @default(now())
+    hasBeenPlayed Boolean @map("has_been_played") @default(false)
+
     fissa Fissa @relation(fields: [pin], references: [pin], onDelete: Cascade)
     pin String @db.VarChar(4)
+
+    currentlyPlaying Fissa[] @relation("currently_playing")
     
     votes Vote[]
     score Int @db.SmallInt @default(0)
 
-    @@id([pin, trackId])
-    // @@unique([pin, index])
+    @@unique([pin, trackId])
     @@map("tracks")
 }
 
@@ -54,8 +58,9 @@ model Vote {
     userId String @map("user_id")
 
     track Track @relation(fields: [trackId, pin], references: [trackId, pin], onDelete: Cascade)
-    pin String @db.VarChar(4)
     trackId String @map("track_id") @db.VarChar(22)
+    
+    pin String @db.VarChar(4)
 
     @@id([trackId, userId, pin])
     @@map("votes")

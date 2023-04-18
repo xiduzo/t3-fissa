@@ -38,7 +38,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
             <ProgressBar
               track={activeTrack}
               expectedEndTime={data.expectedEndTime}
-              disabled={data.currentIndex < 0}
+              disabled={!data.currentlyPlayingId}
             />
           }
         />
@@ -59,7 +59,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
               inverted
               track={activeTrack!}
               expectedEndTime={data.expectedEndTime}
-              disabled={data.currentIndex < 0}
+              disabled={!data.currentlyPlayingId}
             />
           }
         />

@@ -4,49 +4,6 @@ import { api } from "../utils";
 
 const endpoint = api.vote.create.useMutation;
 
-export const useCreateVoteForTrack = (
-  pin: string,
-  trackId: string,
-  callbacks: MutationCallbacks<typeof endpoint> = {},
-) => {
-  const queryClient = api.useContext();
-
-  const { mutate, mutateAsync, ...rest } = endpoint({
-    ...callbacks,
-    onMutate: async (newVote) => {
-      await queryClient.vote.byTrackFromUser.cancel(newVote);
-
-      const vote = {
-        pin: newVote.pin,
-        trackId: newVote.trackId,
-      };
-      const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
-
-      // TODO: also update the track's score
-      queryClient.vote.byTrackFromUser.setData(vote, (prev) => {
-        return {
-          ...prev,
-          ...newVote,
-          userId: "optimistic",
-        };
-      });
-
-      await callbacks.onMutate?.(newVote);
-      return previousVote;
-    },
-    onSettled: async (data, error, variables, context) => {
-      const vote = error ? context : data;
-      queryClient.vote.byTrackFromUser.setData(variables, () => vote);
-    },
-  });
-
-  return {
-    ...rest,
-    mutate: async (vote: number) => mutate({ pin, trackId, vote }),
-    mutateAsync: async (vote: number) => mutateAsync({ pin, trackId, vote }),
-  };
-};
-
 export const useCreateVote = (
   pin: string,
   callbacks: MutationCallbacks<typeof endpoint> = {},
@@ -64,20 +21,35 @@ export const useCreateVote = (
       };
       const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
 
-      queryClient.vote.byTrackFromUser.setData(vote, (prev) => {
+      queryClient.vote.byTrackFromUser.setData(vote, (prev) => ({
+        ...prev,
+        ...newVote,
+        userId: "optimistic",
+      }));
+
+      queryClient.fissa.byId.setData(newVote.pin, (prev) => {
+        if (!prev) return prev;
         return {
           ...prev,
-          ...newVote,
-          userId: "optimistic",
+          tracks: prev?.tracks.map((track) => {
+            if (track.trackId === newVote.trackId) {
+              return {
+                ...track,
+                score: track.score + newVote.vote - (previousVote?.vote ?? 0),
+              };
+            }
+            return track;
+          }),
         };
       });
 
       await callbacks.onMutate?.(newVote);
+
       return previousVote;
     },
     onSettled: async (data, error, variables, context) => {
       const vote = error ? context : data;
-      queryClient.vote.byTrackFromUser.setData(variables, () => vote);
+      queryClient.vote.byTrackFromUser.setData(variables, vote);
     },
   });
 

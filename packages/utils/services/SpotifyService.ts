@@ -7,7 +7,6 @@ export class SpotifyService {
   });
 
   codeGrant = async (code: string, redirectUri: string) => {
-    console.log({ code, redirectUri });
     this.spotify.setRedirectURI(redirectUri);
     return this.spotify.authorizationCodeGrant(code);
   };
@@ -42,7 +41,7 @@ export class SpotifyService {
     this.spotify.setAccessToken(accessToken);
 
     const { body, statusCode } = await this.spotify.getTrack(trackId);
-    console.log("playing", body, " status: ", statusCode);
+    console.log("playing", body.name, " status: ", statusCode);
     return this.spotify.play({ uris: [body.uri], device_id: deviceId });
   };
 

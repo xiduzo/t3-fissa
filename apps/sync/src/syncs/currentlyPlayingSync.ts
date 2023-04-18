@@ -23,7 +23,7 @@ export const currentlyPlayingSync = async () => {
     const timeout = setTimeout(async () => {
       try {
         console.log(`[${fissa.pin}] starting next track`);
-        await api.fissa.sync.next.mutate(fissa);
+        await api.fissa.sync.next.mutate(fissa.pin);
         console.log(`[${fissa.pin}] next track started`);
       } catch (error) {
         console.error(`[${fissa.pin}] next track failed`, error);

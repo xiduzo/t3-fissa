@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { useTracks } from "@fissa/utils";
+import { sortTracksByScore, useTracks } from "@fissa/utils";
 
 import { useCreateVote, useGetFissa } from "../../../hooks";
 import {
@@ -28,7 +28,9 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const [focussedTrack, setFocussedTrack] =
     useState<SpotifyApi.TrackObjectFull>();
 
-  const localTracks = useTracks(data?.tracks.map(({ trackId }) => trackId));
+  const localTracks = useTracks(
+    sortTracksByScore(data?.tracks).map(({ trackId }) => trackId),
+  );
 
   const [selectedTrack, setSelectedTrack] =
     useState<SpotifyApi.TrackObjectFull | null>(null);
@@ -43,7 +45,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     },
   });
 
-  const isPlaying = (data?.currentIndex ?? -1) >= 0;
+  const isPlaying = !!data?.currentlyPlayingId;
 
   const getTrackVotes = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
@@ -55,8 +57,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const tracks = useMemo(() => {
-    return localTracks.slice((data?.currentIndex ?? 0) + 1, localTracks.length);
-  }, [localTracks, data?.currentIndex]);
+    return localTracks.filter((track) => track.id !== data?.currentlyPlayingId);
+  }, [localTracks, data?.currentlyPlayingId]);
 
   const toggleLongPress = useCallback(
     (track?: SpotifyApi.TrackObjectFull) =>
@@ -126,7 +128,9 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         ListHeaderComponent={
           <ListHeaderComponent
             queue={tracks.length}
-            activeTrack={localTracks[data?.currentIndex ?? 0]}
+            activeTrack={localTracks.find(
+              ({ id }) => id === data?.currentlyPlayingId,
+            )}
           />
         }
         ListEmptyComponent={
