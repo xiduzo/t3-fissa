@@ -21,3 +21,5 @@ export const sortTracksByScore = <T extends { score: number; createdAt: Date }>(
     return b.score - a.score;
   });
 };
+
+export const randomSort = () => Number(Math.random() > 0.5);

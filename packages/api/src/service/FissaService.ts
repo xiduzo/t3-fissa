@@ -6,6 +6,7 @@ import {
   SpotifyService,
   addMilliseconds,
   differenceInMilliseconds,
+  randomSort,
   randomize,
   sortTracksByScore,
 } from "@fissa/utils";
@@ -140,12 +141,26 @@ export class FissaService extends ServiceWithContext {
 
       const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
 
+      if (!nextTracks?.length) return this.stopFissa(pin);
       const nextTrack = nextTracks[0];
       if (!nextTrack) throw new NoNextTrack();
 
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
 
       await this.playTrack(fissa, nextTrack, access_token!);
+
+      if (nextTracks.length <= 3) {
+        const trackIds = tracks
+          .map(({ trackId }) => trackId)
+          .sort(randomSort)
+          .slice(0, 5);
+
+        await this.trackService.addRecommendedTracks(
+          pin,
+          trackIds,
+          access_token!,
+        );
+      }
     } catch (e) {
       console.error(e);
       return this.stopFissa(pin);
@@ -224,20 +239,6 @@ export class FissaService extends ServiceWithContext {
       nextTrack.trackId,
       deviceId,
     );
-
-    // TODO automatically add more tracks to the playlist when needed
-    // // Automatically add more tracks to the playlist
-    // if (newIndex + 3 >= tracks.length) {
-    //   const trackIds = tracks
-    //     .slice(newIndex, tracks.length)
-    //     .map(({ trackId }) => trackId);
-    //   await this.trackService.addRecommendedTracks(
-    //     pin,
-    //     trackIds,
-    //     tracks.length,
-    //     accessToken,
-    //   );
-    // }
   };
 
   private getNextTracks = (
