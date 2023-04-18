@@ -7,6 +7,7 @@ import {
   addMilliseconds,
   differenceInMilliseconds,
   randomize,
+  sortTracksByScore,
 } from "@fissa/utils";
 
 import { Context, ServiceWithContext } from "../utils/context";
@@ -29,13 +30,7 @@ export class FissaService extends ServiceWithContext {
   activeFissas = async () => {
     return this.db.fissa.findMany({
       where: { currentlyPlayingId: { not: undefined } },
-      select: {
-        pin: true,
-        expectedEndTime: true,
-        currentlyPlayingId: true,
-        shouldReorder: true,
-        tracks: true,
-      },
+      select: { pin: true, expectedEndTime: true },
     });
   };
 
@@ -67,18 +62,15 @@ export class FissaService extends ServiceWithContext {
       try {
         fissa = await this.db.fissa.create({
           data: {
-            pin: pin as any as undefined,
+            pin,
             deviceId: device.id!,
             expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
             by: { connect: { id: this.ctx.session?.user.id } },
-            tracks: {
-              createMany: {
-                data: tracks.map((track, index) => ({ ...track, index })),
-              },
-            },
+            tracks: { createMany: { data: tracks } },
           },
         });
       } catch (e) {
+        console.error(e);
         tries++;
         blockedPins.push(pin);
       }
@@ -95,9 +87,9 @@ export class FissaService extends ServiceWithContext {
       include: {
         by: { select: { email: true } },
         tracks: {
-          select: { trackId: true, score: true },
+          select: { trackId: true, score: true, createdAt: true },
           where: { hasBeenPlayed: false },
-          orderBy: { createdAt: "asc" },
+          orderBy: { score: "desc" },
         },
       },
     });
@@ -146,8 +138,9 @@ export class FissaService extends ServiceWithContext {
       const expectedEndTime = instantPlay ? new Date() : fissa.expectedEndTime;
       const playIn = differenceInMilliseconds(expectedEndTime, new Date());
 
-      const nextTrack = this.getNextTrack(tracks, currentlyPlayingId);
+      const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
 
+      const nextTrack = nextTracks[0];
       if (!nextTrack) throw new NoNextTrack();
 
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
@@ -180,7 +173,7 @@ export class FissaService extends ServiceWithContext {
           select: { accounts: { select: { access_token: true }, take: 1 } },
         },
         tracks: {
-          orderBy: { createdAt: "asc" },
+          orderBy: { score: "desc" },
           where: { hasBeenPlayed: false },
         },
       },
@@ -217,7 +210,9 @@ export class FissaService extends ServiceWithContext {
       await transaction.fissa.update({
         where: { pin },
         data: {
-          currentlyPlayingId: nextTrack.trackId,
+          currentlyPlaying: {
+            connect: { pin_trackId: { pin, trackId: nextTrack.trackId } },
+          },
           expectedEndTime: addMilliseconds(new Date(), nextTrack.durationMs),
         },
       });
@@ -245,15 +240,15 @@ export class FissaService extends ServiceWithContext {
     // }
   };
 
-  private getNextTrack = (
+  private getNextTracks = (
     tracks: Track[],
     currentlyPlayingId?: string | null,
   ) => {
-    return tracks
-      .filter(
-        ({ hasBeenPlayed, trackId }) =>
-          !hasBeenPlayed && trackId !== currentlyPlayingId,
-      )
-      .sort((a, b) => b.score - a.score)[0];
+    const tracksToSort = tracks.filter(
+      ({ hasBeenPlayed, trackId }) =>
+        !hasBeenPlayed && trackId !== currentlyPlayingId,
+    );
+
+    return sortTracksByScore(tracksToSort);
   };
 }

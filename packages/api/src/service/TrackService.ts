@@ -39,11 +39,9 @@ export class TrackService extends ServiceWithContext {
       },
     });
 
-    return this.voteService.createVotes(
-      pin,
-      tracks.map(({ trackId }) => trackId),
-      1,
-    );
+    const trackIds = tracks.map(({ trackId }) => trackId);
+
+    return this.voteService.createVotes(pin, trackIds, 1);
   };
 
   addRecommendedTracks = async (

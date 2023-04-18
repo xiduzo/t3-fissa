@@ -14,8 +14,9 @@ datasource db {
 model Fissa {
     pin     String @id @unique @db.VarChar(4)
 
-    currentlyPlaying Track? @relation(fields: [currentlyPlayingId, pin], references: [trackId, pin], name: "currently_playing")
-    currentlyPlayingId String? @map("currently_playing_id") @db.VarChar(22)
+    currentlyPlaying Track? @relation(fields: [currentlyPlayingId, currentlyPlayingPin], references: [trackId, pin], name: "currently_playing")
+    currentlyPlayingId String? @map("currently_playing_id")
+    currentlyPlayingPin String? @map("currently_playing_pin")
 
     expectedEndTime DateTime @map("expected_end_time") @default(now())
 
@@ -27,8 +28,6 @@ model Fissa {
     lastUpdateAt DateTime @map("last_update_at") @updatedAt @default(now())
 
     tracks Track[]
-
-    shouldReorder Boolean @map("should_reorder") @default(false)
 
     @@map("fissas")
 }
@@ -43,12 +42,12 @@ model Track {
     fissa Fissa @relation(fields: [pin], references: [pin], onDelete: Cascade)
     pin String @db.VarChar(4)
 
-    currrentlyPlayedBy Fissa[] @relation("currently_playing")
+    currentlyPlaying Fissa[] @relation("currently_playing")
     
     votes Vote[]
     score Int @db.SmallInt @default(0)
 
-    @@id([pin, trackId])
+    @@unique([pin, trackId])
     @@map("tracks")
 }
 

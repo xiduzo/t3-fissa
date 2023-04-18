@@ -2,7 +2,7 @@ import { FC, useCallback } from "react";
 import * as Haptics from "expo-haptics";
 import { useSearchParams } from "expo-router";
 
-import { useCreateVoteForTrack, useGetVoteFromUser } from "../../../hooks";
+import { useCreateVote, useGetVoteFromUser } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { Action } from "../../shared";
 
@@ -12,9 +12,8 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
 
   const { data } = useGetVoteFromUser(String(pin), track.id, user);
 
-  const { mutateAsync, isLoading } = useCreateVoteForTrack(
+  const { mutateAsync, isLoading } = useCreateVote(
     String(pin),
-    track.id,
     {
       onMutate: ({ vote }) => {
         Haptics.notificationAsync(
@@ -29,9 +28,9 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
   const handleVote = useCallback(
     (vote: number) => async () => {
       onPress();
-      await mutateAsync(vote);
+      await mutateAsync(vote, track.id);
     },
-    [],
+    [track.id],
   );
 
   return (

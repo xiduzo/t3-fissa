@@ -77,15 +77,12 @@ export class VoteService extends ServiceWithContext {
 
     const updateMany = Array.from(update.entries()).map(([trackId, score]) => ({
       where: { pin, trackId },
-      data: { score },
+      data: { score, hasBeenPlayed: false },
     }));
 
     return this.db.fissa.update({
       where: { pin },
-      data: {
-        shouldReorder: true,
-        tracks: { updateMany },
-      },
+      data: { tracks: { updateMany } },
     });
   };
 }

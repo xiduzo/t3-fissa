@@ -43,8 +43,6 @@ export class AuthService extends ServiceWithContext {
   };
 
   refreshToken = async (refreshToken: string) => {
-    console.log("refresh token", new Date().toISOString());
-
     const tokens = await this.spotifyService.refresh(refreshToken);
     const spotifyUser = await this.spotifyService.me(tokens.body.access_token);
 
