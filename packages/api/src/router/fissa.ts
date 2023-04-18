@@ -16,11 +16,13 @@ const nextTrack = z.object({
 const reorder = z.object({
   pin: Z_PIN,
   newCurrentIndex: z.number().min(0),
-  updates: z.array(z.object({
-    where: z.object({ trackId: z.string() }),
-    data: z.object({ index: z.number().min(0) }),
-  })),
-})
+  updates: z.array(
+    z.object({
+      where: z.object({ trackId: z.string() }),
+      data: z.object({ index: z.number().min(0) }),
+    }),
+  ),
+});
 
 const sync = createTRPCRouter({
   active: serviceProcedure.query(({ ctx }) => {
@@ -30,11 +32,11 @@ const sync = createTRPCRouter({
   // TODO: protect this and only admins should be able to do this
   next: serviceProcedure.input(nextTrack).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx);
-    return service.playNextTrack(input.pin, input.currentIndex);
+    return service.playNextTrack(input.pin, true);
   }),
   reorder: serviceProcedure.input(reorder).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx);
-    return service.reorder(input.pin, input.newCurrentIndex, input.updates);
+    return true;
   }),
 });
 

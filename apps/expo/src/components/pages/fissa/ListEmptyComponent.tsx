@@ -25,13 +25,11 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
     },
   });
 
-  const isPlaying = fissa?.currentIndex && fissa.currentIndex >= 0;
-  const isOwner = user?.email === fissa?.by.email;
-
   if (isLoading)
     return <EmptyState icon="🐕" title="Fetching tracks" subtitle="Good boy" />;
 
-  if (!isPlaying)
+  if (!fissa?.currentlyPlayingId) {
+    const isOwner = user?.email === fissa?.by.email;
     return (
       <EmptyState
         icon="🦥"
@@ -41,6 +39,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
         {isOwner && <Button onPress={mutateAsync} title="Continue fissa" />}
       </EmptyState>
     );
+  }
 
   return (
     <EmptyState

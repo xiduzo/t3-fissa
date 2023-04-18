@@ -16,44 +16,39 @@ export class TrackService extends ServiceWithContext {
   byPin = async (pin: string) => {
     return this.db.track.findMany({
       where: { pin },
-      orderBy: { index: "asc" },
+      orderBy: { createdAt: "asc" },
     });
   };
 
   addTracks = async (pin: string, tracks: z.infer<typeof Z_TRACKS>) => {
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
-      select: {
-        currentIndex: true,
-        tracks: { select: { trackId: true } },
-      },
+      select: { tracks: { select: { trackId: true } } },
     });
 
     const fissaTrackIds = fissa.tracks.map(({ trackId }) => trackId);
 
-    const newTracks = tracks
-      .filter(({ trackId }) => !fissaTrackIds.includes(trackId))
-      .map((track, index) => ({
-        ...track,
-        pin,
-        index: fissa.tracks.length + index,
-      }));
+    const newTracks = tracks.filter(
+      ({ trackId }) => !fissaTrackIds.includes(trackId),
+    );
 
-    const addedTracks = await this.db.track.createMany({ data: newTracks });
+    await this.db.fissa.update({
+      where: { pin },
+      data: {
+        tracks: { createMany: { data: newTracks, skipDuplicates: true } },
+      },
+    });
 
-    await this.voteService.createVotes(
+    return this.voteService.createVotes(
       pin,
       tracks.map(({ trackId }) => trackId),
       1,
     );
-
-    return addedTracks;
   };
 
   addRecommendedTracks = async (
     pin: string,
     trackIds: string[],
-    startingIndex: number,
     accessToken: string,
   ) => {
     const service = new SpotifyService();
@@ -62,13 +57,19 @@ export class TrackService extends ServiceWithContext {
       trackIds,
     );
 
-    return this.db.track.createMany({
-      data: recommendations.map((track, index) => ({
-        pin,
-        trackId: track.id,
-        durationMs: track.duration_ms,
-        index: startingIndex + index,
-      })),
+    return this.db.fissa.update({
+      where: { pin },
+      data: {
+        tracks: {
+          createMany: {
+            data: recommendations.map(({ id, duration_ms }) => ({
+              trackId: id,
+              durationMs: duration_ms,
+            })),
+            skipDuplicates: true,
+          },
+        },
+      },
     });
   };
 }

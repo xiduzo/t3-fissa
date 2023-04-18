@@ -14,7 +14,7 @@ import {
 } from "../hooks/useEncryptedStorage";
 
 /**
- * A set of typesafe hooks for consuming your API.
+ * A set of type-safe hooks for consuming your API.
  */
 export const api = createTRPCReact<AppRouter>();
 
@@ -44,10 +44,6 @@ const getBaseUrl = () => {
   const localhost = Constants.expoConfig?.hostUri?.split(":")[0];
   if (!localhost) {
     return process.env.VERCEL_URL ?? Constants.expoConfig?.extra?.vercelUrl;
-
-    throw new Error(
-      "Failed to get localhost. Please point to your production server.",
-    );
   }
   // return `http://192.168.2.14:3000`;
   return `http://${localhost}:3000`;

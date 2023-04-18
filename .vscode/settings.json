@@ -6,7 +6,16 @@
   "editor.formatOnSave": true,
   "eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["fissa", "fissas", "Haptics", "Ionicons", "zustand"],
+  "cSpell.words": [
+    "CLIENTVAR",
+    "fissa",
+    "fissas",
+    "Haptics",
+    "Ionicons",
+    "NEXTAUTH",
+    "tanstack",
+    "zustand"
+  ],
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ]

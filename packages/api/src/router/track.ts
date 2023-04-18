@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { TrackService } from "../service/TrackService";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
 const addTracks = z.object({

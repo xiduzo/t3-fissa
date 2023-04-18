@@ -11,3 +11,10 @@ export class NoActiveDevice extends Error {
     this.name = NoActiveDevice.name;
   }
 }
+
+export class NoNextTrack extends Error {
+  public constructor(message = 'No next track') {
+    super(message);
+    this.name = NoNextTrack.name;
+  }
+}

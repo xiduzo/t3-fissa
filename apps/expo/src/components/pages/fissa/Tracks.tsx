@@ -43,7 +43,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     },
   });
 
-  const isPlaying = (data?.currentIndex ?? -1) >= 0;
+  const isPlaying = !!data?.currentlyPlayingId;
 
   const getTrackVotes = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
@@ -55,8 +55,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const tracks = useMemo(() => {
-    return localTracks.slice((data?.currentIndex ?? 0) + 1, localTracks.length);
-  }, [localTracks, data?.currentIndex]);
+    return localTracks.filter((track) =>  track.id !== data?.currentlyPlayingId);
+  }, [localTracks, data?.currentlyPlayingId]);
 
   const toggleLongPress = useCallback(
     (track?: SpotifyApi.TrackObjectFull) =>
@@ -126,7 +126,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         ListHeaderComponent={
           <ListHeaderComponent
             queue={tracks.length}
-            activeTrack={localTracks[data?.currentIndex ?? 0]}
+            activeTrack={localTracks.find(({id}) => id === data?.currentlyPlayingId)}
           />
         }
         ListEmptyComponent={

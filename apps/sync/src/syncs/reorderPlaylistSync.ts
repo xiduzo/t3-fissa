@@ -20,7 +20,8 @@ export const reorderPlaylistSync = async () => {
 
       const { updates, newCurrentIndex } = generateTrackIndexUpdates(
         fissa.tracks,
-        fissa.currentIndex,
+        // fissa.currentIndex,
+        1, // TODO: do we need this?
       );
 
       if (!updates.length) {
