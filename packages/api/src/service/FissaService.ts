@@ -14,6 +14,8 @@ import {
 import { Context, ServiceWithContext } from "../utils/context";
 import { TrackService } from "./TrackService";
 
+const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
+
 export class FissaService extends ServiceWithContext {
   private spotifyService: SpotifyService;
   private trackService: TrackService;
@@ -78,6 +80,14 @@ export class FissaService extends ServiceWithContext {
     } while (!fissa && tries < 50);
 
     await this.playTrack(fissa!, tracks[0]!, access_token!, true);
+
+    if (tracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
+      await this.trackService.addRecommendedTracks(
+        fissa!.pin,
+        tracks.map(({ trackId }) => trackId),
+        access_token!,
+      );
+    }
 
     return fissa!;
   };
@@ -149,7 +159,7 @@ export class FissaService extends ServiceWithContext {
 
       await this.playTrack(fissa, nextTrack, access_token!);
 
-      if (nextTracks.length <= 3) {
+      if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
         const trackIds = tracks
           .map(({ trackId }) => trackId)
           .sort(randomSort)
