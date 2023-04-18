@@ -144,7 +144,7 @@ export class FissaService extends ServiceWithContext {
     try {
       const isPlaying = await this.spotifyService.isStillPlaying(access_token!);
 
-      if (!instantPlay && isPlaying) return this.stopFissa(pin);
+      if (!instantPlay && !isPlaying) return this.stopFissa(pin);
 
       const expectedEndTime = instantPlay ? new Date() : fissa.expectedEndTime;
       const playIn = differenceInMilliseconds(expectedEndTime, new Date());
