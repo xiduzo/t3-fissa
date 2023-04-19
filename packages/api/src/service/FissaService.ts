@@ -100,7 +100,6 @@ export class FissaService extends ServiceWithContext {
         tracks: {
           select: { trackId: true, score: true, createdAt: true },
           where: { hasBeenPlayed: false },
-          orderBy: { score: "desc" },
         },
       },
     });
@@ -144,7 +143,8 @@ export class FissaService extends ServiceWithContext {
     try {
       const isPlaying = await this.spotifyService.isStillPlaying(access_token!);
 
-      if (!instantPlay &&  !isPlaying) return this.stopFissa(pin);
+      if (!currentlyPlayingId) return;
+      if (!instantPlay && !isPlaying) return this.stopFissa(pin);
 
       const expectedEndTime = instantPlay ? new Date() : fissa.expectedEndTime;
       const playIn = differenceInMilliseconds(expectedEndTime, new Date());
@@ -197,10 +197,7 @@ export class FissaService extends ServiceWithContext {
         by: {
           select: { accounts: { select: { access_token: true }, take: 1 } },
         },
-        tracks: {
-          orderBy: { score: "desc" },
-          where: { hasBeenPlayed: false },
-        },
+        tracks: { where: { hasBeenPlayed: false } },
       },
     });
   };
