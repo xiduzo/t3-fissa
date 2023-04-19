@@ -1,7 +1,7 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { sortTracksByScore, useTracks } from "@fissa/utils";
+import { RefetchInterval, sortTracksByScore, useTracks } from "@fissa/utils";
 
 import { useCreateVote, useGetFissa } from "../../../hooks";
 import {
@@ -22,7 +22,7 @@ const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
-  const { data, isInitialLoading } = useGetFissa(pin);
+  const { data, isInitialLoading } = useGetFissa(pin, RefetchInterval.Fast);
   const focussedPosition = useRef(0);
   const [vote, setVote] = useState(0);
   const [focussedTrack, setFocussedTrack] =

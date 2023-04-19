@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import { useSpotify } from "@fissa/utils";
+import { RefetchInterval, useSpotify } from "@fissa/utils";
 
 import { useGetFissaDetails, useSkipTrack } from "../../../../hooks";
 import { useAuth } from "../../../../providers";
 
 export const useAutoSkipTrack = (pin: string) => {
   const { user } = useAuth();
-  const { data } = useGetFissaDetails(String(pin));
+  const { data } = useGetFissaDetails(String(pin), RefetchInterval.Fast);
   const spotify = useSpotify();
 
   const { mutateAsync } = useSkipTrack(pin);
@@ -18,7 +18,7 @@ export const useAutoSkipTrack = (pin: string) => {
     if (data.by.email !== user.email) return;
 
     // Give the BE some time to start playing the track
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2500));
     const { is_playing } = await spotify.getMyCurrentPlaybackState();
     if (is_playing) return;
 

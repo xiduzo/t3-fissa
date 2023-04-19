@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { View } from "react-native";
-import { useTracks } from "@fissa/utils";
+import { RefetchInterval, useTracks } from "@fissa/utils";
 
 import {
   ENCRYPTED_STORAGE_KEYS,
@@ -12,7 +12,7 @@ import { Button } from "./Button";
 
 export const Rejoin = () => {
   const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
-  const { data } = useGetFissaDetails(value!);
+  const { data } = useGetFissaDetails(value!, RefetchInterval.Lazy);
 
   if (!value) return <View />; // no pin stored
   if (!data) return <View />; // no fissa found

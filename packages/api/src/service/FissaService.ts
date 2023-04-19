@@ -180,9 +180,10 @@ export class FissaService extends ServiceWithContext {
   private generatePin = () => randomize("0", 4);
 
   private stopFissa = async (pin: string) => {
+    console.log(`[${pin}] stopping`);
     return this.db.fissa.update({
       where: { pin },
-      data: { currentlyPlayingId: undefined },
+      data: { currentlyPlaying: { disconnect: true } },
     });
   };
 

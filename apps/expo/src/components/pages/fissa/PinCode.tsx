@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "expo-router";
-import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
+import { RefetchInterval, splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useGetFissaDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
@@ -102,7 +102,7 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
   const spotify = useSpotify();
   const { user } = useAuth();
 
-  const { data } = useGetFissaDetails(pin);
+  const { data } = useGetFissaDetails(pin, RefetchInterval.Lazy);
 
   const [speakers, setSpeakers] = useState<SpotifyApi.UserDevice[]>([]);
 
