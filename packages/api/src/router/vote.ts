@@ -34,6 +34,6 @@ export const voteRouter = createTRPCRouter({
     .input(createVote)
     .mutation(async ({ ctx, input }) => {
       const service = new VoteService(ctx);
-      return await service.createVote(input.pin, input.trackId, input.vote);
+      return service.createVote(input.pin, input.trackId, input.vote);
     }),
 });

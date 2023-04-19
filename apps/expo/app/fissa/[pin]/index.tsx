@@ -19,7 +19,7 @@ const Fissa = () => {
   const invalidate = useInvalidateFissa();
 
   useAutoSkipTrack(String(pin));
-  useOnActiveApp(invalidate);
+  useOnActiveApp(() => invalidate(pin));
 
   useEffect(() => {
     if (pin) return;

@@ -14,6 +14,7 @@ export const useCreateVote = (
     ...callbacks,
     onMutate: async (newVote) => {
       await queryClient.vote.byTrackFromUser.cancel(newVote);
+      await queryClient.fissa.byId.cancel(newVote.pin);
 
       const vote = {
         pin: newVote.pin,
@@ -50,6 +51,11 @@ export const useCreateVote = (
     onSettled: async (data, error, variables, context) => {
       const vote = error ? context : data;
       queryClient.vote.byTrackFromUser.setData(variables, vote);
+      await queryClient.fissa.byId.invalidate(variables.pin);
+      await queryClient.vote.byTrackFromUser.invalidate({
+        pin: variables.pin,
+        trackId: variables.trackId,
+      });
     },
   });
 
