@@ -143,7 +143,7 @@ export class FissaService extends ServiceWithContext {
     try {
       const isPlaying = await this.spotifyService.isStillPlaying(access_token!);
 
-      if (!currentlyPlayingId) return;
+      if (!instantPlay && !currentlyPlayingId) return;
       if (!instantPlay && !isPlaying) return this.stopFissa(pin);
 
       const expectedEndTime = instantPlay ? new Date() : fissa.expectedEndTime;
@@ -180,7 +180,6 @@ export class FissaService extends ServiceWithContext {
   private generatePin = () => randomize("0", 4);
 
   private stopFissa = async (pin: string) => {
-    console.log(`[${pin}] stopping`);
     return this.db.fissa.update({
       where: { pin },
       data: { currentlyPlaying: { disconnect: true } },
