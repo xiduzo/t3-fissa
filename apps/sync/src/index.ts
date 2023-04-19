@@ -1,4 +1,5 @@
 import cron from "node-cron";
+import { Logger } from "@fissa/utils";
 
 import { accessTokenSync, currentlyPlayingSync } from "./syncs";
 
@@ -14,4 +15,4 @@ import { accessTokenSync, currentlyPlayingSync } from "./syncs";
 cron.schedule(`*/20 * * * *`, accessTokenSync);
 cron.schedule(`*/1 * * * *`, currentlyPlayingSync);
 
-console.info("Sync server is running");
+Logger.info("Sync server is running");
