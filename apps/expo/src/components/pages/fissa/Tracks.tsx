@@ -22,7 +22,7 @@ const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
-  const { data, isInitialLoading } = useGetFissa(pin, RefetchInterval.Fast);
+  const { data, isInitialLoading } = useGetFissa(pin);
   const focussedPosition = useRef(0);
   const [vote, setVote] = useState(0);
   const [focussedTrack, setFocussedTrack] =

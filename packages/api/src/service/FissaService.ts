@@ -32,7 +32,7 @@ export class FissaService extends ServiceWithContext {
 
   activeFissas = async () => {
     return this.db.fissa.findMany({
-      where: { currentlyPlayingId: { not: undefined } },
+      where: { currentlyPlaying: { isNot: null } },
       select: { pin: true, expectedEndTime: true },
     });
   };

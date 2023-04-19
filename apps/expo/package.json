@@ -1,7 +1,7 @@
 {
   "name": "@fissa/expo",
   "version": "0.1.0",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "clean": "rm -rf .expo .turbo node_modules",
     "dev:local": "expo start --ios",
