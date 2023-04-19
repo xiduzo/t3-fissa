@@ -26,7 +26,7 @@ class Logger {
    * action must be taken immediately
    */
   alert(message: any, ...args: any[]) {
-    if (activeLogLevel > LogLevel.ALERT) return;
+    if (activeLogLevel < LogLevel.ALERT) return;
     console.error(this.level(LogLevel.ALERT), message, ...args);
   }
 
@@ -34,7 +34,7 @@ class Logger {
    * critical conditions
    */
   critical(message: any, ...args: any[]) {
-    if (activeLogLevel > LogLevel.CRITICAL) return;
+    if (activeLogLevel < LogLevel.CRITICAL) return;
     console.error(this.level(LogLevel.CRITICAL), message, ...args);
   }
 
@@ -42,7 +42,7 @@ class Logger {
    * error conditions
    */
   error(message: any, ...args: any[]) {
-    if (activeLogLevel > LogLevel.ERROR) return;
+    if (activeLogLevel < LogLevel.ERROR) return;
     console.warn(this.level(LogLevel.ERROR), message, ...args);
   }
 
@@ -50,7 +50,7 @@ class Logger {
    * warning conditions
    */
   warning(message: any, ...args: any[]) {
-    if (activeLogLevel > LogLevel.WARNING) return;
+    if (activeLogLevel < LogLevel.WARNING) return;
     console.warn(this.level(LogLevel.WARNING), message, ...args);
   }
 
@@ -58,7 +58,7 @@ class Logger {
    * normal but significant condition
    */
   notice(message: any, ...args: any[]) {
-    if (activeLogLevel > LogLevel.NOTICE) return;
+    if (activeLogLevel < LogLevel.NOTICE) return;
     console.log(this.level(LogLevel.NOTICE), message, ...args);
   }
 
@@ -66,7 +66,7 @@ class Logger {
    * informational messages
    */
   info(message: any, ...args: any[]) {
-    if (activeLogLevel > LogLevel.INFO) return;
+    if (activeLogLevel < LogLevel.INFO) return;
     console.info(this.level(LogLevel.INFO), message, ...args);
   }
 
@@ -74,7 +74,7 @@ class Logger {
    * debug-level messages
    */
   debug(message: any, ...args: any[]) {
-    if (activeLogLevel > LogLevel.DEBUG) return;
+    if (activeLogLevel < LogLevel.DEBUG) return;
     console.debug(this.level(LogLevel.INFO), message, ...args);
   }
 
