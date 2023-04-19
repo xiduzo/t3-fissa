@@ -1,5 +1,6 @@
 import { Fissa, Track } from "@fissa/db";
 import {
+  Logger,
   NoActiveDevice,
   NoNextTrack,
   NotTheHost,
@@ -73,7 +74,7 @@ export class FissaService extends ServiceWithContext {
           },
         });
       } catch (e) {
-        console.error(e);
+        Logger.error(e);
         tries++;
         blockedPins.push(pin);
       }
@@ -172,7 +173,7 @@ export class FissaService extends ServiceWithContext {
         );
       }
     } catch (e) {
-      console.error(e);
+      Logger.error(e);
       return this.stopFissa(pin);
     }
   };

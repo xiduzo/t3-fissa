@@ -1,4 +1,4 @@
-import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
+import { Logger, addSeconds, differenceInMilliseconds } from "@fissa/utils";
 
 import { api } from "../utils/api";
 
@@ -18,15 +18,15 @@ export const currentlyPlayingSync = async () => {
 
     const delay = differenceInMilliseconds(endTime, new Date());
 
-    console.info(`[${fissa.pin}] next track in ${delay}ms`);
+    Logger.debug(`[${fissa.pin}] next track in ${delay}ms`);
 
     const timeout = setTimeout(async () => {
       try {
-        console.log(`[${fissa.pin}] starting next track`);
+        Logger.debug(`[${fissa.pin}] starting next track`);
         await api.fissa.sync.next.mutate(fissa.pin);
-        console.log(`[${fissa.pin}] next track started`);
+        Logger.debug(`[${fissa.pin}] next track started`);
       } catch (error) {
-        console.error(`[${fissa.pin}] next track failed`, error);
+        Logger.error(`[${fissa.pin}] next track failed`, error);
       }
     }, delay);
 

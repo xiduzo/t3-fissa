@@ -1,4 +1,5 @@
 import SpotifyWebApi from "spotify-web-api-js";
+import { Logger } from "./classes";
 
 export const getPlaylistTracks = async (
   playlistId: string,
@@ -31,7 +32,7 @@ export const getPlaylistTracks = async (
 
     items.forEach(({ track }) => {
       const isTestTrack = track.name.toLowerCase().includes("hoe het");
-      if (isTestTrack) console.log(JSON.stringify(track));
+      if (isTestTrack) Logger.debug(JSON.stringify(track));
       if (track.type !== "track") return; // We can only allow tracks (not episodes
       if (track.is_local) return; // We can only allow tracks that are not local
       if (track.is_playable !== undefined && !track.is_playable) return; // We can only allow tracks that are playable

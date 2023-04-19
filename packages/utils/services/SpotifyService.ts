@@ -1,4 +1,5 @@
 import SpotifyWebApi from "spotify-web-api-node";
+import { Logger } from "../classes";
 
 export class SpotifyService {
   public spotify = new SpotifyWebApi({
@@ -41,7 +42,7 @@ export class SpotifyService {
     this.spotify.setAccessToken(accessToken);
 
     const { body, statusCode } = await this.spotify.getTrack(trackId);
-    console.log("playing", body.name, " status: ", statusCode);
+    Logger.debug("playing", body.name, " status: ", statusCode);
     return this.spotify.play({ uris: [body.uri], device_id: deviceId });
   };
 
