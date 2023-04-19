@@ -4,12 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import {
-  Fab,
-  FissaTracks,
-  PinCode,
-  useAutoSkipTrack,
-} from "../../../src/components";
+import { Fab, FissaTracks, PinCode } from "../../../src/components";
 import { useInvalidateFissa, useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
@@ -18,7 +13,6 @@ const Fissa = () => {
 
   const invalidate = useInvalidateFissa();
 
-  useAutoSkipTrack(String(pin));
   useOnActiveApp(() => invalidate(pin));
 
   useEffect(() => {

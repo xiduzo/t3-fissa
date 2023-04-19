@@ -1,12 +1,12 @@
 import { Fissa, Track } from "@fissa/db";
 import {
-  Logger,
   NoActiveDevice,
   NoNextTrack,
   NotTheHost,
   SpotifyService,
   addMilliseconds,
   differenceInMilliseconds,
+  logger,
   randomSort,
   randomize,
   sortTracksByScore,
@@ -74,7 +74,7 @@ export class FissaService extends ServiceWithContext {
           },
         });
       } catch (e) {
-        Logger.error(e);
+        logger.notice(e);
         tries++;
         blockedPins.push(pin);
       }
@@ -173,8 +173,9 @@ export class FissaService extends ServiceWithContext {
         );
       }
     } catch (e) {
-      Logger.error(e);
-      return this.stopFissa(pin);
+      logger.error(e);
+      await this.stopFissa(pin);
+      throw new Error("Something went wrong while playing the next track");
     }
   };
 

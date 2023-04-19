@@ -2,8 +2,7 @@ import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import {
-  Logger,
-  RefetchInterval,
+  logger,
   sortTracksByScore,
   useTracks,
 } from "@fissa/utils";
@@ -120,7 +119,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   return (
     <>
       <TrackList
-        onScroll={(e) => Logger.debug(e.nativeEvent.contentOffset.y)}
+        onScroll={(e) => logger.debug(e.nativeEvent.contentOffset.y)}
         scrollEventThrottle={200}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

@@ -1,6 +1,7 @@
 // Will start time whenever class is instantiated
 
-import { Logger } from "./Logger";
+import { logger } from "./Logger";
+
 
 // Time will be rounded to the nearest millisecond
 export class Timer {
@@ -10,13 +11,13 @@ export class Timer {
   constructor(name = "Unknown timer") {
     this._startedAt = performance.now();
     this._name = name;
-    Logger.debug(`[TIMER] ${this._name}`);
+    logger.info(`(TIMER) ${this._name}`);
   }
 
   duration() {
     const duration = Math.round(performance.now() - this._startedAt);
 
-    Logger.debug(`[DURATION] ${this._name} - ${duration}ms`);
+    logger.info(`(DURATION) ${this._name} - ${duration}ms`);
     return duration;
   }
 }

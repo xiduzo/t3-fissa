@@ -1,4 +1,5 @@
-import { Logger } from "@fissa/utils";
+import { logger } from "@fissa/utils";
+
 import { api } from "../utils/api";
 
 export const accessTokenSync = async () => {
@@ -6,11 +7,11 @@ export const accessTokenSync = async () => {
 
   for (const fissa of fissas) {
     try {
-      Logger.debug(`[${fissa.pin}] refreshing access token`);
+      logger.debug(`[${fissa.pin}] refreshing access token`);
       await api.auth.sync.refreshToken.mutate(fissa.pin);
-      Logger.debug(`[${fissa.pin}] access token refreshed`);
+      logger.debug(`[${fissa.pin}] access token refreshed`);
     } catch (error) {
-      Logger.error(`[${fissa.pin}] access token refresh failed`, error);
+      logger.error(`[${fissa.pin}] access token refresh failed`, error);
     }
   }
 };

@@ -10,7 +10,7 @@ import {
 import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Logger } from "@fissa/utils";
+import { logger } from "@fissa/utils";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -48,7 +48,7 @@ export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        Logger.info(response);
+        logger.debug(response);
       });
 
     return () => {
@@ -91,12 +91,12 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== "granted") {
-      Logger.warn("Failed to get push token for push notification!");
+      logger.warning("Failed to get push token for push notification!");
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
-    Logger.debug("Must use physical device for Push Notifications");
+    logger.debug("Must use physical device for Push Notifications");
   }
 
   return token;
