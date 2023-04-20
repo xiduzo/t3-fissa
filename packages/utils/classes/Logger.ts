@@ -75,7 +75,7 @@ class Logger {
    */
   debug(message: any, ...args: any[]) {
     if (activeLogLevel < LogLevel.DEBUG) return;
-    console.debug(this.level(LogLevel.INFO), message, ...args);
+    console.debug(this.level(LogLevel.DEBUG), message, ...args);
   }
 
   private level(logLevel: LogLevel) {
