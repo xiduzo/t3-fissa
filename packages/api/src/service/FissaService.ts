@@ -1,6 +1,5 @@
 import { Fissa, Track } from "@fissa/db";
 import {
-  NoActiveDevice,
   NoNextTrack,
   NotTheHost,
   SpotifyService,
@@ -46,10 +45,6 @@ export class FissaService extends ServiceWithContext {
 
     const { access_token } = tokens;
 
-    const device = await this.spotifyService.activeDevice(access_token!);
-
-    if (!device) throw new NoActiveDevice();
-
     await this.db.fissa.deleteMany({
       where: { userId: this.ctx.session?.user.id },
     });
@@ -67,7 +62,6 @@ export class FissaService extends ServiceWithContext {
         fissa = await this.db.fissa.create({
           data: {
             pin,
-            deviceId: device.id!,
             expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
             by: { connect: { id: this.ctx.session?.user.id } },
             tracks: { createMany: { data: tracks } },
@@ -195,7 +189,6 @@ export class FissaService extends ServiceWithContext {
         pin: true,
         currentlyPlayingId: true,
         expectedEndTime: true,
-        deviceId: true,
         by: {
           select: { accounts: { select: { access_token: true }, take: 1 } },
         },
@@ -205,11 +198,7 @@ export class FissaService extends ServiceWithContext {
   };
 
   private playTrack = async (
-    {
-      currentlyPlayingId,
-      pin,
-      deviceId,
-    }: Pick<Fissa, "currentlyPlayingId" | "pin" | "deviceId">,
+    { currentlyPlayingId, pin }: Pick<Fissa, "currentlyPlayingId" | "pin">,
     nextTrack: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
     /**
@@ -243,11 +232,7 @@ export class FissaService extends ServiceWithContext {
     });
 
     // play next track
-    await this.spotifyService.playTrack(
-      accessToken,
-      nextTrack.trackId,
-      deviceId,
-    );
+    await this.spotifyService.playTrack(accessToken, nextTrack.trackId);
   };
 
   private getNextTracks = (

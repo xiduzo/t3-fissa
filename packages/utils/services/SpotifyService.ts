@@ -38,13 +38,12 @@ export class SpotifyService {
   playTrack = async (
     accessToken: string,
     trackId: string,
-    deviceId?: string,
   ) => {
     this.spotify.setAccessToken(accessToken);
 
     const { body, statusCode } = await this.spotify.getTrack(trackId);
     logger.debug("playing", body.name, " status: ", statusCode);
-    return this.spotify.play({ uris: [body.uri], device_id: deviceId });
+    return this.spotify.play({ uris: [body.uri] });
   };
 
   getRecommendedTracks = async (

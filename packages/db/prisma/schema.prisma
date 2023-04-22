@@ -20,8 +20,6 @@ model Fissa {
 
     expectedEndTime DateTime @map("expected_end_time") @default(now())
 
-    deviceId String @map("device_id") // The device the host is using
-
     by User @relation(fields: [userId], references: [id])
     userId String @map("user_id")
 
