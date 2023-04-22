@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { create } from "zustand";
 
@@ -11,6 +11,8 @@ interface SpotifyState {
   playLists: SpotifyApi.PlaylistObjectSimplified[];
   setPlayLists: (playLists: SpotifyApi.PlaylistObjectSimplified[]) => void;
   spotify: SpotifyWebApi.SpotifyWebApiJs;
+  devices: SpotifyApi.UserDevice[];
+  setDevices: (devices: SpotifyApi.UserDevice[]) => void
 }
 
 const useSpotifyStore = create<SpotifyState>((set) => ({
@@ -20,6 +22,8 @@ const useSpotifyStore = create<SpotifyState>((set) => ({
   playLists: [],
   setPlayLists: (playLists) => set(() => ({ playLists })),
   spotify: new SpotifyWebApi(),
+  devices: [],
+  setDevices: (devices) => set(() => ({devices}))
 }));
 
 const newTracks = (
@@ -83,3 +87,23 @@ export const useSpotify = () => {
   const { spotify } = useSpotifyStore();
   return spotify;
 };
+
+
+export const useDevices = () => {
+  const { spotify , devices, setDevices} = useSpotifyStore();
+
+  const fetchDevices = useCallback(async() => {
+     try {
+      const { devices } = await spotify.getMyDevices();
+      setDevices(devices);
+    } catch {
+      // Ignore
+    }
+  }, [spotify])
+
+  useEffect(() => {
+    fetchDevices()
+  }, [fetchDevices])
+
+  return { devices, fetchDevices};
+}

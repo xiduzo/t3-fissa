@@ -1,14 +1,19 @@
-import { FC } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "expo-router";
+import { useSpotify } from "@fissa/utils";
 
 import { useGetFissa, useRestartFissa } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
-import { Button, EmptyState } from "../../shared";
+import { Button, EmptyState, SelectDevice } from "../../shared";
 
 export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
+
+  const spotify = useSpotify();
+
+  const [hasActiveDevice, setHasActiveDevice] = useState(false);
 
   const { data: fissa } = useGetFissa(String(pin));
   const { mutateAsync } = useRestartFissa(String(pin), {
@@ -25,11 +30,51 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
     },
   });
 
+  const checkIfUserHasActiveDevice = useCallback(async () => {
+    const { device } = await spotify.getMyCurrentPlaybackState();
+    setHasActiveDevice(!!device?.is_active);
+  }, [spotify]);
+
+  const handleDeviceSelect = useCallback(
+    (device: SpotifyApi.UserDevice) => async () => {
+      try {
+        await spotify.transferMyPlayback([device.id!]);
+        toast.success({
+          icon: "🐋",
+          message: `Connected to ${device.name}`,
+        });
+      } catch (e) {
+        checkIfUserHasActiveDevice();
+        toast.error({
+          message: `Failed to connect to ${device.name}`,
+        });
+      }
+    },
+    [spotify, checkIfUserHasActiveDevice],
+  );
+
+  useEffect(() => {
+    checkIfUserHasActiveDevice();
+  }, [checkIfUserHasActiveDevice]);
+
   if (isLoading)
     return <EmptyState icon="🐕" title="Fetching tracks" subtitle="Good boy" />;
 
   if (!fissa?.currentlyPlayingId) {
     const isOwner = user?.email === fissa?.by.email;
+
+    if (isOwner && !hasActiveDevice) {
+      return (
+        <EmptyState
+          icon="🎧"
+          title="No active device"
+          subtitle="Select the device for blasting your tunes"
+        >
+          <SelectDevice onSelectDevice={handleDeviceSelect} />
+        </EmptyState>
+      );
+    }
+
     return (
       <EmptyState
         icon="🦥"

@@ -1,34 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
-import { Linking, SafeAreaView, View } from "react-native";
+import { useCallback } from "react";
+import { SafeAreaView, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
-import { useSpotify } from "@fissa/utils";
+import { useDevices, useSpotify } from "@fissa/utils";
 
-import { Button, EmptyState, Popover, Typography } from "../../src/components";
-import { useOnActiveApp } from "../../src/hooks";
+import { SelectDevice, Typography } from "../../src/components";
 import { toast } from "../../src/utils";
 
-const Host = () => {
+const Select = () => {
   const spotify = useSpotify();
   const { push } = useRouter();
-  const [devices, setDevices] = useState<SpotifyApi.UserDevice[]>([]);
-
-  const [showHelp, setShowHelp] = useState(false);
-
-  const fetchMyDevices = useCallback(async () => {
-    try {
-      const { devices } = await spotify.getMyDevices();
-      setDevices(devices);
-    } catch {
-      // Ignore
-    }
-  }, [spotify]);
-
-  const toggleHelp = useCallback(async () => {
-    setShowHelp((prev) => !prev);
-    fetchMyDevices();
-  }, [fetchMyDevices]);
+  const { fetchDevices } = useDevices();
 
   const handleDeviceSelect = useCallback(
     (device: SpotifyApi.UserDevice) => async () => {
@@ -41,25 +23,14 @@ const Host = () => {
 
         push("/host");
       } catch (e) {
-        fetchMyDevices();
+        fetchDevices();
         toast.error({
           message: `Failed to connect to ${device.name}`,
         });
       }
     },
-    [spotify, push, fetchMyDevices],
+    [spotify, push, fetchDevices],
   );
-
-  const openSpotify = useCallback(async () => {
-    await Linking.openURL("spotify://");
-    toggleHelp();
-  }, [toggleHelp]);
-
-  useOnActiveApp(fetchMyDevices);
-
-  useEffect(() => {
-    fetchMyDevices();
-  }, []);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
@@ -73,101 +44,10 @@ const Host = () => {
             Select the device for blasting your tunes
           </Typography>
         </View>
-        <View className="space-y-2">
-          {!devices.length && <EmptyState title="No devices found" icon="🦀" />}
-          {devices
-            .filter(({ id }) => !!id)
-            .map((device) => (
-              <Button
-                key={device.id}
-                icon={mapDeviceToIcon(device)}
-                variant="text"
-                title={device.name}
-                onPress={handleDeviceSelect(device)}
-              />
-            ))}
-        </View>
-        <Button
-          icon="question"
-          variant="text"
-          title="I can't find my device"
-          onPress={toggleHelp}
-        />
+        <SelectDevice onSelectDevice={handleDeviceSelect} />
       </View>
-      <Popover visible={showHelp} onRequestClose={toggleHelp}>
-        <Typography centered variant="h2" inverted>
-          Follow the steps below
-        </Typography>
-        <View className="mx-4 my-6 space-y-3">
-          <View className="flex-row space-x-2">
-            <View className="overflow-hidden rounded-full">
-              <Typography
-                className="px-1.5"
-                style={{ backgroundColor: theme["900"] }}
-              >
-                1
-              </Typography>
-            </View>
-            <Typography inverted>
-              <Typography inverted className="mr-1 font-bold">
-                Open spotify
-              </Typography>{" "}
-              via the button below
-            </Typography>
-          </View>
-          <View className="flex-row space-x-2">
-            <View className="overflow-hidden rounded-full">
-              <Typography
-                className="px-1.5"
-                style={{ backgroundColor: theme["900"] }}
-              >
-                2
-              </Typography>
-            </View>
-            <Typography inverted>
-              <Typography inverted className="mr-1 font-bold">
-                Select your device
-              </Typography>{" "}
-              via the Spotify player
-            </Typography>
-          </View>
-          <View className="flex-row space-x-2">
-            <View className="overflow-hidden rounded-full">
-              <Typography
-                className="px-1.5"
-                style={{ backgroundColor: theme["900"] }}
-              >
-                3
-              </Typography>
-            </View>
-            <Typography inverted>
-              <Typography inverted className="mr-1 font-bold">
-                Come back
-              </Typography>{" "}
-              to the fissa app
-            </Typography>
-          </View>
-        </View>
-        <Button inverted title="Open spotify" onPress={openSpotify} />
-      </Popover>
     </SafeAreaView>
   );
 };
 
-export default Host;
-
-const mapDeviceToIcon = (
-  device: SpotifyApi.UserDevice,
-): keyof typeof FontAwesome.glyphMap => {
-  switch (device.type.toLowerCase()) {
-    case "computer":
-      return "laptop";
-    case "smartphone":
-      return "mobile";
-    case "castvideo":
-    case "speaker":
-      return "bluetooth-b";
-    default:
-      return "question";
-  }
-};
+export default Select;
