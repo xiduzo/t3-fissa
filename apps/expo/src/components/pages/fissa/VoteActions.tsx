@@ -12,18 +12,15 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
 
   const { data } = useGetVoteFromUser(String(pin), track.id, user);
 
-  const { mutateAsync, isLoading } = useCreateVote(
-    String(pin),
-    {
-      onMutate: ({ vote }) => {
-        Haptics.notificationAsync(
-          vote > 0
-            ? Haptics.NotificationFeedbackType.Success
-            : Haptics.NotificationFeedbackType.Warning,
-        );
-      },
+  const { mutateAsync, isLoading } = useCreateVote(String(pin), {
+    onMutate: ({ vote }) => {
+      Haptics.notificationAsync(
+        vote > 0
+          ? Haptics.NotificationFeedbackType.Success
+          : Haptics.NotificationFeedbackType.Warning,
+      );
     },
-  );
+  });
 
   const handleVote = useCallback(
     (vote: number) => async () => {
@@ -44,7 +41,13 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
         title="Up-vote track"
         subtitle="It might move up in the queue"
       />
-
+      <Action
+        inverted
+        disabled
+        icon="remove"
+        title="Remove track"
+        subtitle="Mistakes were made"
+      />
       <Action
         onPress={handleVote(-1)}
         inverted

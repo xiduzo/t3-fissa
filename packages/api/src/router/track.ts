@@ -9,6 +9,10 @@ const addTracks = z.object({
   tracks: Z_TRACKS,
 });
 
+const deleteTrack = z.object({
+  pin: Z_PIN,
+  trackId: z.string(),
+});
 
 export const trackRouter = createTRPCRouter({
   byPin: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
@@ -20,7 +24,12 @@ export const trackRouter = createTRPCRouter({
     .input(addTracks)
     .mutation(async ({ ctx, input }) => {
       const service = new TrackService(ctx);
-
       await service.addTracks(input.pin, input.tracks);
+    }),
+  deleteTrack: protectedProcedure
+    .input(deleteTrack)
+    .mutation(async ({ ctx, input }) => {
+      const service = new TrackService(ctx);
+      await service.deleteTrack(input.pin, input.trackId);
     }),
 });

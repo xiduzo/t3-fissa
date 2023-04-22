@@ -1,11 +1,7 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import {
-  logger,
-  sortTracksByScore,
-  useTracks,
-} from "@fissa/utils";
+import { logger, sortTracksByScore, useTracks } from "@fissa/utils";
 
 import { useCreateVote, useGetFissa } from "../../../hooks";
 import {
@@ -81,7 +77,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         mutateAsync(vote, focussedTrack.id);
       }
 
-      toggleLongPress(undefined)(event);
+      toggleLongPress()(event);
     },
     [toggleLongPress, focussedTrack, vote],
   );
