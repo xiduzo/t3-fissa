@@ -64,7 +64,12 @@ export class FissaService extends ServiceWithContext {
             pin,
             expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
             by: { connect: { id: this.ctx.session?.user.id } },
-            tracks: { createMany: { data: tracks } },
+            tracks: { createMany: {
+              data: tracks.map(track => ({
+                ...track,
+                userId: this.ctx.session?.user.id!,
+              }))
+            } },
           },
         });
       } catch (e) {
