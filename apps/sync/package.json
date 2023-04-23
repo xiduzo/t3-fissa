@@ -12,9 +12,6 @@
     "start": "node --experimental-specifier-resolution=node dist",
     "with-env": "dotenv -e ../../.env --"
   },
-  "prisma": {
-    "schema": "../../packages/db/prisma/schema.prisma"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
