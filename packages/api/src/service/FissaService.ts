@@ -168,9 +168,6 @@ export class FissaService extends ServiceWithContext {
           .slice(0, 5);
 
         try {
-          logger.info(`${fissa.pin}, adding recommended tracks`, {
-            access_token,
-          });
           await this.trackService.addRecommendedTracks(
             pin,
             trackIds,

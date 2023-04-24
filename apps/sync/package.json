@@ -9,7 +9,8 @@
     "clean": "rm -rf node_modules",
     "test": "vitest",
     "start": "node --experimental-specifier-resolution=node --max_old_space_size=200 dist",
-    "start:debug": "pnpm with-env node --experimental-specifier-resolution=node --trace_gc --max_old_space_size=200 --inspect dist",
+    "dev": "pnpm with-env node --experimental-specifier-resolution=node dist",
+    "debug": "pnpm with-env node --experimental-specifier-resolution=node --trace_gc --max_old_space_size=200 --inspect dist",
     "with-env": "dotenv -e ../../.env --"
   },
   "keywords": [],
@@ -18,9 +19,9 @@
   "dependencies": {
     "@fissa/api": "*",
     "@fissa/utils": "*",
-    "@trpc/client": "^10.12.0",
+    "@trpc/client": "^10.21.1",
     "croner": "^6.0.3",
-    "esbuild": "^0.17.17"
+    "esbuild": "^0.17.18"
   },
   "devDependencies": {
     "@fissa/test": "*",
