@@ -229,7 +229,7 @@ export class FissaService extends ServiceWithContext {
         // update has been played on current track Id
         await transaction.track.update({
           where: { pin_trackId: { pin, trackId: currentlyPlayingId } },
-          data: { hasBeenPlayed: true },
+          data: { hasBeenPlayed: true, score: 0 },
         });
       }
 
