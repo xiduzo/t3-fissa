@@ -3,6 +3,7 @@ import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 import { api } from "../utils/api";
 
 const timeouts = new Map<string, NodeJS.Timeout>();
+const startingNextTracks = new Set<string>();
 
 export const currentlyPlayingSync = async () => {
   const fissas = await api.fissa.sync.active.query();
@@ -20,13 +21,18 @@ export const currentlyPlayingSync = async () => {
 
     logger.debug(`${fissa.pin}, next track in ${delay}ms`);
 
+    if (startingNextTracks.has(fissa.pin)) continue;
+
     const timeout = setTimeout(async () => {
       try {
+        startingNextTracks.add(fissa.pin);
         logger.debug(`,${fissa.pin}, starting next track`);
         await api.fissa.sync.next.mutate(fissa.pin);
         logger.debug(`${fissa.pin}, next track started`);
       } catch (error) {
         logger.notice(`${fissa.pin}, next track failed`, error);
+      } finally {
+        startingNextTracks.delete(fissa.pin);
       }
     }, delay);
 
