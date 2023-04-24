@@ -8,8 +8,8 @@
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "clean": "rm -rf node_modules",
     "test": "vitest",
-    "dev:sync": "pnpm with-env nodemon src/index.ts",
     "start": "node --experimental-specifier-resolution=node dist",
+    "start:debug": "pnpm with-env node --experimental-specifier-resolution=node --trace_gc --inspect dist",
     "with-env": "dotenv -e ../../.env --"
   },
   "keywords": [],

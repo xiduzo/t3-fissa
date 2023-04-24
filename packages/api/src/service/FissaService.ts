@@ -64,12 +64,14 @@ export class FissaService extends ServiceWithContext {
             pin,
             expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
             by: { connect: { id: this.ctx.session?.user.id } },
-            tracks: { createMany: {
-              data: tracks.map(track => ({
-                ...track,
-                userId: this.ctx.session?.user.id!,
-              }))
-            } },
+            tracks: {
+              createMany: {
+                data: tracks.map((track) => ({
+                  ...track,
+                  userId: this.ctx.session?.user.id!,
+                })),
+              },
+            },
           },
         });
       } catch (e) {
@@ -165,11 +167,18 @@ export class FissaService extends ServiceWithContext {
           .sort(randomSort)
           .slice(0, 5);
 
-        await this.trackService.addRecommendedTracks(
-          pin,
-          trackIds,
-          access_token!,
-        );
+        try {
+          logger.info(`${fissa.pin}, adding recommended tracks`, {
+            access_token,
+          });
+          await this.trackService.addRecommendedTracks(
+            pin,
+            trackIds,
+            access_token!,
+          );
+        } catch (e) {
+          logger.error(`${fissa.pin}, failed adding recommended tracks`, e);
+        }
       }
     } catch (e) {
       logger.error(e);

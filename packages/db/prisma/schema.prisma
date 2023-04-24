@@ -40,8 +40,8 @@ model Track {
     fissa Fissa @relation(fields: [pin], references: [pin], onDelete: Cascade)
     pin String @db.VarChar(4)
 
-    by User @relation(fields: [userId], references: [id])
-    userId String @map("user_id")
+    by User? @relation(fields: [userId], references: [id])
+    userId String? @map("user_id")
 
     currentlyPlaying Fissa[] @relation("currently_playing")
     

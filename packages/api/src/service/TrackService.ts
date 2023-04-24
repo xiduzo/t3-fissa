@@ -39,7 +39,7 @@ export class TrackService extends ServiceWithContext {
           createMany: {
             data: newTracks.map((track) => ({
               ...track,
-              userId: this.ctx.session?.user.id!,
+              userId: this.ctx.session?.user?.id,
             })),
             skipDuplicates: true,
           },
@@ -71,7 +71,7 @@ export class TrackService extends ServiceWithContext {
             data: recommendations.map(({ id, duration_ms }) => ({
               trackId: id,
               durationMs: duration_ms,
-              userId: this.ctx.session?.user.id!,
+              userId: this.ctx.session?.user?.id,
             })),
             skipDuplicates: true,
           },

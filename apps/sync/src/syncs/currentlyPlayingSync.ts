@@ -18,15 +18,15 @@ export const currentlyPlayingSync = async () => {
 
     const delay = differenceInMilliseconds(endTime, new Date());
 
-    logger.debug(`[${fissa.pin}] next track in ${delay}ms`);
+    logger.debug(`${fissa.pin}, next track in ${delay}ms`);
 
     const timeout = setTimeout(async () => {
       try {
-        logger.debug(`[${fissa.pin}] starting next track`);
+        logger.debug(`,${fissa.pin}, starting next track`);
         await api.fissa.sync.next.mutate(fissa.pin);
-        logger.debug(`[${fissa.pin}] next track started`);
+        logger.debug(`${fissa.pin}, next track started`);
       } catch (error) {
-        logger.notice(`[${fissa.pin}] next track failed`, error);
+        logger.notice(`${fissa.pin}, next track failed`, error);
       }
     }, delay);
 
