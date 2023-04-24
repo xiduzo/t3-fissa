@@ -121,7 +121,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * Reusable middleware that enforces the call comes from an authenticated server
  */
 const enforceIsTrustedServer = t.middleware(({ ctx, next }) => {
-  if (ctx.session?.user?.id !== "TRUSTED_SERVER_SESSION_ID") {
+  if (ctx.session?.user?.name !== "TRUSTED_SERVER_SESSION") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 

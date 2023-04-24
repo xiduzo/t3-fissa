@@ -51,10 +51,5 @@ const trustedServerSession = async (ctx?: GetServerSessionContext) => {
   if (ctx.req.headers.authorization !== process.env.NEXTAUTH_SECRET)
     return null;
 
-  const session: Partial<Session> = {
-    user: {
-      id: "TRUSTED_SERVER_SESSION_ID",
-    },
-  };
-  return session as Session;
+  return { user: { name: "TRUSTED_SERVER_SESSION" } } as Session;
 };
