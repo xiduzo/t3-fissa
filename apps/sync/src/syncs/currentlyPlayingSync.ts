@@ -1,4 +1,4 @@
-import { logger, addSeconds, differenceInMilliseconds } from "@fissa/utils";
+import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
 import { api } from "../utils/api";
 
