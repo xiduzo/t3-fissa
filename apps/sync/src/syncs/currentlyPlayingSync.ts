@@ -1,12 +1,13 @@
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
 import { api } from "../utils/api";
+import { getFissas } from "../utils/getFissas";
 
 const timeouts = new Map<string, NodeJS.Timeout>();
 const startingNextTracks = new Set<string>();
 
 export const currentlyPlayingSync = async () => {
-  const fissas = await api.fissa.sync.active.query();
+  const fissas = await getFissas();
 
   timeouts.forEach(clearTimeout);
   timeouts.clear();
@@ -23,19 +24,23 @@ export const currentlyPlayingSync = async () => {
 
     if (startingNextTracks.has(fissa.pin)) continue;
 
-    const timeout = setTimeout(async () => {
-      try {
-        startingNextTracks.add(fissa.pin);
-        logger.debug(`,${fissa.pin}, starting next track`);
-        await api.fissa.sync.next.mutate(fissa.pin);
-        logger.debug(`${fissa.pin}, next track started`);
-      } catch (error) {
-        logger.notice(`${fissa.pin}, next track failed`, error);
-      } finally {
-        startingNextTracks.delete(fissa.pin);
-      }
-    }, delay);
+    const timeout = setTimeoutForNextTrack(fissa.pin, delay);
 
     timeouts.set(fissa.pin, timeout);
   }
+};
+
+const setTimeoutForNextTrack = (pin: string, delay: number) => {
+  return setTimeout(async () => {
+    try {
+      startingNextTracks.add(pin);
+      logger.debug(`,${pin}, starting next track`);
+      await api.fissa.sync.next.mutate(pin);
+      logger.debug(`${pin}, next track started`);
+    } catch (error) {
+      logger.notice(`${pin}, next track failed`, error);
+    } finally {
+      startingNextTracks.delete(pin);
+    }
+  }, delay);
 };

@@ -1,9 +1,10 @@
 import { logger } from "@fissa/utils";
 
 import { api } from "../utils/api";
+import { getFissas } from "../utils/getFissas";
 
 export const accessTokenSync = async () => {
-  const fissas = await api.fissa.sync.active.query();
+  const fissas = await getFissas()
 
   for (const fissa of fissas) {
     try {
