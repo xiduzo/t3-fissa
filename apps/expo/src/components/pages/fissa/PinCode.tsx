@@ -1,6 +1,11 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "expo-router";
-import { RefetchInterval, splitInChunks, useSpotify, useTracks } from "@fissa/utils";
+import {
+  RefetchInterval,
+  splitInChunks,
+  useSpotify,
+  useTracks,
+} from "@fissa/utils";
 
 import { useGetFissaDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
@@ -29,7 +34,7 @@ export const PinCode = () => {
       <Button
         onPress={togglePopover}
         dimmed
-        title={pin}
+        title={String(pin)}
         size="sm"
         variant="text"
       />
@@ -41,8 +46,11 @@ export const PinCode = () => {
           onPress={goToHome}
           icon="unlink"
         />
-        <CreatePlaylistAction pin={pin} onRequestClose={togglePopover} />
-        <SetSpeakerAction pin={pin} onRequestClose={togglePopover} />
+        <CreatePlaylistAction
+          pin={String(pin)}
+          onRequestClose={togglePopover}
+        />
+        <SetSpeakerAction pin={String(pin)} onRequestClose={togglePopover} />
       </Popover>
     </>
   );
@@ -73,7 +81,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         description: "Playlist created by Fissa",
       })
       .then(({ id }) => {
-        toast.info({ message: "Adding fissa tracks", icon: "🎶" });
+        toast.info({ message: "Adding fissa songs", icon: "🎶" });
         const uris = tracks?.map(({ uri }) => uri) ?? [];
         const chunks = splitInChunks(uris, 100);
         chunks.forEach((chunk) => {

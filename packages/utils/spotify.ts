@@ -65,6 +65,13 @@ export const getPlaylists = async (
   let hasNext = false;
   let offset = 0;
 
+  // Sync so in the meantime we continue fetching playlists
+  spotify.getMySavedTracks(user.id).then(({ total }) => {
+    const playlist = savedTracksPlaylist(total, user.display_name);
+
+    playlists.unshift(playlist); // Put on top please
+  }); // We don't catch as we don't really care if it fails
+
   do {
     const options = {
       offset,
@@ -73,9 +80,7 @@ export const getPlaylists = async (
         "items(id,name,owner(display_name),images(url),tracks(total)),next",
     };
 
-    const request = spotify.getUserPlaylists(user.id, options);
-
-    const { next, items } = await request;
+    const { next, items } = await spotify.getUserPlaylists(user.id, options);
 
     offset += items.length;
 
@@ -85,15 +90,6 @@ export const getPlaylists = async (
 
     hasNext = next !== null;
   } while (hasNext);
-
-  try {
-    const savedTracks = await spotify.getMySavedTracks(user.id);
-    const playlist = savedTracksPlaylist(savedTracks.total, user.display_name);
-
-    playlists.push(playlist);
-  } catch {
-    // Ignore
-  }
 
   return playlists;
 };
@@ -119,7 +115,7 @@ const SAVED_TRACKS_PLAYLIST_ID = "SAVED_TRACKS_PLAYLIST_ID";
 const savedTracksPlaylist = (total: number, display_name?: string) =>
   ({
     name: "Saved Tracks",
-    id: "SAVED_TRACKS_PLAYLIST_ID",
+    id: SAVED_TRACKS_PLAYLIST_ID,
     tracks: { total },
     owner: { display_name },
     images: [

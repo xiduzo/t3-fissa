@@ -8,7 +8,7 @@ export const ListFooterComponent = () => {
       <Typography variant="h1" className="mb-4">
         🦦
       </Typography>
-      <Typography variant="bodyM">Add tracks or I'll fill the queue</Typography>
+      <Typography variant="bodyM">Add songs or I'll fill the queue</Typography>
     </View>
   );
 };

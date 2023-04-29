@@ -96,7 +96,7 @@ const SkipTrackAction: FC<{
       onPress();
       toast.info({
         icon: "🐍",
-        message: "Skipping track...",
+        message: "Skipping song...",
       });
     },
   });
@@ -105,8 +105,8 @@ const SkipTrackAction: FC<{
 
   return (
     <Action
-      title="Skip track"
-      subtitle={isOwner ? "Skip the current track" : "Poke your host to skip"}
+      title="Skip song"
+      subtitle={isOwner ? "Skip the current song" : "Poke your host to skip"}
       inverted
       disabled={!isOwner || isLoading}
       onPress={mutateAsync}

@@ -43,7 +43,7 @@ const Host = () => {
             linkTo="/host/fromPlaylist"
           />
           <Button
-            title="Select some tracks"
+            title="Select some songs"
             variant="outlined"
             linkTo="/host/fromTracks"
           />

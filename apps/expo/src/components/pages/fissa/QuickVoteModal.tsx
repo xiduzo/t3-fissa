@@ -115,7 +115,7 @@ export const QuickVoteModal: FC<Props> = ({
           >
             <Action
               layout="column"
-              title="Up-vote track"
+              title="Up-vote song"
               icon="arrow-up"
               active={data?.vote === 1}
             />
@@ -145,7 +145,7 @@ export const QuickVoteModal: FC<Props> = ({
               reversed
               active={data?.vote === -1}
               icon="arrow-down"
-              title="Down-vote track"
+              title="Down-vote song"
             />
           </Animated.View>
         </LinearGradient>

@@ -58,7 +58,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   }, [checkIfUserHasActiveDevice]);
 
   if (isLoading)
-    return <EmptyState icon="🐕" title="Fetching tracks" subtitle="Good boy" />;
+    return <EmptyState icon="🐕" title="Fetching songs" subtitle="Good boy" />;
 
   if (!fissa?.currentlyPlayingId) {
     const isOwner = user?.email === fissa?.by.email;
@@ -89,8 +89,8 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   return (
     <EmptyState
       icon="🦀"
-      title="No tracks found"
-      subtitle="Add tracks to get the fissa started"
+      title="No songs found"
+      subtitle="Add songs to get the fissa started"
     />
   );
 };

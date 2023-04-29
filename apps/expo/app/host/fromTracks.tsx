@@ -8,7 +8,9 @@ const FromTracks = () => {
 
   const handleAddTracks = useCallback(
     async (tracks: SpotifyApi.TrackObjectFull[]) => {
-    toast.info({ message: `Starting your fissa based on ${tracks.length} tracks` });
+      toast.info({
+        message: `Starting your fissa based on ${tracks.length} songs`,
+      });
 
       await mutateAsync(
         tracks.map((track) => ({

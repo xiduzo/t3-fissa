@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { VirtualizedList, VirtualizedListProps } from "react-native";
-import { usePlayLists, useSpotify } from "@fissa/utils";
+import { usePlayLists } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
 import { EmptyState } from "./EmptyState";

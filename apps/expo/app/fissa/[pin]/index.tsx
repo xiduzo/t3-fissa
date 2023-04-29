@@ -13,7 +13,7 @@ const Fissa = () => {
 
   const invalidate = useInvalidateFissa();
 
-  useOnActiveApp(() => invalidate(pin));
+  useOnActiveApp(() => invalidate(String(pin)));
 
   useEffect(() => {
     if (pin) return;
@@ -32,8 +32,8 @@ const Fissa = () => {
         }}
       />
       <View className="flex h-full w-full">
-        <FissaTracks pin={pin} />
-        <Fab title="add tracks" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
+        <FissaTracks pin={String(pin)} />
+        <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"

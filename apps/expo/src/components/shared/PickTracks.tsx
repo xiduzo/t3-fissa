@@ -178,7 +178,7 @@ export const PickTracks: FC<Props> = ({
                     ListEmptyComponent={
                       <EmptyState
                         icon="🐕"
-                        title="Fetching tracks"
+                        title="Fetching songs"
                         subtitle="good boy"
                       />
                     }
