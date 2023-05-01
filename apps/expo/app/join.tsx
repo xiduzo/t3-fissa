@@ -11,7 +11,7 @@ import * as Haptics from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import { Button, Rejoin, Typography } from "../src/components";
+import { Button, PageTemplate, Rejoin, Typography } from "../src/components";
 import {
   ENCRYPTED_STORAGE_KEYS,
   useEncryptedStorage,
@@ -91,16 +91,13 @@ const Join = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View className="mt-6 flex h-full w-full px-6">
+      <PageTemplate className="justify-start">
         <Typography variant="h5" centered className="mb-16">
           Enter the fissa code
         </Typography>
-        <View className="flex flex-row justify-around">
+        <View className="flex flex-row justify-around space-x-4">
           {keys.map((key, index) => (
-            <View
-              className="flex w-[20vw] px-2"
-              key={key.current?.props?.id ?? index}
-            >
+            <View className="flex flex-1" key={key.current?.props?.id ?? index}>
               <TextInput
                 autoFocus={index === 0}
                 ref={key}
@@ -133,7 +130,7 @@ const Join = () => {
           disabled={!pin.includes("")}
         />
         <Rejoin />
-      </View>
+      </PageTemplate>
     </SafeAreaView>
   );
 };

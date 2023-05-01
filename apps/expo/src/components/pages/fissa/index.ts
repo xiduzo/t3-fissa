@@ -6,4 +6,4 @@ export * from "./QuickVoteModal";
 export * from "./Tracks";
 export * from "./VoteActions";
 
-export * from './hooks'
+export * from "./hooks";

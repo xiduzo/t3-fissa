@@ -5,7 +5,7 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 
-import { Button, Rejoin, Typography } from "../src/components";
+import { Button, PageTemplate, Rejoin, Typography } from "../src/components";
 import { useAuth } from "../src/providers";
 
 const Home = () => {
@@ -23,7 +23,7 @@ const Home = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerShown: true, animation: "fade" }} />
-      <View className="flex h-full justify-between px-6">
+      <PageTemplate>
         <View />
         <View>
           <Typography variant="h1" centered className="mb-4">
@@ -46,7 +46,7 @@ const Home = () => {
           )}
         </View>
         <Rejoin />
-      </View>
+      </PageTemplate>
     </SafeAreaView>
   );
 };

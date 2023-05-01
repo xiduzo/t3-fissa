@@ -4,7 +4,12 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 
-import { Button, Typography, useCreateFissa } from "../../src/components";
+import {
+  Button,
+  PageTemplate,
+  Typography,
+  useCreateFissa,
+} from "../../src/components";
 import { toast } from "../../src/utils";
 
 const Host = () => {
@@ -28,8 +33,8 @@ const Host = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View className="flex h-full justify-between px-6">
-        <View className="-mt-10" />
+      <PageTemplate>
+        <View />
         <View>
           <Typography variant="h1" centered className="mb-4">
             Host a fissa
@@ -56,7 +61,7 @@ const Host = () => {
             disabled={isLoading}
           />
         </View>
-      </View>
+      </PageTemplate>
     </SafeAreaView>
   );
 };

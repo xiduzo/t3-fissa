@@ -1,9 +1,5 @@
 import { FC } from "react";
-import {
-  GestureResponderEvent,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
 import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
@@ -32,9 +28,9 @@ export const BottomDrawer: FC<BottomDrawerProps> = ({
       colors={theme.gradient}
       start={[0, 0]}
       end={[1, 1]}
-      className="absolute bottom-0 w-full rounded-3xl px-3 pt-5 pb-10"
+      className="absolute bottom-0 w-full rounded-3xl px-3 pb-10 pt-5 md:px-6"
     >
-      <View className={bottomDrawer({ hasTitle: !!title })}>
+      <View className={titleStyle({ hasTitle: !!title })}>
         {title}
         {action && (
           <TouchableOpacity
@@ -47,12 +43,12 @@ export const BottomDrawer: FC<BottomDrawerProps> = ({
           </TouchableOpacity>
         )}
       </View>
-      <View className="px-3">{children}</View>
+      <View className="m-auto w-full max-w-lg px-3">{children}</View>
     </LinearGradient>
   );
 };
 
-const bottomDrawer = cva("flex-row items-center mb-4", {
+const titleStyle = cva("flex-row items-center mb-4", {
   variants: {
     hasTitle: {
       true: "justify-between",

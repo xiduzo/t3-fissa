@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
 
 import { useSwipe } from "../../hooks";
@@ -60,6 +59,14 @@ export const Popover: FC<Props> = ({
         onRequestClose={close}
       >
         <View className="h-full justify-end">
+          <Animated.View
+            onTouchStart={close}
+            className="absolute h-full w-full"
+            style={{
+              backgroundColor: theme[900] + "80",
+              opacity: fadeAnimation,
+            }}
+          />
           <DraggableView onTouchStart={touchStart} onTouchEnd={touchEnd}>
             <BottomDrawer
               title={title}
@@ -69,25 +76,11 @@ export const Popover: FC<Props> = ({
               {children}
             </BottomDrawer>
           </DraggableView>
-          {fadeAnimation && (
-            <Animated.View
-              className="absolute inset-0 -z-10"
-              style={{ opacity: fadeAnimation }}
-            >
-              <LinearGradient
-                onTouchStart={close}
-                colors={[theme[900] + "80", theme[900] + "80"]}
-                className="absolute inset-0 -z-10"
-              />
-            </Animated.View>
-          )}
         </View>
       </Modal>
     </SafeAreaView>
   );
 };
-
-export interface PopOverProps extends Props {}
 
 interface Props extends Omit<ModalProps, "style"> {
   title?: JSX.Element;

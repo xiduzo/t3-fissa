@@ -17,7 +17,7 @@ export const Image: FC<Props> = ({ className, hasBorder, ...props }) => {
 
 interface Props extends ImageProps, VariantProps<typeof image> {}
 
-const image = cva("overflow-hidden ", {
+const image = cva("overflow-hidden", {
   variants: {
     hasBorder: {
       true: "rounded-l-xl",

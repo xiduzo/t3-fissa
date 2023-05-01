@@ -18,8 +18,8 @@ export const getPlaylistTracks = async (
     const options = {
       offset,
       limit: 50,
-      // fields:
-      //   "items(track(id,name,type,is_local,is_playable,artists(name),album(images(url)))),next",
+      fields:
+        "items(track(id,name,type,is_local,is_playable,artists(name),album(images(url)))),next",
     };
 
     const request =
@@ -66,11 +66,14 @@ export const getPlaylists = async (
   let offset = 0;
 
   // Sync so in the meantime we continue fetching playlists
-  spotify.getMySavedTracks(user.id).then(({ total }) => {
+  try {
+    const { total } = await spotify.getMySavedTracks(user.id);
     const playlist = savedTracksPlaylist(total, user.display_name);
 
-    playlists.unshift(playlist); // Put on top please
-  }); // We don't catch as we don't really care if it fails
+    playlists.push(playlist);
+  } catch {
+    // We don't catch as we don't really care if it fails
+  }
 
   do {
     const options = {
@@ -114,7 +117,7 @@ const SAVED_TRACKS_PLAYLIST_ID = "SAVED_TRACKS_PLAYLIST_ID";
 
 const savedTracksPlaylist = (total: number, display_name?: string) =>
   ({
-    name: "Saved Tracks",
+    name: "Liked songs",
     id: SAVED_TRACKS_PLAYLIST_ID,
     tracks: { total },
     owner: { display_name },

@@ -16,6 +16,7 @@
     "@fissa/api": "*",
     "@fissa/tailwind-config": "*",
     "@fissa/utils": "*",
+    "@shopify/flash-list": "1.4.0",
     "@tanstack/react-query": "^4.29.5",
     "@trpc/client": "^10.21.1",
     "@trpc/react-query": "^10.21.1",

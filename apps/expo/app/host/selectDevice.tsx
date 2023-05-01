@@ -4,7 +4,7 @@ import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices, useSpotify } from "@fissa/utils";
 
-import { SelectDevice, Typography } from "../../src/components";
+import { PageTemplate, SelectDevice, Typography } from "../../src/components";
 import { toast } from "../../src/utils";
 
 const Select = () => {
@@ -35,7 +35,8 @@ const Select = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View className="flex h-full justify-around px-6">
+      <PageTemplate>
+        <View />
         <View className="items-center">
           <Typography centered variant="h1" className="mb-4">
             Almost done!
@@ -45,7 +46,7 @@ const Select = () => {
           </Typography>
         </View>
         <SelectDevice onSelectDevice={handleDeviceSelect} />
-      </View>
+      </PageTemplate>
     </SafeAreaView>
   );
 };
