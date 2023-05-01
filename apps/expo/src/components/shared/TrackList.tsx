@@ -18,6 +18,7 @@ export const TrackList: FC<Props> = ({
       {...props}
       estimatedItemSize={100}
       keyExtractor={({ id }) => id}
+      extraData={selectedTracks}
       renderItem={({ item, index }) => (
         <TrackListItem
           className="px-6"

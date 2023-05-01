@@ -19,7 +19,7 @@ export const getPlaylistTracks = async (
       offset,
       limit: 50,
       fields:
-        "items(track(id,name,type,is_local,is_playable,artists(name),album(images(url)))),next",
+        "items(track(id,duration_ms,name,type,is_local,is_playable,artists(name),album(images(url)))),next",
     };
 
     const request =
