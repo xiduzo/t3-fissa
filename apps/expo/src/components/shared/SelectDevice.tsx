@@ -10,7 +10,7 @@ import { EmptyState } from "./EmptyState";
 import { Popover } from "./Popover";
 import { Typography } from "./Typography";
 
-export const SelectDevice: FC<Props> = ({ onSelectDevice }) => {
+export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
   const { devices, fetchDevices } = useDevices();
   useOnActiveApp(fetchDevices);
 
@@ -34,6 +34,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice }) => {
           .filter(({ id }) => !!id)
           .map((device) => (
             <Button
+              inverted={inverted}
               key={device.id}
               icon={mapDeviceToIcon(device)}
               variant="text"
@@ -43,6 +44,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice }) => {
           ))}
       </View>
       <Button
+        inverted={inverted}
         icon="question"
         variant="text"
         title="I can't find my device"
@@ -110,4 +112,5 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice }) => {
 
 interface Props {
   onSelectDevice: (device: SpotifyApi.UserDevice) => () => Promise<void>;
+  inverted?: boolean;
 }

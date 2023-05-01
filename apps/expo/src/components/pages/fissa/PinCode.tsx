@@ -1,8 +1,12 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
+import { View } from "react-native";
 import { useRouter, useSearchParams } from "expo-router";
+import Slider from "@react-native-community/slider";
+import { theme } from "@fissa/tailwind-config";
 import {
   RefetchInterval,
   splitInChunks,
+  useDevices,
   useSpotify,
   useTracks,
 } from "@fissa/utils";
@@ -10,7 +14,14 @@ import {
 import { useGetFissaDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
-import { Action, Button, Popover } from "../../shared";
+import {
+  Action,
+  Button,
+  Divider,
+  Popover,
+  SelectDevice,
+  Typography,
+} from "../../shared";
 
 export const PinCode = () => {
   const { pin } = useSearchParams();
@@ -106,33 +117,84 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
   );
 };
 
-const SetSpeakerAction: FC<ActionProps> = ({ pin }) => {
+const SetSpeakerAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
   const spotify = useSpotify();
   const { user } = useAuth();
+  const { devices, fetchDevices } = useDevices();
+  const [selectDevice, setSelectDevice] = useState(false);
 
   const { data } = useGetFissaDetails(pin, RefetchInterval.Lazy);
 
-  const [speakers, setSpeakers] = useState<SpotifyApi.UserDevice[]>([]);
+  const toggleSelectDevice = useCallback(() => {
+    setSelectDevice((prev) => !prev);
+  }, []);
+
+  const handleDeviceSelect = useCallback(
+    (device: SpotifyApi.UserDevice) => async () => {
+      try {
+        await spotify.transferMyPlayback([device.id!]);
+        toast.success({
+          icon: "🐋",
+          message: `Connected to ${device.name}`,
+        });
+
+        toggleSelectDevice();
+        onRequestClose();
+      } catch (e) {
+        fetchDevices();
+        toast.error({
+          message: `Failed to connect to ${device.name}`,
+        });
+      }
+    },
+    [spotify, fetchDevices, toggleSelectDevice],
+  );
+
+  const handleVolumeChange = useCallback(
+    async (volume: number) => {
+      try {
+        await spotify.setVolume(volume);
+      } catch (e) {
+        toast.error({
+          message: `Failed to change volume`,
+        });
+      }
+    },
+    [spotify],
+  );
 
   const activeSpeaker = useMemo(() => {
-    return speakers.find((speaker) => speaker.is_active);
-  }, [speakers]);
-
-  useEffect(() => {
-    spotify.getMyDevices().then(({ devices }) => {
-      setSpeakers(devices);
-    });
-  }, [spotify]);
+    return devices.find(({ is_active }) => is_active);
+  }, [devices]);
 
   return (
-    <Action
-      hidden={!data || data.by.email !== user!.email}
-      title={activeSpeaker?.name ?? "No active speaker"}
-      subtitle="Current speaker"
-      inverted
-      // disabled={!speakers.length}
-      disabled
-      icon={mapDeviceToIcon(activeSpeaker)}
-    />
+    <>
+      <Action
+        hidden={!data || data.by.email !== user!.email}
+        title={activeSpeaker?.name ?? "No active speaker"}
+        subtitle="Control speaker and volume"
+        inverted
+        onPress={toggleSelectDevice}
+        icon={mapDeviceToIcon(activeSpeaker)}
+      />
+      <Popover visible={selectDevice} onRequestClose={toggleSelectDevice}>
+        <SelectDevice onSelectDevice={handleDeviceSelect} inverted />
+        {activeSpeaker && (
+          <View className="space-y-6 py-4">
+            <Divider />
+            <Slider
+              minimumValue={0}
+              maximumValue={100}
+              step={1}
+              onValueChange={handleVolumeChange}
+              value={activeSpeaker?.volume_percent ?? 0}
+              thumbTintColor={theme["900"]}
+              maximumTrackTintColor={theme["900"] + "30"}
+              minimumTrackTintColor={theme["900"] + "90"}
+            />
+          </View>
+        )}
+      </Popover>
+    </>
   );
 };

@@ -53,6 +53,9 @@ importers:
       '@fissa/utils':
         specifier: '*'
         version: link:../../packages/utils
+      '@react-native-community/slider':
+        specifier: ^4.4.2
+        version: 4.4.2
       '@shopify/flash-list':
         specifier: 1.4.0
         version: 1.4.0(@babel/runtime@7.20.7)(react-native@0.71.3)(react@18.2.0)
@@ -2944,6 +2947,10 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+    dev: false
+
+  /@react-native-community/slider@4.4.2:
+    resolution: {integrity: sha512-D9bv+3Vd2gairAhnRPAghwccgEmoM7g562pm8i4qB3Esrms5mggF81G3UvCyc0w3jjtFHh8dpQkfEoKiP0NW/Q==}
     dev: false
 
   /@react-native/assets@1.0.0:

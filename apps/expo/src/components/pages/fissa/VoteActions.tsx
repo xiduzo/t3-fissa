@@ -41,13 +41,13 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
         title="Up-vote song"
         subtitle="It might move up in the queue"
       />
-      <Action
+      {/* <Action
         inverted
         disabled
         icon="remove"
         title="Remove song"
         subtitle="Mistakes were made"
-      />
+      /> */}
       <Action
         onPress={handleVote(-1)}
         inverted
