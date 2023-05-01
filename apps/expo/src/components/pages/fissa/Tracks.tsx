@@ -120,11 +120,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         scrollEnabled={!focussedTrack}
-        tracks={isPlaying ? tracks : []}
+        data={isPlaying ? tracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         onTrackLongPress={toggleLongPress}
-        trackEnd={(track) => <TrackEnd trackId={track.id} pin={pin} />}
+        trackEnd={({ id }) => <TrackEnd trackId={id} pin={pin} />}
         ListHeaderComponent={
           <ListHeaderComponent
             queue={tracks.length}

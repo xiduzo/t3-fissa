@@ -35,7 +35,7 @@ export const PickTracks: FC<Props> = ({
 
   const playlistTracks = useRef<TrackList>([]);
 
-  const [tracks, setTracks] = useState<TrackList>([]);
+  const [searchedTracks, setSearchedTracks] = useState<TrackList>([]);
   const [selectedTracks, setSelectedTracks] = useState<TrackList>([]);
   const [filteredTracks, setFilteredTracks] = useState<TrackList>([]);
 
@@ -74,9 +74,9 @@ export const PickTracks: FC<Props> = ({
 
   useMemo(async () => {
     if (!selectedPlaylist) {
-      if (!debounced) return setTracks([]);
+      if (!debounced) return setSearchedTracks([]);
       const { tracks } = await spotify.search(debounced, ["track"]);
-      setTracks(tracks?.items || []);
+      setSearchedTracks(tracks?.items || []);
       return;
     }
 
@@ -104,9 +104,9 @@ export const PickTracks: FC<Props> = ({
   useMemo(async () => {
     if (!selectedPlaylist) return;
 
-    await getPlaylistTracks(selectedPlaylist.id, spotify, (tracks) => {
-      playlistTracks.current = tracks;
-      setFilteredTracks(tracks);
+    await getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
+      playlistTracks.current = newTracks;
+      setFilteredTracks([...newTracks]);
     });
   }, [selectedPlaylist, spotify]);
 
@@ -134,7 +134,7 @@ export const PickTracks: FC<Props> = ({
         </View>
 
         <TrackList
-          tracks={tracks}
+          data={searchedTracks}
           selectedTracks={selectedTracks.map((track) => track.id)}
           onTrackPress={handleTrackPress}
           ListFooterComponent={<View className="pb-96" />}
@@ -147,7 +147,7 @@ export const PickTracks: FC<Props> = ({
                   </Typography>
                   <PlaylistList
                     onPlaylistPress={setSelectedPlaylist}
-                    playlistEnd={
+                    playlistListItemEnd={
                       <FontAwesome
                         name="chevron-right"
                         size={16}
@@ -171,7 +171,7 @@ export const PickTracks: FC<Props> = ({
                     </Typography>
                   </View>
                   <TrackList
-                    tracks={filteredTracks}
+                    data={filteredTracks}
                     onTrackPress={handleTrackPress}
                     selectedTracks={selectedTracks.map((track) => track.id)}
                     ListFooterComponent={<View className="pb-40" />}

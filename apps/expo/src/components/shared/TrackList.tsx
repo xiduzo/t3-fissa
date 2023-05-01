@@ -1,15 +1,11 @@
-import { FC, useMemo } from "react";
-import {
-  GestureResponderEvent,
-  VirtualizedList,
-  VirtualizedListProps,
-} from "react-native";
+import { FC } from "react";
+import { GestureResponderEvent } from "react-native";
+import { FlashList, FlashListProps } from "@shopify/flash-list";
 
 import { Badge } from "./Badge";
 import { TrackListItem } from "./TrackListItem";
 
 export const TrackList: FC<Props> = ({
-  tracks,
   onTrackPress,
   onTrackLongPress,
   selectedTracks,
@@ -18,11 +14,10 @@ export const TrackList: FC<Props> = ({
   ...props
 }) => {
   return (
-    <VirtualizedList
+    <FlashList
       {...props}
-      data={tracks}
-      getItemCount={() => tracks.length}
-      initialNumToRender={5}
+      estimatedItemSize={100}
+      keyExtractor={({ id }) => id}
       renderItem={({ item, index }) => (
         <TrackListItem
           className="px-6"
@@ -38,8 +33,6 @@ export const TrackList: FC<Props> = ({
           selected={selectedTracks?.includes(item.id)}
         />
       )}
-      getItem={getItem}
-      keyExtractor={keyExtractor}
     />
   );
 };
@@ -48,14 +41,9 @@ export type TrackListProps = Props;
 
 interface Props
   extends Omit<
-    VirtualizedListProps<SpotifyApi.TrackObjectFull>,
-    | "getItemCount"
-    | "initialNumToRender"
-    | "getItem"
-    | "keyExtractor"
-    | "renderItem"
+    FlashListProps<SpotifyApi.TrackObjectFull>,
+    "keyExtractor" | "renderItem"
   > {
-  tracks: SpotifyApi.TrackObjectFull[];
   selectedTracks?: string[];
   getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number;
   trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element;
@@ -64,8 +52,3 @@ interface Props
     track: SpotifyApi.TrackObjectFull,
   ) => (event: GestureResponderEvent) => void;
 }
-
-const getItem = (data: SpotifyApi.TrackObjectFull[], index: number) =>
-  data[index]!;
-const keyExtractor = (track: SpotifyApi.TrackObjectFull, index: number) =>
-  track?.id ?? index;

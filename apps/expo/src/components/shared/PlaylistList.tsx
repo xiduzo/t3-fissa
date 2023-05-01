@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { VirtualizedList, VirtualizedListProps } from "react-native";
+import { FlashList, FlashListProps } from "@shopify/flash-list";
 import { usePlayLists } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
@@ -9,7 +9,7 @@ import { PlaylistListItem } from "./PlaylistListItem";
 export const PlaylistList: FC<Props> = ({
   onPlaylistPress,
   inverted,
-  playlistEnd,
+  playlistListItemEnd,
   ...props
 }) => {
   const { user } = useAuth();
@@ -17,19 +17,17 @@ export const PlaylistList: FC<Props> = ({
   const playlists = usePlayLists(user);
 
   return (
-    <VirtualizedList
+    <FlashList
       {...props}
-      className="px-6"
       data={playlists}
-      initialNumToRender={5}
-      getItemCount={() => playlists.length}
-      getItem={getItem}
-      keyExtractor={keyExtractor}
+      keyExtractor={({ id }) => id}
+      estimatedItemSize={100}
       renderItem={({ item }) => (
         <PlaylistListItem
+          className="px-6"
           playlist={item}
           onPress={() => onPlaylistPress?.(item)}
-          end={playlistEnd}
+          end={playlistListItemEnd}
         />
       )}
       ListEmptyComponent={
@@ -41,21 +39,10 @@ export const PlaylistList: FC<Props> = ({
 
 interface Props
   extends Omit<
-    VirtualizedListProps<SpotifyApi.PlaylistObjectSimplified>,
-    | "getItemCount"
-    | "initialNumToRender"
-    | "renderItem"
-    | "getItem"
-    | "keyExtractor"
+    FlashListProps<SpotifyApi.PlaylistObjectSimplified>,
+    "renderItem" | "keyExtractor" | "data"
   > {
   onPlaylistPress?: (playlist: SpotifyApi.PlaylistObjectSimplified) => void;
   inverted?: boolean;
-  playlistEnd?: JSX.Element;
+  playlistListItemEnd?: JSX.Element;
 }
-
-const getItem = (data: SpotifyApi.PlaylistObjectSimplified[], index: number) =>
-  data[index]!;
-const keyExtractor = (
-  track: SpotifyApi.PlaylistObjectSimplified,
-  index: number,
-) => track?.id ?? index;
