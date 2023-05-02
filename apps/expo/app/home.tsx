@@ -29,7 +29,9 @@ const Home = () => {
           <Typography variant="h1" centered className="mb-4">
             Hi there {user?.display_name},
           </Typography>
-          <Typography centered>what are you up to</Typography>
+          <Typography centered variant="h5">
+            what are you up to
+          </Typography>
         </View>
         <View>
           <Button title="join a fissa" className="mb-6" linkTo="/join" />

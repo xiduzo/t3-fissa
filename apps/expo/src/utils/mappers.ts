@@ -9,7 +9,7 @@ export const mapDeviceToIcon = (
     case "computer":
       return "laptop";
     case "smartphone":
-      return "mobile";
+      return "mobile-phone";
     case "castvideo":
     case "speaker":
       return "bluetooth-b";

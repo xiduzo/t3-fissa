@@ -17,7 +17,10 @@ export const Typography: FC<Props> = ({
     <Animated.Text
       {...props}
       className={typography({ variant, centered, dimmed, className })}
-      style={[props.style, { color: animatedColor ?? theme[!!inverted ? "900" : "100"] }]}
+      style={[
+        { color: animatedColor ?? theme[!!inverted ? "900" : "100"] },
+        props.style,
+      ]}
     >
       {children}
     </Animated.Text>
@@ -25,16 +28,16 @@ export const Typography: FC<Props> = ({
 };
 
 interface Props extends TextProps, VariantProps<typeof typography> {
-  animatedColor?: Animated.AnimatedInterpolation<string | number>
+  animatedColor?: Animated.AnimatedInterpolation<string | number>;
 }
 
 const typography = cva("", {
   variants: {
     variant: {
-      h1: "font-bold text-3xl",
+      h1: "font-bold text-4xl",
       h2: "font-bold text-2xl",
       h3: "font-bold text-xl",
-      h4: "font-semibold text-lg ",
+      h4: "font-semibold text-lg",
       h5: "font-medium text-2xl",
       h6: "font-medium text-lg",
       bodyL: "font-normal text-base",

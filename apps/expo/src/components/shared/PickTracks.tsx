@@ -193,9 +193,14 @@ export const PickTracks: FC<Props> = ({
           action={() => setSelectedTracks([])}
           actionDisabled={!selectedTracks.length}
           actionTitle="clear all"
-          actionIcon="trash"
+          actionIcon={null}
         >
-          <Typography variant="h6" inverted centered className="mb-4">
+          <Typography
+            variant="h6"
+            inverted
+            centered
+            className="-mt-[38px] mb-4"
+          >
             {selectedTracks.length} songs selected
           </Typography>
           <Button

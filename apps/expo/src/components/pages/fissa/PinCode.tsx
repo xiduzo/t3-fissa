@@ -14,14 +14,7 @@ import {
 import { useGetFissaDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
-import {
-  Action,
-  Button,
-  Divider,
-  Popover,
-  SelectDevice,
-  Typography,
-} from "../../shared";
+import { Action, Button, Divider, Popover, SelectDevice } from "../../shared";
 
 export const PinCode = () => {
   const { pin } = useSearchParams();

@@ -10,7 +10,7 @@ import { Typography } from "./Typography";
 interface BottomDrawerProps extends Omit<LinearGradientProps, "colors"> {
   title?: JSX.Element | false;
   action?: (event: GestureResponderEvent) => void;
-  actionIcon?: keyof typeof FontAwesome.glyphMap;
+  actionIcon?: keyof typeof FontAwesome.glyphMap | null;
   actionDisabled?: boolean;
   actionTitle?: string;
 }
@@ -38,8 +38,12 @@ export const BottomDrawer: FC<BottomDrawerProps> = ({
             className={actionStyle({ disabled: actionDisabled })}
             onPress={action}
           >
-            {actionTitle && <Typography inverted>{actionTitle}</Typography>}
-            <FontAwesome name={actionIcon} size={24} />
+            {actionTitle && (
+              <Typography inverted variant="h4">
+                {actionTitle}
+              </Typography>
+            )}
+            {actionIcon && <FontAwesome name={actionIcon} size={24} />}
           </TouchableOpacity>
         )}
       </View>

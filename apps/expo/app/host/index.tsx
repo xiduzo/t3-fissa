@@ -39,7 +39,9 @@ const Host = () => {
           <Typography variant="h1" centered className="mb-4">
             Host a fissa
           </Typography>
-          <Typography centered>how would you like to start</Typography>
+          <Typography centered variant="h5">
+            how would you like to start
+          </Typography>
         </View>
         <View>
           <Button

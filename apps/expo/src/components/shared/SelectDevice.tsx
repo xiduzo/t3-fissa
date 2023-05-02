@@ -6,6 +6,7 @@ import { useDevices } from "@fissa/utils";
 import { useOnActiveApp } from "../../hooks";
 import { mapDeviceToIcon } from "../../utils";
 import { Button } from "./Button";
+import { Divider } from "./Divider";
 import { EmptyState } from "./EmptyState";
 import { Popover } from "./Popover";
 import { Typography } from "./Typography";
@@ -40,9 +41,11 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
               variant="text"
               title={device.name}
               onPress={onSelectDevice(device)}
+              className="flex-row items-center justify-start px-8"
             />
           ))}
       </View>
+      <Divider />
       <Button
         inverted={inverted}
         icon="question"

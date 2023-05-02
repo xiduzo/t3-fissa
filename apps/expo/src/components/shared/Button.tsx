@@ -34,7 +34,7 @@ export const Button: FC<Props> = ({
 
   const backgroundColor = useMemo(() => {
     if (!variant || variant === "contained") {
-      return theme[!!inverted ? "900" : "500"];
+      return theme[inverted ? "900" : "500"];
     }
 
     return "transparent";
@@ -55,7 +55,7 @@ export const Button: FC<Props> = ({
       disabled={props.disabled}
       onPress={handlePress}
       className={`rounded-full ${props.className}`}
-      underlayColor={theme[Boolean(inverted) ? "900" : "500"] + "10"}
+      underlayColor={theme[inverted ? "900" : "500"] + "10"}
     >
       <View
         className={button({
@@ -66,19 +66,29 @@ export const Button: FC<Props> = ({
           dimmed,
         })}
         style={{
-          borderColor: theme[Boolean(inverted) ? "900" : "500"],
+          borderColor: theme[inverted ? "900" : "500"],
           backgroundColor,
         }}
       >
         {icon && (
-          <Typography inverted={textInverted}>
+          <Typography
+            inverted={textInverted}
+            variant="h5"
+            className="w-5 text-center"
+          >
             <FontAwesome name={icon} size={24} />
           </Typography>
         )}
         <Typography
-          className="space-x-3 font-bold"
+          className="font-bold"
           centered
           inverted={textInverted}
+          variant="h5"
+          style={
+            variant === "outlined" && {
+              color: theme["500"],
+            }
+          }
         >
           {title}
         </Typography>
