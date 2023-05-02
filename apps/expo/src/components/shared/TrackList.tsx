@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { GestureResponderEvent } from "react-native";
+import { GestureResponderEvent, View } from "react-native";
 import { FlashList, FlashListProps } from "@shopify/flash-list";
 
 import { Badge } from "./Badge";
@@ -14,27 +14,29 @@ export const TrackList: FC<Props> = ({
   ...props
 }) => {
   return (
-    <FlashList
-      {...props}
-      estimatedItemSize={100}
-      keyExtractor={({ id }) => id}
-      extraData={selectedTracks}
-      renderItem={({ item, index }) => (
-        <TrackListItem
-          className="px-6"
-          key={item.id}
-          index={index}
-          track={item}
-          subtitlePrefix={
-            getTrackVotes && <Badge amount={getTrackVotes(item)} />
-          }
-          end={trackEnd && trackEnd(item)}
-          onPress={() => onTrackPress?.(item)}
-          onLongPress={onTrackLongPress?.(item)}
-          selected={selectedTracks?.includes(item.id)}
-        />
-      )}
-    />
+    <View className="h-full w-full">
+      <FlashList
+        {...props}
+        estimatedItemSize={100}
+        keyExtractor={({ id }) => id}
+        extraData={selectedTracks}
+        renderItem={({ item, index }) => (
+          <TrackListItem
+            className="px-6"
+            key={item.id}
+            index={index}
+            track={item}
+            subtitlePrefix={
+              getTrackVotes && <Badge amount={getTrackVotes(item)} />
+            }
+            end={trackEnd && trackEnd(item)}
+            onPress={() => onTrackPress?.(item)}
+            onLongPress={onTrackLongPress?.(item)}
+            selected={selectedTracks?.includes(item.id)}
+          />
+        )}
+      />
+    </View>
   );
 };
 

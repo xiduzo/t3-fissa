@@ -48,7 +48,10 @@ const FromPlaylist = () => {
         <Typography variant="h1" className="px-6 pb-8 pt-4">
           Select playlist
         </Typography>
-        <PlaylistList onPlaylistPress={setSelectedPlaylist} />
+        <PlaylistList
+          onPlaylistPress={setSelectedPlaylist}
+          ListFooterComponent={<View className="pb-28" />}
+        />
       </View>
       <Popover
         visible={!!selectedPlaylist}

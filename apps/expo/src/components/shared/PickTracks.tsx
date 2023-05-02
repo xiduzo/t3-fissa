@@ -196,7 +196,7 @@ export const PickTracks: FC<Props> = ({
           actionIcon="trash"
         >
           <Typography variant="h6" inverted centered className="mb-4">
-            {selectedTracks.length} tracks selected
+            {selectedTracks.length} songs selected
           </Typography>
           <Button
             title={actionTitle}

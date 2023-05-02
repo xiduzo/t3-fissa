@@ -127,7 +127,6 @@ const Index = () => {
           <Button
             icon="spotify"
             onPress={() => promptAsync()}
-            disabled={!!user}
             title="Connect to get started"
           />
         </Animated.View>

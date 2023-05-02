@@ -91,18 +91,17 @@ export const QuickVoteModal: FC<Props> = ({
   return (
     <Modal
       transparent
-      style={{ backgroundColor: theme["900"] }}
       visible={!!track}
       // Redundant exit touch event
       // This should be handled by the track `onTouchEnd`
       // But if the track doesn't fire the user still needs a way out
       onTouchEnd={onTouchEnd}
     >
-      <Animated.View
-        className="absolute inset-0"
-        style={{ opacity, backgroundColor: theme["900"] }}
-      />
-      <View className="h-full justify-center">
+      <Animated.View className="absolute inset-0" style={{ opacity }} />
+      <View
+        className="h-full justify-center"
+        style={{ backgroundColor: theme["900"] }}
+      >
         <LinearGradient
           className="flex-1 justify-center"
           colors={upVoteGradient}
