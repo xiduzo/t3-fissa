@@ -74,9 +74,9 @@ export const Button: FC<Props> = ({
           <Typography
             inverted={textInverted}
             variant="h5"
-            className="w-5 text-center"
+            className="w-6 text-center"
           >
-            <FontAwesome name={icon} size={24} />
+            <FontAwesome name={icon} size={28} />
           </Typography>
         )}
         <Typography
@@ -123,6 +123,18 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
       >
         <FontAwesome name={icon} size={28} />
       </LinearGradient>
+    </TouchableHighlight>
+  );
+};
+
+export const IconButton: FC<Props> = ({ icon, inverted, ...props }) => {
+  return (
+    <TouchableHighlight {...props}>
+      <FontAwesome
+        name={icon}
+        size={28}
+        color={theme[inverted ? "900" : "100"]}
+      />
     </TouchableHighlight>
   );
 };

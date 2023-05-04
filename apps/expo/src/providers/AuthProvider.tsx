@@ -44,6 +44,7 @@ const SpotifyContext = createContext({
       reject("Not implemented");
     });
   },
+  signOut: () => {},
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
 });
 
@@ -106,6 +107,13 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   }, [user, replace, getState]);
 
+  const signOut = useCallback(async () => {
+    await saveSessionToken("");
+    await saveRefreshToken("");
+    setUser(undefined);
+    replace("");
+  }, []);
+
   useMemo(async () => {
     if (response?.type !== "success") return;
 
@@ -147,7 +155,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   useInterval(updateTokens, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
   return (
-    <SpotifyContext.Provider value={{ promptAsync, user }}>
+    <SpotifyContext.Provider value={{ promptAsync, user, signOut }}>
       {children}
     </SpotifyContext.Provider>
   );

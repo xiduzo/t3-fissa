@@ -39,10 +39,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
     (device: SpotifyApi.UserDevice) => async () => {
       try {
         await spotify.transferMyPlayback([device.id!]);
-        toast.success({
-          icon: "🐋",
-          message: `Connected to ${device.name}`,
-        });
+        await mutateAsync();
       } catch (e) {
         checkIfUserHasActiveDevice();
         toast.error({
@@ -50,7 +47,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
         });
       }
     },
-    [spotify, checkIfUserHasActiveDevice],
+    [spotify, checkIfUserHasActiveDevice, mutateAsync],
   );
 
   useEffect(() => {

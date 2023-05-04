@@ -114,8 +114,12 @@ const Index = () => {
             transform: [{ translateY }],
           }}
         >
-          <Typography variant="h2">A collaborative live playlist</Typography>
-          <Typography variant="h6">together with your friends</Typography>
+          <Typography variant="h1" centered>
+            A collaborative live playlist
+          </Typography>
+          <Typography variant="h5" centered>
+            together with your friends
+          </Typography>
         </Animated.View>
         <Animated.View
           className="mb-12"
