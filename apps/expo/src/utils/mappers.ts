@@ -17,3 +17,11 @@ export const mapDeviceToIcon = (
       return "question";
   }
 };
+
+// TODO: move to @fissa/utils ?
+export const mapSpotifyTrackToTrpcTrack = (
+  track: SpotifyApi.TrackObjectFull,
+) => ({
+  trackId: track.id,
+  durationMs: track.duration_ms,
+});

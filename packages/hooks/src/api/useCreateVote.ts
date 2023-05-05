@@ -23,39 +23,34 @@ export const useCreateVote = (
       const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
 
       queryClient.vote.byTrackFromUser.setData(vote, (prev) => ({
-        ...prev,
+        ...prev!,
         ...newVote,
-        userId: "optimistic",
       }));
 
-      queryClient.fissa.byId.setData(newVote.pin, (prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          tracks: prev?.tracks.map((track) => {
-            if (track.trackId === newVote.trackId) {
-              return {
-                ...track,
-                score: track.score + newVote.vote - (previousVote?.vote ?? 0),
-              };
-            }
-            return track;
-          }),
-        };
-      });
+      queryClient.fissa.byId.setData(newVote.pin, (prev) => ({
+        ...prev!,
+        tracks: prev!.tracks.map((track) => {
+          if (track.trackId === newVote.trackId) {
+            return {
+              ...track,
+              score: track.score + newVote.vote - (previousVote?.vote ?? 0),
+            };
+          }
+          return track;
+        }),
+      }));
 
       await callbacks.onMutate?.(newVote);
 
       return previousVote;
     },
     onSettled: async (data, error, variables, context) => {
-      const vote = error ? context : data;
-      queryClient.vote.byTrackFromUser.setData(variables, vote);
       await queryClient.fissa.byId.invalidate(variables.pin);
       await queryClient.vote.byTrackFromUser.invalidate({
         pin: variables.pin,
         trackId: variables.trackId,
       });
+      await callbacks.onSettled?.(data, error, variables, context);
     },
   });
 

@@ -20,14 +20,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const NotificationContext = createContext({
-  //   promptAsync: (options?: AuthRequestPromptOptions | undefined) => {
-  //     return new Promise<AuthSessionResult>((resolve, reject) => {
-  //       reject("Not implemented");
-  //     });
-  //   },
-  //   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
-});
+const NotificationContext = createContext({});
 
 export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const [expoPushToken, setExpoPushToken] = useState("");

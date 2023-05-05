@@ -2,8 +2,11 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useCreateFissa as useBaseCreateFissa } from "@fissa/hooks";
 
-import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from ".";
-import { toast } from "../utils";
+import { mapSpotifyTrackToTrpcTrack, toast } from "../utils";
+import {
+  ENCRYPTED_STORAGE_KEYS,
+  useEncryptedStorage,
+} from "./useEncryptedStorage";
 
 export const useCreateFissa = () => {
   const { push } = useRouter();
@@ -14,6 +17,7 @@ export const useCreateFissa = () => {
     onMutate: () => {
       toast.info({
         message: `Starting your fissa`,
+        duration: 5000,
       });
     },
     onSuccess: async ({ pin }) => {
@@ -35,8 +39,3 @@ export const useCreateFissa = () => {
       mutateAsync(tracks.map(mapSpotifyTrackToTrpcTrack)),
   };
 };
-
-const mapSpotifyTrackToTrpcTrack = (track: SpotifyApi.TrackObjectFull) => ({
-  durationMs: track.duration_ms,
-  trackId: track.id,
-});
