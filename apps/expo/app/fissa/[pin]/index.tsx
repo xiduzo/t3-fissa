@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter, useSearchParams } from "expo-router";
+import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
 import { Fab, FissaTracks, PinCode } from "../../../src/components";
-import { useInvalidateFissa, useOnActiveApp } from "../../../src/hooks";
+import { useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
   const { back } = useRouter();

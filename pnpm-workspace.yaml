@@ -7,4 +7,5 @@ packages:
   - packages/db
   - packages/utils
   - packages/test
+  - packages/hooks
   - packages/config/*

@@ -9,9 +9,9 @@ import {
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
+import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
-import { useGetVoteFromUser } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { Action, TrackEnd, TrackListItem } from "../../shared";
 import { Badge } from "../../shared/Badge";

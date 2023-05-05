@@ -1,7 +1,7 @@
 import { useRouter, useSearchParams } from "expo-router";
+import { useAddTracks } from "@fissa/hooks";
 
 import { PickTracks } from "../../../src/components/shared";
-import { useAddTracks } from "../../../src/hooks";
 import { toast } from "../../../src/utils";
 
 const AddTracks = () => {

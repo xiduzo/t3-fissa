@@ -1,10 +1,10 @@
 import { MutationCallbacks } from "@fissa/utils";
 
-import { api } from "../utils";
+import { api } from "./api";
 
-const endpoint = api.fissa.restart.useMutation;
+const endpoint = api.fissa.skipTrack.useMutation;
 
-export const useRestartFissa = (
+export const useSkipTrack = (
   pin: string,
   callbacks: MutationCallbacks<typeof endpoint> = {},
 ) => {
@@ -12,9 +12,9 @@ export const useRestartFissa = (
 
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
-    onSuccess: async (...props) => {
+    onSuccess: (...props) => {
+      queryClient.fissa.byId.invalidate();
       callbacks.onSuccess?.(...props);
-      queryClient.fissa.invalidate();
     },
   });
 

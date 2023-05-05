@@ -10,9 +10,8 @@ import {
   PlaylistListItem,
   Popover,
   Typography,
-  useCreateFissa,
 } from "../../src/components";
-import { toast } from "../../src/utils";
+import { useCreateFissa } from "../../src/hooks";
 
 const FromPlaylist = () => {
   const spotify = useSpotify();
@@ -23,9 +22,6 @@ const FromPlaylist = () => {
   const { mutateAsync, isLoading } = useCreateFissa();
 
   const start = useCallback(async () => {
-    toast.info({
-      message: `Starting fissa based on ${selectedPlaylist!.name}`,
-    });
     setSelectedPlaylist(null);
 
     const spotifyTracks = await getPlaylistTracks(
@@ -33,12 +29,7 @@ const FromPlaylist = () => {
       spotify,
     );
 
-    const tracks = spotifyTracks.map((track) => ({
-      durationMs: track.duration_ms,
-      trackId: track.id,
-    }));
-
-    await mutateAsync(tracks);
+    await mutateAsync(spotifyTracks);
   }, [selectedPlaylist]);
 
   return (

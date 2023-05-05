@@ -9,8 +9,9 @@ import {
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
+import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
-import { getPlaylistTracks, useDebounce, useSpotify } from "@fissa/utils";
+import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 
 import { BottomDrawer } from "./BottomDrawer";
 import { Button } from "./Button";

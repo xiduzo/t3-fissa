@@ -1,8 +1,8 @@
 import { FC, useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 import { useSearchParams } from "expo-router";
+import { useGetFissaDetails, useSkipTrack } from "@fissa/hooks";
 
-import { useGetFissaDetails, useSkipTrack } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import {
@@ -86,18 +86,15 @@ const SkipTrackAction: FC<{
 }> = ({ pin, owner, onPress }) => {
   const { user } = useAuth();
   const { mutateAsync, isLoading } = useSkipTrack(pin, {
-    onSuccess: () => {
-      toast.success({
-        icon: "🐍",
-        message: "Use your powers wisely",
-      });
-    },
     onMutate: () => {
       onPress();
       toast.info({
         icon: "🐍",
-        message: "Skipping song...",
+        message: "Sssssskipping song...",
       });
+    },
+    onSettled: () => {
+      toast.hide();
     },
   });
 

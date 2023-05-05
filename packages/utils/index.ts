@@ -5,7 +5,6 @@ export { randomize };
 
 export * from "class-variance-authority";
 
-export * from "./hooks";
 export * from "./stores";
 export * from "./types";
 export * from "./array";

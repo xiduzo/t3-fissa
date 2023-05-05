@@ -4,13 +4,8 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 
-import {
-  Button,
-  PageTemplate,
-  Typography,
-  useCreateFissa,
-} from "../../src/components";
-import { toast } from "../../src/utils";
+import { Button, PageTemplate, Typography } from "../../src/components";
+import { useCreateFissa } from "../../src/hooks";
 
 const Host = () => {
   const spotify = useSpotify();
@@ -18,16 +13,9 @@ const Host = () => {
   const { mutateAsync, isLoading } = useCreateFissa();
 
   const handleSurpriseMe = useCallback(async () => {
-    toast.info({ message: "Starting a surprise fissa" });
-
     const { items } = await spotify.getMyTopTracks({ limit: 5 });
 
-    const tracks = items.map((track) => ({
-      durationMs: track.duration_ms,
-      trackId: track.id,
-    }));
-
-    await mutateAsync(tracks);
+    await mutateAsync(items);
   }, [spotify]);
 
   return (

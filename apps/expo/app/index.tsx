@@ -106,7 +106,7 @@ const Index = () => {
         }}
         progress={colorAnimation}
       />
-      <View>
+      <View className="mx-auto w-full max-w-lg">
         <Animated.View
           className="mb-36 items-center"
           style={{

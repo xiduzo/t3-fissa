@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -11,26 +11,24 @@ import { TRPCProvider } from "../src/utils/api";
 
 // This is the main layout of the app
 // It wraps your pages with the providers they need
-const RootLayout = () => {
-  return (
-    <TRPCProvider>
-      <NotificationProvider>
-        <Updater />
-        <SpotifyProvider>
-          <SafeAreaProvider>
-            <Stack
-              screenOptions={{
-                header: (props) => <Header {...props} />,
-              }}
-            />
-            <StatusBar style="light" />
-          </SafeAreaProvider>
-        </SpotifyProvider>
-        <ToastContainer />
-      </NotificationProvider>
-    </TRPCProvider>
-  );
-};
+const RootLayout = () => (
+  <TRPCProvider>
+    <NotificationProvider>
+      <Updater />
+      <SpotifyProvider>
+        <SafeAreaProvider>
+          <Stack
+            screenOptions={{
+              header: (props) => <Header {...props} />,
+            }}
+          />
+          <StatusBar style="light" />
+        </SafeAreaProvider>
+      </SpotifyProvider>
+      <ToastContainer />
+    </NotificationProvider>
+  </TRPCProvider>
+);
 
 export default RootLayout;
 

@@ -47,6 +47,9 @@ importers:
       '@fissa/api':
         specifier: '*'
         version: link:../../packages/api
+      '@fissa/hooks':
+        specifier: '*'
+        version: link:../../packages/hooks
       '@fissa/tailwind-config':
         specifier: '*'
         version: link:../../packages/config/tailwind
@@ -417,6 +420,21 @@ importers:
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
+
+  packages/hooks:
+    dependencies:
+      '@fissa/api':
+        specifier: '*'
+        version: link:../api
+      '@fissa/utils':
+        specifier: '*'
+        version: link:../utils
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
+      spotify-web-api-js:
+        specifier: ^1.5.2
+        version: 1.5.2
 
   packages/test:
     dependencies:

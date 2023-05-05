@@ -1,13 +1,9 @@
 import { FC } from "react";
 import { View } from "react-native";
+import { useGetFissaDetails, useGetTracks } from "@fissa/hooks";
 import { RefetchInterval, useTracks } from "@fissa/utils";
 
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-  useGetFissaDetails,
-  useGetTracks,
-} from "../../hooks";
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../../hooks";
 import { Button } from "./Button";
 
 export const Rejoin = () => {

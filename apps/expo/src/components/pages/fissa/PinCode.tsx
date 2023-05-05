@@ -2,6 +2,7 @@ import { FC, useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 import { useRouter, useSearchParams } from "expo-router";
 import Slider from "@react-native-community/slider";
+import { useGetFissaDetails, useGetTracks } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import {
   RefetchInterval,
@@ -11,7 +12,6 @@ import {
   useTracks,
 } from "@fissa/utils";
 
-import { useGetFissaDetails, useGetTracks } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
 import { Action, Button, Divider, Popover, SelectDevice } from "../../shared";

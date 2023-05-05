@@ -1,0 +1,20 @@
+{
+  "name": "@fissa/hooks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf node_modules"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fissa/api": "*",
+    "@fissa/utils": "*",
+    "react": "18.2.0",
+    "spotify-web-api-js": "^1.5.2"
+  },
+  "devDependencies": {}
+}

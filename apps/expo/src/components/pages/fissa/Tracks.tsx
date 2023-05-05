@@ -1,9 +1,9 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
 import * as Haptics from "expo-haptics";
+import { useCreateVote, useGetFissa } from "@fissa/hooks";
 import { logger, sortTracksByScore, useTracks } from "@fissa/utils";
 
-import { useCreateVote, useGetFissa } from "../../../hooks";
 import {
   Divider,
   Popover,

@@ -21,12 +21,8 @@ import {
 } from "expo-auth-session";
 import Constants from "expo-constants";
 import { useNavigation, useRouter } from "expo-router";
-import {
-  differenceInMinutes,
-  scopes,
-  useInterval,
-  useSpotify,
-} from "@fissa/utils";
+import { useInterval } from "@fissa/hooks";
+import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
 import {

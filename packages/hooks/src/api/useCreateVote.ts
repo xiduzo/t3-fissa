@@ -1,6 +1,6 @@
 import { MutationCallbacks } from "@fissa/utils";
 
-import { api } from "../utils";
+import { api } from "./api";
 
 const endpoint = api.vote.create.useMutation;
 

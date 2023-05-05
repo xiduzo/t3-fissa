@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { FontAwesome } from "@expo/vector-icons";
+import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
-import { useGetVoteFromUser } from "../../hooks";
 import { useAuth } from "../../providers";
 
 export const TrackEnd: FC<{ trackId: string; pin: string }> = ({

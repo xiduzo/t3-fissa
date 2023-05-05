@@ -1,8 +1,8 @@
 import { FC, useCallback } from "react";
 import * as Haptics from "expo-haptics";
 import { useSearchParams } from "expo-router";
+import { useCreateVote, useGetVoteFromUser } from "@fissa/hooks";
 
-import { useCreateVote, useGetVoteFromUser } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { Action } from "../../shared";
 

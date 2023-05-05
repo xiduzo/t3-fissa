@@ -1,8 +1,8 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "expo-router";
+import { useGetFissa, useRestartFissa } from "@fissa/hooks";
 import { useSpotify } from "@fissa/utils";
 
-import { useGetFissa, useRestartFissa } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import { Button, EmptyState, SelectDevice } from "../../shared";
