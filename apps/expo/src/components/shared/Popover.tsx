@@ -35,7 +35,10 @@ export const Popover: FC<Props> = ({
 
   const close = (event: NativeSyntheticEvent<any>) => {
     animate();
-    onRequestClose && onRequestClose(event);
+    // Timeout to make the background opaque again
+    // Before closing the modal to prevent
+    // Weird animation glitches
+    setTimeout(() => onRequestClose?.(event), 25);
   };
 
   const { touchStart, touchEnd, isActive } = useSwipe({

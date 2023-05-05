@@ -170,7 +170,7 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         onPress={toggleSelectDevice}
         icon={mapDeviceToIcon(activeSpeaker)}
       />
-      <Popover visible={selectDevice} onRequestClose={toggleSelectDevice}>
+      <Popover visible={selectDevice} onRequestClose={onRequestClose}>
         <SelectDevice onSelectDevice={handleDeviceSelect} inverted />
         {activeSpeaker && (
           <View className="space-y-6 py-4">
