@@ -9,6 +9,7 @@ export const ProgressBar: FC<Props> = ({
   track,
   disabled,
   inverted,
+  className,
 }) => {
   const [progress, setProgress] = useState(0);
 
@@ -36,7 +37,10 @@ export const ProgressBar: FC<Props> = ({
 
   return (
     <View
-      className={progressBar({ disabled: Boolean(disabled) || !progress })}
+      className={progressBar({
+        disabled: Boolean(disabled) || !progress,
+        className,
+      })}
       style={{ backgroundColor: theme[inverted ? "900" : "100"] + "20" }}
     >
       <LinearGradient
@@ -50,7 +54,7 @@ export const ProgressBar: FC<Props> = ({
   );
 };
 
-const progressBar = cva("flex-row overflow-hidden rounded-md", {
+const progressBar = cva("flex-row overflow-hidden rounded-md w-full", {
   variants: {
     disabled: {
       true: "opacity-60",

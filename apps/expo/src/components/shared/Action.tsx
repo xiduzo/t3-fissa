@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { ButtonProps, TouchableHighlight, View } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
+import { Icon, IconName } from "./Icon";
 import { Typography } from "./Typography";
 
 export const Action: FC<Props> = ({
@@ -30,7 +30,7 @@ export const Action: FC<Props> = ({
           }}
         >
           <Typography inverted={!active && inverted}>
-            <FontAwesome name={icon} size={24} />
+            <Icon name={icon} size={24} />
           </Typography>
         </View>
         <View className={text({ disabled: props.disabled, layout })}>
@@ -59,7 +59,7 @@ export const Action: FC<Props> = ({
 };
 
 interface Props extends Omit<ButtonProps, "color"> {
-  icon: keyof typeof FontAwesome.glyphMap;
+  icon: IconName;
   subtitle?: boolean | string;
   active?: boolean;
   inverted?: boolean;

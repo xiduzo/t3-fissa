@@ -1,16 +1,16 @@
 import { FC } from "react";
 import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
 import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
 import { Typography } from "./Typography";
+import { Icon, IconName } from "./Icon";
 
 interface BottomDrawerProps extends Omit<LinearGradientProps, "colors"> {
   title?: JSX.Element | false;
   action?: (event: GestureResponderEvent) => void;
-  actionIcon?: keyof typeof FontAwesome.glyphMap | null;
+  actionIcon?: IconName | null;
   actionDisabled?: boolean;
   actionTitle?: string;
 }
@@ -43,7 +43,7 @@ export const BottomDrawer: FC<BottomDrawerProps> = ({
                 {actionTitle}
               </Typography>
             )}
-            {actionIcon && <FontAwesome name={actionIcon} size={24} />}
+            {actionIcon && <Icon name={actionIcon} size={24} />}
           </TouchableOpacity>
         )}
       </View>

@@ -36,6 +36,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
           onPress={toggleTrackSelected}
           extra={
             <ProgressBar
+              className="mt-4"
               track={activeTrack}
               expectedEndTime={data.expectedEndTime}
               disabled={!data.currentlyPlayingId}

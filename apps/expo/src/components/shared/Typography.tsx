@@ -34,7 +34,7 @@ interface Props extends TextProps, VariantProps<typeof typography> {
 const typography = cva("", {
   variants: {
     variant: {
-      h1: "font-bold text-4xl",
+      h1: "font-bold text-3xl",
       h2: "font-bold text-2xl",
       h3: "font-bold text-xl",
       h4: "font-semibold text-lg",

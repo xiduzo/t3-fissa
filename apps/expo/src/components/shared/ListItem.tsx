@@ -64,7 +64,7 @@ export const ListItem: FC<Props> = ({
           props.style,
         ]}
       >
-        <View className="mr-4">
+        <View>
           <Image
             className={image({ bigImage })}
             hasBorder={hasBorder}
@@ -79,7 +79,7 @@ export const ListItem: FC<Props> = ({
             </Animated.View>
           </Animated.View>
         </View>
-        <Animated.View className="flex-shrink flex-grow" style={{ opacity }}>
+        <Animated.View className="flex-1" style={{ opacity }}>
           <Typography
             numberOfLines={2}
             variant="h4"
@@ -102,9 +102,9 @@ export const ListItem: FC<Props> = ({
               </Typography>
             )}
           </View>
-          {extra && <View className="mt-2">{extra}</View>}
+          {extra && <View className="mt-2 w-full">{extra}</View>}
         </Animated.View>
-        <View className="w-4 items-center">{end}</View>
+        {end && <View className="w-4 items-center">{end}</View>}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -124,13 +124,10 @@ interface Props extends TouchableWithoutFeedbackProps, ViewProps {
   bigImage?: boolean;
 }
 
-const container = cva("items-center flex-row my-3 max-w-full", {
+const container = cva("items-center flex-row my-3 space-x-4", {
   variants: {
     hasBorder: {
       true: "border rounded-xl",
-    },
-    inverted: {
-      true: "bg-white",
     },
   },
 });

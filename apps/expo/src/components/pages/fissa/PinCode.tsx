@@ -39,8 +39,8 @@ export const PinCode = () => {
         onPress={togglePopover}
         dimmed
         title={String(pin)}
-        size="sm"
         variant="text"
+        className="py-0"
       />
       <Popover visible={showPopover} onRequestClose={togglePopover}>
         <Action
@@ -170,11 +170,10 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         onPress={toggleSelectDevice}
         icon={mapDeviceToIcon(activeSpeaker)}
       />
-      <Popover visible={selectDevice} onRequestClose={onRequestClose}>
+      <Popover visible={selectDevice} onRequestClose={toggleSelectDevice}>
         <SelectDevice onSelectDevice={handleDeviceSelect} inverted />
         {activeSpeaker && (
           <View className="space-y-6 py-4">
-            <Divider />
             <Slider
               minimumValue={0}
               maximumValue={100}

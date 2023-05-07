@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { theme } from "@fissa/tailwind-config";
 
+import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 
 export const Header: FC<NativeStackHeaderProps> = (props) => {
@@ -18,12 +18,7 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
       <View>
         {props.back && props.options.headerBackVisible && (
           <Typography>
-            <FontAwesome
-              name="arrow-left"
-              size={28}
-              title="back"
-              onPress={back}
-            />
+            <Icon name="arrow-left" size={28} onPress={back} />
           </Typography>
         )}
         {props.options.headerLeft &&

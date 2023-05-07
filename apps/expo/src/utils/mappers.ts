@@ -1,18 +1,18 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { IconName } from "../components";
 
-export const mapDeviceToIcon = (
-  device?: SpotifyApi.UserDevice,
-): keyof typeof FontAwesome.glyphMap => {
+export const mapDeviceToIcon = (device?: SpotifyApi.UserDevice): IconName => {
   if (!device) return "question";
 
   switch (device.type.toLowerCase()) {
     case "computer":
       return "laptop";
     case "smartphone":
-      return "mobile-phone";
+      return "smartphone";
     case "castvideo":
+      return "cast";
     case "speaker":
-      return "bluetooth-b";
+    case "avr":
+      return "speaker";
     default:
       return "question";
   }

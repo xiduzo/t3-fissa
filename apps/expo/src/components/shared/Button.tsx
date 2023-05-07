@@ -7,10 +7,10 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { VariantProps, cva } from "@fissa/utils";
 
+import { Icon, IconName } from "./Icon";
 import { Typography } from "./Typography";
 
 export const Button: FC<Props> = ({
@@ -18,7 +18,6 @@ export const Button: FC<Props> = ({
   inverted,
   variant,
   icon,
-  size,
   dimmed,
   ...props
 }) => {
@@ -62,7 +61,6 @@ export const Button: FC<Props> = ({
           inverted,
           disabled: !!props.disabled,
           variant,
-          size,
           dimmed,
         })}
         style={{
@@ -73,22 +71,18 @@ export const Button: FC<Props> = ({
         {icon && (
           <Typography
             inverted={textInverted}
-            variant="h5"
+            variant="h3"
             className="w-6 text-center"
           >
-            <FontAwesome name={icon} size={28} />
+            <Icon name={icon} size={28} />
           </Typography>
         )}
         <Typography
           className="font-bold"
           centered
           inverted={textInverted}
-          variant="h5"
-          style={
-            variant === "outlined" && {
-              color: theme["500"],
-            }
-          }
+          variant="h3"
+          style={variant === "outlined" && { color: theme["500"] }}
         >
           {title}
         </Typography>
@@ -97,7 +91,7 @@ export const Button: FC<Props> = ({
   );
 };
 
-export const Fab: FC<Props> = ({ icon, ...props }) => {
+export const Fab: FC<PropsWithIcon> = ({ icon, ...props }) => {
   const { push } = useRouter();
 
   const handlePress = useCallback(
@@ -121,33 +115,33 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
         end={[1, 1]}
         className="h-full w-full items-center justify-center rounded-2xl"
       >
-        <FontAwesome name={icon} size={28} />
+        <Icon name={icon} size={28} />
       </LinearGradient>
     </TouchableHighlight>
   );
 };
 
-export const IconButton: FC<Props> = ({ icon, inverted, ...props }) => {
+export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, ...props }) => {
   return (
     <TouchableHighlight {...props}>
-      <FontAwesome
-        name={icon}
-        size={28}
-        color={theme[inverted ? "900" : "100"]}
-      />
+      <Icon name={icon} size={28} color={theme[inverted ? "900" : "100"]} />
     </TouchableHighlight>
   );
 };
+
+interface PropsWithIcon extends Props {
+  icon: IconName;
+}
 
 interface Props extends ButtonProps, VariantProps<typeof button> {
   disabled?: boolean;
   className?: string;
   linkTo?: string;
-  icon?: keyof typeof FontAwesome.glyphMap;
+  icon?: IconName;
 }
 
 const button = cva(
-  `flex flex-row items-center justify-center space-x-4 border-2 rounded-full`,
+  `flex flex-row items-center justify-center space-x-4 border-2 py-5 rounded-full`,
   {
     variants: {
       variant: {
@@ -162,10 +156,6 @@ const button = cva(
       disabled: {
         true: "opacity-40",
       },
-      size: {
-        sm: "",
-        base: "py-5",
-      },
       dimmed: {
         true: "opacity-60",
       },
@@ -173,7 +163,6 @@ const button = cva(
     defaultVariants: {
       variant: "contained",
       inverted: false,
-      size: "base",
     },
   },
 );

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 

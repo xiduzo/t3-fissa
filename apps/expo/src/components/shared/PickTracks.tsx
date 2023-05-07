@@ -8,7 +8,6 @@ import {
   View,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import { getPlaylistTracks, useSpotify } from "@fissa/utils";
@@ -16,6 +15,7 @@ import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 import { BottomDrawer } from "./BottomDrawer";
 import { Button } from "./Button";
 import { EmptyState } from "./EmptyState";
+import { Icon } from "./Icon";
 import { Image } from "./Image";
 import { Input } from "./Input";
 import { PlaylistList } from "./PlaylistList";
@@ -149,7 +149,7 @@ export const PickTracks: FC<Props> = ({
                   <PlaylistList
                     onPlaylistPress={setSelectedPlaylist}
                     playlistListItemEnd={
-                      <FontAwesome
+                      <Icon
                         name="chevron-right"
                         size={16}
                         color={theme["100"] + "80"}
@@ -230,7 +230,7 @@ const HeaderRight: FC<{
   return (
     <TouchableOpacity onPress={onPress}>
       <Typography>
-        <FontAwesome name="close" size={24} title="close" />
+        <Icon name="close" size={24} />
       </Typography>
     </TouchableOpacity>
   );
@@ -242,7 +242,7 @@ const HeaderLeft: FC<{
   return (
     <TouchableOpacity onPress={onPress}>
       <Typography>
-        <FontAwesome name="arrow-left" size={24} title="back" />
+        <Icon name="arrow-left" size={24} />
       </Typography>
     </TouchableOpacity>
   );

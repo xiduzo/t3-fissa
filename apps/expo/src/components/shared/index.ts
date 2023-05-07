@@ -5,6 +5,7 @@ export * from "./Divider";
 export * from "./DraggableView";
 export * from "./EmptyState";
 export * from "./Header";
+export * from "./Icon";
 export * from "./Image";
 export * from "./Input";
 export * from "./ListItem";
