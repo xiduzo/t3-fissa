@@ -46,7 +46,8 @@ model Track {
     currentlyPlaying Fissa[] @relation("currently_playing")
     
     votes Vote[]
-    score Int @db.SmallInt @default(0)
+    score Int @db.SmallInt @default(0) // Value used for ordering tracks in a fissa
+    totalScore Int @db.SmallInt @map("total_score") @default(0) // Value used for determining the most popular tracks
 
     @@unique([pin, trackId])
     @@map("tracks")

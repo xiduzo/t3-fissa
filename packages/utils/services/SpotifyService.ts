@@ -50,7 +50,7 @@ export class SpotifyService {
     this.spotify.setAccessToken(accessToken);
     const me = await this.me(accessToken);
     const { body } = await this.spotify.getRecommendations({
-      seed_tracks: seedTrackIds,
+      seed_tracks: seedTrackIds.slice(0, 5),
       market: me.body.country,
       limit: 5,
     });

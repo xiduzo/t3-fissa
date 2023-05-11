@@ -81,7 +81,7 @@ export class FissaService extends ServiceWithContext {
       }
     } while (!fissa && tries < 50);
 
-    await this.playTrack(fissa!, tracks[0]!, access_token!, true);
+    await this.playTrack(fissa!, tracks[0]!, access_token!);
 
     if (tracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
       await this.trackService.addRecommendedTracks(
@@ -163,9 +163,10 @@ export class FissaService extends ServiceWithContext {
 
       if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
         const trackIds = tracks
+          .filter(({ totalScore }) => totalScore > 0)
           .map(({ trackId }) => trackId)
           .sort(randomSort)
-          .slice(0, 5);
+          .slice(0, TRACKS_BEFORE_ADDING_RECOMMENDATIONS);
 
         try {
           await this.trackService.addRecommendedTracks(
@@ -210,23 +211,31 @@ export class FissaService extends ServiceWithContext {
 
   private playTrack = async (
     { currentlyPlayingId, pin }: Pick<Fissa, "currentlyPlayingId" | "pin">,
-    nextTrack: Pick<Track, "trackId" | "durationMs">,
+    { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
-    /**
-     * When the playlist is first created we do not want to skip the first track
-     */
-    initial = false,
   ) => {
     await this.db.$transaction(async (transaction) => {
-      await transaction.vote.deleteMany({
-        where: { pin, trackId: nextTrack.trackId },
-      });
+      let deleteCurrentTrackVotes: Promise<any> | undefined = undefined;
+      let updateCurrentTrack: Promise<any> | undefined = undefined;
 
       if (currentlyPlayingId) {
-        // update has been played on current track Id
-        await transaction.track.update({
+        const scores = await this.db.vote.findMany({
+          where: { pin, trackId: currentlyPlayingId },
+        });
+
+        const increment = scores.reduce((acc, { vote }) => acc + vote, 0);
+
+        updateCurrentTrack = transaction.track.update({
           where: { pin_trackId: { pin, trackId: currentlyPlayingId } },
-          data: { hasBeenPlayed: true, score: 0 },
+          data: {
+            hasBeenPlayed: true,
+            score: 0, // Reset current score
+            totalScore: { increment }, // Update total score
+          },
+        });
+
+        deleteCurrentTrackVotes = transaction.vote.deleteMany({
+          where: { pin, trackId: currentlyPlayingId },
         });
       }
 
@@ -235,15 +244,17 @@ export class FissaService extends ServiceWithContext {
         where: { pin },
         data: {
           currentlyPlaying: {
-            connect: { pin_trackId: { pin, trackId: nextTrack.trackId } },
+            connect: { pin_trackId: { pin, trackId } },
           },
-          expectedEndTime: addMilliseconds(new Date(), nextTrack.durationMs),
+          expectedEndTime: addMilliseconds(new Date(), durationMs),
         },
       });
+
+      await Promise.all([deleteCurrentTrackVotes, updateCurrentTrack]);
     });
 
     // play next track
-    await this.spotifyService.playTrack(accessToken, nextTrack.trackId);
+    await this.spotifyService.playTrack(accessToken, trackId);
   };
 
   private getNextTracks = (
