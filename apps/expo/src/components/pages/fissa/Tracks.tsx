@@ -2,7 +2,7 @@ import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useCreateVote, useGetFissa } from "@fissa/hooks";
-import { logger, sortTracksByScore, useTracks } from "@fissa/utils";
+import { logger, sortTracksByScore, useDevices, useTracks } from "@fissa/utils";
 
 import {
   Divider,
@@ -27,11 +27,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const [vote, setVote] = useState(0);
   const [focussedTrack, setFocussedTrack] =
     useState<SpotifyApi.TrackObjectFull>();
-
-  const localTracks = useTracks(
-    sortTracksByScore(data?.tracks).map(({ trackId }) => trackId),
-  );
-
   const [selectedTrack, setSelectedTrack] =
     useState<SpotifyApi.TrackObjectFull | null>(null);
 
@@ -44,6 +39,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       );
     },
   });
+
+  const { activeDevice } = useDevices();
+  const localTracks = useTracks(
+    sortTracksByScore(data?.tracks).map(({ trackId }) => trackId),
+  );
 
   const isPlaying = !!data?.currentlyPlayingId;
 
@@ -120,18 +120,20 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         scrollEnabled={!focussedTrack}
-        data={isPlaying ? tracks : []}
+        data={isPlaying && activeDevice ? tracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         onTrackLongPress={toggleLongPress}
         trackEnd={({ id }) => <TrackEnd trackId={id} pin={pin} />}
         ListHeaderComponent={
-          <ListHeaderComponent
-            queue={tracks.length}
-            activeTrack={localTracks.find(
-              ({ id }) => id === data?.currentlyPlayingId,
-            )}
-          />
+          isPlaying && activeDevice ? (
+            <ListHeaderComponent
+              queue={tracks.length}
+              activeTrack={localTracks.find(
+                ({ id }) => id === data?.currentlyPlayingId,
+              )}
+            />
+          ) : null
         }
         ListEmptyComponent={
           <View className="mx-6">
@@ -139,7 +141,10 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           </View>
         }
         ListFooterComponent={
-          Boolean(tracks.length) && isPlaying && !isInitialLoading ? (
+          Boolean(tracks.length) &&
+          isPlaying &&
+          activeDevice &&
+          !isInitialLoading ? (
             <ListFooterComponent />
           ) : null
         }

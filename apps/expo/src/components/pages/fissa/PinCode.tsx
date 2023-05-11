@@ -113,7 +113,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 const SetSpeakerAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
   const spotify = useSpotify();
   const { user } = useAuth();
-  const { devices, fetchDevices } = useDevices();
+  const { activeDevice, fetchDevices } = useDevices();
   const [selectDevice, setSelectDevice] = useState(false);
 
   const { data } = useGetFissaDetails(pin, RefetchInterval.Lazy);
@@ -134,10 +134,11 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         toggleSelectDevice();
         onRequestClose();
       } catch (e) {
-        fetchDevices();
         toast.error({
           message: `Failed to connect to ${device.name}`,
         });
+      } finally {
+        fetchDevices();
       }
     },
     [spotify, fetchDevices, toggleSelectDevice],
@@ -156,30 +157,26 @@ const SetSpeakerAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
     [spotify],
   );
 
-  const activeSpeaker = useMemo(() => {
-    return devices.find(({ is_active }) => is_active);
-  }, [devices]);
-
   return (
     <>
       <Action
         hidden={!data || data.by.email !== user!.email}
-        title={activeSpeaker?.name ?? "No active speaker"}
-        subtitle="Control speaker and volume"
+        title={activeDevice?.name ?? "No active device"}
+        subtitle="Control device and volume"
         inverted
         onPress={toggleSelectDevice}
-        icon={mapDeviceToIcon(activeSpeaker)}
+        icon={mapDeviceToIcon(activeDevice)}
       />
       <Popover visible={selectDevice} onRequestClose={toggleSelectDevice}>
         <SelectDevice onSelectDevice={handleDeviceSelect} inverted />
-        {activeSpeaker && (
+        {activeDevice && (
           <View className="space-y-6 py-4">
             <Slider
               minimumValue={0}
               maximumValue={100}
               step={1}
               onValueChange={handleVolumeChange}
-              value={activeSpeaker?.volume_percent ?? 0}
+              value={activeDevice?.volume_percent ?? 0}
               thumbTintColor={theme["900"]}
               maximumTrackTintColor={theme["900"] + "30"}
               minimumTrackTintColor={theme["900"] + "90"}

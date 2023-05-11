@@ -40,7 +40,12 @@ export class SpotifyService {
 
     const { body, statusCode } = await this.spotify.getTrack(trackId);
     logger.debug("playing", body.name, ", status:", statusCode);
-    return this.spotify.play({ uris: [body.uri] });
+    try {
+      await this.spotify.play({ uris: [body.uri] });
+    } catch (e) {
+      logger.warning(e);
+      return Promise.resolve();
+    }
   };
 
   getRecommendedTracks = async (
@@ -50,7 +55,7 @@ export class SpotifyService {
     this.spotify.setAccessToken(accessToken);
     const me = await this.me(accessToken);
     const { body } = await this.spotify.getRecommendations({
-      seed_tracks: seedTrackIds.slice(0, 5),
+      seed_tracks: seedTrackIds.slice(0, Math.min(5, seedTrackIds.length)),
       market: me.body.country,
       limit: 5,
     });

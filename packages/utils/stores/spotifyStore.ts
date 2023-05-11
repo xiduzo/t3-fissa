@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { create } from "zustand";
 
@@ -12,7 +12,7 @@ interface SpotifyState {
   setPlayLists: (playLists: SpotifyApi.PlaylistObjectSimplified[]) => void;
   spotify: SpotifyWebApi.SpotifyWebApiJs;
   devices: SpotifyApi.UserDevice[];
-  setDevices: (devices: SpotifyApi.UserDevice[]) => void
+  setDevices: (devices: SpotifyApi.UserDevice[]) => void;
 }
 
 const useSpotifyStore = create<SpotifyState>((set) => ({
@@ -23,7 +23,7 @@ const useSpotifyStore = create<SpotifyState>((set) => ({
   setPlayLists: (playLists) => set(() => ({ playLists })),
   spotify: new SpotifyWebApi(),
   devices: [],
-  setDevices: (devices) => set(() => ({devices}))
+  setDevices: (devices) => set(() => ({ devices })),
 }));
 
 const newTracks = (
@@ -76,8 +76,8 @@ export const usePlayLists = (user?: SpotifyApi.CurrentUsersProfileResponse) => {
   const { setPlayLists, spotify } = useSpotifyStore();
 
   useMemo(async () => {
-    if(!user) return
-    await getPlaylists(user, spotify, setPlayLists)
+    if (!user) return;
+    await getPlaylists(user, spotify, setPlayLists);
   }, [setPlayLists, user]);
 
   return useSpotifyStore((state) => state.playLists);
@@ -88,22 +88,25 @@ export const useSpotify = () => {
   return spotify;
 };
 
-
 export const useDevices = () => {
-  const { spotify , devices, setDevices} = useSpotifyStore();
+  const { spotify, devices, setDevices } = useSpotifyStore();
 
-  const fetchDevices = useCallback(async() => {
-     try {
+  const fetchDevices = useCallback(async () => {
+    try {
       const { devices } = await spotify.getMyDevices();
       setDevices(devices);
     } catch {
       // Ignore
     }
-  }, [spotify])
+  }, [spotify]);
+
+  const activeDevice = useMemo(() => {
+    return devices.find(({ is_active }) => is_active);
+  }, [devices]);
 
   useEffect(() => {
-    fetchDevices()
-  }, [fetchDevices])
+    fetchDevices();
+  }, [fetchDevices]);
 
-  return { devices, fetchDevices};
-}
+  return { devices, activeDevice, fetchDevices };
+};

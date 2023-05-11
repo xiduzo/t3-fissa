@@ -157,13 +157,15 @@ export class FissaService extends ServiceWithContext {
       const nextTrack = nextTracks[0];
       if (!nextTrack) throw new NoNextTrack();
 
-      await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
-
-      await this.playTrack(fissa, nextTrack, access_token!);
-
       if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-        const trackIds = tracks
-          .filter(({ totalScore }) => totalScore > 0)
+        const withPositiveScore = tracks.filter(
+          ({ totalScore }) => totalScore > 0,
+        );
+        const tracksToMap = withPositiveScore.length
+          ? withPositiveScore
+          : tracks;
+
+        const trackIds = tracksToMap
           .map(({ trackId }) => trackId)
           .sort(randomSort)
           .slice(0, TRACKS_BEFORE_ADDING_RECOMMENDATIONS);
@@ -178,6 +180,11 @@ export class FissaService extends ServiceWithContext {
           logger.error(`${fissa.pin}, failed adding recommended tracks`, e);
         }
       }
+
+      await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
+
+      await this.updateScores(fissa);
+      await this.playTrack(fissa, nextTrack, access_token!);
     } catch (e) {
       logger.error(e);
       await this.stopFissa(pin);
@@ -209,36 +216,40 @@ export class FissaService extends ServiceWithContext {
     });
   };
 
+  private updateScores = async ({
+    currentlyPlayingId,
+    pin,
+  }: Pick<Fissa, "currentlyPlayingId" | "pin">) => {
+    if (!currentlyPlayingId) return;
+
+    await this.db.$transaction(async (transaction) => {
+      const scores = await this.db.vote.findMany({
+        where: { pin, trackId: currentlyPlayingId },
+      });
+
+      const increment = scores.reduce((acc, { vote }) => acc + vote, 0);
+
+      await transaction.track.update({
+        where: { pin_trackId: { pin, trackId: currentlyPlayingId } },
+        data: {
+          hasBeenPlayed: true,
+          score: 0, // Reset current score
+          totalScore: { increment }, // Update total score
+        },
+      });
+
+      await transaction.vote.deleteMany({
+        where: { pin, trackId: currentlyPlayingId },
+      });
+    });
+  };
+
   private playTrack = async (
-    { currentlyPlayingId, pin }: Pick<Fissa, "currentlyPlayingId" | "pin">,
+    { pin }: Pick<Fissa, "pin">,
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
   ) => {
     await this.db.$transaction(async (transaction) => {
-      let deleteCurrentTrackVotes: Promise<any> | undefined = undefined;
-      let updateCurrentTrack: Promise<any> | undefined = undefined;
-
-      if (currentlyPlayingId) {
-        const scores = await this.db.vote.findMany({
-          where: { pin, trackId: currentlyPlayingId },
-        });
-
-        const increment = scores.reduce((acc, { vote }) => acc + vote, 0);
-
-        updateCurrentTrack = transaction.track.update({
-          where: { pin_trackId: { pin, trackId: currentlyPlayingId } },
-          data: {
-            hasBeenPlayed: true,
-            score: 0, // Reset current score
-            totalScore: { increment }, // Update total score
-          },
-        });
-
-        deleteCurrentTrackVotes = transaction.vote.deleteMany({
-          where: { pin, trackId: currentlyPlayingId },
-        });
-      }
-
       // Update room to new track id currently playing
       await transaction.fissa.update({
         where: { pin },
@@ -249,8 +260,6 @@ export class FissaService extends ServiceWithContext {
           expectedEndTime: addMilliseconds(new Date(), durationMs),
         },
       });
-
-      await Promise.all([deleteCurrentTrackVotes, updateCurrentTrack]);
     });
 
     // play next track

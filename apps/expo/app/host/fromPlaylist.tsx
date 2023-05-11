@@ -22,14 +22,14 @@ const FromPlaylist = () => {
   const { mutateAsync, isLoading } = useCreateFissa();
 
   const start = useCallback(async () => {
-    setSelectedPlaylist(null);
-
     const spotifyTracks = await getPlaylistTracks(
       selectedPlaylist!.id,
       spotify,
     );
 
     await mutateAsync(spotifyTracks);
+
+    setSelectedPlaylist(null);
   }, [selectedPlaylist]);
 
   return (

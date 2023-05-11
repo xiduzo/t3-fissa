@@ -16,17 +16,11 @@ export const useCreateFissa = () => {
   const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
 
   const { mutate, mutateAsync, ...rest } = useBaseCreateFissa({
-    onMutate: () => {
-      toast.info({
-        message: `Starting your fissa`,
-        duration: 5000,
-      });
-    },
     onSuccess: async ({ pin }) => {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       toast.success({ message: "Enjoy your fissa", icon: "🎉" });
       await save(pin);
       push(`/fissa/${pin}`);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },
     onError: (error) => {
       toast.error({ message: error.message });
