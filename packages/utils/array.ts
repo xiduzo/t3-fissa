@@ -12,9 +12,13 @@ export const sortTracksByScore = <T extends { score: number; createdAt: Date }>(
   tracks?: T[],
 ) => {
   if (!tracks) return [];
-  
+
   return tracks.sort((a, b) => {
     if (a.score === b.score) {
+      if (a.createdAt.getTime() === b.createdAt.getTime()) {
+        return 1;
+      }
+
       return a.createdAt.getTime() - b.createdAt.getTime();
     }
 

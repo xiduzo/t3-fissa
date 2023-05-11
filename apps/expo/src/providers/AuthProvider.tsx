@@ -35,12 +35,8 @@ import { api } from "../utils/api";
 const REFRESH_INTERVAL_MINUTES = 30;
 
 const SpotifyContext = createContext({
-  promptAsync: (_?: AuthRequestPromptOptions | undefined) => {
-    return new Promise<AuthSessionResult>((_, reject) => {
-      reject("Not implemented");
-    });
-  },
   signOut: () => {},
+  signIn: () => {},
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
 });
 
@@ -110,6 +106,10 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     replace("");
   }, []);
 
+  const signIn = useCallback(async () => {
+    promptAsync();
+  }, [promptAsync]);
+
   useMemo(async () => {
     if (response?.type !== "success") return;
 
@@ -151,7 +151,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   useInterval(updateTokens, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
   return (
-    <SpotifyContext.Provider value={{ promptAsync, user, signOut }}>
+    <SpotifyContext.Provider value={{ user, signOut, signIn }}>
       {children}
     </SpotifyContext.Provider>
   );

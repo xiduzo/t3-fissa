@@ -54,7 +54,7 @@ const Home = () => {
             title="host a fissa"
             disabled={!isPremium}
             variant="outlined"
-            linkTo="/host/selectDevice"
+            linkTo="/host"
           />
           {!isPremium && (
             <Typography dimmed centered className="mt-4" variant="bodyM">

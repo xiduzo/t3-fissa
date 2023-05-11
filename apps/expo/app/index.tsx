@@ -8,7 +8,7 @@ import { Button, Logo, Typography } from "../src/components";
 import { useAuth } from "../src/providers";
 
 const Index = () => {
-  const { promptAsync, user } = useAuth();
+  const { signIn, user } = useAuth();
   const { replace } = useRouter();
 
   const colorAnimation = useRef(new Animated.Value(0)).current;
@@ -39,7 +39,7 @@ const Index = () => {
 
   const scale = signedInAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: [1.75, 20],
+    outputRange: [4, 20],
   });
 
   const logoTranslate = signedInAnimation.interpolate({
@@ -67,7 +67,7 @@ const Index = () => {
   useEffect(() => {
     Animated.timing(colorAnimation, {
       toValue: 1,
-      duration: 2500,
+      duration: 3000,
       useNativeDriver: false,
     }).start(() => {
       if (!canSkipToHome.current) {
@@ -85,7 +85,6 @@ const Index = () => {
         duration: 150,
         useNativeDriver: false,
       }).start(() => {
-        animationsDone.current = true;
         replace("/home");
       });
     });
@@ -114,7 +113,7 @@ const Index = () => {
             transform: [{ translateY }],
           }}
         >
-          <Typography variant="h1" centered>
+          <Typography variant="h1" centered className="mb-4">
             A collaborative live playlist
           </Typography>
           <Typography variant="h5" centered>
@@ -130,7 +129,7 @@ const Index = () => {
         >
           <Button
             icon="spotify"
-            onPress={() => promptAsync()}
+            onPress={signIn}
             title="Connect to get started"
           />
         </Animated.View>

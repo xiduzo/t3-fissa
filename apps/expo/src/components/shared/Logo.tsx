@@ -4,11 +4,8 @@ import LottieView from "lottie-react-native";
 import { theme } from "@fissa/tailwind-config";
 
 export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
-  const style = [
-    viewStyle,
-    styles.commonStyling,
-    { transform: [{ scale: 2 }] },
-  ];
+  const style = [viewStyle, styles.commonStyling];
+
   switch (theme.name) {
     case "blueey":
       return (

@@ -8,13 +8,15 @@ export const Icon: FC<Props> = ({ name, ...iconProps }) => {
     return (
       <Feather {...iconProps} name={name as keyof typeof Feather.glyphMap} />
     );
-     if (Object.keys(AntDesign.glyphMap).includes(name))
+
+  if (Object.keys(AntDesign.glyphMap).includes(name))
     return (
       <AntDesign
         {...iconProps}
         name={name as keyof typeof AntDesign.glyphMap}
       />
     );
+
   if (Object.keys(FontAwesome.glyphMap).includes(name))
     return (
       <FontAwesome
@@ -22,7 +24,6 @@ export const Icon: FC<Props> = ({ name, ...iconProps }) => {
         name={name as keyof typeof FontAwesome.glyphMap}
       />
     );
- 
 
   logger.warning(`Icon ${name} not found`);
   return null;
