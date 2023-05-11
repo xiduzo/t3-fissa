@@ -2,10 +2,11 @@ import { useCallback } from "react";
 import { SafeAreaView, View } from "react-native";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { useSpotify } from "@fissa/utils";
+import { randomSort, useSpotify } from "@fissa/utils";
 
 import { Button, PageTemplate, Typography } from "../../src/components";
 import { useCreateFissa } from "../../src/hooks";
+import { toast } from "../../src/utils";
 
 const Host = () => {
   const spotify = useSpotify();
@@ -13,9 +14,21 @@ const Host = () => {
   const { mutateAsync, isLoading } = useCreateFissa();
 
   const handleSurpriseMe = useCallback(async () => {
-    const { items } = await spotify.getMyTopTracks({ limit: 5 });
+    toast.info({
+      icon: "🦔",
+      message: "An explorer I see, making a fissa just for you",
+      duration: 5000,
+    });
+    const { items } = await spotify.getMyTopTracks();
+    const { tracks } = await spotify.getRecommendations({
+      limit: 5,
+      seed_tracks: items
+        .map(({ id }) => id)
+        .sort(randomSort)
+        .slice(0, 5),
+    });
 
-    await mutateAsync(items);
+    await mutateAsync(tracks);
   }, [spotify]);
 
   return (

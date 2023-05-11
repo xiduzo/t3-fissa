@@ -8,6 +8,8 @@ import {
   useEncryptedStorage,
 } from "./useEncryptedStorage";
 
+type Tracks = (SpotifyApi.TrackObjectFull | SpotifyApi.TrackObjectSimplified)[];
+
 export const useCreateFissa = () => {
   const { push } = useRouter();
 
@@ -33,9 +35,8 @@ export const useCreateFissa = () => {
 
   return {
     ...rest,
-    mutate: (tracks: SpotifyApi.TrackObjectFull[]) =>
-      mutate(tracks.map(mapSpotifyTrackToTrpcTrack)),
-    mutateAsync: (tracks: SpotifyApi.TrackObjectFull[]) =>
+    mutate: (tracks: Tracks) => mutate(tracks.map(mapSpotifyTrackToTrpcTrack)),
+    mutateAsync: (tracks: Tracks) =>
       mutateAsync(tracks.map(mapSpotifyTrackToTrpcTrack)),
   };
 };

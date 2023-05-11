@@ -9,6 +9,7 @@ export const mapDeviceToIcon = (device?: SpotifyApi.UserDevice): IconName => {
     case "smartphone":
       return "smartphone";
     case "castvideo":
+    case "castaudio":
       return "cast";
     case "speaker":
     case "avr":
@@ -20,7 +21,7 @@ export const mapDeviceToIcon = (device?: SpotifyApi.UserDevice): IconName => {
 
 // TODO: move to @fissa/utils ?
 export const mapSpotifyTrackToTrpcTrack = (
-  track: SpotifyApi.TrackObjectFull,
+  track: SpotifyApi.TrackObjectFull | SpotifyApi.TrackObjectSimplified,
 ) => ({
   trackId: track.id,
   durationMs: track.duration_ms,
