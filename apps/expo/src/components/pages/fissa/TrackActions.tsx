@@ -1,18 +1,22 @@
 import { FC, useCallback } from "react";
 import * as Haptics from "expo-haptics";
 import { useSearchParams } from "expo-router";
-import { useCreateVote, useGetVoteFromUser } from "@fissa/hooks";
+import {
+  useCreateVote,
+  useDeleteTrack,
+  useGetVoteFromUser,
+} from "@fissa/hooks";
 
 import { useAuth } from "../../../providers";
 import { Action } from "../../shared";
 
-export const VoteActions: FC<Props> = ({ track, onPress }) => {
+export const TrackActions: FC<Props> = ({ track, onPress, addedByEmail }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
 
   const { data } = useGetVoteFromUser(String(pin), track.id, user);
 
-  const { mutateAsync, isLoading } = useCreateVote(String(pin), {
+  const { mutateAsync: voteOnTrack, isLoading } = useCreateVote(String(pin), {
     onMutate: ({ vote }) => {
       Haptics.notificationAsync(
         vote > 0
@@ -22,13 +26,24 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
     },
   });
 
+  const { mutateAsync: deleteTrack } = useDeleteTrack(String(pin), track.id, {
+    onSettled: () => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    },
+  });
+
   const handleVote = useCallback(
     (vote: number) => async () => {
       onPress();
-      await mutateAsync(vote, track.id);
+      await voteOnTrack(vote, track.id);
     },
-    [track.id],
+    [track.id, voteOnTrack],
   );
+
+  const handleDelete = useCallback(async () => {
+    onPress();
+    await deleteTrack();
+  }, [track.id, deleteTrack]);
 
   return (
     <>
@@ -41,13 +56,15 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
         title="Up-vote song"
         subtitle="It might move up in the queue"
       />
-      {/* <Action
-        inverted
-        disabled
-        icon="remove"
-        title="Remove song"
-        subtitle="Mistakes were made"
-      /> */}
+      {addedByEmail === user?.email && (
+        <Action
+          inverted
+          onPress={handleDelete}
+          icon="trash"
+          title="Remove song"
+          subtitle="Mistakes were made"
+        />
+      )}
       <Action
         onPress={handleVote(-1)}
         inverted
@@ -64,4 +81,5 @@ export const VoteActions: FC<Props> = ({ track, onPress }) => {
 interface Props {
   track: SpotifyApi.TrackObjectFull;
   onPress: () => void;
+  addedByEmail?: string | null;
 }

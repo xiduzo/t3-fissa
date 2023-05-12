@@ -1,5 +1,6 @@
 import { FC, useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 import { useRouter, useSearchParams } from "expo-router";
 import Slider from "@react-native-community/slider";
 import { useGetFissaDetails, useGetTracks } from "@fissa/hooks";
@@ -77,7 +78,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 
   const handleCreatePlaylist = useCallback(async () => {
     setIsCreatingPlaylist(true);
-    toast.info({ message: "Creating playlist" });
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     onRequestClose();
     spotify
       .createPlaylist(user!.id, {
@@ -85,7 +86,6 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         description: "Playlist created by Fissa",
       })
       .then(({ id }) => {
-        toast.info({ message: "Adding fissa songs", icon: "🎶" });
         const uris = tracks?.map(({ uri }) => uri) ?? [];
         const chunks = splitInChunks(uris, 100);
         chunks.forEach((chunk) => {

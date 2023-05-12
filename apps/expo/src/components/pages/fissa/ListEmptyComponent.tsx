@@ -1,4 +1,5 @@
 import { FC, useCallback } from "react";
+import * as Haptics from "expo-haptics";
 import { useSearchParams } from "expo-router";
 import { useGetFissa, useRestartFissa } from "@fissa/hooks";
 import { useDevices, useSpotify } from "@fissa/utils";
@@ -17,9 +18,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const { data: fissa } = useGetFissa(String(pin));
   const { mutateAsync } = useRestartFissa(String(pin), {
     onMutate: () => {
-      toast.info({
-        message: "Starting fissa",
-      });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     },
     onSuccess: () => {
       toast.success({

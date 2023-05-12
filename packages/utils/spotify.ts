@@ -32,14 +32,17 @@ export const getPlaylistTracks = async (
     offset += items.length;
 
     items.forEach(({ track }) => {
-      const isTestTrack = track.name.toLowerCase().includes("hoe het");
-      if (isTestTrack) logger.debug(JSON.stringify(track));
       if (track.type !== "track") return; // We can only allow tracks (not episodes
       if (track.is_local) return; // We can only allow tracks that are not local
       if (track.is_playable !== undefined && !track.is_playable) return; // We can only allow tracks that are playable
-
       // if (!track.preview_url) return; // We can only allow tracks that have a preview url
       if (tracks.find(({ id }) => id === track.id)) return;
+
+      const isTestTrack = track.name.toLowerCase().includes("about love");
+      if (isTestTrack) {
+        logger.info(JSON.stringify(track));
+        logger.info(track.id);
+      }
 
       // if (!_track.available_markets?.length) return; // We can only allow tracks that are available in at least one market
       tracks.push(track);

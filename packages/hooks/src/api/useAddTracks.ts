@@ -24,6 +24,7 @@ export const useAddTracks = (
               (prev?.tracks.find(({ trackId }) => trackId === track.trackId)
                 ?.score ?? 0) + 1,
             createdAt: new Date(),
+            by: { email: "optimistic@add.track" },
           })),
           ...prev!.tracks.filter(
             ({ trackId }) => !newTrackIds.includes(trackId),

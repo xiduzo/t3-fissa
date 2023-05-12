@@ -100,7 +100,12 @@ export class FissaService extends ServiceWithContext {
       include: {
         by: { select: { email: true } },
         tracks: {
-          select: { trackId: true, score: true, createdAt: true },
+          select: {
+            trackId: true,
+            score: true,
+            createdAt: true,
+            by: { select: { email: true } },
+          },
           where: { hasBeenPlayed: false },
         },
       },

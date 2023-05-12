@@ -16,7 +16,7 @@ import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { ListHeaderComponent } from "./ListHeaderComponent";
 import { QuickVoteModal } from "./QuickVoteModal";
-import { VoteActions } from "./VoteActions";
+import { TrackActions } from "./TrackActions";
 
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
@@ -164,9 +164,13 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           />
         )}
         <Divider />
-        <VoteActions
+        <TrackActions
           track={selectedTrack!}
           onPress={() => setSelectedTrack(null)}
+          addedByEmail={
+            data?.tracks.find(({ trackId }) => trackId === selectedTrack?.id)
+              ?.by?.email
+          }
         />
       </Popover>
       <QuickVoteModal

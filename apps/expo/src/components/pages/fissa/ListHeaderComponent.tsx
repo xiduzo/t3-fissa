@@ -91,7 +91,7 @@ const SkipTrackAction: FC<{
       onPress();
       toast.info({
         icon: "🐍",
-        message: "Sssssskipping song...",
+        message: "Ssssssssskipping song",
       });
     },
     onSettled: () => {

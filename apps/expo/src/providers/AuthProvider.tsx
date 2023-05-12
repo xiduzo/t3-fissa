@@ -12,14 +12,13 @@ import {
 import { Platform } from "react-native";
 import {
   AuthRequestConfig,
-  AuthRequestPromptOptions,
-  AuthSessionResult,
   DiscoveryDocument,
   ResponseType,
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
 import Constants from "expo-constants";
+import * as Haptics from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
 import { useInterval } from "@fissa/hooks";
 import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
@@ -117,6 +116,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       message: "Setting account details",
       duration: 30 * 1000,
     });
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
     await saveScopes(scopes.join("_"));
 

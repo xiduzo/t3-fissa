@@ -34,7 +34,7 @@ const setTimeoutForNextTrack = (pin: string, delay: number) => {
   return setTimeout(async () => {
     try {
       startingNextTracks.add(pin);
-      logger.debug(`,${pin}, starting next track`);
+      logger.debug(`${pin}, starting next track`);
       await api.fissa.sync.next.mutate(pin);
       logger.debug(`${pin}, next track started`);
     } catch (error) {
