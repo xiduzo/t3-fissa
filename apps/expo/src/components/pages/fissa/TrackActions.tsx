@@ -1,17 +1,20 @@
-import { FC, useCallback } from "react";
+import { FC, useCallback, useMemo } from "react";
 import * as Haptics from "expo-haptics";
 import { useSearchParams } from "expo-router";
 import {
   useCreateVote,
   useDeleteTrack,
+  useGetFissa,
   useGetVoteFromUser,
 } from "@fissa/hooks";
 
 import { useAuth } from "../../../providers";
 import { Action } from "../../shared";
 
-export const TrackActions: FC<Props> = ({ track, onPress, addedByEmail }) => {
+export const TrackActions: FC<Props> = ({ track, onPress }) => {
   const { pin } = useSearchParams();
+  const { data: fissa } = useGetFissa(String(pin));
+
   const { user } = useAuth();
 
   const { data } = useGetVoteFromUser(String(pin), track.id, user);
@@ -32,6 +35,10 @@ export const TrackActions: FC<Props> = ({ track, onPress, addedByEmail }) => {
     },
   });
 
+  const isAddedByUser = useMemo(() => {
+    return fissa?.by.email === user?.email;
+  }, [fissa, user]);
+
   const handleVote = useCallback(
     (vote: number) => async () => {
       onPress();
@@ -43,7 +50,7 @@ export const TrackActions: FC<Props> = ({ track, onPress, addedByEmail }) => {
   const handleDelete = useCallback(async () => {
     onPress();
     await deleteTrack();
-  }, [track.id, deleteTrack]);
+  }, [deleteTrack]);
 
   return (
     <>
@@ -56,7 +63,7 @@ export const TrackActions: FC<Props> = ({ track, onPress, addedByEmail }) => {
         title="Up-vote song"
         subtitle="It might move up in the queue"
       />
-      {addedByEmail === user?.email && (
+      {isAddedByUser && (
         <Action
           inverted
           onPress={handleDelete}
@@ -81,5 +88,4 @@ export const TrackActions: FC<Props> = ({ track, onPress, addedByEmail }) => {
 interface Props {
   track: SpotifyApi.TrackObjectFull;
   onPress: () => void;
-  addedByEmail?: string | null;
 }

@@ -76,7 +76,7 @@ export const Popover: FC<Props> = ({
               action={close}
               style={{ borderRadius: isActive ? 24 : 0 }}
             >
-              {children}
+              {props.visible && children}
             </BottomDrawer>
           </DraggableView>
         </View>

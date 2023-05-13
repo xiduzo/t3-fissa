@@ -4,6 +4,7 @@ import * as Haptics from "expo-haptics";
 import { useCreateVote, useGetFissa } from "@fissa/hooks";
 import { logger, sortTracksByScore, useDevices, useTracks } from "@fissa/utils";
 
+import { useAuth } from "../../../providers";
 import {
   Divider,
   Popover,
@@ -25,6 +26,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const { data, isInitialLoading } = useGetFissa(pin);
   const focussedPosition = useRef(0);
   const [vote, setVote] = useState(0);
+  const { user } = useAuth();
+
   const [focussedTrack, setFocussedTrack] =
     useState<SpotifyApi.TrackObjectFull>();
   const [selectedTrack, setSelectedTrack] =
@@ -46,6 +49,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const isPlaying = !!data?.currentlyPlayingId;
+  const isOwner = user?.email === data?.by.email;
 
   const getTrackVotes = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
@@ -59,6 +63,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const tracks = useMemo(() => {
     return localTracks.filter((track) => track.id !== data?.currentlyPlayingId);
   }, [localTracks, data?.currentlyPlayingId]);
+
+  const showTracks = useMemo(() => {
+    if (!isOwner) return isPlaying;
+    return isPlaying && activeDevice;
+  }, [isPlaying, isOwner, activeDevice, isInitialLoading]);
 
   const toggleLongPress = useCallback(
     (track?: SpotifyApi.TrackObjectFull) =>
@@ -120,13 +129,13 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         scrollEnabled={!focussedTrack}
-        data={isPlaying && activeDevice ? tracks : []}
+        data={showTracks ? tracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         onTrackLongPress={toggleLongPress}
         trackEnd={({ id }) => <TrackEnd trackId={id} pin={pin} />}
         ListHeaderComponent={
-          isPlaying && activeDevice ? (
+          showTracks ? (
             <ListHeaderComponent
               queue={tracks.length}
               activeTrack={localTracks.find(
@@ -167,10 +176,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         <TrackActions
           track={selectedTrack!}
           onPress={() => setSelectedTrack(null)}
-          addedByEmail={
-            data?.tracks.find(({ trackId }) => trackId === selectedTrack?.id)
-              ?.by?.email
-          }
         />
       </Popover>
       <QuickVoteModal
