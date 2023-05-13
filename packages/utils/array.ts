@@ -8,14 +8,23 @@ export const splitInChunks = <T>(array: T[], chunkSize = 50): T[][] => {
   return chunks;
 };
 
-export const sortTracksByScore = <T extends { score: number; trackId: string }>(
+export const sortTracksByScore = <
+  T extends { score: number; trackId: string; createdAt: Date },
+>(
   tracks?: T[],
 ) => {
   if (!tracks) return [];
 
   return tracks.sort((a, b) => {
     if (a.score === b.score) {
-      return a.trackId.localeCompare(b.trackId);
+      const aTime = a.createdAt.getTime();
+      const bTime = b.createdAt.getTime();
+
+      // When added in a batch (and the time is the same)
+      // Js is acting up and we can not rely on it for sorting
+      return aTime === bTime
+        ? a.trackId.localeCompare(b.trackId)
+        : aTime - bTime;
     }
 
     return b.score - a.score;
