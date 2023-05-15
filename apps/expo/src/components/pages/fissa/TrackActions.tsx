@@ -35,7 +35,13 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
     },
   });
 
-  const isAddedByUser = useMemo(() => {
+  const canRemoveTrack = useMemo(() => {
+    const isAddedByUser =
+      fissa?.tracks.find(({ trackId }) => trackId === track.id)?.by?.email ===
+      user?.id;
+
+    if (isAddedByUser) return true;
+
     return fissa?.by.email === user?.email;
   }, [fissa, user]);
 
@@ -63,7 +69,7 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
         title="Up-vote song"
         subtitle="It might move up in the queue"
       />
-      {isAddedByUser && (
+      {canRemoveTrack && (
         <Action
           inverted
           onPress={handleDelete}

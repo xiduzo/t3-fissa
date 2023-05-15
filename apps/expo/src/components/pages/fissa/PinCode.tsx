@@ -1,5 +1,6 @@
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { useRouter, useSearchParams } from "expo-router";
 import Slider from "@react-native-community/slider";
@@ -15,7 +16,7 @@ import {
 
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
-import { Action, Button, Divider, Popover, SelectDevice } from "../../shared";
+import { Action, Button, Popover, SelectDevice } from "../../shared";
 
 export const PinCode = () => {
   const { pin } = useSearchParams();
@@ -38,10 +39,9 @@ export const PinCode = () => {
     <>
       <Button
         onPress={togglePopover}
-        dimmed
         title={String(pin)}
         variant="text"
-        className="py-0"
+        className="absolute right-8 top-12 z-50 py-0"
       />
       <Popover visible={showPopover} onRequestClose={togglePopover}>
         <Action

@@ -35,6 +35,7 @@ model Track {
     durationMs Int @map("duration_ms")
 
     createdAt DateTime @map("created_at") @default(now())
+    lastUpdateAt DateTime @map("last_update_at") @updatedAt @default(now())
     hasBeenPlayed Boolean @map("has_been_played") @default(false)
 
     fissa Fissa @relation(fields: [pin], references: [pin], onDelete: Cascade)

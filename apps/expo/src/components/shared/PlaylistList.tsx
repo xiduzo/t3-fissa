@@ -23,7 +23,8 @@ export const PlaylistList: FC<Props> = ({
         {...props}
         data={playlists}
         keyExtractor={({ id }) => id}
-        estimatedItemSize={100}
+        estimatedItemSize={80}
+        ItemSeparatorComponent={ItemSeparatorComponent}
         renderItem={({ item }) => (
           <PlaylistListItem
             className="px-6"
@@ -43,6 +44,8 @@ export const PlaylistList: FC<Props> = ({
     </View>
   );
 };
+
+const ItemSeparatorComponent = () => <View className="h-6" />;
 
 interface Props
   extends Omit<

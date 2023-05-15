@@ -8,7 +8,7 @@ import {
   logger,
   randomSort,
   randomize,
-  sortTracksByScore,
+  sortFissaTracksOrder,
 } from "@fissa/utils";
 
 import { Context, ServiceWithContext } from "../utils/context";
@@ -100,13 +100,9 @@ export class FissaService extends ServiceWithContext {
       include: {
         by: { select: { email: true } },
         tracks: {
-          select: {
-            trackId: true,
-            score: true,
-            createdAt: true,
+          include: {
             by: { select: { email: true } },
           },
-          where: { hasBeenPlayed: false },
         },
       },
     });
@@ -280,6 +276,6 @@ export class FissaService extends ServiceWithContext {
         !hasBeenPlayed && trackId !== currentlyPlayingId,
     );
 
-    return sortTracksByScore(tracksToSort);
+    return sortFissaTracksOrder(tracksToSort);
   };
 }

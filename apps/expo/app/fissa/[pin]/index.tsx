@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { useInvalidateFissa } from "@fissa/hooks";
@@ -25,15 +26,14 @@ const Fissa = () => {
 
   return (
     <View style={{ backgroundColor: theme["900"] }}>
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerRight: () => <PinCode />,
-          title: "Now playing",
-        }}
-      />
+      <Stack.Screen options={{ headerShown: false }} />
       <View className="flex h-full w-full">
+        <LinearGradient
+          colors={[theme[900], "transparent"]}
+          className="absolute top-0 z-10 h-24 w-full"
+        />
         <FissaTracks pin={String(pin)} />
+        <PinCode />
         <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}

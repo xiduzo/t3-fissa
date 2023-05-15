@@ -1,13 +1,16 @@
-import { FC, useCallback, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
+import { FlashList } from "@shopify/flash-list";
 import { useCreateVote, useGetFissa } from "@fissa/hooks";
-import { logger, sortTracksByScore, useDevices, useTracks } from "@fissa/utils";
+import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import {
   Divider,
   Popover,
+  ProgressBar,
   TrackEnd,
   TrackList,
   TrackListItem,
@@ -23,6 +26,9 @@ const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
+  const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
+  const safeArea = useSafeAreaInsets();
+
   const { data, isInitialLoading } = useGetFissa(pin);
   const focussedPosition = useRef(0);
   const [vote, setVote] = useState(0);
@@ -45,7 +51,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const { activeDevice } = useDevices();
   const localTracks = useTracks(
-    sortTracksByScore(data?.tracks).map(({ trackId }) => trackId),
+    sortFissaTracksOrder(data?.tracks).map(({ trackId }) => trackId),
   );
 
   const isPlaying = !!data?.currentlyPlayingId;
@@ -59,10 +65,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     },
     [data?.tracks],
   );
-
-  const tracks = useMemo(() => {
-    return localTracks.filter((track) => track.id !== data?.currentlyPlayingId);
-  }, [localTracks, data?.currentlyPlayingId]);
 
   const showTracks = useMemo(() => {
     if (!isOwner) return isPlaying;
@@ -121,36 +123,57 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [focussedTrack],
   );
 
+  const trackEnd = useCallback((track: SpotifyApi.TrackObjectFull) => {
+    return <TrackEnd trackId={track.id} pin={pin} />;
+  }, []);
+
+  const trackExtra = useCallback(
+    (track: SpotifyApi.TrackObjectFull) => {
+      if (track.id !== data?.currentlyPlayingId) return null;
+
+      return (
+        <ProgressBar
+          className="mt-4"
+          track={track}
+          expectedEndTime={data.expectedEndTime}
+          disabled={!data.currentlyPlayingId}
+        />
+      );
+    },
+    [data],
+  );
+
+  useEffect(() => {
+    listRef?.current?.scrollToIndex({
+      index: localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId),
+      animated: true,
+      viewOffset: safeArea.top + 64,
+    });
+  }, [data?.currentlyPlayingId, localTracks, safeArea]);
+
   return (
     <>
       <TrackList
-        onScroll={(e) => logger.debug(e.nativeEvent.contentOffset.y)}
-        scrollEventThrottle={200}
+        ref={listRef}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        activeTrackId={data?.currentlyPlayingId}
+        scrollToOverflowEnabled
         scrollEnabled={!focussedTrack}
-        data={showTracks ? tracks : []}
+        data={showTracks ? localTracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         onTrackLongPress={toggleLongPress}
-        trackEnd={({ id }) => <TrackEnd trackId={id} pin={pin} />}
-        ListHeaderComponent={
-          showTracks ? (
-            <ListHeaderComponent
-              queue={tracks.length}
-              activeTrack={localTracks.find(
-                ({ id }) => id === data?.currentlyPlayingId,
-              )}
-            />
-          ) : null
-        }
+        trackEnd={trackEnd}
+        trackExtra={trackExtra}
+        ListHeaderComponent={<View className="h-28" />}
         ListEmptyComponent={
           <View className="mx-6">
             <ListEmptyComponent isLoading={isInitialLoading} />
           </View>
         }
         ListFooterComponent={
-          Boolean(tracks.length) &&
+          Boolean(localTracks.length) &&
           isPlaying &&
           activeDevice &&
           !isInitialLoading ? (
