@@ -102,7 +102,7 @@ export const ListItem: FC<Props> = ({
               </Typography>
             )}
           </View>
-          {extra && <View className="mt-2 w-full">{extra}</View>}
+          {extra && <View className="mt-1 w-full">{extra}</View>}
         </Animated.View>
         {end && <View className="w-4 items-center">{end}</View>}
       </View>

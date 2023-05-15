@@ -1,5 +1,11 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Dimensions, GestureResponderEvent, View } from "react-native";
+import {
+  Dimensions,
+  GestureResponderEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { FlashList } from "@shopify/flash-list";
@@ -27,6 +33,8 @@ const windowCenter = windowHeight / 2;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
+  const currentTrackScrollOffset = useRef(0);
+
   const safeArea = useSafeAreaInsets();
 
   const { data, isInitialLoading } = useGetFissa(pin);
@@ -57,19 +65,14 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const isPlaying = !!data?.currentlyPlayingId;
   const isOwner = user?.email === data?.by.email;
 
-  const getTrackVotes = useCallback(
-    (track: SpotifyApi.TrackObjectFull) => {
-      return (
-        data?.tracks.find(({ trackId }) => trackId === track.id)?.score ?? 0
-      );
-    },
-    [data?.tracks],
-  );
-
   const showTracks = useMemo(() => {
     if (!isOwner) return isPlaying;
     return isPlaying && activeDevice;
   }, [isPlaying, isOwner, activeDevice, isInitialLoading]);
+
+  const activeScrollIndex = useMemo(() => {
+    return localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId);
+  }, [data?.currentlyPlayingId, localTracks]);
 
   const toggleLongPress = useCallback(
     (track?: SpotifyApi.TrackObjectFull) =>
@@ -80,6 +83,15 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         setVote(0);
       },
     [],
+  );
+
+  const getTrackVotes = useCallback(
+    (track: SpotifyApi.TrackObjectFull) => {
+      return (
+        data?.tracks.find(({ trackId }) => trackId === track.id)?.score ?? 0
+      );
+    },
+    [data?.tracks],
   );
 
   const handleTouchEnd = useCallback(
@@ -143,17 +155,40 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [data],
   );
 
-  useEffect(() => {
+  const setCurrentTrackScrollOffset = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      currentTrackScrollOffset.current = event.nativeEvent.contentOffset.y;
+    },
+    [],
+  );
+
+  const scrollToActiveIndex = useCallback(() => {
     listRef?.current?.scrollToIndex({
-      index: localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId),
+      index: activeScrollIndex,
       animated: true,
       viewOffset: safeArea.top + 64,
     });
-  }, [data?.currentlyPlayingId, localTracks, safeArea]);
+  }, [activeScrollIndex]);
+
+  useEffect(() => {
+    if (activeScrollIndex < 0) return;
+
+    const timeout = setTimeout(scrollToActiveIndex, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [activeScrollIndex, safeArea]);
 
   return (
     <>
       <TrackList
+        onScrollEndDrag={(event) => {
+          const scrollDiff =
+            currentTrackScrollOffset.current -
+            event.nativeEvent.contentOffset.y;
+
+          console.log({ scrollDiff });
+        }}
+        onMomentumScrollEnd={setCurrentTrackScrollOffset}
         ref={listRef}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
