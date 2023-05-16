@@ -19,19 +19,12 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
   const { data, isInitialLoading } = useGetFissa(pin);
-  const focussedPosition = useRef(0);
   const { user } = useAuth();
 
-  const [focussedTrack, setFocussedTrack] = useState<SpotifyApi.TrackObjectFull>();
-  const { vote, handleTouchMove } = useQuickVote(focussedTrack);
+  const { vote, touchStartPosition, focussedTrack, handleTouchMove, handleTouchEnd, toggleTrackFocus } =
+    useQuickVote(pin);
 
   const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
-
-  const { mutateAsync } = useCreateVote(String(pin), {
-    onMutate: ({ vote }) => {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
-    },
-  });
 
   const { activeDevice } = useDevices();
   const localTracks = useTracks(
@@ -50,18 +43,9 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     return localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId);
   }, [data?.currentlyPlayingId, localTracks]);
 
-  const { setCurrentTrackScrollOffset, currentTrackScrollOffset } = useTracksScroll(
+  const { setCurrentTrackScrollOffset, currentTrackScrollOffset, scrollToCurrentTrack } = useTracksScroll(
     activeScrollIndex,
     listRef,
-  );
-
-  const toggleLongPress = useCallback(
-    (track?: SpotifyApi.TrackObjectFull) => async (event: GestureResponderEvent) => {
-      focussedPosition.current = event.nativeEvent.pageY;
-
-      setFocussedTrack(track);
-    },
-    [],
   );
 
   const getTrackVotes = useCallback(
@@ -75,15 +59,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       return localTrack.score;
     },
     [data?.tracks, data?.currentlyPlayingId],
-  );
-
-  const handleTouchEnd = useCallback(
-    (event: GestureResponderEvent) => {
-      if (vote !== 0 && focussedTrack) mutateAsync(vote, focussedTrack.id);
-
-      toggleLongPress()(event);
-    },
-    [toggleLongPress, focussedTrack, vote],
   );
 
   const trackEnd = useCallback((track: SpotifyApi.TrackObjectFull) => {
@@ -102,8 +77,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   return (
     <>
       <TrackList
-        onScrollEndDrag={(event) => {
-          const scrollDiff = currentTrackScrollOffset.current - event.nativeEvent.contentOffset.y;
+        onScrollEndDrag={({ nativeEvent }) => {
+          const scrollDiff = currentTrackScrollOffset.current - nativeEvent.contentOffset.y;
 
           console.log({ scrollDiff });
         }}
@@ -117,7 +92,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         data={showTracks ? localTracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
-        onTrackLongPress={toggleLongPress}
+        onTrackLongPress={toggleTrackFocus}
         trackEnd={trackEnd}
         trackExtra={trackExtra}
         ListHeaderComponent={<View className="h-28" />}
@@ -132,7 +107,12 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           ) : null
         }
       />
-      <Fab title="add songs" position="bottom-left" icon="long-arrow-up" />
+      <Fab
+        title="go to current song"
+        position="bottom-left"
+        icon="long-arrow-up"
+        onPress={scrollToCurrentTrack}
+      />
       <Popover visible={!!selectedTrack} onRequestClose={() => setSelectedTrack(null)}>
         {selectedTrack && (
           <TrackListItem
@@ -150,7 +130,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         <TrackActions track={selectedTrack!} onPress={() => setSelectedTrack(null)} />
       </Popover>
       <QuickVoteModal
-        focussedPosition={focussedPosition.current}
+        touchStartPosition={touchStartPosition}
         vote={vote}
         track={focussedTrack}
         onTouchEnd={handleTouchEnd}

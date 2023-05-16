@@ -14,7 +14,7 @@ export const useTracksScroll = (
     currentTrackScrollOffset.current = event.nativeEvent.contentOffset.y;
   }, []);
 
-  const scrollToActiveIndex = useCallback(() => {
+  const scrollToCurrentTrack = useCallback(() => {
     ref?.current?.scrollToIndex({
       index: activeScrollIndex,
       animated: true,
@@ -25,13 +25,14 @@ export const useTracksScroll = (
   useEffect(() => {
     if (activeScrollIndex < 0) return;
 
-    const timeout = setTimeout(scrollToActiveIndex, 1000);
+    const timeout = setTimeout(scrollToCurrentTrack, 1000);
 
     return () => clearTimeout(timeout);
-  }, [activeScrollIndex, scrollToActiveIndex]);
+  }, [activeScrollIndex, scrollToCurrentTrack]);
 
   return {
     setCurrentTrackScrollOffset,
+    scrollToCurrentTrack,
     currentTrackScrollOffset,
   };
 };

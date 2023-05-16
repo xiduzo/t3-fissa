@@ -3,7 +3,7 @@ import { Animated, Dimensions, GestureResponderEvent, Modal, View } from "react-
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
-import { useGetVoteFromUser } from "@fissa/hooks";
+import { useCreateVote, useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
 import { useAuth } from "../../../providers";
@@ -13,7 +13,7 @@ import { Badge } from "../../shared/Badge";
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
-export const QuickVoteModal: FC<Props> = ({ track, vote, focussedPosition, onTouchEnd, getTrackVotes }) => {
+export const QuickVoteModal: FC<Props> = ({ track, vote, touchStartPosition, onTouchEnd, getTrackVotes }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
 
@@ -22,7 +22,7 @@ export const QuickVoteModal: FC<Props> = ({ track, vote, focussedPosition, onTou
   const { data } = useGetVoteFromUser(String(pin), track?.id!, user);
 
   const opacity = focussedAnimation.interpolate({
-    inputRange: [-Math.abs(focussedPosition), 0],
+    inputRange: [-Math.abs(touchStartPosition), 0],
     outputRange: [0.1, 0.98],
   });
 
@@ -34,7 +34,7 @@ export const QuickVoteModal: FC<Props> = ({ track, vote, focussedPosition, onTou
   useEffect(() => {
     if (!track) return;
     Haptics.selectionAsync();
-    const offset = focussedPosition - windowCenter;
+    const offset = touchStartPosition - windowCenter;
     Animated.timing(focussedAnimation, {
       toValue: offset,
       duration: 0,
@@ -62,7 +62,7 @@ export const QuickVoteModal: FC<Props> = ({ track, vote, focussedPosition, onTou
         useNativeDriver: false,
       }).start();
     };
-  }, [track, focussedPosition]);
+  }, [track, touchStartPosition]);
 
   const upVoteGradient = useMemo(() => {
     const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);
@@ -127,8 +127,42 @@ export const QuickVoteModal: FC<Props> = ({ track, vote, focussedPosition, onTou
   );
 };
 
-export const useQuickVote = (focussedTrack?: SpotifyApi.TrackObjectFull) => {
+export const useQuickVote = (pin: string) => {
   const [vote, setVote] = useState(0);
+  const touchStartPosition = useRef(0);
+  const [focussedTrack, setFocussedTrack] = useState<SpotifyApi.TrackObjectFull>();
+
+  const { mutateAsync } = useCreateVote(String(pin), {
+    onMutate: ({ vote }) => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
+    },
+  });
+
+  const toggleTrackFocus = useCallback(
+    (track?: SpotifyApi.TrackObjectFull) => async (event: GestureResponderEvent) => {
+      touchStartPosition.current = event.nativeEvent.pageY;
+
+      setFocussedTrack(track);
+    },
+    [],
+  );
+
+  const handleTouchEnd = useCallback(
+    async (event: GestureResponderEvent) => {
+      if (vote !== 0 && focussedTrack) mutateAsync(vote, focussedTrack.id);
+
+      await toggleTrackFocus()(event);
+    },
+    [toggleTrackFocus, focussedTrack, vote],
+  );
+
+  const newVote = useCallback(
+    (next: number) => (prev: number) => {
+      if (prev !== next) Haptics.selectionAsync();
+      return next;
+    },
+    [],
+  );
 
   const handleTouchMove = useCallback(
     (event: GestureResponderEvent) => {
@@ -139,20 +173,11 @@ export const useQuickVote = (focussedTrack?: SpotifyApi.TrackObjectFull) => {
       const { pageY } = event.nativeEvent;
 
       if (pageY < windowCenter - TRIGGER_DIFF) {
-        setVote((prev) => {
-          if (prev !== 1) Haptics.selectionAsync();
-          return 1;
-        });
-
-        return;
+        return setVote(newVote(1));
       }
-      if (pageY > windowCenter + TRIGGER_DIFF) {
-        setVote((prev) => {
-          if (prev !== -1) Haptics.selectionAsync();
-          return -1;
-        });
 
-        return;
+      if (pageY > windowCenter + TRIGGER_DIFF) {
+        return setVote(newVote(-1));
       }
 
       setVote(0);
@@ -166,14 +191,18 @@ export const useQuickVote = (focussedTrack?: SpotifyApi.TrackObjectFull) => {
 
   return {
     vote,
+    focussedTrack,
+    touchStartPosition: touchStartPosition.current ?? 0,
     handleTouchMove,
+    handleTouchEnd,
+    toggleTrackFocus,
   };
 };
 
 interface Props {
   track?: SpotifyApi.TrackObjectFull;
   vote: number;
-  focussedPosition: number;
+  touchStartPosition: number;
   onTouchEnd?: (event: GestureResponderEvent) => void;
   getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number | undefined;
 }
