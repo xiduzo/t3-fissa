@@ -138,26 +138,29 @@ const fab = cva("absolute bottom-10 z-40 flex h-14 w-14 rounded-2xl shadow-xl", 
   },
 });
 
-const button = cva(`flex flex-row items-center justify-center space-x-4 border-2 py-5 rounded-full`, {
-  variants: {
-    variant: {
-      outlined: "",
-      contained: "",
-      text: "border-transparent",
+const button = cva(
+  `flex flex-row items-center justify-center space-x-4 border-2 p-5 rounded-full`,
+  {
+    variants: {
+      variant: {
+        outlined: "",
+        contained: "",
+        text: "border-transparent",
+      },
+      inverted: {
+        true: "",
+        false: "",
+      },
+      disabled: {
+        true: "opacity-40",
+      },
+      dimmed: {
+        true: "opacity-60",
+      },
     },
-    inverted: {
-      true: "",
-      false: "",
-    },
-    disabled: {
-      true: "opacity-40",
-    },
-    dimmed: {
-      true: "opacity-60",
+    defaultVariants: {
+      variant: "contained",
+      inverted: false,
     },
   },
-  defaultVariants: {
-    variant: "contained",
-    inverted: false,
-  },
-});
+);

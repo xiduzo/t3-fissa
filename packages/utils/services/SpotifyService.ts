@@ -1,9 +1,11 @@
+import { ServerResponse } from "http";
+import { Http2ServerResponse } from "http2";
 import SpotifyWebApi from "spotify-web-api-node";
 
 import { logger } from "../classes";
 
 export class SpotifyService {
-  public spotify = new SpotifyWebApi({
+  private spotify = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
   });
@@ -29,21 +31,17 @@ export class SpotifyService {
     return body.is_playing;
   };
 
-  activeDevice = async (accessToken: string) => {
-    this.spotify.setAccessToken(accessToken);
-    const { body } = await this.spotify.getMyDevices();
-    return body.devices.find(({ is_active }) => is_active);
-  };
-
   playTrack = async (accessToken: string, trackId: string) => {
     this.spotify.setAccessToken(accessToken);
 
-    const { body, statusCode } = await this.spotify.getTrack(trackId);
-    logger.debug("playing", body.name, ", status:", statusCode);
     try {
-      await this.spotify.play({ uris: [body.uri] });
-    } catch (e) {
-      logger.warning(e);
+      await this.spotify.play({ uris: [`spotify:track:${trackId}`] });
+    } catch (e: any) {
+      if (e.body.reason === "NO_ACTIVE_DEVICE") {
+        logger.warning(e);
+      } else {
+        logger.error(JSON.stringify(e));
+      }
       return Promise.resolve();
     }
   };

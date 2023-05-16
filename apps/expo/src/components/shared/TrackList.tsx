@@ -35,7 +35,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
     );
 
     return (
-      <View className="h-full w-full">
+      <View className="h-full w-full" style={{}}>
         <FlashList
           {...props}
           ref={ref}
@@ -44,23 +44,26 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
           extraData={selectedTracks}
           ItemSeparatorComponent={ItemSeparatorComponent}
           renderItem={({ item, index }) => (
-            <TrackListItem
-              className={trackListItem({
-                highlighted: highlightedTrackId === item.id,
-              })}
-              style={{
-                backgroundColor: highlightedTrackId === item.id ? theme["500"] + "30" : "transparent",
-              }}
-              key={item.id}
-              index={index}
-              track={item}
-              subtitlePrefix={subtitlePrefix(item)}
-              end={trackEnd && trackEnd(item)}
-              extra={trackExtra && trackExtra(item)}
-              onPress={() => onTrackPress?.(item)}
-              onLongPress={onTrackLongPress?.(item)}
-              selected={selectedTracks?.includes(item.id)}
-            />
+            <View style={{ backgroundColor: theme["900"] }}>
+              <TrackListItem
+                className={trackListItem({
+                  highlighted: highlightedTrackId === item.id,
+                })}
+                style={{
+                  backgroundColor:
+                    highlightedTrackId === item.id ? theme["500"] + "30" : "transparent",
+                }}
+                key={item.id}
+                index={index}
+                track={item}
+                subtitlePrefix={subtitlePrefix(item)}
+                end={trackEnd && trackEnd(item)}
+                extra={trackExtra && trackExtra(item)}
+                onPress={() => onTrackPress?.(item)}
+                onLongPress={onTrackLongPress?.(item)}
+                selected={selectedTracks?.includes(item.id)}
+              />
+            </View>
           )}
         />
       </View>
@@ -70,7 +73,8 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
 
 export type TrackListProps = Props;
 
-interface Props extends Omit<FlashListProps<SpotifyApi.TrackObjectFull>, "keyExtractor" | "renderItem"> {
+interface Props
+  extends Omit<FlashListProps<SpotifyApi.TrackObjectFull>, "keyExtractor" | "renderItem"> {
   selectedTracks?: string[];
   highlightedTrackId?: string | null;
   getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number | undefined;
@@ -85,7 +89,7 @@ const ItemSeparatorComponent = () => <View className="h-6" />;
 const trackListItem = cva("rounded-2xl transition-all duration-200", {
   variants: {
     highlighted: {
-      true: "mx-4 p-2",
+      true: "mx-4 p-2 mb-3",
       false: "mx-6",
     },
   },

@@ -25,7 +25,10 @@ const useSpotifyStore = create<SpotifyState>((set) => ({
   setDevices: (devices) => set(() => ({ devices })),
 }));
 
-const newTracks = (currentTracks: SpotifyApi.TrackObjectFull[], newTracks: SpotifyApi.TrackObjectFull[]) => [
+const newTracks = (
+  currentTracks: SpotifyApi.TrackObjectFull[],
+  newTracks: SpotifyApi.TrackObjectFull[],
+) => [
   ...currentTracks.filter(({ id }) => !newTracks.find((track) => track.id === id)),
   ...newTracks,
 ];
@@ -40,7 +43,9 @@ export const useTracks = (trackIds?: string[]) => {
   }, [trackIds, cachedTrackIds]);
 
   const requestedTracks = useMemo(() => {
-    return trackIds?.map((trackId) => tracks.find(({ id }) => id === trackId)).filter(Boolean) ?? [];
+    return (
+      trackIds?.map((trackId) => tracks.find(({ id }) => id === trackId)).filter(Boolean) ?? []
+    );
   }, [trackIds, tracks]);
 
   useMemo(async () => {

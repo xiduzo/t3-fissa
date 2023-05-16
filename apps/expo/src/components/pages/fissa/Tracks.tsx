@@ -7,8 +7,8 @@ import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 import { useAuth } from "../../../providers";
 import {
   Badge,
+  Button,
   Divider,
-  Fab,
   Popover,
   ProgressBar,
   TrackEnd,
@@ -19,7 +19,6 @@ import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { TrackActions } from "./TrackActions";
 import { QuickVoteModal, useQuickVote } from "./quickVote";
-import { useTracksScroll } from "./useTracksScroll";
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
@@ -27,13 +26,22 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const { data, isInitialLoading } = useGetFissa(pin);
   const { user } = useAuth();
 
-  const { handleTouchMove, handleTouchEnd, toggleTrackFocus } = useQuickVote(pin);
+  const { handleTouchMove, handleTouchEnd, toggleTrackFocus, isVoting } = useQuickVote(pin);
 
   const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
 
   const { activeDevice } = useDevices();
-  const localTracks = useTracks(
-    sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
+  const queue = useTracks(
+    sortFissaTracksOrder(
+      data?.tracks.filter(({ hasBeenPlayed }) => !hasBeenPlayed),
+      data?.currentlyPlayingId,
+    ).map(({ trackId }) => trackId),
+  );
+  const playedTracks = useTracks(
+    sortFissaTracksOrder(
+      data?.tracks.filter(({ hasBeenPlayed }) => hasBeenPlayed),
+      data?.currentlyPlayingId,
+    ).map(({ trackId }) => trackId),
   );
 
   const isPlaying = !!data?.currentlyPlayingId;
@@ -43,13 +51,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     if (!isOwner) return isPlaying;
     return isPlaying && activeDevice;
   }, [isPlaying, isOwner, activeDevice]);
-
-  const activeScrollIndex = useMemo(() => {
-    return localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId);
-  }, [data?.currentlyPlayingId, localTracks]);
-
-  const { setCurrentTrackScrollOffset, currentTrackScrollOffset, scrollToCurrentTrack } =
-    useTracksScroll(activeScrollIndex, listRef);
 
   const getTrackVotes = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
@@ -80,41 +81,35 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   return (
     <>
       <TrackList
-        onScrollEndDrag={({ nativeEvent }) => {
-          const scrollDiff = currentTrackScrollOffset.current - nativeEvent.contentOffset.y;
-
-          console.log({ scrollDiff });
-        }}
-        onMomentumScrollEnd={setCurrentTrackScrollOffset}
         ref={listRef}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        stickyHeaderIndices={[0]}
         highlightedTrackId={data?.currentlyPlayingId}
         scrollToOverflowEnabled
-        // scrollEnabled={!isVoting}
-        data={showTracks ? localTracks : []}
+        scrollEnabled={!isVoting}
+        nestedScrollEnabled
+        data={showTracks ? queue : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         onTrackLongPress={toggleTrackFocus}
         trackEnd={trackEnd}
         trackExtra={trackExtra}
-        ListHeaderComponent={<View className="h-28" />}
+        ListHeaderComponent={
+          <View className="mb-4">
+            <Button dimmed variant="text" title="Show played songs" icon="chevron-up" />
+          </View>
+        }
         ListEmptyComponent={
           <View className="mx-6">
             <ListEmptyComponent isLoading={isInitialLoading} />
           </View>
         }
         ListFooterComponent={
-          Boolean(localTracks.length) && isPlaying && activeDevice && !isInitialLoading ? (
+          Boolean(queue.length) && isPlaying && activeDevice && !isInitialLoading ? (
             <ListFooterComponent />
           ) : null
         }
-      />
-      <Fab
-        title="go to current song"
-        position="bottom-left"
-        icon="long-arrow-up"
-        onPress={scrollToCurrentTrack}
       />
       <Popover visible={!!selectedTrack} onRequestClose={() => setSelectedTrack(null)}>
         {selectedTrack && (

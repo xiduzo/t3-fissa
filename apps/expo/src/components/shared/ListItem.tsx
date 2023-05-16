@@ -73,13 +73,19 @@ export const ListItem: FC<Props> = ({
           </Animated.View>
         </View>
         <Animated.View className="flex-1" style={{ opacity }}>
-          <Typography numberOfLines={2} variant="h4" inverted={inverted} className="mb-1">
+          <Typography numberOfLines={1} variant="h4" inverted={inverted} className="mb-1">
             {title}
           </Typography>
-          <View className={subtitleStyle({ hasPrefix: !!subtitlePrefix })}>
+          <View className="flex-row space-x-2">
             {subtitlePrefix}
             {subtitle && (
-              <Typography inverted={inverted} numberOfLines={1} dimmed className="flex-grow" variant="bodyM">
+              <Typography
+                inverted={inverted}
+                numberOfLines={1}
+                dimmed
+                className="flex-1"
+                variant="bodyM"
+              >
                 {subtitle}
               </Typography>
             )}
@@ -110,14 +116,6 @@ const container = cva("items-center flex-row space-x-4", {
   variants: {
     hasBorder: {
       true: "border rounded-xl",
-    },
-  },
-});
-
-const subtitleStyle = cva("flex-row space-x-2", {
-  variants: {
-    hasPrefix: {
-      true: "max-w-[90%]",
     },
   },
 });

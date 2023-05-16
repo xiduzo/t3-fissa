@@ -17,7 +17,7 @@ import { TrackService } from "./TrackService";
 const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
 
 export class FissaService extends ServiceWithContext {
-  private spotifyService: SpotifyService;
+  private spotifyService: SpotifyService = new SpotifyService();
   private trackService: TrackService;
 
   constructor(ctx: Context, spotifyService?: SpotifyService, trackService?: TrackService) {
@@ -96,9 +96,7 @@ export class FissaService extends ServiceWithContext {
       include: {
         by: { select: { email: true } },
         tracks: {
-          include: {
-            by: { select: { email: true } },
-          },
+          include: { by: { select: { email: true } } },
         },
       },
     });
@@ -205,7 +203,10 @@ export class FissaService extends ServiceWithContext {
     });
   };
 
-  private updateScores = async ({ currentlyPlayingId, pin }: Pick<Fissa, "currentlyPlayingId" | "pin">) => {
+  private updateScores = async ({
+    currentlyPlayingId,
+    pin,
+  }: Pick<Fissa, "currentlyPlayingId" | "pin">) => {
     if (!currentlyPlayingId) return;
 
     await this.db.$transaction(async (transaction) => {

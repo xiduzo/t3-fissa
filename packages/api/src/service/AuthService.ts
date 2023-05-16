@@ -4,10 +4,11 @@ import { SpotifyService, addMonths, addSeconds, differenceInMinutes, isPast } fr
 import { Context, ServiceWithContext } from "../utils/context";
 
 export class AuthService extends ServiceWithContext {
-  private spotifyService: SpotifyService;
+  private spotifyService: SpotifyService = new SpotifyService();
 
   constructor(ctx: Context, spotifyService?: SpotifyService) {
     super(ctx);
+
     this.spotifyService = spotifyService ?? new SpotifyService();
   }
 
@@ -131,5 +132,6 @@ export class AuthService extends ServiceWithContext {
     });
   };
 
-  private expiresAt = (expiresIn: number) => Math.round(addSeconds(new Date(), expiresIn).getTime() / 1000);
+  private expiresAt = (expiresIn: number) =>
+    Math.round(addSeconds(new Date(), expiresIn).getTime() / 1000);
 }
