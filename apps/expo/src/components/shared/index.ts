@@ -1,4 +1,5 @@
 export * from "./Action";
+export * from "./Badge";
 export * from "./BottomDrawer";
 export * from "./Button";
 export * from "./Divider";

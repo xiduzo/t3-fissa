@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter, useSearchParams } from "expo-router";
 import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
 import { Fab, FissaTracks, PinCode } from "../../../src/components";
+import { QuickVoteProvider } from "../../../src/components/pages/fissa";
 import { useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
@@ -32,7 +32,9 @@ const Fissa = () => {
           colors={[theme[900], "transparent"]}
           className="absolute top-0 z-10 h-24 w-full"
         />
-        <FissaTracks pin={String(pin)} />
+        <QuickVoteProvider>
+          <FissaTracks pin={String(pin)} />
+        </QuickVoteProvider>
         <PinCode />
         <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient

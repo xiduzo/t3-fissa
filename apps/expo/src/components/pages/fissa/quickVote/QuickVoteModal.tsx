@@ -1,21 +1,22 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useRef } from "react";
 import { Animated, Dimensions, GestureResponderEvent, Modal, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
-import { useCreateVote, useGetVoteFromUser } from "@fissa/hooks";
+import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
-import { useAuth } from "../../../providers";
-import { Action, TrackEnd, TrackListItem } from "../../shared";
-import { Badge } from "../../shared/Badge";
+import { useAuth } from "../../../../providers";
+import { Action, Badge, TrackEnd, TrackListItem } from "../../../shared";
+import { QuickVoteContext } from "./QuickVoteContext";
 
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
-export const QuickVoteModal: FC<Props> = ({ track, vote, touchStartPosition, onTouchEnd, getTrackVotes }) => {
+export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
+  const { vote, touchStartPosition, track } = useContext(QuickVoteContext);
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
@@ -94,7 +95,12 @@ export const QuickVoteModal: FC<Props> = ({ track, vote, touchStartPosition, onT
               transform: [{ scale }],
             }}
           >
-            <Action layout="column" title="Up-vote song" icon="arrow-up" active={data?.vote === 1} />
+            <Action
+              layout="column"
+              title="Up-vote song"
+              icon="arrow-up"
+              active={data?.vote === 1}
+            />
           </Animated.View>
         </LinearGradient>
         <Animated.View className="px-6" style={{ top: focussedAnimation }}>
@@ -127,82 +133,7 @@ export const QuickVoteModal: FC<Props> = ({ track, vote, touchStartPosition, onT
   );
 };
 
-export const useQuickVote = (pin: string) => {
-  const [vote, setVote] = useState(0);
-  const touchStartPosition = useRef(0);
-  const [focussedTrack, setFocussedTrack] = useState<SpotifyApi.TrackObjectFull>();
-
-  const { mutateAsync } = useCreateVote(String(pin), {
-    onMutate: ({ vote }) => {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
-    },
-  });
-
-  const toggleTrackFocus = useCallback(
-    (track?: SpotifyApi.TrackObjectFull) => async (event: GestureResponderEvent) => {
-      touchStartPosition.current = event.nativeEvent.pageY;
-
-      setFocussedTrack(track);
-    },
-    [],
-  );
-
-  const handleTouchEnd = useCallback(
-    async (event: GestureResponderEvent) => {
-      if (vote !== 0 && focussedTrack) mutateAsync(vote, focussedTrack.id);
-
-      await toggleTrackFocus()(event);
-    },
-    [toggleTrackFocus, focussedTrack, vote],
-  );
-
-  const newVote = useCallback(
-    (next: number) => (prev: number) => {
-      if (prev !== next) Haptics.selectionAsync();
-      return next;
-    },
-    [],
-  );
-
-  const handleTouchMove = useCallback(
-    (event: GestureResponderEvent) => {
-      if (!focussedTrack) return;
-
-      const TRIGGER_DIFF = 100;
-
-      const { pageY } = event.nativeEvent;
-
-      if (pageY < windowCenter - TRIGGER_DIFF) {
-        return setVote(newVote(1));
-      }
-
-      if (pageY > windowCenter + TRIGGER_DIFF) {
-        return setVote(newVote(-1));
-      }
-
-      setVote(0);
-    },
-    [focussedTrack],
-  );
-
-  useEffect(() => {
-    return () => setVote(0);
-  }, []);
-
-  return {
-    vote,
-    focussedTrack,
-    touchStartPosition: touchStartPosition.current ?? 0,
-    handleTouchMove,
-    handleTouchEnd,
-    toggleTrackFocus,
-  };
-};
-
 interface Props {
-  track?: SpotifyApi.TrackObjectFull;
-  vote: number;
-  touchStartPosition: number;
   onTouchEnd?: (event: GestureResponderEvent) => void;
   getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number | undefined;
 }

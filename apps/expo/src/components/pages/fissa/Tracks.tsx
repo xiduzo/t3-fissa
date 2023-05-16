@@ -1,18 +1,24 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
-import { GestureResponderEvent, View } from "react-native";
-import * as Haptics from "expo-haptics";
+import { View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { useCreateVote, useGetFissa } from "@fissa/hooks";
+import { useGetFissa } from "@fissa/hooks";
 import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
-import { Divider, Fab, Popover, ProgressBar, TrackEnd, TrackList, TrackListItem } from "../../shared";
-import { Badge } from "../../shared/Badge";
+import {
+  Badge,
+  Divider,
+  Fab,
+  Popover,
+  ProgressBar,
+  TrackEnd,
+  TrackList,
+  TrackListItem,
+} from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
-import { ListHeaderComponent } from "./ListHeaderComponent";
-import { QuickVoteModal, useQuickVote } from "./QuickVoteModal";
 import { TrackActions } from "./TrackActions";
+import { QuickVoteModal, useQuickVote } from "./quickVote";
 import { useTracksScroll } from "./useTracksScroll";
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
@@ -21,8 +27,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const { data, isInitialLoading } = useGetFissa(pin);
   const { user } = useAuth();
 
-  const { vote, touchStartPosition, focussedTrack, handleTouchMove, handleTouchEnd, toggleTrackFocus } =
-    useQuickVote(pin);
+  const { handleTouchMove, handleTouchEnd, toggleTrackFocus } = useQuickVote(pin);
 
   const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
 
@@ -43,10 +48,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     return localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId);
   }, [data?.currentlyPlayingId, localTracks]);
 
-  const { setCurrentTrackScrollOffset, currentTrackScrollOffset, scrollToCurrentTrack } = useTracksScroll(
-    activeScrollIndex,
-    listRef,
-  );
+  const { setCurrentTrackScrollOffset, currentTrackScrollOffset, scrollToCurrentTrack } =
+    useTracksScroll(activeScrollIndex, listRef);
 
   const getTrackVotes = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
@@ -88,7 +91,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onTouchEnd={handleTouchEnd}
         highlightedTrackId={data?.currentlyPlayingId}
         scrollToOverflowEnabled
-        scrollEnabled={!focussedTrack}
+        // scrollEnabled={!isVoting}
         data={showTracks ? localTracks : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
@@ -129,13 +132,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         <Divider />
         <TrackActions track={selectedTrack!} onPress={() => setSelectedTrack(null)} />
       </Popover>
-      <QuickVoteModal
-        touchStartPosition={touchStartPosition}
-        vote={vote}
-        track={focussedTrack}
-        onTouchEnd={handleTouchEnd}
-        getTrackVotes={getTrackVotes}
-      />
+      <QuickVoteModal onTouchEnd={handleTouchEnd} getTrackVotes={getTrackVotes} />
     </>
   );
 };
