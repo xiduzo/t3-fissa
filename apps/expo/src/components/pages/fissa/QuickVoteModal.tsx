@@ -1,11 +1,5 @@
-import { FC, useEffect, useMemo, useRef } from "react";
-import {
-  Animated,
-  Dimensions,
-  GestureResponderEvent,
-  Modal,
-  View,
-} from "react-native";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Animated, Dimensions, GestureResponderEvent, Modal, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
@@ -19,13 +13,7 @@ import { Badge } from "../../shared/Badge";
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
-export const QuickVoteModal: FC<Props> = ({
-  track,
-  vote,
-  focussedPosition,
-  onTouchEnd,
-  getTrackVotes,
-}) => {
+export const QuickVoteModal: FC<Props> = ({ track, vote, focussedPosition, onTouchEnd, getTrackVotes }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
 
@@ -98,26 +86,15 @@ export const QuickVoteModal: FC<Props> = ({
       onTouchEnd={onTouchEnd}
     >
       <Animated.View className="absolute inset-0" style={{ opacity }} />
-      <View
-        className="h-full justify-center"
-        style={{ backgroundColor: theme["900"] }}
-      >
-        <LinearGradient
-          className="flex-1 justify-center"
-          colors={upVoteGradient}
-        >
+      <View className="h-full justify-center" style={{ backgroundColor: theme["900"] }}>
+        <LinearGradient className="flex-1 justify-center" colors={upVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
               transform: [{ scale }],
             }}
           >
-            <Action
-              layout="column"
-              title="Up-vote song"
-              icon="arrow-up"
-              active={data?.vote === 1}
-            />
+            <Action layout="column" title="Up-vote song" icon="arrow-up" active={data?.vote === 1} />
           </Animated.View>
         </LinearGradient>
         <Animated.View className="px-6" style={{ top: focussedAnimation }}>
@@ -129,10 +106,7 @@ export const QuickVoteModal: FC<Props> = ({
             />
           )}
         </Animated.View>
-        <LinearGradient
-          className="flex-1 justify-center"
-          colors={downVoteGradient}
-        >
+        <LinearGradient className="flex-1 justify-center" colors={downVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -153,10 +127,53 @@ export const QuickVoteModal: FC<Props> = ({
   );
 };
 
+export const useQuickVote = (focussedTrack?: SpotifyApi.TrackObjectFull) => {
+  const [vote, setVote] = useState(0);
+
+  const handleTouchMove = useCallback(
+    (event: GestureResponderEvent) => {
+      if (!focussedTrack) return;
+
+      const TRIGGER_DIFF = 100;
+
+      const { pageY } = event.nativeEvent;
+
+      if (pageY < windowCenter - TRIGGER_DIFF) {
+        setVote((prev) => {
+          if (prev !== 1) Haptics.selectionAsync();
+          return 1;
+        });
+
+        return;
+      }
+      if (pageY > windowCenter + TRIGGER_DIFF) {
+        setVote((prev) => {
+          if (prev !== -1) Haptics.selectionAsync();
+          return -1;
+        });
+
+        return;
+      }
+
+      setVote(0);
+    },
+    [focussedTrack],
+  );
+
+  useEffect(() => {
+    return () => setVote(0);
+  }, []);
+
+  return {
+    vote,
+    handleTouchMove,
+  };
+};
+
 interface Props {
   track?: SpotifyApi.TrackObjectFull;
   vote: number;
   focussedPosition: number;
   onTouchEnd?: (event: GestureResponderEvent) => void;
-  getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number;
+  getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number | undefined;
 }

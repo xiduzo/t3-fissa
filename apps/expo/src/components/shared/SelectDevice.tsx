@@ -60,10 +60,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
         <View className="mx-4 my-6 space-y-3">
           <View className="flex-row space-x-2">
             <View className="overflow-hidden rounded-full">
-              <Typography
-                className="px-1.5"
-                style={{ backgroundColor: theme["900"] }}
-              >
+              <Typography className="px-1.5" style={{ backgroundColor: theme["900"] }}>
                 1
               </Typography>
             </View>
@@ -76,10 +73,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
           </View>
           <View className="flex-row space-x-2">
             <View className="overflow-hidden rounded-full">
-              <Typography
-                className="px-1.5"
-                style={{ backgroundColor: theme["900"] }}
-              >
+              <Typography className="px-1.5" style={{ backgroundColor: theme["900"] }}>
                 2
               </Typography>
             </View>
@@ -92,10 +86,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
           </View>
           <View className="flex-row space-x-2">
             <View className="overflow-hidden rounded-full">
-              <Typography
-                className="px-1.5"
-                style={{ backgroundColor: theme["900"] }}
-              >
+              <Typography className="px-1.5" style={{ backgroundColor: theme["900"] }}>
                 3
               </Typography>
             </View>

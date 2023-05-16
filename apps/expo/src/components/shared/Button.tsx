@@ -1,10 +1,5 @@
 import { FC, useCallback, useMemo } from "react";
-import {
-  ButtonProps,
-  GestureResponderEvent,
-  TouchableHighlight,
-  View,
-} from "react-native";
+import { ButtonProps, GestureResponderEvent, TouchableHighlight, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
@@ -13,14 +8,7 @@ import { VariantProps, cva } from "@fissa/utils";
 import { Icon, IconName } from "./Icon";
 import { Typography } from "./Typography";
 
-export const Button: FC<Props> = ({
-  title,
-  inverted,
-  variant,
-  icon,
-  dimmed,
-  ...props
-}) => {
+export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...props }) => {
   const { push } = useRouter();
 
   const textInverted = useMemo(() => {
@@ -69,11 +57,7 @@ export const Button: FC<Props> = ({
         }}
       >
         {icon && (
-          <Typography
-            inverted={textInverted}
-            variant="h3"
-            className="w-6 text-center"
-          >
+          <Typography inverted={textInverted} variant="h3" className="w-6 text-center">
             <Icon name={icon} size={28} />
           </Typography>
         )}
@@ -91,7 +75,7 @@ export const Button: FC<Props> = ({
   );
 };
 
-export const Fab: FC<PropsWithIcon> = ({ icon, ...props }) => {
+export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
   const { push } = useRouter();
 
   const handlePress = useCallback(
@@ -105,8 +89,8 @@ export const Fab: FC<PropsWithIcon> = ({ icon, ...props }) => {
 
   return (
     <TouchableHighlight
-      className="absolute bottom-10 right-8 z-40 flex h-14 w-14 rounded-2xl shadow-xl"
       {...props}
+      className={fab({ position, className: props.className })}
       onPress={handlePress}
     >
       <LinearGradient
@@ -129,6 +113,8 @@ export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, ...props }) => {
   );
 };
 
+interface FabProps extends PropsWithIcon, VariantProps<typeof fab> {}
+
 interface PropsWithIcon extends Props {
   icon: IconName;
 }
@@ -140,29 +126,38 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   icon?: IconName;
 }
 
-const button = cva(
-  `flex flex-row items-center justify-center space-x-4 border-2 py-5 rounded-full`,
-  {
-    variants: {
-      variant: {
-        outlined: "",
-        contained: "",
-        text: "border-transparent",
-      },
-      inverted: {
-        true: "",
-        false: "",
-      },
-      disabled: {
-        true: "opacity-40",
-      },
-      dimmed: {
-        true: "opacity-60",
-      },
-    },
-    defaultVariants: {
-      variant: "contained",
-      inverted: false,
+const fab = cva("absolute bottom-10 z-40 flex h-14 w-14 rounded-2xl shadow-xl", {
+  variants: {
+    position: {
+      "bottom-left": "left-8",
+      "bottom-right": "right-8",
     },
   },
-);
+  defaultVariants: {
+    position: "bottom-right",
+  },
+});
+
+const button = cva(`flex flex-row items-center justify-center space-x-4 border-2 py-5 rounded-full`, {
+  variants: {
+    variant: {
+      outlined: "",
+      contained: "",
+      text: "border-transparent",
+    },
+    inverted: {
+      true: "",
+      false: "",
+    },
+    disabled: {
+      true: "opacity-40",
+    },
+    dimmed: {
+      true: "opacity-60",
+    },
+  },
+  defaultVariants: {
+    variant: "contained",
+    inverted: false,
+  },
+});

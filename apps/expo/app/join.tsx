@@ -12,10 +12,7 @@ import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import { Button, PageTemplate, Rejoin, Typography } from "../src/components";
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-} from "../src/hooks/useEncryptedStorage";
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
 import { toast } from "../src/utils/Toast";
 import { api } from "../src/utils/api";
 
@@ -43,10 +40,7 @@ const Join = () => {
   const key3 = useRef<TextInput>(null);
   const key4 = useRef<TextInput>(null);
 
-  const keys = useMemo(
-    () => [key1, key2, key3, key4],
-    [key1, key2, key3, key4],
-  );
+  const keys = useMemo(() => [key1, key2, key3, key4], [key1, key2, key3, key4]);
 
   const handleSelect = useCallback(
     (selectedIndex: number) => () => {
@@ -75,14 +69,13 @@ const Join = () => {
   );
 
   const handleTextInput = useCallback(
-    (index: number) =>
-      (e: NativeSyntheticEvent<TextInputTextInputEventData>) => {
-        const { text, previousText } = e.nativeEvent;
-        if (text || previousText) return;
+    (index: number) => (e: NativeSyntheticEvent<TextInputTextInputEventData>) => {
+      const { text, previousText } = e.nativeEvent;
+      if (text || previousText) return;
 
-        const next = keys[index - 1];
-        next?.current?.focus();
-      },
+      const next = keys[index - 1];
+      next?.current?.focus();
+    },
     [keys],
   );
 

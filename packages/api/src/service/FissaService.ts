@@ -20,11 +20,7 @@ export class FissaService extends ServiceWithContext {
   private spotifyService: SpotifyService;
   private trackService: TrackService;
 
-  constructor(
-    ctx: Context,
-    spotifyService?: SpotifyService,
-    trackService?: TrackService,
-  ) {
+  constructor(ctx: Context, spotifyService?: SpotifyService, trackService?: TrackService) {
     super(ctx);
     this.spotifyService = spotifyService ?? new SpotifyService();
     this.trackService = trackService ?? new TrackService(ctx);
@@ -159,12 +155,8 @@ export class FissaService extends ServiceWithContext {
       if (!nextTrack) throw new NoNextTrack();
 
       if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-        const withPositiveScore = tracks.filter(
-          ({ totalScore }) => totalScore > 0,
-        );
-        const tracksToMap = withPositiveScore.length
-          ? withPositiveScore
-          : tracks;
+        const withPositiveScore = tracks.filter(({ totalScore }) => totalScore > 0);
+        const tracksToMap = withPositiveScore.length ? withPositiveScore : tracks;
 
         const trackIds = tracksToMap
           .map(({ trackId }) => trackId)
@@ -172,11 +164,7 @@ export class FissaService extends ServiceWithContext {
           .slice(0, TRACKS_BEFORE_ADDING_RECOMMENDATIONS);
 
         try {
-          await this.trackService.addRecommendedTracks(
-            pin,
-            trackIds,
-            access_token!,
-          );
+          await this.trackService.addRecommendedTracks(pin, trackIds, access_token!);
         } catch (e) {
           logger.error(`${fissa.pin}, failed adding recommended tracks`, e);
         }
@@ -217,10 +205,7 @@ export class FissaService extends ServiceWithContext {
     });
   };
 
-  private updateScores = async ({
-    currentlyPlayingId,
-    pin,
-  }: Pick<Fissa, "currentlyPlayingId" | "pin">) => {
+  private updateScores = async ({ currentlyPlayingId, pin }: Pick<Fissa, "currentlyPlayingId" | "pin">) => {
     if (!currentlyPlayingId) return;
 
     await this.db.$transaction(async (transaction) => {
@@ -267,13 +252,9 @@ export class FissaService extends ServiceWithContext {
     await this.spotifyService.playTrack(accessToken, trackId);
   };
 
-  private getNextTracks = (
-    tracks: Track[],
-    currentlyPlayingId?: string | null,
-  ) => {
+  private getNextTracks = (tracks: Track[], currentlyPlayingId?: string | null) => {
     const tracksToSort = tracks.filter(
-      ({ hasBeenPlayed, trackId }) =>
-        !hasBeenPlayed && trackId !== currentlyPlayingId,
+      ({ hasBeenPlayed, trackId }) => !hasBeenPlayed && trackId !== currentlyPlayingId,
     );
 
     return sortFissaTracksOrder(tracksToSort);

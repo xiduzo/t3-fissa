@@ -3,10 +3,7 @@ import { useRouter } from "expo-router";
 import { useCreateFissa as useBaseCreateFissa } from "@fissa/hooks";
 
 import { mapSpotifyTrackToTrpcTrack, toast } from "../utils";
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-} from "./useEncryptedStorage";
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "./useEncryptedStorage";
 
 type Tracks = (SpotifyApi.TrackObjectFull | SpotifyApi.TrackObjectSimplified)[];
 
@@ -30,7 +27,6 @@ export const useCreateFissa = () => {
   return {
     ...rest,
     mutate: (tracks: Tracks) => mutate(tracks.map(mapSpotifyTrackToTrpcTrack)),
-    mutateAsync: (tracks: Tracks) =>
-      mutateAsync(tracks.map(mapSpotifyTrackToTrpcTrack)),
+    mutateAsync: (tracks: Tracks) => mutateAsync(tracks.map(mapSpotifyTrackToTrpcTrack)),
   };
 };

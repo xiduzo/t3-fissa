@@ -48,10 +48,7 @@ export class SpotifyService {
     }
   };
 
-  getRecommendedTracks = async (
-    accessToken: string,
-    seedTrackIds: string[],
-  ) => {
+  getRecommendedTracks = async (accessToken: string, seedTrackIds: string[]) => {
     this.spotify.setAccessToken(accessToken);
     const me = await this.me(accessToken);
     const { body } = await this.spotify.getRecommendations({

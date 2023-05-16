@@ -4,13 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
 import { VariantProps, cva, differenceInMilliseconds } from "@fissa/utils";
 
-export const ProgressBar: FC<Props> = ({
-  expectedEndTime,
-  track,
-  disabled,
-  inverted,
-  className,
-}) => {
+export const ProgressBar: FC<Props> = ({ expectedEndTime, track, disabled, inverted, className }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

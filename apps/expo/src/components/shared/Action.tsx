@@ -34,21 +34,11 @@ export const Action: FC<Props> = ({
           </Typography>
         </View>
         <View className={text({ disabled: props.disabled, layout })}>
-          <Typography
-            variant="h4"
-            inverted={inverted}
-            centered={layout === "column"}
-            className="mb-1"
-          >
+          <Typography variant="h4" inverted={inverted} centered={layout === "column"} className="mb-1">
             {title}
           </Typography>
           {subtitle && (
-            <Typography
-              centered={layout === "column"}
-              variant="bodyM"
-              dimmed
-              inverted={inverted}
-            >
+            <Typography centered={layout === "column"} variant="bodyM" dimmed inverted={inverted}>
               {subtitle}
             </Typography>
           )}
@@ -80,16 +70,13 @@ const text = cva("mx-4", {
   },
 });
 
-const iconStyle = cva(
-  "rounded-xl border-2 w-11 h-11 justify-center items-center",
-  {
-    variants: {
-      disabled: {
-        true: "opacity-30",
-      },
+const iconStyle = cva("rounded-xl border-2 w-11 h-11 justify-center items-center", {
+  variants: {
+    disabled: {
+      true: "opacity-30",
     },
   },
-);
+});
 
 const content = cva("items-center", {
   variants: {

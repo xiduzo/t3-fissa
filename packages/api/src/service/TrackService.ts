@@ -28,9 +28,7 @@ export class TrackService extends ServiceWithContext {
 
     const fissaTrackIds = fissa.tracks.map(({ trackId }) => trackId);
 
-    const newTracks = tracks.filter(
-      ({ trackId }) => !fissaTrackIds.includes(trackId),
-    );
+    const newTracks = tracks.filter(({ trackId }) => !fissaTrackIds.includes(trackId));
 
     await this.db.fissa.update({
       where: { pin },
@@ -52,16 +50,9 @@ export class TrackService extends ServiceWithContext {
     return this.voteService.createVotes(pin, trackIds, 1);
   };
 
-  addRecommendedTracks = async (
-    pin: string,
-    trackIds: string[],
-    accessToken: string,
-  ) => {
+  addRecommendedTracks = async (pin: string, trackIds: string[], accessToken: string) => {
     const service = new SpotifyService();
-    const recommendations = await service.getRecommendedTracks(
-      accessToken,
-      trackIds,
-    );
+    const recommendations = await service.getRecommendedTracks(accessToken, trackIds);
 
     return this.db.fissa.update({
       where: { pin },

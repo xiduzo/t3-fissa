@@ -6,13 +6,7 @@ import { useRouter, useSearchParams } from "expo-router";
 import Slider from "@react-native-community/slider";
 import { useGetFissaDetails, useGetTracks } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
-import {
-  RefetchInterval,
-  splitInChunks,
-  useDevices,
-  useSpotify,
-  useTracks,
-} from "@fissa/utils";
+import { RefetchInterval, splitInChunks, useDevices, useSpotify, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
@@ -51,10 +45,7 @@ export const PinCode = () => {
           onPress={goToHome}
           icon="unlink"
         />
-        <CreatePlaylistAction
-          pin={String(pin)}
-          onRequestClose={togglePopover}
-        />
+        <CreatePlaylistAction pin={String(pin)} onRequestClose={togglePopover} />
         <SetSpeakerAction pin={String(pin)} onRequestClose={togglePopover} />
       </Popover>
     </>

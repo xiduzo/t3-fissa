@@ -21,18 +21,12 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
             <Icon name="arrow-left" size={28} onPress={back} />
           </Typography>
         )}
-        {props.options.headerLeft &&
-          props.options.headerLeft({ canGoBack: true })}
+        {props.options.headerLeft && props.options.headerLeft({ canGoBack: true })}
       </View>
       <View className="flex-grow">
-        {props.options.title && (
-          <Typography variant="h2">{props.options.title}</Typography>
-        )}
+        {props.options.title && <Typography variant="h2">{props.options.title}</Typography>}
       </View>
-      <View>
-        {props.options.headerRight &&
-          props.options.headerRight({ canGoBack: false })}
-      </View>
+      <View>{props.options.headerRight && props.options.headerRight({ canGoBack: false })}</View>
     </View>
   );
 };

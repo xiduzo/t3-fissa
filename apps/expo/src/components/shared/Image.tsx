@@ -6,10 +6,7 @@ import { VariantProps, cva } from "@fissa/utils";
 
 export const Image: FC<Props> = ({ className, hasBorder, ...props }) => {
   return (
-    <View
-      style={{ backgroundColor: theme["100"] }}
-      className={image({ hasBorder: !!hasBorder, className })}
-    >
+    <View style={{ backgroundColor: theme["100"] }} className={image({ hasBorder: !!hasBorder, className })}>
       <ExpoImage contentFit="cover" {...props} />
     </View>
   );

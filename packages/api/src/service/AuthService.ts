@@ -1,11 +1,5 @@
 import { Prisma } from "@fissa/db";
-import {
-  SpotifyService,
-  addMonths,
-  addSeconds,
-  differenceInMinutes,
-  isPast,
-} from "@fissa/utils";
+import { SpotifyService, addMonths, addSeconds, differenceInMinutes, isPast } from "@fissa/utils";
 
 import { Context, ServiceWithContext } from "../utils/context";
 
@@ -137,6 +131,5 @@ export class AuthService extends ServiceWithContext {
     });
   };
 
-  private expiresAt = (expiresIn: number) =>
-    Math.round(addSeconds(new Date(), expiresIn).getTime() / 1000);
+  private expiresAt = (expiresIn: number) => Math.round(addSeconds(new Date(), expiresIn).getTime() / 1000);
 }

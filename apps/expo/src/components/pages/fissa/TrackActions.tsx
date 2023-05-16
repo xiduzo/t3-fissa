@@ -1,12 +1,7 @@
 import { FC, useCallback, useMemo } from "react";
 import * as Haptics from "expo-haptics";
 import { useSearchParams } from "expo-router";
-import {
-  useCreateVote,
-  useDeleteTrack,
-  useGetFissa,
-  useGetVoteFromUser,
-} from "@fissa/hooks";
+import { useCreateVote, useDeleteTrack, useGetFissa, useGetVoteFromUser } from "@fissa/hooks";
 
 import { useAuth } from "../../../providers";
 import { Action } from "../../shared";
@@ -22,9 +17,7 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
   const { mutateAsync: voteOnTrack, isLoading } = useCreateVote(String(pin), {
     onMutate: ({ vote }) => {
       Haptics.notificationAsync(
-        vote > 0
-          ? Haptics.NotificationFeedbackType.Success
-          : Haptics.NotificationFeedbackType.Warning,
+        vote > 0 ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Warning,
       );
     },
   });
@@ -36,9 +29,7 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
   });
 
   const canRemoveTrack = useMemo(() => {
-    const isAddedByUser =
-      fissa?.tracks.find(({ trackId }) => trackId === track.id)?.by?.email ===
-      user?.id;
+    const isAddedByUser = fissa?.tracks.find(({ trackId }) => trackId === track.id)?.by?.email === user?.id;
 
     if (isAddedByUser) return true;
 

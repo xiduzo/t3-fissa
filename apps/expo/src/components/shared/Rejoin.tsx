@@ -16,11 +16,7 @@ export const Rejoin = () => {
   return (
     <View>
       <PrefetchTracks pin={value} />
-      <Button
-        variant="text"
-        title={`Re-join last fissa (${value})`}
-        linkTo={`/fissa/${value}`}
-      />
+      <Button variant="text" title={`Re-join last fissa (${value})`} linkTo={`/fissa/${value}`} />
     </View>
   );
 };

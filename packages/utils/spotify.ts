@@ -82,8 +82,7 @@ export const getPlaylists = async (
     const options = {
       offset,
       limit: 50,
-      fields:
-        "items(id,name,owner(display_name),images(url),tracks(total)),next",
+      fields: "items(id,name,owner(display_name),images(url),tracks(total)),next",
     };
 
     const { next, items } = await spotify.getUserPlaylists(user.id, options);

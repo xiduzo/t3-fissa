@@ -59,17 +59,10 @@ export const ListItem: FC<Props> = ({
     <TouchableWithoutFeedback accessibilityRole="button" {...props}>
       <View
         className={container({ hasBorder, className })}
-        style={[
-          { borderColor: hasBorder ? theme["900"] + "10" : "transparent" },
-          props.style,
-        ]}
+        style={[{ borderColor: hasBorder ? theme["900"] + "10" : "transparent" }, props.style]}
       >
         <View>
-          <Image
-            className={image({ bigImage })}
-            hasBorder={hasBorder}
-            source={imageUri}
-          />
+          <Image className={image({ bigImage })} hasBorder={hasBorder} source={imageUri} />
           <Animated.View
             className="absolute h-20 w-20 items-center justify-center rounded-xl"
             style={{ backgroundColor }}
@@ -80,24 +73,13 @@ export const ListItem: FC<Props> = ({
           </Animated.View>
         </View>
         <Animated.View className="flex-1" style={{ opacity }}>
-          <Typography
-            numberOfLines={2}
-            variant="h4"
-            inverted={inverted}
-            className="mb-1"
-          >
+          <Typography numberOfLines={2} variant="h4" inverted={inverted} className="mb-1">
             {title}
           </Typography>
           <View className={subtitleStyle({ hasPrefix: !!subtitlePrefix })}>
             {subtitlePrefix}
             {subtitle && (
-              <Typography
-                inverted={inverted}
-                numberOfLines={1}
-                dimmed
-                className="flex-grow"
-                variant="bodyM"
-              >
+              <Typography inverted={inverted} numberOfLines={1} dimmed className="flex-grow" variant="bodyM">
                 {subtitle}
               </Typography>
             )}

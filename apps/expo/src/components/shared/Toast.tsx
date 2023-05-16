@@ -1,9 +1,6 @@
 import { FC } from "react";
 import { Platform, View } from "react-native";
-import Toast, {
-  ToastConfig,
-  ToastConfigParams,
-} from "react-native-toast-message";
+import Toast, { ToastConfig, ToastConfigParams } from "react-native-toast-message";
 import { theme } from "@fissa/tailwind-config";
 
 import { Typography } from "./Typography";

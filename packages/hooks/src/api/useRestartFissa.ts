@@ -4,10 +4,7 @@ import { api } from "./api";
 
 const endpoint = api.fissa.restart.useMutation;
 
-export const useRestartFissa = (
-  pin: string,
-  callbacks: MutationCallbacks<typeof endpoint> = {},
-) => {
+export const useRestartFissa = (pin: string, callbacks: MutationCallbacks<typeof endpoint> = {}) => {
   const queryClient = api.useContext();
 
   const { mutate, mutateAsync, ...rest } = endpoint({

@@ -4,8 +4,8 @@ import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
-import { Typography } from "./Typography";
 import { Icon, IconName } from "./Icon";
+import { Typography } from "./Typography";
 
 interface BottomDrawerProps extends Omit<LinearGradientProps, "colors"> {
   title?: JSX.Element | false;

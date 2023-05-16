@@ -50,12 +50,7 @@ const Home = () => {
         </View>
         <View>
           <Button title="join a fissa" className="mb-6" linkTo="/join" />
-          <Button
-            title="host a fissa"
-            disabled={!isPremium}
-            variant="outlined"
-            linkTo="/host"
-          />
+          <Button title="host a fissa" disabled={!isPremium} variant="outlined" linkTo="/host" />
           {!isPremium && (
             <Typography dimmed centered className="mt-4" variant="bodyM">
               Only spotify premium users can host a fissa
@@ -85,15 +80,8 @@ const AccountDetails = () => {
 
   return (
     <>
-      <IconButton
-        title="show account details"
-        icon="user"
-        onPress={toggleAccountDetails}
-      />
-      <Popover
-        visible={showAccountDetails}
-        onRequestClose={toggleAccountDetails}
-      >
+      <IconButton title="show account details" icon="user" onPress={toggleAccountDetails} />
+      <Popover visible={showAccountDetails} onRequestClose={toggleAccountDetails}>
         <Typography inverted variant="h3" centered>
           {user?.display_name}
         </Typography>

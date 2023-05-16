@@ -4,10 +4,7 @@ import { api } from "./api";
 
 const endpoint = api.fissa.skipTrack.useMutation;
 
-export const useSkipTrack = (
-  pin: string,
-  callbacks: MutationCallbacks<typeof endpoint> = {},
-) => {
+export const useSkipTrack = (pin: string, callbacks: MutationCallbacks<typeof endpoint> = {}) => {
   const queryClient = api.useContext();
 
   const { mutate, mutateAsync, ...rest } = endpoint({

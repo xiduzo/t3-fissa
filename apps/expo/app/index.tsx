@@ -91,10 +91,7 @@ const Index = () => {
   }, [replace]);
 
   return (
-    <Animated.View
-      style={{ backgroundColor }}
-      className="h-full items-center justify-between px-6"
-    >
+    <Animated.View style={{ backgroundColor }} className="h-full items-center justify-between px-6">
       <Stack.Screen options={{ headerShown: false }} />
       <View />
       <Logo
@@ -127,18 +124,9 @@ const Index = () => {
             transform: [{ scale: notSignedInAnimation }],
           }}
         >
-          <Button
-            icon="spotify"
-            onPress={signIn}
-            title="Connect to get started"
-          />
+          <Button icon="spotify" onPress={signIn} title="Connect to get started" />
         </Animated.View>
-        <Typography
-          centered
-          className="mb-8"
-          variant="bodyM"
-          animatedColor={color}
-        >
+        <Typography centered className="mb-8" variant="bodyM" animatedColor={color}>
           Made by Milanovski and Xiduzo
         </Typography>
       </View>

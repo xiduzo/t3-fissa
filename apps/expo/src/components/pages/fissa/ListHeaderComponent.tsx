@@ -5,14 +5,7 @@ import { useGetFissaDetails, useSkipTrack } from "@fissa/hooks";
 
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
-import {
-  Action,
-  Divider,
-  Popover,
-  ProgressBar,
-  TrackListItem,
-  Typography,
-} from "../../shared";
+import { Action, Divider, Popover, ProgressBar, TrackListItem, Typography } from "../../shared";
 
 export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
   const { pin } = useSearchParams();
@@ -65,11 +58,7 @@ export const ListHeaderComponent: FC<Props> = ({ queue, activeTrack }) => {
           }
         />
         <Divider />
-        <SkipTrackAction
-          pin={String(pin)}
-          owner={data.by.email!}
-          onPress={toggleTrackSelected}
-        />
+        <SkipTrackAction pin={String(pin)} owner={data.by.email!} onPress={toggleTrackSelected} />
       </Popover>
     </View>
   );

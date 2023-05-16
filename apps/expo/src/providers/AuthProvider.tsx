@@ -24,10 +24,7 @@ import { useInterval } from "@fissa/hooks";
 import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-} from "../hooks/useEncryptedStorage";
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
 import { toast } from "../utils";
 import { api } from "../utils/api";
 
@@ -50,24 +47,17 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
 
-  const { save: saveRefreshToken, getValueFor: getRefreshToken } =
-    useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.refreshToken);
-  const { save: saveSessionToken } = useEncryptedStorage(
-    ENCRYPTED_STORAGE_KEYS.sessionToken,
+  const { save: saveRefreshToken, getValueFor: getRefreshToken } = useEncryptedStorage(
+    ENCRYPTED_STORAGE_KEYS.refreshToken,
   );
+  const { save: saveSessionToken } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.sessionToken);
 
-  const { save: saveScopes, getValueFor: getScopes } = useEncryptedStorage(
-    ENCRYPTED_STORAGE_KEYS.scopes,
-  );
+  const { save: saveScopes, getValueFor: getScopes } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.scopes);
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
   const saveTokens = useCallback(
-    async (props: {
-      access_token: string;
-      session_token?: string;
-      refresh_token?: string;
-    }) => {
+    async (props: { access_token: string; session_token?: string; refresh_token?: string }) => {
       const { access_token, refresh_token, session_token } = props;
 
       if (!session_token) return;
@@ -150,11 +140,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useInterval(updateTokens, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
-  return (
-    <SpotifyContext.Provider value={{ user, signOut, signIn }}>
-      {children}
-    </SpotifyContext.Provider>
-  );
+  return <SpotifyContext.Provider value={{ user, signOut, signIn }}>{children}</SpotifyContext.Provider>;
 };
 
 export const useAuth = () => useContext(SpotifyContext);

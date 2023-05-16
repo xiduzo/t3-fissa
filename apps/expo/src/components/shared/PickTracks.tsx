@@ -22,11 +22,7 @@ import { PlaylistList } from "./PlaylistList";
 import { TrackList } from "./TrackList";
 import { Typography } from "./Typography";
 
-export const PickTracks: FC<Props> = ({
-  disabledAction,
-  actionTitle,
-  onAddTracks,
-}) => {
+export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks }) => {
   const { back } = useRouter();
   const spotify = useSpotify();
 
@@ -40,8 +36,7 @@ export const PickTracks: FC<Props> = ({
   const [selectedTracks, setSelectedTracks] = useState<TrackList>([]);
   const [filteredTracks, setFilteredTracks] = useState<TrackList>([]);
 
-  const [selectedPlaylist, setSelectedPlaylist] =
-    useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
   const clearSelectedPlaylist = useCallback(() => {
     setSelectedPlaylist(null);
@@ -53,13 +48,10 @@ export const PickTracks: FC<Props> = ({
     await onAddTracks(selectedTracks);
   }, [selectedTracks, onAddTracks]);
 
-  const handleSearch = useCallback(
-    (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
-      const { text } = event.nativeEvent;
-      setSearch(text);
-    },
-    [],
-  );
+  const handleSearch = useCallback((event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const { text } = event.nativeEvent;
+    setSearch(text);
+  }, []);
 
   const handleTrackPress = useCallback((track: SpotifyApi.TrackObjectFull) => {
     inputRef.current?.blur();
@@ -84,9 +76,7 @@ export const PickTracks: FC<Props> = ({
     if (!debounced) return setFilteredTracks(playlistTracks.current);
     setFilteredTracks(
       playlistTracks.current.filter((track) => {
-        const nameMatch = track.name
-          .toLowerCase()
-          .includes(debounced.toLowerCase());
+        const nameMatch = track.name.toLowerCase().includes(debounced.toLowerCase());
         if (nameMatch) return nameMatch;
 
         const artistMatch = track.artists.some((artist) =>
@@ -94,9 +84,7 @@ export const PickTracks: FC<Props> = ({
         );
         if (artistMatch) return artistMatch;
 
-        const albumMatch = track.album.name
-          .toLowerCase()
-          .includes(debounced.toLowerCase());
+        const albumMatch = track.album.name.toLowerCase().includes(debounced.toLowerCase());
         if (albumMatch) return albumMatch;
       }),
     );
@@ -117,8 +105,7 @@ export const PickTracks: FC<Props> = ({
         options={{
           animation: "fade_from_bottom",
           animationDuration: 100,
-          headerLeft: () =>
-            selectedPlaylist && <HeaderLeft onPress={clearSelectedPlaylist} />,
+          headerLeft: () => selectedPlaylist && <HeaderLeft onPress={clearSelectedPlaylist} />,
           headerRight: () => <HeaderRight onPress={back} />,
         }}
       />
@@ -148,13 +135,7 @@ export const PickTracks: FC<Props> = ({
                   </Typography>
                   <PlaylistList
                     onPlaylistPress={setSelectedPlaylist}
-                    playlistListItemEnd={
-                      <Icon
-                        name="chevron-right"
-                        size={16}
-                        color={theme["100"] + "80"}
-                      />
-                    }
+                    playlistListItemEnd={<Icon name="chevron-right" size={16} color={theme["100"] + "80"} />}
                   />
                 </>
               )}
@@ -162,10 +143,7 @@ export const PickTracks: FC<Props> = ({
                 <>
                   <View className="m-6">
                     <View className="h-40 w-40">
-                      <Image
-                        className="h-full w-full"
-                        source={selectedPlaylist.images[0]?.url}
-                      />
+                      <Image className="h-full w-full" source={selectedPlaylist.images[0]?.url} />
                     </View>
                     <Typography variant="h1" className="mt-6">
                       {selectedPlaylist.name}
@@ -176,13 +154,7 @@ export const PickTracks: FC<Props> = ({
                     onTrackPress={handleTrackPress}
                     selectedTracks={selectedTracks.map((track) => track.id)}
                     ListFooterComponent={<View className="pb-40" />}
-                    ListEmptyComponent={
-                      <EmptyState
-                        icon="🐕"
-                        title="Fetching songs"
-                        subtitle="good boy"
-                      />
-                    }
+                    ListEmptyComponent={<EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />}
                   />
                 </>
               )}
@@ -196,12 +168,7 @@ export const PickTracks: FC<Props> = ({
           actionTitle="clear all"
           actionIcon={null}
         >
-          <Typography
-            variant="h6"
-            inverted
-            centered
-            className="-mt-[38px] mb-4"
-          >
+          <Typography variant="h6" inverted centered className="-mt-[38px] mb-4">
             {selectedTracks.length} songs selected
           </Typography>
           <Button

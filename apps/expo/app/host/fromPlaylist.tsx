@@ -4,28 +4,18 @@ import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 
-import {
-  Button,
-  PlaylistList,
-  PlaylistListItem,
-  Popover,
-  Typography,
-} from "../../src/components";
+import { Button, PlaylistList, PlaylistListItem, Popover, Typography } from "../../src/components";
 import { useCreateFissa } from "../../src/hooks";
 
 const FromPlaylist = () => {
   const spotify = useSpotify();
 
-  const [selectedPlaylist, setSelectedPlaylist] =
-    useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
   const { mutateAsync, isLoading } = useCreateFissa();
 
   const start = useCallback(async () => {
-    const spotifyTracks = await getPlaylistTracks(
-      selectedPlaylist!.id,
-      spotify,
-    );
+    const spotifyTracks = await getPlaylistTracks(selectedPlaylist!.id, spotify);
 
     await mutateAsync(spotifyTracks);
 
@@ -44,25 +34,12 @@ const FromPlaylist = () => {
           ListFooterComponent={<View className="pb-28" />}
         />
       </View>
-      <Popover
-        visible={!!selectedPlaylist}
-        onRequestClose={() => setSelectedPlaylist(null)}
-      >
+      <Popover visible={!!selectedPlaylist} onRequestClose={() => setSelectedPlaylist(null)}>
         <Typography variant="h2" centered inverted className="mb-8">
           Your fissa will start based on
         </Typography>
-        <PlaylistListItem
-          playlist={selectedPlaylist!}
-          hasBorder
-          inverted
-          className="mb-8"
-        />
-        <Button
-          title="Let's kick it"
-          inverted
-          onPress={start}
-          disabled={isLoading}
-        />
+        <PlaylistListItem playlist={selectedPlaylist!} hasBorder inverted className="mb-8" />
+        <Button title="Let's kick it" inverted onPress={start} disabled={isLoading} />
       </Popover>
     </SafeAreaView>
   );
