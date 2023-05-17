@@ -34,17 +34,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
 
   const { activeDevice } = useDevices();
-  const queue = useTracks(
-    sortFissaTracksOrder(
-      data?.tracks.filter(({ hasBeenPlayed }) => !hasBeenPlayed),
-      data?.currentlyPlayingId,
-    ).map(({ trackId }) => trackId),
-  );
-  const playedTracks = useTracks(
-    sortFissaTracksOrder(
-      data?.tracks.filter(({ hasBeenPlayed }) => hasBeenPlayed),
-      data?.currentlyPlayingId,
-    ).map(({ trackId }) => trackId),
+  const localTracks = useTracks(
+    sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
   );
 
   const isPlaying = !!data?.currentlyPlayingId;
@@ -54,12 +45,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     if (!isOwner) return isPlaying;
     return isPlaying && activeDevice;
   }, [isPlaying, isOwner, activeDevice]);
-
-  const toggleShowPlayedTracks = useCallback(() => {
-    setShowPlayedTracks(!showPlayedTracks);
-    if (showPlayedTracks) return;
-    listRef.current?.scrollToIndex({ index: 0, viewOffset: 64, animated: true });
-  }, [showPlayedTracks]);
 
   const getTrackVotes = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
@@ -71,12 +56,21 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
       return localTrack.score;
     },
-    [data?.tracks, data?.currentlyPlayingId],
+    [data?.tracks, data?.currentlyPlayingId, localTracks],
   );
 
-  const trackEnd = useCallback((track: SpotifyApi.TrackObjectFull) => {
-    return <TrackEnd trackId={track.id} pin={pin} />;
-  }, []);
+  const trackEnd = useCallback(
+    (track: SpotifyApi.TrackObjectFull): JSX.Element | undefined => {
+      const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
+
+      if (!localTrack) return;
+      if (localTrack.hasBeenPlayed) return;
+      if (data?.currentlyPlayingId === track.id) return;
+
+      return <TrackEnd trackId={track.id} pin={pin} />;
+    },
+    [data?.tracks, data?.currentlyPlayingId, localTracks],
+  );
 
   const trackExtra = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
@@ -87,103 +81,82 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [data?.currentlyPlayingId, data?.expectedEndTime],
   );
 
-  const scrollToCurrentIndex = useCallback((viewOffset: number, animated = true) => {
-    listRef?.current?.scrollToIndex({
-      index: 0,
-      animated,
-      viewOffset,
-    });
-  }, []);
+  const currentTrackIndex = useMemo(() => {
+    if (!data?.currentlyPlayingId) return 0;
+    if (!localTracks.length) return 0;
+
+    return localTracks.findIndex(({ id }) => id === data.currentlyPlayingId);
+  }, [data?.currentlyPlayingId, localTracks]);
+
+  const scrollToCurrentIndex = useCallback(
+    (viewOffset: number, animated = true) => {
+      listRef?.current?.scrollToIndex({
+        index: currentTrackIndex,
+        animated,
+        viewOffset,
+      });
+    },
+    [currentTrackIndex],
+  );
 
   const lastScrolledTo = useRef<string>();
   const scrollPosition = useRef<number>();
-  const isClosing = useRef(false);
 
   useEffect(() => {
-    scrollToCurrentIndex(showPlayedTracks ? 260 : 64);
-
-    if (showPlayedTracks) {
-      setTimeout(() => {
-        scrollToCurrentIndex(showPlayedTracks ? 200 : 64);
-      }, 300);
-      return;
-    }
-
-    isClosing.current = true;
-  }, [showPlayedTracks, scrollToCurrentIndex]);
-
-  useEffect(() => {
-    if (showPlayedTracks) return;
     if (lastScrolledTo.current === data?.currentlyPlayingId) return;
     if (!data?.currentlyPlayingId) return;
 
     setTimeout(() => {
       scrollToCurrentIndex(64);
-    }, 2000);
-  }, [data?.currentlyPlayingId, showPlayedTracks, scrollToCurrentIndex]);
+    }, 1000);
+  }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
 
+  useEffect(() => {
+    listRef.current?.shouldComponentUpdate;
+  }, []);
+
+  console.log({ currentTrackIndex });
   return (
     <>
       <TrackList
         ref={listRef}
-        onScroll={async (e) => {
-          const scrollPos = e.nativeEvent.contentOffset.y;
-          if (showPlayedTracks) return;
-          if (!scrollPosition.current) return;
-          if (isClosing.current) return;
+        // onScroll={async (e) => {
+        //   const scrollPos = e.nativeEvent.contentOffset.y;
+        //   if (showPlayedTracks) return;
+        //   if (!scrollPosition.current) return;
+        //   if (isClosing.current) return;
 
-          const triesToScrollUp = scrollPos < scrollPosition.current;
-          if (!triesToScrollUp) return;
-          scrollToCurrentIndex(64, false);
-        }}
+        //   const triesToScrollUp = scrollPos < scrollPosition.current;
+        //   if (!triesToScrollUp) return;
+        //   scrollToCurrentIndex(64, false);
+        // }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onMomentumScrollEnd={(e) => {
-          isClosing.current = false;
           if (!data?.currentlyPlayingId) return;
           if (lastScrolledTo.current === data?.currentlyPlayingId) return;
 
           lastScrolledTo.current = data!.currentlyPlayingId!;
           scrollPosition.current = e.nativeEvent.contentOffset.y;
         }}
-        stickyHeaderIndices={[0]}
+        stickyHeaderIndices={[currentTrackIndex]}
         invertStickyHeaders
-        highlightedTrackId={data?.currentlyPlayingId}
         scrollToOverflowEnabled
         scrollEnabled={!isVoting}
-        data={showTracks ? queue : []}
+        data={showTracks ? localTracks : []}
+        extraData={data?.currentlyPlayingId}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         onTrackLongPress={toggleTrackFocus}
         trackEnd={trackEnd}
         trackExtra={trackExtra}
-        ListHeaderComponent={
-          <View className="my-2">
-            <View className="min-h-[3px] w-full px-6 opacity-40">
-              <FlashList
-                data={playedTracks}
-                ItemSeparatorComponent={() => <View className="h-6" />}
-                className="opacity-30"
-                estimatedItemSize={80}
-                renderItem={({ item }) => <TrackListItem key={item.id} track={item} />}
-              />
-            </View>
-            <Button
-              dimmed={!showPlayedTracks}
-              variant="text"
-              title={`${showPlayedTracks ? "Hide" : "Show"} played tracks`}
-              icon={showPlayedTracks ? "chevron-down" : "chevron-up"}
-              onPress={toggleShowPlayedTracks}
-            />
-          </View>
-        }
         ListEmptyComponent={
           <View className="mx-6">
             <ListEmptyComponent isLoading={isInitialLoading} />
           </View>
         }
         ListFooterComponent={
-          Boolean(queue.length) && isPlaying && activeDevice && !isInitialLoading ? (
+          Boolean(localTracks.length) && isPlaying && activeDevice && !isInitialLoading ? (
             <ListFooterComponent />
           ) : null
         }

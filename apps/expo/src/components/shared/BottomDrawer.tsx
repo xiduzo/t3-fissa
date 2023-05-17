@@ -1,5 +1,10 @@
 import { FC } from "react";
-import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
+import {
+  GestureResponderEvent,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
@@ -16,8 +21,7 @@ export const BottomDrawer: FC<Props> = ({
   actionIcon = "close",
 }) => {
   return (
-    <View className="absolute bottom-0 w-full">
-      <LinearGradient colors={["transparent", theme[900]]} className="-mb-2 h-24" />
+    <View className="absolute bottom-0 w-full shadow-xl" style={{ shadowColor: theme["900"] }}>
       <LinearGradient
         colors={theme.gradient}
         start={[0, 0]}

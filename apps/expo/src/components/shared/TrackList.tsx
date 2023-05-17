@@ -13,7 +13,6 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
       onTrackPress,
       onTrackLongPress,
       selectedTracks,
-      highlightedTrackId,
       getTrackVotes,
       trackEnd,
       trackExtra,
@@ -34,6 +33,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
       [getTrackVotes],
     );
 
+    console.log(props.extraData ?? selectedTracks, props.stickyHeaderIndices);
     return (
       <View className={`h-full w-full ${props.className}`}>
         <FlashList
@@ -41,25 +41,26 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
           ref={ref}
           estimatedItemSize={80}
           keyExtractor={({ id }) => id}
-          extraData={selectedTracks}
-          ItemSeparatorComponent={ItemSeparatorComponent}
+          extraData={props.extraData ?? selectedTracks}
           renderItem={({ item, index }) => (
             <View
-              className="shadow-xl shadow-red-50"
+              className="shadow-xl"
               style={{
                 backgroundColor: theme["900"],
-                shadowColor: highlightedTrackId === item.id ? theme["900"] : "transparent",
+                shadowColor: props.stickyHeaderIndices?.includes(index)
+                  ? theme["900"]
+                  : "transparent",
               }}
             >
               <TrackListItem
                 className={trackListItem({
-                  highlighted: highlightedTrackId === item.id,
+                  highlighted: props.stickyHeaderIndices?.includes(index),
                 })}
                 style={{
-                  backgroundColor:
-                    highlightedTrackId === item.id ? theme["500"] + "30" : "transparent",
+                  backgroundColor: props.stickyHeaderIndices?.includes(index)
+                    ? theme["500"] + "30"
+                    : "transparent",
                 }}
-                key={item.id}
                 index={index}
                 track={item}
                 subtitlePrefix={subtitlePrefix(item)}
@@ -82,21 +83,18 @@ export type TrackListProps = Props;
 interface Props
   extends Omit<FlashListProps<SpotifyApi.TrackObjectFull>, "keyExtractor" | "renderItem"> {
   selectedTracks?: string[];
-  highlightedTrackId?: string | null;
   getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number | undefined;
   trackExtra?: (track: SpotifyApi.TrackObjectFull) => JSX.Element | null;
-  trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element;
+  trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element | undefined;
   onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
   onTrackLongPress?: (track: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => void;
 }
 
-const ItemSeparatorComponent = () => <View className="h-4" />;
-
-const trackListItem = cva("rounded-2xl transition-all duration-200", {
+const trackListItem = cva("rounded-2xl transition-all duration-200 my-3", {
   variants: {
     highlighted: {
-      true: "mx-4 p-2 my-2",
-      false: "mx-6 mt-2",
+      true: "mx-4 p-2 pr-4",
+      false: "mx-6",
     },
   },
   defaultVariants: {
