@@ -95,18 +95,22 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     });
   }, []);
 
+  const lastScrolledTo = useRef<string>();
+  const scrollPosition = useRef<number>();
+  const isClosing = useRef(false);
+
   useEffect(() => {
-    scrollToCurrentIndex(showPlayedTracks ? 200 : 64);
+    scrollToCurrentIndex(showPlayedTracks ? 260 : 64);
 
     if (showPlayedTracks) {
       setTimeout(() => {
-        scrollToCurrentIndex(showPlayedTracks ? 140 : 64);
+        scrollToCurrentIndex(showPlayedTracks ? 200 : 64);
       }, 300);
+      return;
     }
-  }, [showPlayedTracks, scrollToCurrentIndex]);
 
-  const lastScrolledTo = useRef<string>();
-  const scrollPosition = useRef<number>();
+    isClosing.current = true;
+  }, [showPlayedTracks, scrollToCurrentIndex]);
 
   useEffect(() => {
     if (showPlayedTracks) return;
@@ -122,18 +126,20 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     <>
       <TrackList
         ref={listRef}
-        onScroll={(e) => {
+        onScroll={async (e) => {
           const scrollPos = e.nativeEvent.contentOffset.y;
-          if (!showPlayedTracks && scrollPosition.current) {
-            const triesToScrollUp = scrollPos < scrollPosition.current;
-            if (triesToScrollUp) {
-              scrollToCurrentIndex(64, false);
-            }
-          }
+          if (showPlayedTracks) return;
+          if (!scrollPosition.current) return;
+          if (isClosing.current) return;
+
+          const triesToScrollUp = scrollPos < scrollPosition.current;
+          if (!triesToScrollUp) return;
+          scrollToCurrentIndex(64, false);
         }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onMomentumScrollEnd={(e) => {
+          isClosing.current = false;
           if (!data?.currentlyPlayingId) return;
           if (lastScrolledTo.current === data?.currentlyPlayingId) return;
 
@@ -153,7 +159,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         trackExtra={trackExtra}
         ListHeaderComponent={
           <View className="my-2">
-            <View className="h-auto min-h-[3px] w-full px-6 opacity-60">
+            <View className="min-h-[3px] w-full px-6 opacity-40">
               <FlashList
                 data={playedTracks}
                 ItemSeparatorComponent={() => <View className="h-6" />}

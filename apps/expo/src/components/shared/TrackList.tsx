@@ -90,13 +90,13 @@ interface Props
   onTrackLongPress?: (track: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => void;
 }
 
-const ItemSeparatorComponent = () => <View className="h-6" />;
+const ItemSeparatorComponent = () => <View className="h-4" />;
 
 const trackListItem = cva("rounded-2xl transition-all duration-200", {
   variants: {
     highlighted: {
-      true: "mx-4 p-2 mb-2",
-      false: "mx-6",
+      true: "mx-4 p-2 my-2",
+      false: "mx-6 mt-2",
     },
   },
   defaultVariants: {

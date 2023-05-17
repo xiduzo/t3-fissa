@@ -17,7 +17,7 @@ export const QuickVoteProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const newVote = useCallback(
     (next: number) => (prev: number) => {
-      if (prev !== next) Haptics.selectionAsync();
+      if (prev !== next) Haptics.impactAsync();
       return next;
     },
     [],
