@@ -1,5 +1,6 @@
-import { FC, useCallback, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 import { FlashList } from "@shopify/flash-list";
 import { useGetFissa } from "@fissa/hooks";
 import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
@@ -14,6 +15,7 @@ import {
   TrackEnd,
   TrackList,
   TrackListItem,
+  Typography,
 } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
@@ -25,6 +27,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const { data, isInitialLoading } = useGetFissa(pin);
   const { user } = useAuth();
+  const [showPlayedTracks, setShowPlayedTracks] = useState(false);
 
   const { handleTouchMove, handleTouchEnd, toggleTrackFocus, isVoting } = useQuickVote(pin);
 
@@ -52,6 +55,12 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     return isPlaying && activeDevice;
   }, [isPlaying, isOwner, activeDevice]);
 
+  const toggleShowPlayedTracks = useCallback(() => {
+    setShowPlayedTracks(!showPlayedTracks);
+    if (showPlayedTracks) return;
+    listRef.current?.scrollToIndex({ index: 0, viewOffset: 64, animated: true });
+  }, [showPlayedTracks]);
+
   const getTrackVotes = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
@@ -78,17 +87,64 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [data?.currentlyPlayingId, data?.expectedEndTime],
   );
 
+  const scrollToCurrentIndex = useCallback((viewOffset: number, animated = true) => {
+    listRef?.current?.scrollToIndex({
+      index: 0,
+      animated,
+      viewOffset,
+    });
+  }, []);
+
+  useEffect(() => {
+    scrollToCurrentIndex(showPlayedTracks ? 200 : 64);
+
+    if (showPlayedTracks) {
+      setTimeout(() => {
+        scrollToCurrentIndex(showPlayedTracks ? 140 : 64);
+      }, 300);
+    }
+  }, [showPlayedTracks, scrollToCurrentIndex]);
+
+  const lastScrolledTo = useRef<string>();
+  const scrollPosition = useRef<number>();
+
+  useEffect(() => {
+    if (showPlayedTracks) return;
+    if (lastScrolledTo.current === data?.currentlyPlayingId) return;
+    if (!data?.currentlyPlayingId) return;
+
+    setTimeout(() => {
+      scrollToCurrentIndex(64);
+    }, 2000);
+  }, [data?.currentlyPlayingId, showPlayedTracks, scrollToCurrentIndex]);
+
   return (
     <>
       <TrackList
         ref={listRef}
+        onScroll={(e) => {
+          const scrollPos = e.nativeEvent.contentOffset.y;
+          if (!showPlayedTracks && scrollPosition.current) {
+            const triesToScrollUp = scrollPos < scrollPosition.current;
+            if (triesToScrollUp) {
+              scrollToCurrentIndex(64, false);
+            }
+          }
+        }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onMomentumScrollEnd={(e) => {
+          if (!data?.currentlyPlayingId) return;
+          if (lastScrolledTo.current === data?.currentlyPlayingId) return;
+
+          lastScrolledTo.current = data!.currentlyPlayingId!;
+          scrollPosition.current = e.nativeEvent.contentOffset.y;
+        }}
         stickyHeaderIndices={[0]}
+        invertStickyHeaders
         highlightedTrackId={data?.currentlyPlayingId}
         scrollToOverflowEnabled
         scrollEnabled={!isVoting}
-        nestedScrollEnabled
         data={showTracks ? queue : []}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
@@ -96,8 +152,23 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         trackEnd={trackEnd}
         trackExtra={trackExtra}
         ListHeaderComponent={
-          <View className="mb-4">
-            <Button dimmed variant="text" title="Show played songs" icon="chevron-up" />
+          <View className="my-2">
+            <View className="h-auto min-h-[3px] w-full px-6 opacity-60">
+              <FlashList
+                data={playedTracks}
+                ItemSeparatorComponent={() => <View className="h-6" />}
+                className="opacity-30"
+                estimatedItemSize={80}
+                renderItem={({ item }) => <TrackListItem key={item.id} track={item} />}
+              />
+            </View>
+            <Button
+              dimmed={!showPlayedTracks}
+              variant="text"
+              title={`${showPlayedTracks ? "Hide" : "Show"} played tracks`}
+              icon={showPlayedTracks ? "chevron-down" : "chevron-up"}
+              onPress={toggleShowPlayedTracks}
+            />
           </View>
         }
         ListEmptyComponent={

@@ -10,7 +10,7 @@ import { RefetchInterval, splitInChunks, useDevices, useSpotify, useTracks } fro
 
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
-import { Action, Button, Popover, SelectDevice } from "../../shared";
+import { Action, Button, IconButton, Popover, SelectDevice } from "../../shared";
 
 export const PinCode = () => {
   const { pin } = useSearchParams();
@@ -31,12 +31,7 @@ export const PinCode = () => {
 
   return (
     <>
-      <Button
-        onPress={togglePopover}
-        title={String(pin)}
-        variant="text"
-        className="absolute right-8 top-12 z-50 py-0"
-      />
+      <IconButton icon="setting" onPress={togglePopover} title={`Fissa ${pin} settings`} />
       <Popover visible={showPopover} onRequestClose={togglePopover}>
         <Action
           title="Leave fissa"

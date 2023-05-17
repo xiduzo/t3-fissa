@@ -35,7 +35,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
     );
 
     return (
-      <View className="h-full w-full" style={{}}>
+      <View className={`h-full w-full ${props.className}`}>
         <FlashList
           {...props}
           ref={ref}
@@ -44,7 +44,13 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
           extraData={selectedTracks}
           ItemSeparatorComponent={ItemSeparatorComponent}
           renderItem={({ item, index }) => (
-            <View style={{ backgroundColor: theme["900"] }}>
+            <View
+              className="shadow-xl shadow-red-50"
+              style={{
+                backgroundColor: theme["900"],
+                shadowColor: highlightedTrackId === item.id ? theme["900"] : "transparent",
+              }}
+            >
               <TrackListItem
                 className={trackListItem({
                   highlighted: highlightedTrackId === item.id,
@@ -89,7 +95,7 @@ const ItemSeparatorComponent = () => <View className="h-6" />;
 const trackListItem = cva("rounded-2xl transition-all duration-200", {
   variants: {
     highlighted: {
-      true: "mx-4 p-2 mb-3",
+      true: "mx-4 p-2 mb-2",
       false: "mx-6",
     },
   },

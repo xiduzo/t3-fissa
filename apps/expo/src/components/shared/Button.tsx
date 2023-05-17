@@ -105,10 +105,16 @@ export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
   );
 };
 
-export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, ...props }) => {
+export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, dimmed, ...props }) => {
+  const color = useMemo(() => {
+    const baseColor = theme[inverted ? "900" : "100"];
+
+    return dimmed ? baseColor + "60" : baseColor;
+  }, [inverted, dimmed]);
+
   return (
     <TouchableHighlight {...props}>
-      <Icon name={icon} size={28} color={theme[inverted ? "900" : "100"]} />
+      <Icon name={icon} size={28} color={color} />
     </TouchableHighlight>
   );
 };
@@ -131,6 +137,7 @@ const fab = cva("absolute bottom-10 z-40 flex h-14 w-14 rounded-2xl shadow-xl", 
     position: {
       "bottom-left": "left-8",
       "bottom-right": "right-8",
+      "bottom-center": "left-1/2 transform -translate-x-7",
     },
   },
   defaultVariants: {
