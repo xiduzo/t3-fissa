@@ -5,14 +5,7 @@ import { Stack, useRouter, useSearchParams } from "expo-router";
 import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
-import {
-  Fab,
-  FissaTracks,
-  IconButton,
-  PinCode,
-  SafeAreaView,
-  Typography,
-} from "../../../src/components";
+import { Fab, FissaTracks, PinCode } from "../../../src/components";
 import { QuickVoteProvider } from "../../../src/components/pages/fissa";
 import { useOnActiveApp } from "../../../src/hooks";
 

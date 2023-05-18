@@ -58,7 +58,7 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
       >
         {icon && (
           <Typography inverted={textInverted} variant="h3" className="w-6 text-center">
-            <Icon name={icon} size={28} />
+            <Icon name={icon} />
           </Typography>
         )}
         <Typography
@@ -99,7 +99,7 @@ export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
         end={[1, 1]}
         className="h-full w-full items-center justify-center rounded-2xl"
       >
-        <Icon name={icon} size={28} />
+        <Icon name={icon} />
       </LinearGradient>
     </TouchableHighlight>
   );
@@ -113,8 +113,8 @@ export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, dimmed, ...props
   }, [inverted, dimmed]);
 
   return (
-    <TouchableHighlight {...props}>
-      <Icon name={icon} size={28} color={color} />
+    <TouchableHighlight {...props} className="-m-2 rounded-full p-2">
+      <Icon name={icon} color={color} />
     </TouchableHighlight>
   );
 };

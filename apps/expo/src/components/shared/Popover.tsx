@@ -1,5 +1,12 @@
 import React, { FC, useCallback, useEffect, useRef } from "react";
-import { Animated, Modal, ModalProps, NativeSyntheticEvent, SafeAreaView, View } from "react-native";
+import {
+  Animated,
+  Modal,
+  ModalProps,
+  NativeSyntheticEvent,
+  SafeAreaView,
+  View,
+} from "react-native";
 import { theme } from "@fissa/tailwind-config";
 
 import { useSwipe } from "../../hooks";
@@ -13,7 +20,7 @@ export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }
     Animated.timing(fadeAnimation, {
       toValue: 0,
       duration: 0,
-      useNativeDriver: false,
+      useNativeDriver: true,
       ...(config ?? {}),
     }).start();
   }, []);

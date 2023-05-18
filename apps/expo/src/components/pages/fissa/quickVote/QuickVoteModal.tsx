@@ -51,7 +51,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
           duration: 200,
           delay: 100,
           toValue: 1,
-          useNativeDriver: false,
+          useNativeDriver: true,
         }),
       ]).start();
     });
@@ -60,7 +60,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
       Animated.timing(actionOpacityAnimation, {
         duration: 0,
         toValue: 0,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start();
     };
   }, [track, touchStartPosition]);

@@ -1,5 +1,5 @@
-import { FC, forwardRef, useCallback } from "react";
-import { GestureResponderEvent, View } from "react-native";
+import { FC, forwardRef, useCallback, useEffect, useMemo } from "react";
+import { Animated, GestureResponderEvent, View } from "react-native";
 import { FlashList, FlashListProps } from "@shopify/flash-list";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
@@ -45,8 +45,9 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
           extraData={extraData ?? selectedTracks}
           renderItem={({ item, index }) => {
             const isHeader = props.stickyHeaderIndices?.includes(index);
+
             return (
-              <View
+              <Animated.View
                 className="shadow-xl"
                 style={{
                   backgroundColor: theme["900"],
@@ -54,10 +55,10 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
                 }}
               >
                 <TrackListItem
-                  isActive={isHeader}
+                  isActive={activeIndex === index}
+                  dimmed={activeIndex ? index < activeIndex : false}
                   className={trackListItem({
                     highlighted: isHeader,
-                    dimmed: activeIndex ? index < activeIndex : false,
                   })}
                   style={{
                     backgroundColor: isHeader ? theme["500"] + "20" : "transparent",
@@ -71,7 +72,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
                   onLongPress={onTrackLongPress?.(item)}
                   selected={selectedTracks?.includes(item.id)}
                 />
-              </View>
+              </Animated.View>
             );
           }}
         />
@@ -98,10 +99,6 @@ const trackListItem = cva("rounded-2xl transition-all duration-1000 my-3", {
     highlighted: {
       true: "mx-4 p-2 pr-4",
       false: "mx-6",
-    },
-    dimmed: {
-      true: "opacity-30",
-      false: "",
     },
   },
   defaultVariants: {

@@ -24,6 +24,7 @@ export const ListItem: FC<Props> = ({
   selected,
   bigImage,
   className,
+  dimmed,
   ...props
 }) => {
   const dimmedAnimation = useRef(new Animated.Value(0)).current;
@@ -57,8 +58,8 @@ export const ListItem: FC<Props> = ({
 
   return (
     <TouchableWithoutFeedback accessibilityRole="button" {...props}>
-      <View
-        className={container({ hasBorder, className })}
+      <Animated.View
+        className={container({ hasBorder, className, dimmed })}
         style={[{ borderColor: hasBorder ? theme["900"] + "10" : "transparent" }, props.style]}
       >
         <View>
@@ -92,8 +93,8 @@ export const ListItem: FC<Props> = ({
           </View>
           {extra && <View className="mt-1 w-full">{extra}</View>}
         </Animated.View>
-        {end && <View className="w-4 items-center">{end}</View>}
-      </View>
+        {end && <View className="mr-1 w-6 items-center">{end}</View>}
+      </Animated.View>
     </TouchableWithoutFeedback>
   );
 };
@@ -110,12 +111,16 @@ interface Props extends TouchableWithoutFeedbackProps, ViewProps {
   hasBorder?: boolean;
   selected?: boolean;
   bigImage?: boolean;
+  dimmed?: boolean;
 }
 
 const container = cva("items-center flex-row space-x-4", {
   variants: {
     hasBorder: {
       true: "border rounded-xl",
+    },
+    dimmed: {
+      true: "opacity-50",
     },
   },
 });

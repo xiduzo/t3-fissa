@@ -16,17 +16,17 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
   return (
     <>
       <View
-        className="flex flex-row items-center justify-between px-6 py-2 shadow-md"
+        className="flex flex-row items-center justify-between px-6 pb-2 shadow-md"
         style={{
           backgroundColor: theme["900"],
-          marginTop: safeArea.top,
+          paddingTop: safeArea.top + 8,
           shadowColor: theme["900"],
         }}
       >
         <View>
           {props.back && props.options.headerBackVisible && (
             <Typography>
-              <Icon name="arrow-left" size={28} onPress={back} />
+              <Icon name="arrow-left" onPress={back} />
             </Typography>
           )}
           {props.options.headerLeft && props.options.headerLeft({ canGoBack: true })}

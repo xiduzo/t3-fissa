@@ -41,7 +41,7 @@ export const BottomDrawer: FC<Props> = ({
                   {actionTitle}
                 </Typography>
               )}
-              {actionIcon && <Icon name={actionIcon} size={24} />}
+              {actionIcon && <Icon name={actionIcon} />}
             </TouchableOpacity>
           )}
         </View>

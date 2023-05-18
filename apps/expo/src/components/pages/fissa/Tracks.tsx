@@ -85,10 +85,10 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   }, [data?.currentlyPlayingId, localTracks]);
 
   const scrollToCurrentIndex = useCallback(
-    (viewOffset: number, animated = true) => {
+    (viewOffset: number) => {
       listRef?.current?.scrollToIndex({
         index: currentTrackIndex,
-        animated,
+        animated: true,
         viewOffset,
       });
     },
@@ -103,7 +103,10 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     if (!data?.currentlyPlayingId) return;
 
     setTimeout(() => {
-      scrollToCurrentIndex(32);
+      scrollToCurrentIndex(20);
+      setTimeout(() => {
+        scrollToCurrentIndex(48);
+      }, 300);
     }, 1000);
   }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
 
@@ -150,11 +153,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
             <ListEmptyComponent isLoading={isInitialLoading} />
           </View>
         }
-        ListFooterComponent={
-          Boolean(localTracks.length) && isPlaying && activeDevice && !isInitialLoading ? (
-            <ListFooterComponent />
-          ) : null
-        }
+        ListFooterComponent={<ListFooterComponent />}
       />
       <Popover visible={!!selectedTrack} onRequestClose={() => setSelectedTrack(null)}>
         {selectedTrack && (

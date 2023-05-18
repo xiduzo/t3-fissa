@@ -36,7 +36,8 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   const [selectedTracks, setSelectedTracks] = useState<TrackList>([]);
   const [filteredTracks, setFilteredTracks] = useState<TrackList>([]);
 
-  const [selectedPlaylist, setSelectedPlaylist] = useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
+  const [selectedPlaylist, setSelectedPlaylist] =
+    useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
   const clearSelectedPlaylist = useCallback(() => {
     setSelectedPlaylist(null);
@@ -135,7 +136,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                   </Typography>
                   <PlaylistList
                     onPlaylistPress={setSelectedPlaylist}
-                    playlistListItemEnd={<Icon name="chevron-right" size={16} color={theme["100"] + "80"} />}
+                    playlistListItemEnd={<Icon name="chevron-right" color={theme["100"] + "80"} />}
                   />
                 </>
               )}
@@ -154,7 +155,9 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                     onTrackPress={handleTrackPress}
                     selectedTracks={selectedTracks.map((track) => track.id)}
                     ListFooterComponent={<View className="pb-40" />}
-                    ListEmptyComponent={<EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />}
+                    ListEmptyComponent={
+                      <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
+                    }
                   />
                 </>
               )}
@@ -197,7 +200,7 @@ const HeaderRight: FC<{
   return (
     <TouchableOpacity onPress={onPress}>
       <Typography>
-        <Icon name="close" size={24} />
+        <Icon name="close" />
       </Typography>
     </TouchableOpacity>
   );
@@ -209,7 +212,7 @@ const HeaderLeft: FC<{
   return (
     <TouchableOpacity onPress={onPress}>
       <Typography>
-        <Icon name="arrow-left" size={24} />
+        <Icon name="arrow-left" />
       </Typography>
     </TouchableOpacity>
   );
