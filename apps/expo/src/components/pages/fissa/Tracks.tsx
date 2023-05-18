@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
-import * as Haptics from "expo-haptics";
 import { FlashList } from "@shopify/flash-list";
 import { useGetFissa } from "@fissa/hooks";
 import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
@@ -8,14 +7,12 @@ import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 import { useAuth } from "../../../providers";
 import {
   Badge,
-  Button,
   Divider,
   Popover,
   ProgressBar,
   TrackEnd,
   TrackList,
   TrackListItem,
-  Typography,
 } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
@@ -27,7 +24,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const { data, isInitialLoading } = useGetFissa(pin);
   const { user } = useAuth();
-  const [showPlayedTracks, setShowPlayedTracks] = useState(false);
 
   const { handleTouchMove, handleTouchEnd, toggleTrackFocus, isVoting } = useQuickVote(pin);
 
@@ -107,15 +103,14 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     if (!data?.currentlyPlayingId) return;
 
     setTimeout(() => {
-      scrollToCurrentIndex(64);
+      scrollToCurrentIndex(32);
     }, 1000);
   }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
 
-  useEffect(() => {
-    listRef.current?.shouldComponentUpdate;
-  }, []);
+  const queue = useMemo(() => {
+    return showTracks ? localTracks : [];
+  }, [showTracks, localTracks]);
 
-  console.log({ currentTrackIndex });
   return (
     <>
       <TrackList
@@ -136,15 +131,15 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           if (!data?.currentlyPlayingId) return;
           if (lastScrolledTo.current === data?.currentlyPlayingId) return;
 
-          lastScrolledTo.current = data!.currentlyPlayingId!;
+          lastScrolledTo.current = data?.currentlyPlayingId;
           scrollPosition.current = e.nativeEvent.contentOffset.y;
         }}
         stickyHeaderIndices={[currentTrackIndex]}
         invertStickyHeaders
         scrollToOverflowEnabled
         scrollEnabled={!isVoting}
-        data={showTracks ? localTracks : []}
-        extraData={data?.currentlyPlayingId}
+        data={queue}
+        activeIndex={currentTrackIndex}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
         onTrackLongPress={toggleTrackFocus}
