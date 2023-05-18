@@ -1,11 +1,7 @@
 import React, { FC, useRef } from "react";
 import { Animated, PanResponder, ViewProps } from "react-native";
 
-export const DraggableView: FC<Props> = ({
-  children,
-  touchThreshold = 10,
-  ...viewProps
-}) => {
+export const DraggableView: FC<Props> = ({ children, touchThreshold = 10, ...viewProps }) => {
   const pan = useRef(new Animated.ValueXY()).current;
 
   const panResponder = PanResponder.create({
@@ -38,11 +34,7 @@ export const DraggableView: FC<Props> = ({
   });
 
   return (
-    <Animated.View
-      {...panResponder.panHandlers}
-      style={[pan.getLayout()]}
-      {...viewProps}
-    >
+    <Animated.View {...panResponder.panHandlers} style={[pan.getLayout()]} {...viewProps}>
       {children}
     </Animated.View>
   );

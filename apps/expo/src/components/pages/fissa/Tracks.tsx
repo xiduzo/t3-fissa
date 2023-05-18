@@ -1,190 +1,218 @@
-import { FC, useCallback, useMemo, useRef, useState } from "react";
-import { Dimensions, GestureResponderEvent, View } from "react-native";
-import * as Haptics from "expo-haptics";
-import { useCreateVote, useGetFissa } from "@fissa/hooks";
-import { logger, sortTracksByScore, useDevices, useTracks } from "@fissa/utils";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Animated, NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { useGetFissa } from "@fissa/hooks";
+import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import {
+  Badge,
+  Button,
   Divider,
   Popover,
+  ProgressBar,
   TrackEnd,
   TrackList,
   TrackListItem,
 } from "../../shared";
-import { Badge } from "../../shared/Badge";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
-import { ListHeaderComponent } from "./ListHeaderComponent";
-import { QuickVoteModal } from "./QuickVoteModal";
 import { TrackActions } from "./TrackActions";
-
-const windowHeight = Dimensions.get("window").height;
-const windowCenter = windowHeight / 2;
+import { QuickVoteModal, useQuickVote } from "./quickVote";
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
+  const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
+
   const { data, isInitialLoading } = useGetFissa(pin);
-  const focussedPosition = useRef(0);
-  const [vote, setVote] = useState(0);
   const { user } = useAuth();
 
-  const [focussedTrack, setFocussedTrack] =
-    useState<SpotifyApi.TrackObjectFull>();
-  const [selectedTrack, setSelectedTrack] =
-    useState<SpotifyApi.TrackObjectFull | null>(null);
+  const showBackAnimation = useRef(new Animated.Value(0)).current;
 
-  const { mutateAsync } = useCreateVote(String(pin), {
-    onMutate: ({ vote }) => {
-      Haptics.notificationAsync(
-        vote > 0
-          ? Haptics.NotificationFeedbackType.Success
-          : Haptics.NotificationFeedbackType.Warning,
-      );
-    },
-  });
+  const { handleTouchMove, handleTouchEnd, toggleTrackFocus, isVoting } = useQuickVote(pin);
+
+  const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
 
   const { activeDevice } = useDevices();
   const localTracks = useTracks(
-    sortTracksByScore(data?.tracks).map(({ trackId }) => trackId),
+    sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
   );
 
   const isPlaying = !!data?.currentlyPlayingId;
   const isOwner = user?.email === data?.by.email;
 
-  const getTrackVotes = useCallback(
-    (track: SpotifyApi.TrackObjectFull) => {
-      return (
-        data?.tracks.find(({ trackId }) => trackId === track.id)?.score ?? 0
-      );
-    },
-    [data?.tracks],
-  );
-
-  const tracks = useMemo(() => {
-    return localTracks.filter((track) => track.id !== data?.currentlyPlayingId);
-  }, [localTracks, data?.currentlyPlayingId]);
-
   const showTracks = useMemo(() => {
     if (!isOwner) return isPlaying;
     return isPlaying && activeDevice;
-  }, [isPlaying, isOwner, activeDevice, isInitialLoading]);
+  }, [isPlaying, isOwner, activeDevice]);
 
-  const toggleLongPress = useCallback(
-    (track?: SpotifyApi.TrackObjectFull) =>
-      async (event: GestureResponderEvent) => {
-        focussedPosition.current = event.nativeEvent.pageY;
+  const getTrackVotes = useCallback(
+    (track: SpotifyApi.TrackObjectFull) => {
+      const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
-        setFocussedTrack(track);
-        setVote(0);
-      },
-    [],
-  );
+      if (!localTrack) return;
+      if (localTrack.hasBeenPlayed) return;
+      if (data?.currentlyPlayingId === track.id) return;
 
-  const handleTouchEnd = useCallback(
-    (event: GestureResponderEvent) => {
-      if (vote !== 0 && focussedTrack) {
-        mutateAsync(vote, focussedTrack.id);
-      }
-
-      toggleLongPress()(event);
+      return localTrack.score;
     },
-    [toggleLongPress, focussedTrack, vote],
+    [data?.tracks, data?.currentlyPlayingId, localTracks],
   );
 
-  const handleTouchMove = useCallback(
-    (event: GestureResponderEvent) => {
-      if (!focussedTrack) return;
+  const trackEnd = useCallback(
+    (track: SpotifyApi.TrackObjectFull): JSX.Element | undefined => {
+      const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
-      const TRIGGER_DIFF = 100;
+      if (!localTrack) return;
+      if (localTrack.hasBeenPlayed) return;
+      if (data?.currentlyPlayingId === track.id) return;
 
-      const { pageY } = event.nativeEvent;
-
-      if (pageY < windowCenter - TRIGGER_DIFF) {
-        setVote((prev) => {
-          if (prev !== 1) Haptics.selectionAsync();
-          return 1;
-        });
-
-        return;
-      }
-      if (pageY > windowCenter + TRIGGER_DIFF) {
-        setVote((prev) => {
-          if (prev !== -1) Haptics.selectionAsync();
-          return -1;
-        });
-
-        return;
-      }
-
-      setVote(0);
+      return <TrackEnd trackId={track.id} pin={pin} />;
     },
-    [focussedTrack],
+    [data?.tracks, data?.currentlyPlayingId, localTracks],
   );
+
+  const trackExtra = useCallback(
+    (track: SpotifyApi.TrackObjectFull) => {
+      if (track.id !== data?.currentlyPlayingId) return null;
+
+      return <ProgressBar className="mt-4" track={track} expectedEndTime={data.expectedEndTime} />;
+    },
+    [data?.currentlyPlayingId, data?.expectedEndTime],
+  );
+
+  const currentTrackIndex = useMemo(() => {
+    if (!data?.currentlyPlayingId) return 0;
+    if (!localTracks.length) return 0;
+
+    return localTracks.findIndex(({ id }) => id === data.currentlyPlayingId);
+  }, [data?.currentlyPlayingId, localTracks]);
+
+  const shouldShowBackButton = useCallback((showShow = false) => {
+    Animated.spring(showBackAnimation, {
+      toValue: Number(showShow),
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
+  const scrollToCurrentIndex = useCallback(
+    (viewOffset = 48) => {
+      listRef?.current?.scrollToIndex({
+        index: currentTrackIndex,
+        animated: true,
+        viewOffset,
+      });
+      shouldShowBackButton(false);
+    },
+    [currentTrackIndex, shouldShowBackButton],
+  );
+
+  const lastScrolledTo = useRef<string>();
+  const currentIndexPosition = useRef<number>();
+
+  useEffect(() => {
+    if (lastScrolledTo.current === data?.currentlyPlayingId) return;
+    if (!data?.currentlyPlayingId) return;
+
+    setTimeout(() => {
+      scrollToCurrentIndex(20);
+      setTimeout(scrollToCurrentIndex, 300);
+    }, 1500); // give TrackList time to render
+  }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
+
+  const queue = useMemo(() => {
+    return showTracks ? localTracks : [];
+  }, [showTracks, localTracks]);
+
+  const lockOnActiveTrack = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (!currentIndexPosition.current) return;
+
+      const scrollPos = e.nativeEvent.contentOffset.y;
+      const differenceFromCurrentIndex = scrollPos - currentIndexPosition.current;
+
+      if (differenceFromCurrentIndex < -250) return; // scrolling up
+      if (differenceFromCurrentIndex > 80) return; // scrolling down
+
+      scrollToCurrentIndex();
+    },
+    [scrollToCurrentIndex],
+  );
+
+  const marginBottom = showBackAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-50, 0],
+  });
 
   return (
     <>
       <TrackList
-        onScroll={(e) => logger.debug(e.nativeEvent.contentOffset.y)}
-        scrollEventThrottle={200}
+        ref={listRef}
+        onScroll={(e) => {
+          if (!currentIndexPosition.current) return;
+          if (lastScrolledTo.current !== data?.currentlyPlayingId) return;
+
+          const scrollPos = e.nativeEvent.contentOffset.y;
+          const differenceFromCurrentIndex = scrollPos - currentIndexPosition.current;
+
+          shouldShowBackButton(
+            differenceFromCurrentIndex < -250 || differenceFromCurrentIndex > 80,
+          );
+        }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        scrollEnabled={!focussedTrack}
-        data={showTracks ? tracks : []}
+        onScrollEndDrag={lockOnActiveTrack}
+        onMomentumScrollEnd={(e) => {
+          if (!data?.currentlyPlayingId) return;
+          if (lastScrolledTo.current === data?.currentlyPlayingId) return;
+
+          lastScrolledTo.current = data?.currentlyPlayingId;
+          currentIndexPosition.current = e.nativeEvent.contentOffset.y;
+          lockOnActiveTrack(e);
+        }}
+        stickyHeaderIndices={[currentTrackIndex]}
+        invertStickyHeaders
+        scrollToOverflowEnabled
+        scrollEnabled={!isVoting}
+        data={queue}
+        activeIndex={currentTrackIndex}
         getTrackVotes={getTrackVotes}
         onTrackPress={setSelectedTrack}
-        onTrackLongPress={toggleLongPress}
-        trackEnd={({ id }) => <TrackEnd trackId={id} pin={pin} />}
-        ListHeaderComponent={
-          showTracks ? (
-            <ListHeaderComponent
-              queue={tracks.length}
-              activeTrack={localTracks.find(
-                ({ id }) => id === data?.currentlyPlayingId,
-              )}
-            />
-          ) : null
-        }
+        onTrackLongPress={toggleTrackFocus}
+        trackEnd={trackEnd}
+        trackExtra={trackExtra}
         ListEmptyComponent={
           <View className="mx-6">
             <ListEmptyComponent isLoading={isInitialLoading} />
           </View>
         }
-        ListFooterComponent={
-          Boolean(tracks.length) &&
-          isPlaying &&
-          activeDevice &&
-          !isInitialLoading ? (
-            <ListFooterComponent />
-          ) : null
-        }
+        ListFooterComponent={<ListFooterComponent />}
       />
-      <Popover
-        visible={!!selectedTrack}
-        onRequestClose={() => setSelectedTrack(null)}
+      <Animated.View
+        className="absolute bottom-32 w-full items-center"
+        style={{
+          opacity: showBackAnimation,
+          marginBottom,
+        }}
       >
+        <Button title="Back to current song" onPress={() => scrollToCurrentIndex()} />
+      </Animated.View>
+      <Popover visible={!!selectedTrack} onRequestClose={() => setSelectedTrack(null)}>
         {selectedTrack && (
           <TrackListItem
             inverted
             track={selectedTrack}
-            subtitlePrefix={
-              <Badge inverted amount={getTrackVotes(selectedTrack)} />
-            }
             hasBorder
+            subtitlePrefix={
+              getTrackVotes(selectedTrack) !== undefined ? (
+                <Badge amount={getTrackVotes(selectedTrack)} />
+              ) : null
+            }
           />
         )}
         <Divider />
-        <TrackActions
-          track={selectedTrack!}
-          onPress={() => setSelectedTrack(null)}
-        />
+        <TrackActions track={selectedTrack!} onPress={() => setSelectedTrack(null)} />
       </Popover>
-      <QuickVoteModal
-        focussedPosition={focussedPosition.current}
-        getTrackVotes={getTrackVotes}
-        vote={vote}
-        track={focussedTrack}
-        onTouchEnd={handleTouchEnd}
-      />
+      <QuickVoteModal onTouchEnd={handleTouchEnd} getTrackVotes={getTrackVotes} />
     </>
   );
 };

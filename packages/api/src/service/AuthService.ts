@@ -1,19 +1,14 @@
 import { Prisma } from "@fissa/db";
-import {
-  SpotifyService,
-  addMonths,
-  addSeconds,
-  differenceInMinutes,
-  isPast,
-} from "@fissa/utils";
+import { SpotifyService, addMonths, addSeconds, differenceInMinutes, isPast } from "@fissa/utils";
 
 import { Context, ServiceWithContext } from "../utils/context";
 
 export class AuthService extends ServiceWithContext {
-  private spotifyService: SpotifyService;
+  private spotifyService: SpotifyService = new SpotifyService();
 
   constructor(ctx: Context, spotifyService?: SpotifyService) {
     super(ctx);
+
     this.spotifyService = spotifyService ?? new SpotifyService();
   }
 

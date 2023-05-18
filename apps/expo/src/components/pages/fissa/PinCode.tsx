@@ -1,21 +1,16 @@
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { useRouter, useSearchParams } from "expo-router";
 import Slider from "@react-native-community/slider";
 import { useGetFissaDetails, useGetTracks } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
-import {
-  RefetchInterval,
-  splitInChunks,
-  useDevices,
-  useSpotify,
-  useTracks,
-} from "@fissa/utils";
+import { RefetchInterval, splitInChunks, useDevices, useSpotify, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
-import { Action, Button, Divider, Popover, SelectDevice } from "../../shared";
+import { Action, Button, IconButton, Popover, SelectDevice } from "../../shared";
 
 export const PinCode = () => {
   const { pin } = useSearchParams();
@@ -36,13 +31,7 @@ export const PinCode = () => {
 
   return (
     <>
-      <Button
-        onPress={togglePopover}
-        dimmed
-        title={String(pin)}
-        variant="text"
-        className="py-0"
-      />
+      <IconButton icon="setting" onPress={togglePopover} title={`Fissa ${pin} settings`} />
       <Popover visible={showPopover} onRequestClose={togglePopover}>
         <Action
           title="Leave fissa"
@@ -51,10 +40,7 @@ export const PinCode = () => {
           onPress={goToHome}
           icon="unlink"
         />
-        <CreatePlaylistAction
-          pin={String(pin)}
-          onRequestClose={togglePopover}
-        />
+        <CreatePlaylistAction pin={String(pin)} onRequestClose={togglePopover} />
         <SetSpeakerAction pin={String(pin)} onRequestClose={togglePopover} />
       </Popover>
     </>

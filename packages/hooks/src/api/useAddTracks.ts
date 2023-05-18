@@ -4,10 +4,7 @@ import { api } from "./api";
 
 const endpoint = api.track.addTracks.useMutation;
 
-export const useAddTracks = (
-  pin: string,
-  callbacks: MutationCallbacks<typeof endpoint> = {},
-) => {
+export const useAddTracks = (pin: string, callbacks: MutationCallbacks<typeof endpoint> = {}) => {
   const queryClient = api.useContext();
 
   const { mutate, mutateAsync, ...rest } = endpoint({
@@ -20,15 +17,11 @@ export const useAddTracks = (
         tracks: [
           ...variables.tracks.map((track) => ({
             ...track,
-            score:
-              (prev?.tracks.find(({ trackId }) => trackId === track.trackId)
-                ?.score ?? 0) + 1,
+            score: (prev?.tracks.find(({ trackId }) => trackId === track.trackId)?.score ?? 0) + 1,
             createdAt: new Date(),
             by: { email: "optimistic@add.track" },
           })),
-          ...prev!.tracks.filter(
-            ({ trackId }) => !newTrackIds.includes(trackId),
-          ),
+          ...prev!.tracks.filter(({ trackId }) => !newTrackIds.includes(trackId)),
         ],
       }));
 

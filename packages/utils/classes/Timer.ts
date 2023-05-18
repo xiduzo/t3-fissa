@@ -2,7 +2,6 @@
 
 import { logger } from "./Logger";
 
-
 // Time will be rounded to the nearest millisecond
 export class Timer {
   private _startedAt: number;

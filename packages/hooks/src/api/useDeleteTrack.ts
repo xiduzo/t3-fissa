@@ -18,11 +18,7 @@ export const useDeleteTrack = (
 
       queryClient.fissa.byId.setData(variables.pin, (prev) => ({
         ...prev!,
-        tracks: [
-          ...prev!.tracks.filter(
-            ({ trackId }) => trackId !== variables.trackId,
-          ),
-        ],
+        tracks: [...prev!.tracks.filter(({ trackId }) => trackId !== variables.trackId)],
       }));
 
       await callbacks.onMutate?.(variables);

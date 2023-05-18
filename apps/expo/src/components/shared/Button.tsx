@@ -1,5 +1,6 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import {
+  Animated,
   ButtonProps,
   GestureResponderEvent,
   TouchableHighlight,
@@ -13,14 +14,7 @@ import { VariantProps, cva } from "@fissa/utils";
 import { Icon, IconName } from "./Icon";
 import { Typography } from "./Typography";
 
-export const Button: FC<Props> = ({
-  title,
-  inverted,
-  variant,
-  icon,
-  dimmed,
-  ...props
-}) => {
+export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...props }) => {
   const { push } = useRouter();
 
   const textInverted = useMemo(() => {
@@ -69,12 +63,8 @@ export const Button: FC<Props> = ({
         }}
       >
         {icon && (
-          <Typography
-            inverted={textInverted}
-            variant="h3"
-            className="w-6 text-center"
-          >
-            <Icon name={icon} size={28} />
+          <Typography inverted={textInverted} variant="h3" className="w-6 text-center">
+            <Icon name={icon} />
           </Typography>
         )}
         <Typography
@@ -91,7 +81,9 @@ export const Button: FC<Props> = ({
   );
 };
 
-export const Fab: FC<PropsWithIcon> = ({ icon, ...props }) => {
+export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
+  const shownAnimation = useRef(new Animated.Value(0)).current;
+
   const { push } = useRouter();
 
   const handlePress = useCallback(
@@ -103,31 +95,49 @@ export const Fab: FC<PropsWithIcon> = ({ icon, ...props }) => {
     [props.onPress, props.linkTo],
   );
 
+  useEffect(() => {
+    Animated.spring(shownAnimation, {
+      toValue: 1,
+      delay: 2500,
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
   return (
     <TouchableHighlight
-      className="absolute bottom-10 right-8 z-40 flex h-14 w-14 rounded-2xl shadow-xl"
       {...props}
+      className={fab({ position, className: props.className })}
       onPress={handlePress}
     >
-      <LinearGradient
-        colors={theme.gradient}
-        start={[0, 0]}
-        end={[1, 1]}
-        className="h-full w-full items-center justify-center rounded-2xl"
-      >
-        <Icon name={icon} size={28} />
-      </LinearGradient>
+      <Animated.View style={{ transform: [{ scale: shownAnimation }] }}>
+        <LinearGradient
+          colors={theme.gradient}
+          start={[0, 0]}
+          end={[1, 1]}
+          className="h-full w-full items-center justify-center rounded-2xl"
+        >
+          <Icon name={icon} />
+        </LinearGradient>
+      </Animated.View>
     </TouchableHighlight>
   );
 };
 
-export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, ...props }) => {
+export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, dimmed, ...props }) => {
+  const color = useMemo(() => {
+    const baseColor = theme[inverted ? "900" : "100"];
+
+    return dimmed ? baseColor + "60" : baseColor;
+  }, [inverted, dimmed]);
+
   return (
-    <TouchableHighlight {...props}>
-      <Icon name={icon} size={28} color={theme[inverted ? "900" : "100"]} />
+    <TouchableHighlight {...props} className={`-m-2 rounded-full p-2 ${props.className}`}>
+      <Icon name={icon} color={color} />
     </TouchableHighlight>
   );
 };
+
+interface FabProps extends PropsWithIcon, VariantProps<typeof fab> {}
 
 interface PropsWithIcon extends Props {
   icon: IconName;
@@ -140,8 +150,21 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   icon?: IconName;
 }
 
+const fab = cva("absolute bottom-10 z-40 flex h-14 w-14 rounded-2xl shadow-xl", {
+  variants: {
+    position: {
+      "bottom-left": "left-8",
+      "bottom-right": "right-8",
+      "bottom-center": "left-1/2 transform -translate-x-7",
+    },
+  },
+  defaultVariants: {
+    position: "bottom-right",
+  },
+});
+
 const button = cva(
-  `flex flex-row items-center justify-center space-x-4 border-2 py-5 rounded-full`,
+  `flex flex-row items-center justify-center space-x-4 border-2 p-5 rounded-full`,
   {
     variants: {
       variant: {

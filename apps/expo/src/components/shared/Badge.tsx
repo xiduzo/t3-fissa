@@ -25,10 +25,7 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
 
   const color = amountAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: [
-      theme[inverted ? "100" : "900"],
-      theme[inverted ? "100" : "900"],
-    ],
+    outputRange: [theme[inverted ? "100" : "900"], theme[inverted ? "100" : "900"]],
   });
 
   useEffect(() => {
@@ -44,6 +41,8 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
       amountRef.current = amount;
     });
   }, [amount]);
+
+  if (amount === undefined) return null;
 
   return (
     <Animated.View
@@ -64,6 +63,6 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
 };
 
 interface Props {
-  amount: number;
+  amount?: number;
   inverted?: boolean;
 }

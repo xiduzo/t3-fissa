@@ -1,57 +1,107 @@
-import { FC } from "react";
-import { GestureResponderEvent, View } from "react-native";
+import { FC, forwardRef, useCallback, useEffect, useMemo } from "react";
+import { Animated, GestureResponderEvent, View } from "react-native";
 import { FlashList, FlashListProps } from "@shopify/flash-list";
+import { theme } from "@fissa/tailwind-config";
+import { cva } from "@fissa/utils";
 
 import { Badge } from "./Badge";
 import { TrackListItem } from "./TrackListItem";
 
-export const TrackList: FC<Props> = ({
-  onTrackPress,
-  onTrackLongPress,
-  selectedTracks,
-  getTrackVotes,
-  trackEnd,
-  ...props
-}) => {
-  return (
-    <View className="h-full w-full">
-      <FlashList
-        {...props}
-        estimatedItemSize={100}
-        keyExtractor={({ id }) => id}
-        extraData={selectedTracks}
-        renderItem={({ item, index }) => (
-          <TrackListItem
-            className="px-6"
-            key={item.id}
-            index={index}
-            track={item}
-            subtitlePrefix={
-              getTrackVotes && <Badge amount={getTrackVotes(item)} />
-            }
-            end={trackEnd && trackEnd(item)}
-            onPress={() => onTrackPress?.(item)}
-            onLongPress={onTrackLongPress?.(item)}
-            selected={selectedTracks?.includes(item.id)}
-          />
-        )}
-      />
-    </View>
-  );
-};
+export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props>(
+  (
+    {
+      onTrackPress,
+      onTrackLongPress,
+      selectedTracks,
+      activeIndex,
+      getTrackVotes,
+      trackEnd,
+      trackExtra,
+      extraData,
+      ...props
+    },
+    ref,
+  ) => {
+    const subtitlePrefix = useCallback(
+      (item: SpotifyApi.TrackObjectFull) => {
+        if (!getTrackVotes) return null;
+
+        const votes = getTrackVotes(item);
+
+        if (votes === undefined) return null;
+
+        return <Badge amount={votes} />;
+      },
+      [getTrackVotes],
+    );
+
+    return (
+      <View className="h-full w-full">
+        <FlashList
+          {...props}
+          ref={ref}
+          estimatedItemSize={80}
+          keyExtractor={({ id }) => id}
+          extraData={extraData ?? selectedTracks}
+          renderItem={({ item, index }) => {
+            const isHeader = props.stickyHeaderIndices?.includes(index);
+
+            return (
+              <Animated.View
+                className="shadow-xl"
+                style={{
+                  backgroundColor: theme["900"],
+                  shadowColor: isHeader ? theme["900"] : "transparent",
+                }}
+              >
+                <TrackListItem
+                  isActive={activeIndex === index}
+                  dimmed={activeIndex ? index < activeIndex : false}
+                  className={trackListItem({
+                    highlighted: isHeader,
+                  })}
+                  style={{
+                    backgroundColor: isHeader ? theme["500"] + "20" : "transparent",
+                  }}
+                  index={index}
+                  track={item}
+                  subtitlePrefix={subtitlePrefix(item)}
+                  end={trackEnd && trackEnd(item)}
+                  extra={trackExtra && trackExtra(item)}
+                  onPress={() => onTrackPress?.(item)}
+                  onLongPress={onTrackLongPress?.(item)}
+                  selected={selectedTracks?.includes(item.id)}
+                />
+              </Animated.View>
+            );
+          }}
+        />
+      </View>
+    );
+  },
+);
 
 export type TrackListProps = Props;
 
 interface Props
-  extends Omit<
-    FlashListProps<SpotifyApi.TrackObjectFull>,
-    "keyExtractor" | "renderItem"
-  > {
+  extends Omit<FlashListProps<SpotifyApi.TrackObjectFull>, "keyExtractor" | "renderItem"> {
   selectedTracks?: string[];
-  getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number;
-  trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element;
+  activeIndex?: number;
+  getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number | undefined;
+  trackExtra?: (track: SpotifyApi.TrackObjectFull) => JSX.Element | null;
+  trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element | undefined;
   onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
-  onTrackLongPress?: (
-    track: SpotifyApi.TrackObjectFull,
-  ) => (event: GestureResponderEvent) => void;
+  onTrackLongPress?: (track: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => void;
 }
+
+const trackListItem = cva("rounded-2xl transition-all duration-1000 my-3", {
+  variants: {
+    highlighted: {
+      true: "mx-4 p-2 pr-4",
+      false: "mx-6",
+    },
+  },
+  defaultVariants: {
+    highlighted: false,
+  },
+});

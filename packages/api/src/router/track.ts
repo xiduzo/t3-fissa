@@ -20,16 +20,12 @@ export const trackRouter = createTRPCRouter({
     return service.byPin(input);
   }),
 
-  addTracks: protectedProcedure
-    .input(addTracks)
-    .mutation(async ({ ctx, input }) => {
-      const service = new TrackService(ctx);
-      await service.addTracks(input.pin, input.tracks);
-    }),
-  deleteTrack: protectedProcedure
-    .input(deleteTrack)
-    .mutation(async ({ ctx, input }) => {
-      const service = new TrackService(ctx);
-      await service.deleteTrack(input.pin, input.trackId);
-    }),
+  addTracks: protectedProcedure.input(addTracks).mutation(async ({ ctx, input }) => {
+    const service = new TrackService(ctx);
+    await service.addTracks(input.pin, input.tracks);
+  }),
+  deleteTrack: protectedProcedure.input(deleteTrack).mutation(async ({ ctx, input }) => {
+    const service = new TrackService(ctx);
+    await service.deleteTrack(input.pin, input.trackId);
+  }),
 });

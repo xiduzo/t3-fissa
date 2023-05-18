@@ -4,8 +4,6 @@ import { api } from "./api";
 
 const endpoint = api.fissa.create.useMutation;
 
-export const useCreateFissa = (
-  callbacks: MutationCallbacks<typeof endpoint> = {},
-) => {
+export const useCreateFissa = (callbacks: MutationCallbacks<typeof endpoint> = {}) => {
   return endpoint(callbacks);
 };

@@ -1,8 +1,10 @@
 import { FC, memo, useCallback, useEffect, useRef } from "react";
-import { Animated, LayoutChangeEvent } from "react-native";
+import { Animated, Dimensions, LayoutChangeEvent } from "react-native";
 import * as Haptics from "expo-haptics";
 
 import { ListItem, ListItemProps } from "./ListItem";
+
+const windowHeight = Dimensions.get("window").height;
 
 export const TrackListItem: FC<Props> = memo(
   ({ track, index, ...props }) => {
@@ -22,10 +24,14 @@ export const TrackListItem: FC<Props> = memo(
     useEffect(() => {
       const diff = previousIndex.current - (index ?? 0);
       previousIndex.current = index ?? 0;
+
       if (diff === 0) return;
 
+      const toValue = diff * height.current;
+      if (Math.abs(toValue) > windowHeight) return;
+
       Animated.timing(positionAnimation, {
-        toValue: diff * 100,
+        toValue,
         duration: 0,
         useNativeDriver: false,
       }).start(() => {
@@ -34,7 +40,7 @@ export const TrackListItem: FC<Props> = memo(
           useNativeDriver: false,
         }).start();
       });
-    }, [index, track]);
+    }, [index]);
 
     return (
       <Animated.View onLayout={setHeight} style={{ top: positionAnimation }}>
@@ -47,13 +53,17 @@ export const TrackListItem: FC<Props> = memo(
       </Animated.View>
     );
   },
-  (prev, next) =>
-    prev.track.id === next.track.id &&
-    prev.selected === next.selected &&
-    prev.index === next.index,
+  (prev, next) => {
+    if (prev.index !== next.index) return false;
+    if (prev.selected !== next.selected) return false;
+    if (prev.isActive !== next.isActive) return false;
+
+    return true;
+  },
 );
 
 interface Props extends Omit<ListItemProps, "title" | "subtitle" | "imageUri"> {
   track: SpotifyApi.TrackObjectFull;
   index?: number;
+  isActive?: boolean;
 }

@@ -17,10 +17,7 @@ export const Typography: FC<Props> = ({
     <Animated.Text
       {...props}
       className={typography({ variant, centered, dimmed, className })}
-      style={[
-        { color: animatedColor ?? theme[!!inverted ? "900" : "100"] },
-        props.style,
-      ]}
+      style={[{ color: animatedColor ?? theme[!!inverted ? "900" : "100"] }, props.style]}
     >
       {children}
     </Animated.Text>

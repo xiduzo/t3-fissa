@@ -13,8 +13,7 @@ export class VoteService extends ServiceWithContext {
     });
 
     return votes.reduce(
-      (acc, { trackId, vote }) =>
-        acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
+      (acc, { trackId, vote }) => acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
       new Map<string, number>(),
     );
   };
@@ -70,8 +69,7 @@ export class VoteService extends ServiceWithContext {
     });
 
     const update = scores.reduce(
-      (acc, { trackId, vote }) =>
-        acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
+      (acc, { trackId, vote }) => acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
       new Map<string, number>(),
     );
 

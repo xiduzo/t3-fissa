@@ -1,16 +1,13 @@
 /** @type {import("prettier").Config & { [key:string]: any }} */
 const config = {
   arrowParens: "always",
-  printWidth: 80,
+  printWidth: 100,
   singleQuote: false,
   jsxSingleQuote: false,
   semi: true,
   trailingComma: "all",
   tabWidth: 2,
-  plugins: [
-    "@ianvs/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss",
-  ],
+  plugins: ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
   tailwindConfig: "./packages/config/tailwind",
   importOrder: [
     "^(react/(.*)$)|^(react$)|^(react-native(.*)$)",

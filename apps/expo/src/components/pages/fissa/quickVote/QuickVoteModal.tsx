@@ -1,40 +1,29 @@
-import { FC, useEffect, useMemo, useRef } from "react";
-import {
-  Animated,
-  Dimensions,
-  GestureResponderEvent,
-  Modal,
-  View,
-} from "react-native";
+import { FC, useContext, useEffect, useMemo, useRef } from "react";
+import { Animated, Dimensions, GestureResponderEvent, Modal, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
 import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
-import { useAuth } from "../../../providers";
-import { Action, TrackEnd, TrackListItem } from "../../shared";
-import { Badge } from "../../shared/Badge";
+import { useAuth } from "../../../../providers";
+import { Action, Badge, TrackEnd, TrackListItem } from "../../../shared";
+import { QuickVoteContext } from "./QuickVoteContext";
 
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
-export const QuickVoteModal: FC<Props> = ({
-  track,
-  vote,
-  focussedPosition,
-  onTouchEnd,
-  getTrackVotes,
-}) => {
+export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   const { pin } = useSearchParams();
   const { user } = useAuth();
+  const { vote, touchStartPosition, track } = useContext(QuickVoteContext);
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
   const { data } = useGetVoteFromUser(String(pin), track?.id!, user);
 
   const opacity = focussedAnimation.interpolate({
-    inputRange: [-Math.abs(focussedPosition), 0],
+    inputRange: [-Math.abs(touchStartPosition), 0],
     outputRange: [0.1, 0.98],
   });
 
@@ -46,7 +35,7 @@ export const QuickVoteModal: FC<Props> = ({
   useEffect(() => {
     if (!track) return;
     Haptics.selectionAsync();
-    const offset = focussedPosition - windowCenter;
+    const offset = touchStartPosition - windowCenter;
     Animated.timing(focussedAnimation, {
       toValue: offset,
       duration: 0,
@@ -62,7 +51,7 @@ export const QuickVoteModal: FC<Props> = ({
           duration: 200,
           delay: 100,
           toValue: 1,
-          useNativeDriver: false,
+          useNativeDriver: true,
         }),
       ]).start();
     });
@@ -71,10 +60,10 @@ export const QuickVoteModal: FC<Props> = ({
       Animated.timing(actionOpacityAnimation, {
         duration: 0,
         toValue: 0,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start();
     };
-  }, [track, focussedPosition]);
+  }, [track, touchStartPosition]);
 
   const upVoteGradient = useMemo(() => {
     const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);
@@ -98,14 +87,8 @@ export const QuickVoteModal: FC<Props> = ({
       onTouchEnd={onTouchEnd}
     >
       <Animated.View className="absolute inset-0" style={{ opacity }} />
-      <View
-        className="h-full justify-center"
-        style={{ backgroundColor: theme["900"] }}
-      >
-        <LinearGradient
-          className="flex-1 justify-center"
-          colors={upVoteGradient}
-        >
+      <View className="h-full justify-center" style={{ backgroundColor: theme["900"] }}>
+        <LinearGradient className="flex-1 justify-center" colors={upVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -129,10 +112,7 @@ export const QuickVoteModal: FC<Props> = ({
             />
           )}
         </Animated.View>
-        <LinearGradient
-          className="flex-1 justify-center"
-          colors={downVoteGradient}
-        >
+        <LinearGradient className="flex-1 justify-center" colors={downVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -154,9 +134,6 @@ export const QuickVoteModal: FC<Props> = ({
 };
 
 interface Props {
-  track?: SpotifyApi.TrackObjectFull;
-  vote: number;
-  focussedPosition: number;
   onTouchEnd?: (event: GestureResponderEvent) => void;
-  getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number;
+  getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number | undefined;
 }

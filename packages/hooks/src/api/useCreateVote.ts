@@ -4,10 +4,7 @@ import { api } from "./api";
 
 const endpoint = api.vote.create.useMutation;
 
-export const useCreateVote = (
-  pin: string,
-  callbacks: MutationCallbacks<typeof endpoint> = {},
-) => {
+export const useCreateVote = (pin: string, callbacks: MutationCallbacks<typeof endpoint> = {}) => {
   const queryClient = api.useContext();
 
   const { mutate, mutateAsync, ...rest } = endpoint({
@@ -56,9 +53,7 @@ export const useCreateVote = (
 
   return {
     ...rest,
-    mutate: async (vote: number, trackId: string) =>
-      mutate({ pin, trackId, vote }),
-    mutateAsync: async (vote: number, trackId: string) =>
-      mutateAsync({ pin, trackId, vote }),
+    mutate: async (vote: number, trackId: string) => mutate({ pin, trackId, vote }),
+    mutateAsync: async (vote: number, trackId: string) => mutateAsync({ pin, trackId, vote }),
   };
 };

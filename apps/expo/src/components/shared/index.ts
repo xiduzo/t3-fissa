@@ -1,4 +1,5 @@
 export * from "./Action";
+export * from "./Badge";
 export * from "./BottomDrawer";
 export * from "./Button";
 export * from "./Divider";
@@ -16,6 +17,7 @@ export * from "./PlaylistListItem";
 export * from "./Popover";
 export * from "./ProgressBar";
 export * from "./Rejoin";
+export * from "./SafeAreaView";
 export * from "./SelectDevice";
 export * from "./Toast";
 export * from "./TrackEnd";

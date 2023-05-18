@@ -29,8 +29,8 @@ export const Action: FC<Props> = ({
             backgroundColor: active ? theme["900"] : "transparent",
           }}
         >
-          <Typography inverted={!active && inverted}>
-            <Icon name={icon} size={24} />
+          <Typography inverted={!active && inverted} className="">
+            <Icon name={icon} />
           </Typography>
         </View>
         <View className={text({ disabled: props.disabled, layout })}>
@@ -43,12 +43,7 @@ export const Action: FC<Props> = ({
             {title}
           </Typography>
           {subtitle && (
-            <Typography
-              centered={layout === "column"}
-              variant="bodyM"
-              dimmed
-              inverted={inverted}
-            >
+            <Typography centered={layout === "column"} variant="bodyM" dimmed inverted={inverted}>
               {subtitle}
             </Typography>
           )}
@@ -80,16 +75,13 @@ const text = cva("mx-4", {
   },
 });
 
-const iconStyle = cva(
-  "rounded-xl border-2 w-11 h-11 justify-center items-center",
-  {
-    variants: {
-      disabled: {
-        true: "opacity-30",
-      },
+const iconStyle = cva("rounded-xl border-2 w-12 h-12 justify-center items-center", {
+  variants: {
+    disabled: {
+      true: "opacity-30",
     },
   },
-);
+});
 
 const content = cva("items-center", {
   variants: {

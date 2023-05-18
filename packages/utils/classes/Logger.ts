@@ -10,9 +10,7 @@ enum LogLevel {
   DEBUG = 7,
 }
 
-const logLevel = process.env.LOG_LEVEL
-  ? Number(process.env.LOG_LEVEL)
-  : LogLevel.INFO;
+const logLevel = process.env.LOG_LEVEL ? Number(process.env.LOG_LEVEL) : LogLevel.INFO;
 
 class Logger {
   /**

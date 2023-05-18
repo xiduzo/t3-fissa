@@ -17,8 +17,7 @@ interface SpotifyState {
 
 const useSpotifyStore = create<SpotifyState>((set) => ({
   tracks: [],
-  addTracks: (tracks) =>
-    set((state) => ({ tracks: newTracks(state.tracks, tracks) })),
+  addTracks: (tracks) => set((state) => ({ tracks: newTracks(state.tracks, tracks) })),
   playLists: [],
   setPlayLists: (playLists) => set(() => ({ playLists })),
   spotify: new SpotifyWebApi(),
@@ -30,31 +29,22 @@ const newTracks = (
   currentTracks: SpotifyApi.TrackObjectFull[],
   newTracks: SpotifyApi.TrackObjectFull[],
 ) => [
-  ...currentTracks.filter(
-    ({ id }) => !newTracks.find((track) => track.id === id),
-  ),
+  ...currentTracks.filter(({ id }) => !newTracks.find((track) => track.id === id)),
   ...newTracks,
 ];
 
 export const useTracks = (trackIds?: string[]) => {
   const { addTracks, tracks, spotify } = useSpotifyStore();
 
-  const cachedTrackIds = useMemo(
-    () => tracks.map(({ id }) => id),
-    [trackIds, tracks],
-  );
+  const cachedTrackIds = useMemo(() => tracks.map(({ id }) => id), [trackIds, tracks]);
 
   const uncachedTrackIds = useMemo(() => {
-    return (
-      trackIds?.filter((trackId) => !cachedTrackIds.includes(trackId)) ?? []
-    );
+    return trackIds?.filter((trackId) => !cachedTrackIds.includes(trackId)) ?? [];
   }, [trackIds, cachedTrackIds]);
 
   const requestedTracks = useMemo(() => {
     return (
-      trackIds
-        ?.map((trackId) => tracks.find(({ id }) => id === trackId))
-        .filter(Boolean) ?? []
+      trackIds?.map((trackId) => tracks.find(({ id }) => id === trackId)).filter(Boolean) ?? []
     );
   }, [trackIds, tracks]);
 

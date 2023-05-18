@@ -7,12 +7,7 @@ import { useAuth } from "../../providers";
 import { EmptyState } from "./EmptyState";
 import { PlaylistListItem } from "./PlaylistListItem";
 
-export const PlaylistList: FC<Props> = ({
-  onPlaylistPress,
-  inverted,
-  playlistListItemEnd,
-  ...props
-}) => {
+export const PlaylistList: FC<Props> = ({ onPlaylistPress, inverted, playlistListItemEnd, ...props }) => {
   const { user } = useAuth();
 
   const playlists = usePlayLists(user);
@@ -23,7 +18,8 @@ export const PlaylistList: FC<Props> = ({
         {...props}
         data={playlists}
         keyExtractor={({ id }) => id}
-        estimatedItemSize={100}
+        estimatedItemSize={80}
+        ItemSeparatorComponent={ItemSeparatorComponent}
         renderItem={({ item }) => (
           <PlaylistListItem
             className="px-6"
@@ -32,23 +28,16 @@ export const PlaylistList: FC<Props> = ({
             end={playlistListItemEnd}
           />
         )}
-        ListEmptyComponent={
-          <EmptyState
-            icon="🐕"
-            title="Fetching playlists"
-            subtitle="good boy"
-          />
-        }
+        ListEmptyComponent={<EmptyState icon="🐕" title="Fetching playlists" subtitle="good boy" />}
       />
     </View>
   );
 };
 
+const ItemSeparatorComponent = () => <View className="h-6" />;
+
 interface Props
-  extends Omit<
-    FlashListProps<SpotifyApi.PlaylistObjectSimplified>,
-    "renderItem" | "keyExtractor" | "data"
-  > {
+  extends Omit<FlashListProps<SpotifyApi.PlaylistObjectSimplified>, "renderItem" | "keyExtractor" | "data"> {
   onPlaylistPress?: (playlist: SpotifyApi.PlaylistObjectSimplified) => void;
   inverted?: boolean;
   playlistListItemEnd?: JSX.Element;

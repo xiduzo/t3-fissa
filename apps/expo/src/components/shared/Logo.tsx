@@ -10,10 +10,7 @@ export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
     case "blueey":
       return (
         <Animated.View style={style}>
-          <LottieView
-            source={require("../../../assets/animations/animation_blueey.json")}
-            {...props}
-          />
+          <LottieView source={require("../../../assets/animations/animation_blueey.json")} {...props} />
         </Animated.View>
       );
     case "pinkey":
@@ -29,28 +26,19 @@ export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
     case "greeny":
       return (
         <Animated.View style={style}>
-          <LottieView
-            source={require("../../../assets/animations/animation_greeny.json")}
-            {...props}
-          />
+          <LottieView source={require("../../../assets/animations/animation_greeny.json")} {...props} />
         </Animated.View>
       );
     case "limey":
       return (
         <Animated.View style={style}>
-          <LottieView
-            source={require("../../../assets/animations/animation_limey.json")}
-            {...props}
-          />
+          <LottieView source={require("../../../assets/animations/animation_limey.json")} {...props} />
         </Animated.View>
       );
     case "sunny":
       return (
         <Animated.View style={style}>
-          <LottieView
-            source={require("../../../assets/animations/animation_sunny.json")}
-            {...props}
-          />
+          <LottieView source={require("../../../assets/animations/animation_sunny.json")} {...props} />
         </Animated.View>
       );
     // TODO add orangy lottie file
@@ -58,10 +46,7 @@ export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
     default:
       return (
         <Animated.View style={style}>
-          <LottieView
-            source={require("../../../assets/animations/animation_sunny.json")}
-            {...props}
-          />
+          <LottieView source={require("../../../assets/animations/animation_sunny.json")} {...props} />
         </Animated.View>
       );
   }

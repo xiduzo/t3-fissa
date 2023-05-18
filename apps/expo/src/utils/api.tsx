@@ -8,10 +8,7 @@ import type { AppRouter } from "@fissa/api";
 import { transformer } from "@fissa/api/transformer";
 
 // relative path import to prevent circular dependency
-import {
-  ENCRYPTED_STORAGE_KEYS,
-  useEncryptedStorage,
-} from "../hooks/useEncryptedStorage";
+import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
 
 /**
  * A set of type-safe hooks for consuming your API.
@@ -53,12 +50,8 @@ const getBaseUrl = () => {
  * A wrapper for your app that provides the TRPC context.
  * Use only in _app.tsx
  */
-export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const { getValueFor } = useEncryptedStorage(
-    ENCRYPTED_STORAGE_KEYS.sessionToken,
-  );
+export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { getValueFor } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.sessionToken);
 
   const [queryClient] = useState(() => new QueryClient());
 
