@@ -55,7 +55,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
                 }}
               >
                 <TrackListItem
-                  isActive={activeIndex === index}
+                  rerenderTrigger={props.stickyHeaderIndices}
                   dimmed={activeIndex ? index < activeIndex : false}
                   className={trackListItem({
                     highlighted: isHeader,

@@ -56,7 +56,7 @@ export const TrackListItem: FC<Props> = memo(
   (prev, next) => {
     if (prev.index !== next.index) return false;
     if (prev.selected !== next.selected) return false;
-    if (prev.isActive !== next.isActive) return false;
+    if (prev.rerenderTrigger !== next.rerenderTrigger) return false;
 
     return true;
   },
@@ -65,5 +65,5 @@ export const TrackListItem: FC<Props> = memo(
 interface Props extends Omit<ListItemProps, "title" | "subtitle" | "imageUri"> {
   track: SpotifyApi.TrackObjectFull;
   index?: number;
-  isActive?: boolean;
+  rerenderTrigger?: any;
 }

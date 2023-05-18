@@ -46,7 +46,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   }, [isPlaying, isOwner, activeDevice]);
 
   const getTrackVotes = useCallback(
-    (track: SpotifyApi.TrackObjectFull) => {
+    (track?: SpotifyApi.TrackObjectFull) => {
+      if (!track) return;
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
       if (!localTrack) return;
@@ -99,7 +100,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       listRef?.current?.scrollToIndex({
         index: currentTrackIndex,
         animated: true,
-        viewOffset,
+        viewOffset: currentTrackIndex === 0 ? 0 : viewOffset,
       });
       shouldShowBackButton(false);
     },
@@ -181,11 +182,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         trackEnd={trackEnd}
         trackExtra={trackExtra}
         ListEmptyComponent={
-          <View className="mx-6">
+          <View className="mx-6 h-[80vh]">
             <ListEmptyComponent isLoading={isInitialLoading} />
           </View>
         }
-        ListFooterComponent={<ListFooterComponent />}
+        ListFooterComponent={showTracks ? <ListFooterComponent /> : null}
       />
       <Animated.View
         className="absolute bottom-32 w-full items-center"

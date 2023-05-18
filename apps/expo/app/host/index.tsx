@@ -45,11 +45,26 @@ const Host = () => {
           </Typography>
         </View>
         <View>
-          <Button title="Based on my playlist" className="mb-6" linkTo="/host/fromPlaylist" />
-          <Button title="Select some songs" variant="outlined" linkTo="/host/fromTracks" />
+          <Button
+            title="Based on my playlist"
+            className="mb-6"
+            linkTo="/host/fromPlaylist"
+            disabled={isLoading}
+          />
+          <Button
+            title="Select some songs"
+            variant="outlined"
+            linkTo="/host/fromTracks"
+            disabled={isLoading}
+          />
         </View>
         <View>
-          <Button title="Surprise me" variant="text" onPress={handleSurpriseMe} disabled={isLoading} />
+          <Button
+            title="Surprise me"
+            variant="text"
+            onPress={handleSurpriseMe}
+            disabled={isLoading}
+          />
         </View>
       </PageTemplate>
     </SafeAreaView>
