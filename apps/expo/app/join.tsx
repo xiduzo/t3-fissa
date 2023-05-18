@@ -88,9 +88,9 @@ const Join = () => {
         <Typography variant="h5" centered className="mb-16">
           Enter the fissa code
         </Typography>
-        <View className="flex flex-row justify-around space-x-4">
+        <View className="flex-row justify-around space-x-4">
           {keys.map((key, index) => (
-            <View className="flex flex-1" key={key.current?.props?.id ?? index}>
+            <View className="flex-1" key={key.current?.props?.id ?? index}>
               <TextInput
                 autoFocus={index === 0}
                 ref={key}

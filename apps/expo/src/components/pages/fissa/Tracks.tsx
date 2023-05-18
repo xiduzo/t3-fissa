@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { View } from "react-native";
+import { Animated, NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { useGetFissa } from "@fissa/hooks";
 import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
@@ -7,6 +7,7 @@ import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 import { useAuth } from "../../../providers";
 import {
   Badge,
+  Button,
   Divider,
   Popover,
   ProgressBar,
@@ -24,6 +25,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const { data, isInitialLoading } = useGetFissa(pin);
   const { user } = useAuth();
+
+  const showBackAnimation = useRef(new Animated.Value(0)).current;
 
   const { handleTouchMove, handleTouchEnd, toggleTrackFocus, isVoting } = useQuickVote(pin);
 
@@ -84,19 +87,27 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     return localTracks.findIndex(({ id }) => id === data.currentlyPlayingId);
   }, [data?.currentlyPlayingId, localTracks]);
 
+  const shouldShowBackButton = useCallback((showShow = false) => {
+    Animated.spring(showBackAnimation, {
+      toValue: Number(showShow),
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
   const scrollToCurrentIndex = useCallback(
-    (viewOffset: number) => {
+    (viewOffset = 48) => {
       listRef?.current?.scrollToIndex({
         index: currentTrackIndex,
         animated: true,
         viewOffset,
       });
+      shouldShowBackButton(false);
     },
-    [currentTrackIndex],
+    [currentTrackIndex, shouldShowBackButton],
   );
 
   const lastScrolledTo = useRef<string>();
-  const scrollPosition = useRef<number>();
+  const currentIndexPosition = useRef<number>();
 
   useEffect(() => {
     if (lastScrolledTo.current === data?.currentlyPlayingId) return;
@@ -104,38 +115,59 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
     setTimeout(() => {
       scrollToCurrentIndex(20);
-      setTimeout(() => {
-        scrollToCurrentIndex(48);
-      }, 300);
-    }, 1000);
+      setTimeout(scrollToCurrentIndex, 300);
+    }, 1500); // give TrackList time to render
   }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
 
   const queue = useMemo(() => {
     return showTracks ? localTracks : [];
   }, [showTracks, localTracks]);
 
+  const lockOnActiveTrack = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (!currentIndexPosition.current) return;
+
+      const scrollPos = e.nativeEvent.contentOffset.y;
+      const differenceFromCurrentIndex = scrollPos - currentIndexPosition.current;
+
+      if (differenceFromCurrentIndex < -250) return; // scrolling up
+      if (differenceFromCurrentIndex > 80) return; // scrolling down
+
+      scrollToCurrentIndex();
+    },
+    [scrollToCurrentIndex],
+  );
+
+  const marginBottom = showBackAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-50, 0],
+  });
+
   return (
     <>
       <TrackList
         ref={listRef}
-        // onScroll={async (e) => {
-        //   const scrollPos = e.nativeEvent.contentOffset.y;
-        //   if (showPlayedTracks) return;
-        //   if (!scrollPosition.current) return;
-        //   if (isClosing.current) return;
+        onScroll={(e) => {
+          if (!currentIndexPosition.current) return;
+          if (lastScrolledTo.current !== data?.currentlyPlayingId) return;
 
-        //   const triesToScrollUp = scrollPos < scrollPosition.current;
-        //   if (!triesToScrollUp) return;
-        //   scrollToCurrentIndex(64, false);
-        // }}
+          const scrollPos = e.nativeEvent.contentOffset.y;
+          const differenceFromCurrentIndex = scrollPos - currentIndexPosition.current;
+
+          shouldShowBackButton(
+            differenceFromCurrentIndex < -250 || differenceFromCurrentIndex > 80,
+          );
+        }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onScrollEndDrag={lockOnActiveTrack}
         onMomentumScrollEnd={(e) => {
           if (!data?.currentlyPlayingId) return;
           if (lastScrolledTo.current === data?.currentlyPlayingId) return;
 
           lastScrolledTo.current = data?.currentlyPlayingId;
-          scrollPosition.current = e.nativeEvent.contentOffset.y;
+          currentIndexPosition.current = e.nativeEvent.contentOffset.y;
+          lockOnActiveTrack(e);
         }}
         stickyHeaderIndices={[currentTrackIndex]}
         invertStickyHeaders
@@ -155,6 +187,15 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         }
         ListFooterComponent={<ListFooterComponent />}
       />
+      <Animated.View
+        className="absolute bottom-32 w-full items-center"
+        style={{
+          opacity: showBackAnimation,
+          marginBottom,
+        }}
+      >
+        <Button title="Back to current song" onPress={() => scrollToCurrentIndex()} />
+      </Animated.View>
       <Popover visible={!!selectedTrack} onRequestClose={() => setSelectedTrack(null)}>
         {selectedTrack && (
           <TrackListItem

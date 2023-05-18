@@ -13,7 +13,7 @@ import { theme } from "@fissa/tailwind-config";
 import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 
 import { BottomDrawer } from "./BottomDrawer";
-import { Button } from "./Button";
+import { Button, IconButton } from "./Button";
 import { EmptyState } from "./EmptyState";
 import { Icon } from "./Icon";
 import { Image } from "./Image";
@@ -30,11 +30,11 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   const [search, setSearch] = useState("");
   const debounced = useDebounce(search);
 
-  const playlistTracks = useRef<TrackList>([]);
+  const playlistTracks = useRef<Tracks>([]);
 
-  const [searchedTracks, setSearchedTracks] = useState<TrackList>([]);
-  const [selectedTracks, setSelectedTracks] = useState<TrackList>([]);
-  const [filteredTracks, setFilteredTracks] = useState<TrackList>([]);
+  const [searchedTracks, setSearchedTracks] = useState<Tracks>([]);
+  const [selectedTracks, setSelectedTracks] = useState<Tracks>([]);
+  const [filteredTracks, setFilteredTracks] = useState<Tracks>([]);
 
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
@@ -106,12 +106,19 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
         options={{
           animation: "fade_from_bottom",
           animationDuration: 100,
-          headerLeft: () => selectedPlaylist && <HeaderLeft onPress={clearSelectedPlaylist} />,
-          headerRight: () => <HeaderRight onPress={back} />,
+          headerLeft: () =>
+            selectedPlaylist && (
+              <IconButton
+                icon="arrow-left"
+                title="back to playlists"
+                onPress={clearSelectedPlaylist}
+              />
+            ),
+          headerRight: () => <IconButton icon="close" title="go to fissa" onPress={back} />,
         }}
       />
       <View className="h-full w-full">
-        <View className="mb-4 px-6">
+        <View className="my-4 px-6">
           <Input
             startIcon="search"
             ref={inputRef}
@@ -189,31 +196,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
 interface Props {
   disabledAction?: boolean;
   actionTitle: string;
-  onAddTracks: (tracks: TrackList) => Promise<void>;
+  onAddTracks: (tracks: Tracks) => Promise<void>;
 }
 
-type TrackList = SpotifyApi.TrackObjectFull[];
-
-const HeaderRight: FC<{
-  onPress: (event: GestureResponderEvent) => void;
-}> = ({ onPress }) => {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <Typography>
-        <Icon name="close" />
-      </Typography>
-    </TouchableOpacity>
-  );
-};
-
-const HeaderLeft: FC<{
-  onPress: (event: GestureResponderEvent) => void;
-}> = ({ onPress }) => {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <Typography>
-        <Icon name="arrow-left" />
-      </Typography>
-    </TouchableOpacity>
-  );
-};
+type Tracks = SpotifyApi.TrackObjectFull[];

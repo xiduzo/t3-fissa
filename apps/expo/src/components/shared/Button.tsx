@@ -1,5 +1,11 @@
-import { FC, useCallback, useMemo } from "react";
-import { ButtonProps, GestureResponderEvent, TouchableHighlight, View } from "react-native";
+import { FC, useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  Animated,
+  ButtonProps,
+  GestureResponderEvent,
+  TouchableHighlight,
+  View,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
@@ -76,6 +82,8 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
 };
 
 export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
+  const shownAnimation = useRef(new Animated.Value(0)).current;
+
   const { push } = useRouter();
 
   const handlePress = useCallback(
@@ -87,20 +95,30 @@ export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
     [props.onPress, props.linkTo],
   );
 
+  useEffect(() => {
+    Animated.spring(shownAnimation, {
+      toValue: 1,
+      delay: 2500,
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
   return (
     <TouchableHighlight
       {...props}
       className={fab({ position, className: props.className })}
       onPress={handlePress}
     >
-      <LinearGradient
-        colors={theme.gradient}
-        start={[0, 0]}
-        end={[1, 1]}
-        className="h-full w-full items-center justify-center rounded-2xl"
-      >
-        <Icon name={icon} />
-      </LinearGradient>
+      <Animated.View style={{ transform: [{ scale: shownAnimation }] }}>
+        <LinearGradient
+          colors={theme.gradient}
+          start={[0, 0]}
+          end={[1, 1]}
+          className="h-full w-full items-center justify-center rounded-2xl"
+        >
+          <Icon name={icon} />
+        </LinearGradient>
+      </Animated.View>
     </TouchableHighlight>
   );
 };
@@ -113,7 +131,7 @@ export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, dimmed, ...props
   }, [inverted, dimmed]);
 
   return (
-    <TouchableHighlight {...props} className="-m-2 rounded-full p-2">
+    <TouchableHighlight {...props} className={`-m-2 rounded-full p-2 ${props.className}`}>
       <Icon name={icon} color={color} />
     </TouchableHighlight>
   );

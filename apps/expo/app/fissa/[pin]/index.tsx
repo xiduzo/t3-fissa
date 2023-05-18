@@ -33,11 +33,7 @@ const Fissa = () => {
           headerRight: () => <PinCode />,
         }}
       />
-      <View className="flex h-full w-full">
-        {/* <LinearGradient
-          colors={[theme[900], "transparent"]}
-          className="absolute top-0 z-10 h-24 w-full"
-        /> */}
+      <View className="h-full w-full">
         <QuickVoteProvider>
           <FissaTracks pin={String(pin)} />
         </QuickVoteProvider>

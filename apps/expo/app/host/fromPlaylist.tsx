@@ -10,7 +10,8 @@ import { useCreateFissa } from "../../src/hooks";
 const FromPlaylist = () => {
   const spotify = useSpotify();
 
-  const [selectedPlaylist, setSelectedPlaylist] = useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
+  const [selectedPlaylist, setSelectedPlaylist] =
+    useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
   const { mutateAsync, isLoading } = useCreateFissa();
 
@@ -25,7 +26,7 @@ const FromPlaylist = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View className="flex h-full justify-between">
+      <View className="h-full justify-between">
         <Typography variant="h1" className="px-6 pb-8 pt-4">
           Select playlist
         </Typography>
