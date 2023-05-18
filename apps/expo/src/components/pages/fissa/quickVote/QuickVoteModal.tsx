@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
 import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
+import { AnimationSpeed } from "@fissa/utils";
 
 import { useAuth } from "../../../../providers";
 import { Action, Badge, TrackEnd, TrackListItem } from "../../../shared";
@@ -38,7 +39,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
     const offset = touchStartPosition - windowCenter;
     Animated.timing(focussedAnimation, {
       toValue: offset,
-      duration: 0,
+      duration: AnimationSpeed.Instant,
       useNativeDriver: false,
     }).start(() => {
       Animated.parallel([
@@ -48,7 +49,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
           useNativeDriver: false,
         }),
         Animated.timing(actionOpacityAnimation, {
-          duration: 200,
+          duration: AnimationSpeed.Fast,
           delay: 100,
           toValue: 1,
           useNativeDriver: true,
@@ -58,7 +59,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
 
     return () => {
       Animated.timing(actionOpacityAnimation, {
-        duration: 0,
+        duration: AnimationSpeed.Instant,
         toValue: 0,
         useNativeDriver: true,
       }).start();

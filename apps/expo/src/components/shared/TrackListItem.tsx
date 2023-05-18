@@ -1,6 +1,7 @@
 import { FC, memo, useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions, LayoutChangeEvent } from "react-native";
 import * as Haptics from "expo-haptics";
+import { AnimationSpeed } from "@fissa/utils";
 
 import { ListItem, ListItemProps } from "./ListItem";
 
@@ -32,7 +33,7 @@ export const TrackListItem: FC<Props> = memo(
 
       Animated.timing(positionAnimation, {
         toValue,
-        duration: 0,
+        duration: AnimationSpeed.Instant,
         useNativeDriver: false,
       }).start(() => {
         Animated.spring(positionAnimation, {

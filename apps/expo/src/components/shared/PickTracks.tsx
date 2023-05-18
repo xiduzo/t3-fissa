@@ -10,7 +10,7 @@ import {
 import { Stack, useRouter } from "expo-router";
 import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
-import { getPlaylistTracks, useSpotify } from "@fissa/utils";
+import { AnimationSpeed, getPlaylistTracks, useSpotify } from "@fissa/utils";
 
 import { BottomDrawer } from "./BottomDrawer";
 import { Button, IconButton } from "./Button";
@@ -105,7 +105,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
       <Stack.Screen
         options={{
           animation: "fade_from_bottom",
-          animationDuration: 100,
+          animationDuration: AnimationSpeed.VeryFast,
           headerLeft: () =>
             selectedPlaylist && (
               <IconButton

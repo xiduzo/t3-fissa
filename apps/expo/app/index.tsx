@@ -3,6 +3,7 @@ import { Animated, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import * as SystemUI from "expo-system-ui";
 import { theme } from "@fissa/tailwind-config";
+import { AnimationSpeed } from "@fissa/utils";
 
 import { Button, Logo, Typography } from "../src/components";
 import { useAuth } from "../src/providers";
@@ -82,7 +83,7 @@ const Index = () => {
 
       Animated.timing(signedInAnimation, {
         toValue: 1,
-        duration: 150,
+        duration: AnimationSpeed.Fast,
         useNativeDriver: false,
       }).start(() => {
         replace("/home");

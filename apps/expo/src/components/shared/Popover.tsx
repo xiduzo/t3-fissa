@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { theme } from "@fissa/tailwind-config";
+import { AnimationSpeed } from "@fissa/utils";
 
 import { useSwipe } from "../../hooks";
 import { BottomDrawer } from "./BottomDrawer";
@@ -19,7 +20,7 @@ export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }
   const animate = useCallback((config?: Partial<Animated.TimingAnimationConfig>) => {
     Animated.timing(fadeAnimation, {
       toValue: 0,
-      duration: 0,
+      duration: AnimationSpeed.Instant,
       useNativeDriver: true,
       ...(config ?? {}),
     }).start();
@@ -38,7 +39,9 @@ export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }
   });
 
   useEffect(() => {
-    props.visible ? animate({ toValue: 1, duration: 300, delay: 250 }) : animate();
+    props.visible
+      ? animate({ toValue: 1, duration: AnimationSpeed.Normal, delay: 250 })
+      : animate();
 
     return animate;
   }, [props.visible, animate]);
