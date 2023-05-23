@@ -8,6 +8,7 @@ import { theme } from "@fissa/tailwind-config";
 import { Fab, FissaTracks, PinCode } from "../../../src/components";
 import { QuickVoteProvider } from "../../../src/components/pages/fissa";
 import { useOnActiveApp } from "../../../src/hooks";
+import { Test } from "./Test";
 
 const Fissa = () => {
   const { back } = useRouter();
@@ -38,6 +39,10 @@ const Fissa = () => {
           <FissaTracks pin={String(pin)} />
         </QuickVoteProvider>
         <PinCode />
+        <View className="absolute bottom-96 h-40 w-40">
+          <Test />
+        </View>
+
         <Fab
           position="bottom-center"
           title="add songs"

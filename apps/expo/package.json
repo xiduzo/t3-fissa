@@ -14,11 +14,12 @@
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@fissa/api": "*",
+    "@fissa/hooks": "*",
     "@fissa/tailwind-config": "*",
     "@fissa/utils": "*",
-    "@fissa/hooks": "*",
     "@react-native-community/slider": "^4.4.2",
     "@shopify/flash-list": "1.4.0",
+    "@shopify/react-native-skia": "^0.1.192",
     "@tanstack/react-query": "^4.29.5",
     "@trpc/client": "^10.21.1",
     "@trpc/react-query": "^10.21.1",

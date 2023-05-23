@@ -62,6 +62,9 @@ importers:
       '@shopify/flash-list':
         specifier: 1.4.0
         version: 1.4.0(@babel/runtime@7.20.7)(react-native@0.71.3)(react@18.2.0)
+      '@shopify/react-native-skia':
+        specifier: ^0.1.192
+        version: 0.1.192(react-native@0.71.3)(react@18.2.0)
       '@tanstack/react-query':
         specifier: ^4.29.5
         version: 4.29.5(react-dom@18.2.0)(react-native@0.71.3)(react@18.2.0)
@@ -3092,6 +3095,26 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /@shopify/react-native-skia@0.1.192(react-native@0.71.3)(react@18.2.0):
+    resolution: {integrity: sha512-KxYZgSB24AY14Xam6TBYw24BFsUNouE8t0Knu677Zl+3jIH5D+j5t7GK+6QEMoiIXtjx4pJrxNMKKmUFxKmNhw==}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      react: '>=18.0'
+      react-native: '>=0.64'
+      react-native-reanimated: '>=2.0.0'
+    peerDependenciesMeta:
+      react-native:
+        optional: true
+      react-native-reanimated:
+        optional: true
+    dependencies:
+      canvaskit-wasm: 0.38.0
+      react: 18.2.0
+      react-native: 0.71.3(@babel/core@7.20.12)(@babel/preset-env@7.20.2)(react@18.2.0)
+      react-reconciler: 0.27.0(react@18.2.0)
+    dev: false
+
   /@sideway/address@4.1.4:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
     dependencies:
@@ -4316,6 +4339,10 @@ packages:
 
   /caniuse-lite@1.0.30001481:
     resolution: {integrity: sha512-KCqHwRnaa1InZBtqXzP98LPg0ajCVujMKjqKDhZEthIpAsJl/YEIa3YvXjGXPVqzZVguccuu7ga9KOE1J9rKPQ==}
+
+  /canvaskit-wasm@0.38.0:
+    resolution: {integrity: sha512-ZEG6lucpbQ4Ld+mY8C1Ng+PMLVP+/AX02jS0Sdl28NyMxuKSa9uKB8oGd1BYp1XWPyO2Jgr7U8pdyjJ/F3xR5Q==}
+    dev: false
 
   /chai@4.3.7:
     resolution: {integrity: sha512-HLnAzZ2iupm25PlN0xFreAlBA5zaBSv3og0DdeGA4Ar6h6rJ3A0rolRUKJhSF2V10GZKDgWF/VmAEsNWjCRB+A==}
@@ -9905,6 +9932,17 @@ packages:
       - utf-8-validate
     dev: false
 
+  /react-reconciler@0.27.0(react@18.2.0):
+    resolution: {integrity: sha512-HmMDKciQjYmBRGuuhIaKA1ba/7a+UsM5FzOZsMO2JYHt9Jh8reCb7j1eDC95NOyUlKM9KRyvdx0flBuDvYSBoA==}
+    engines: {node: '>=0.10.0'}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.2.0
+      scheduler: 0.21.0
+    dev: false
+
   /react-refresh@0.4.3:
     resolution: {integrity: sha512-Hwln1VNuGl/6bVwnd0Xdn1e84gT/8T9aYNL+HAKDArLCS7LWjwr7StE30IEYbIkx0Vi3vs+coQxe+SQDbGbbpA==}
     engines: {node: '>=0.10.0'}
@@ -10274,6 +10312,12 @@ packages:
 
   /sax@1.2.4:
     resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
+
+  /scheduler@0.21.0:
+    resolution: {integrity: sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /scheduler@0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
