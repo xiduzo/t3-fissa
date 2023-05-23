@@ -1,4 +1,12 @@
-import { FC, PropsWithChildren, createContext, useCallback, useRef, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { GestureResponderEvent } from "react-native";
 import * as Haptics from "expo-haptics";
 
@@ -7,7 +15,9 @@ export const QuickVoteContext = createContext({
   vote: 0,
   setVote: (vote: number) => {},
   selectTrack: (event: GestureResponderEvent, track?: SpotifyApi.TrackObjectFull) => {},
-  touchStartPosition: 0,
+  touchStartPosition: {
+    current: 0,
+  },
 });
 
 export const QuickVoteProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -45,7 +55,7 @@ export const QuickVoteProvider: FC<PropsWithChildren> = ({ children }) => {
         vote,
         setVote: handleSetVote,
         selectTrack: handleSelectTrack,
-        touchStartPosition: touchStartPosition.current,
+        touchStartPosition,
       }}
     >
       {children}

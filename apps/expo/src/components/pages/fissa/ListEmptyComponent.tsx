@@ -50,14 +50,22 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
 
   if (isOwner && !activeDevice) {
     return (
-      <EmptyState icon="🎧" title="No active device" subtitle="Select the device for blasting your tunes">
+      <EmptyState
+        icon="🎧"
+        title="No active device"
+        subtitle="Select the device for blasting your tunes"
+      >
         <SelectDevice onSelectDevice={handleDeviceSelect} />
       </EmptyState>
     );
   }
 
   return (
-    <EmptyState icon="🦥" title="This fissa is asleep" subtitle={!isOwner && "Poke your host to continue"}>
+    <EmptyState
+      icon="🦥"
+      title="This fissa is asleep"
+      subtitle={!isOwner && "Poke your host to continue"}
+    >
       {isOwner && <Button onPress={mutateAsync} title="Continue fissa" />}
     </EmptyState>
   );

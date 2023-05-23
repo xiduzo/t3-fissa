@@ -54,11 +54,13 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
     },
   });
 
-  const isActiveTrack = useMemo(() => {
-    return fissa?.currentlyPlayingId === track.id;
-  }, [fissa]);
+  const isActiveTrack = useMemo(() => fissa?.currentlyPlayingId === track.id, [fissa]);
 
   const isOwner = useMemo(() => fissa?.by.email === user?.email, [fissa?.by, user]);
+  const hasBeenPlayed = useMemo(
+    () => fissa?.tracks.find(({ trackId }) => trackId === track.id)?.hasBeenPlayed,
+    [track.id, fissa?.tracks],
+  );
 
   const canRemoveTrack = useMemo(() => {
     const isAddedByUser =
@@ -87,11 +89,18 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
     await skipTrack();
   }, [skipTrack]);
 
-  if (!fissa) return null;
-
   return (
     <>
-      {!isActiveTrack && (
+      {hasBeenPlayed && (
+        <Action
+          onPress={handleVote(1)}
+          inverted
+          icon="sync"
+          title="Replay song"
+          subtitle="What a banger this was!"
+        />
+      )}
+      {!isActiveTrack && !hasBeenPlayed && (
         <Action
           onPress={handleVote(1)}
           inverted
@@ -102,7 +111,7 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
           subtitle="It might move up in the queue"
         />
       )}
-      {canRemoveTrack && !isActiveTrack && (
+      {canRemoveTrack && !isActiveTrack && !hasBeenPlayed && (
         <Action
           inverted
           onPress={handleDelete}
@@ -112,17 +121,17 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
           subtitle="Mistakes were made"
         />
       )}
-      {isActiveTrack && (
+      {isActiveTrack && !hasBeenPlayed && (
         <Action
           title="Skip song"
-          subtitle={isOwner ? "Skip the current song" : "Poke your host to skip"}
+          subtitle={isOwner ? "Use your powers wisely" : "Poke your host to skip"}
           inverted
           disabled={!isOwner || isSkipping}
           onPress={handleSkipTrack}
           icon="magic"
         />
       )}
-      {!isActiveTrack && (
+      {!isActiveTrack && !hasBeenPlayed && (
         <Action
           onPress={handleVote(-1)}
           inverted
@@ -139,5 +148,6 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
 
 interface Props {
   track: SpotifyApi.TrackObjectFull;
+  currentTrackIndex: number;
   onPress: () => void;
 }
