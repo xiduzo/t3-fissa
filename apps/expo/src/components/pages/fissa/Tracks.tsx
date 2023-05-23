@@ -5,19 +5,10 @@ import { useGetFissa } from "@fissa/hooks";
 import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
-import {
-  Badge,
-  Button,
-  Divider,
-  Popover,
-  ProgressBar,
-  TrackEnd,
-  TrackList,
-  TrackListItem,
-} from "../../shared";
+import { Button, ProgressBar, TrackEnd, TrackList } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
-import { TrackActions } from "./TrackActions";
+import { SelectedTrackPopover } from "./SelectedTrackPopover";
 import { QuickVoteModal, useQuickVote } from "./quickVote";
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
@@ -27,12 +18,20 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const { user } = useAuth();
 
   const showBackAnimation = useRef(new Animated.Value(0)).current;
+  const lastScrolledTo = useRef<string>();
+  const currentIndexPosition = useRef<number>();
+
+  const marginBottom = showBackAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-50, 0],
+  });
 
   const { handleTouchMove, handleTouchEnd, toggleTrackFocus, isVoting } = useQuickVote(pin);
 
-  const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull>();
 
   const { activeDevice } = useDevices();
+
   const localTracks = useTracks(
     sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
   );
@@ -42,8 +41,22 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const showTracks = useMemo(() => {
     if (!isOwner) return isPlaying;
-    return isPlaying && activeDevice;
+    return isPlaying && !!activeDevice;
   }, [isPlaying, isOwner, activeDevice]);
+
+  const queue = useMemo(() => (showTracks ? localTracks : []), [showTracks, localTracks]);
+
+  const currentTrackIndex = useMemo(
+    () => localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId) ?? 0,
+    [data?.currentlyPlayingId, localTracks],
+  );
+
+  const shouldShowBackButton = useCallback((showShow = false) => {
+    Animated.spring(showBackAnimation, {
+      toValue: Number(showShow),
+      useNativeDriver: false,
+    }).start();
+  }, []);
 
   const getTrackVotes = useCallback(
     (track?: SpotifyApi.TrackObjectFull) => {
@@ -81,20 +94,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [data?.currentlyPlayingId, data?.expectedEndTime],
   );
 
-  const currentTrackIndex = useMemo(() => {
-    if (!data?.currentlyPlayingId) return 0;
-    if (!localTracks.length) return 0;
-
-    return localTracks.findIndex(({ id }) => id === data.currentlyPlayingId);
-  }, [data?.currentlyPlayingId, localTracks]);
-
-  const shouldShowBackButton = useCallback((showShow = false) => {
-    Animated.spring(showBackAnimation, {
-      toValue: Number(showShow),
-      useNativeDriver: false,
-    }).start();
-  }, []);
-
   const scrollToCurrentIndex = useCallback(
     (viewOffset = 48) => {
       listRef?.current?.scrollToIndex({
@@ -106,23 +105,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     },
     [currentTrackIndex, shouldShowBackButton],
   );
-
-  const lastScrolledTo = useRef<string>();
-  const currentIndexPosition = useRef<number>();
-
-  useEffect(() => {
-    if (lastScrolledTo.current === data?.currentlyPlayingId) return;
-    if (!data?.currentlyPlayingId) return;
-
-    setTimeout(() => {
-      scrollToCurrentIndex(20);
-      setTimeout(scrollToCurrentIndex, 300);
-    }, 1500); // give TrackList time to render
-  }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
-
-  const queue = useMemo(() => {
-    return showTracks ? localTracks : [];
-  }, [showTracks, localTracks]);
 
   const lockOnActiveTrack = useCallback(
     (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -139,10 +121,15 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [scrollToCurrentIndex],
   );
 
-  const marginBottom = showBackAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-50, 0],
-  });
+  useEffect(() => {
+    if (lastScrolledTo.current === data?.currentlyPlayingId) return;
+    if (!data?.currentlyPlayingId) return;
+
+    setTimeout(() => {
+      scrollToCurrentIndex(20);
+      setTimeout(scrollToCurrentIndex, 300);
+    }, 1500); // give TrackList time to render
+  }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
 
   return (
     <>
@@ -186,33 +173,20 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
             <ListEmptyComponent isLoading={isInitialLoading} />
           </View>
         }
-        ListFooterComponent={showTracks ? <ListFooterComponent /> : null}
+        ListFooterComponent={<ListFooterComponent tracksShown={showTracks} />}
       />
       <Animated.View
-        className="absolute bottom-32 w-full items-center"
-        style={{
-          opacity: showBackAnimation,
-          marginBottom,
-        }}
+        className="absolute bottom-32 w-full items-center md:bottom-36"
+        style={{ opacity: showBackAnimation, marginBottom }}
       >
         <Button title="Back to current song" onPress={() => scrollToCurrentIndex()} />
       </Animated.View>
-      <Popover visible={!!selectedTrack} onRequestClose={() => setSelectedTrack(null)}>
-        {selectedTrack && (
-          <TrackListItem
-            inverted
-            track={selectedTrack}
-            hasBorder
-            subtitlePrefix={
-              getTrackVotes(selectedTrack) !== undefined ? (
-                <Badge amount={getTrackVotes(selectedTrack)} />
-              ) : null
-            }
-          />
-        )}
-        <Divider />
-        <TrackActions track={selectedTrack!} onPress={() => setSelectedTrack(null)} />
-      </Popover>
+      <SelectedTrackPopover
+        currentTrackIndex={currentTrackIndex}
+        onRequestClose={() => setSelectedTrack(undefined)}
+        track={selectedTrack}
+      />
+
       <QuickVoteModal onTouchEnd={handleTouchEnd} getTrackVotes={getTrackVotes} />
     </>
   );

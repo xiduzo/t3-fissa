@@ -12,21 +12,21 @@ export const currentlyPlayingSync = async () => {
   timeouts.forEach(clearTimeout);
   timeouts.clear();
 
-  for (const fissa of fissas) {
+  for (const { pin, expectedEndTime } of fissas) {
     // -X seconds to be safe because we check if the user is still listening
     // in spotify anything before playing the next track.
     // The service will account for this difference
-    const endTime = addSeconds(fissa.expectedEndTime, -5);
+    const endTime = addSeconds(expectedEndTime, -5);
 
     const delay = differenceInMilliseconds(endTime, new Date());
 
-    logger.debug(`${fissa.pin}, next track in ${delay}ms`);
+    logger.debug(`${pin}, next track in ${delay}ms`);
 
-    if (startingNextTracks.has(fissa.pin)) continue;
+    if (startingNextTracks.has(pin)) continue;
 
-    const timeout = setTimeoutForNextTrack(fissa.pin, delay);
+    const timeout = setTimeoutForNextTrack(pin, delay);
 
-    timeouts.set(fissa.pin, timeout);
+    timeouts.set(pin, timeout);
   }
 };
 

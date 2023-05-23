@@ -24,7 +24,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   const { data } = useGetVoteFromUser(String(pin), track?.id!, user);
 
   const opacity = focussedAnimation.interpolate({
-    inputRange: [-Math.abs(touchStartPosition), 0],
+    inputRange: [-Math.abs(touchStartPosition.current), 0],
     outputRange: [0.1, 0.98],
   });
 
@@ -35,8 +35,10 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
 
   useEffect(() => {
     if (!track) return;
+
     Haptics.selectionAsync();
-    const offset = touchStartPosition - windowCenter;
+    const offset = touchStartPosition.current - windowCenter;
+
     Animated.timing(focussedAnimation, {
       toValue: offset,
       duration: AnimationSpeed.Instant,
@@ -64,7 +66,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
         useNativeDriver: true,
       }).start();
     };
-  }, [track, touchStartPosition]);
+  }, [track]);
 
   const upVoteGradient = useMemo(() => {
     const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);

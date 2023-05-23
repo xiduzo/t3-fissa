@@ -150,7 +150,7 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   icon?: IconName;
 }
 
-const fab = cva("absolute bottom-10 z-40 flex h-14 w-14 rounded-2xl shadow-xl", {
+const fab = cva("absolute bottom-10 z-40 flex h-14 w-14 md:bottom-16 rounded-2xl shadow-xl", {
   variants: {
     position: {
       "bottom-left": "left-8",
