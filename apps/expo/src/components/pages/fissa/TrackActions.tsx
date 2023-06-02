@@ -128,7 +128,7 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
           inverted
           disabled={!isOwner || isSkipping}
           onPress={handleSkipTrack}
-          icon="magic"
+          icon="skip-forward"
         />
       )}
       {!isActiveTrack && !hasBeenPlayed && (

@@ -131,7 +131,11 @@ export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, dimmed, ...props
   }, [inverted, dimmed]);
 
   return (
-    <TouchableHighlight {...props} className={`-m-2 rounded-full p-2 ${props.className}`}>
+    <TouchableHighlight
+      {...props}
+      className={`-m-2 rounded-full p-2 ${props.className}`}
+      underlayColor={theme[inverted ? "900" : "500"] + "30"}
+    >
       <Icon name={icon} color={color} />
     </TouchableHighlight>
   );
@@ -150,7 +154,7 @@ interface Props extends ButtonProps, VariantProps<typeof button> {
   icon?: IconName;
 }
 
-const fab = cva("absolute bottom-10 z-40 flex h-14 w-14 md:bottom-16 rounded-2xl shadow-xl", {
+const fab = cva("absolute bottom-10 z-50 flex h-14 w-14 md:bottom-16 rounded-2xl shadow-xl", {
   variants: {
     position: {
       "bottom-left": "left-8",

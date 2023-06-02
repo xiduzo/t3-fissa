@@ -6,7 +6,7 @@ import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
 import { Fab, FissaTracks, PinCode } from "../../../src/components";
-import { QuickVoteProvider } from "../../../src/components/pages/fissa";
+import { HostMenu, QuickVoteProvider } from "../../../src/components/pages/fissa";
 import { useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
@@ -37,17 +37,12 @@ const Fissa = () => {
         <QuickVoteProvider>
           <FissaTracks pin={String(pin)} />
         </QuickVoteProvider>
-        <PinCode />
-        <Fab
-          position="bottom-center"
-          title="add songs"
-          icon="plus"
-          linkTo={`fissa/${pin}/addTracks`}
-        />
+        <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"
         />
+        <HostMenu />
       </View>
     </View>
   );
