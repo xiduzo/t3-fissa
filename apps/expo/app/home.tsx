@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { useSpotify } from "@fissa/utils";
+import { logger, useSpotify } from "@fissa/utils";
 
 import {
   Action,
@@ -24,9 +24,12 @@ const Home = () => {
   const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
-    spotify.getMe().then((user) => {
-      setIsPremium(user.product === "premium");
-    });
+    spotify
+      .getMe()
+      .then((user) => {
+        setIsPremium(user.product === "premium");
+      })
+      .catch(logger.error);
   }, [spotify]);
 
   return (

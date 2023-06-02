@@ -66,8 +66,8 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
                   index={index}
                   track={item}
                   subtitlePrefix={subtitlePrefix(item)}
-                  end={trackEnd && trackEnd(item)}
-                  extra={trackExtra && trackExtra(item)}
+                  end={trackEnd?.(item)}
+                  extra={trackExtra?.(item)}
                   onPress={() => onTrackPress?.(item)}
                   onLongPress={onTrackLongPress?.(item)}
                   selected={selectedTracks?.includes(item.id)}

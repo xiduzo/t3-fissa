@@ -42,7 +42,7 @@ const getBaseUrl = () => {
   if (!localhost) {
     return process.env.VERCEL_URL ?? Constants.expoConfig?.extra?.vercelUrl;
   }
-  // return `http://192.168.2.14:3000`;
+
   return `http://${localhost}:3000`;
 };
 

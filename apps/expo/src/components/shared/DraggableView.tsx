@@ -12,18 +12,9 @@ export const DraggableView: FC<Props> = ({ children, touchThreshold = 10, ...vie
 
       return Math.max(Math.abs(dx), Math.abs(dy)) > touchThreshold;
     },
-    onPanResponderMove: Animated.event(
-      [
-        null,
-        {
-          dx: pan.x,
-          dy: pan.y,
-        },
-      ],
-      {
-        useNativeDriver: false,
-      },
-    ),
+    onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
+      useNativeDriver: false,
+    }),
     onPanResponderRelease: () => {
       Animated.spring(pan, {
         toValue: { x: 0, y: 0 },

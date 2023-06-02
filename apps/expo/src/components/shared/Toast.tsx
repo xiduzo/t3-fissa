@@ -5,14 +5,14 @@ import { theme } from "@fissa/tailwind-config";
 
 import { Typography } from "./Typography";
 
-export const ToastContainer: FC = () => {
-  const toastConfig: ToastConfig = {
-    success: (props) => <Toaster {...props} />,
-    error: (props) => <Toaster {...props} />,
-    warning: (props) => <Toaster {...props} />,
-    info: (props) => <Toaster {...props} />,
-  };
+const toastConfig: ToastConfig = {
+  success: (props) => <Toaster {...props} />,
+  error: (props) => <Toaster {...props} />,
+  warning: (props) => <Toaster {...props} />,
+  info: (props) => <Toaster {...props} />,
+};
 
+export const ToastContainer: FC = () => {
   if (Platform.OS === "android") return null;
   return <Toast config={toastConfig} />;
 };

@@ -17,7 +17,7 @@ export const useCreateFissa = () => {
       toast.success({ message: "Enjoy your fissa", icon: "🎉" });
       await save(pin);
       push(`/fissa/${pin}`);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },
     onError: (error) => {
       toast.error({ message: error.message });

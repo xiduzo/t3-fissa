@@ -1,4 +1,12 @@
-import { FC, PropsWithChildren, createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -21,7 +29,9 @@ export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const responseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => token && setExpoPushToken(token));
+    registerForPushNotificationsAsync()
+      .then((token) => token && setExpoPushToken(token))
+      .catch(logger.error);
 
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
       setNotification(notification);
@@ -34,11 +44,14 @@ export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
     return () => {
       notificationListener.current &&
         Notifications.removeNotificationSubscription(notificationListener.current);
-      responseListener.current && Notifications.removeNotificationSubscription(responseListener.current);
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 
-  return <NotificationContext.Provider value={{ notification }}>{children}</NotificationContext.Provider>;
+  return (
+    <NotificationContext.Provider value={{ notification }}>{children}</NotificationContext.Provider>
+  );
 };
 
 export const useNotification = () => useContext(NotificationContext);

@@ -26,21 +26,17 @@ export const useSwipe = (
       nativeEvent: { pageX, pageY },
     } = event;
 
-    if (pageX + triggerAmount < xRef.current) {
-      onSwipeLeft && onSwipeLeft(event);
-    }
+    // Swipe left
+    if (pageX + triggerAmount < xRef.current) onSwipeLeft?.(event);
 
-    if (pageX - triggerAmount > xRef.current) {
-      onSwipeRight && onSwipeRight(event);
-    }
+    // Swipe right
+    if (pageX - triggerAmount > xRef.current) onSwipeRight?.(event);
 
-    if (pageY + triggerAmount < yRef.current) {
-      onSwipeUp && onSwipeUp(event);
-    }
+    // Swipe up
+    if (pageY + triggerAmount < yRef.current) onSwipeUp?.(event);
 
-    if (pageY - triggerAmount > yRef.current) {
-      onSwipeDown && onSwipeDown(event);
-    }
+    // Swipe down
+    if (pageY - triggerAmount > yRef.current) onSwipeDown?.(event);
 
     cancelSwipeTimeout.current = setTimeout(() => setIsActive(false), 500);
   };

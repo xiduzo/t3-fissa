@@ -1,7 +1,7 @@
 import { FC, memo, useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions, LayoutChangeEvent } from "react-native";
 import * as Haptics from "expo-haptics";
-import { AnimationSpeed } from "@fissa/utils";
+import { AnimationSpeed, logger } from "@fissa/utils";
 
 import { ListItem, ListItemProps } from "./ListItem";
 
@@ -19,7 +19,7 @@ export const TrackListItem: FC<Props> = memo(
 
     useEffect(() => {
       if (!props.selected) return;
-      Haptics.selectionAsync();
+      Haptics.selectionAsync().catch(logger.error);
     }, [props.selected]);
 
     useEffect(() => {

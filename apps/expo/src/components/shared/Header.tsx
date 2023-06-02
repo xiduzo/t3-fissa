@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { theme } from "@fissa/tailwind-config";
@@ -29,12 +28,12 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
               <Icon name="arrow-left" onPress={back} />
             </Typography>
           )}
-          {props.options.headerLeft && props.options.headerLeft({ canGoBack: true })}
+          {props.options.headerLeft?.({ canGoBack: true })}
         </View>
         <View className="flex-grow">
           {props.options.title && <Typography variant="h2">{props.options.title}</Typography>}
         </View>
-        <View>{props.options.headerRight && props.options.headerRight({ canGoBack: false })}</View>
+        <View>{props.options.headerRight?.({ canGoBack: false })}</View>
       </View>
     </>
   );
