@@ -60,7 +60,7 @@ const bottomDrawer = cva("absolute shadow-xl", {
   variants: {
     size: {
       full: "bottom-0 w-full",
-      partial: "bottom-10 w-full flex items-center",
+      partial: "bottom-10  md:bottom-16 w-full flex items-center",
     },
   },
   defaultVariants: {

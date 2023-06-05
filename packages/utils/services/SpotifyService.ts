@@ -48,12 +48,15 @@ export class SpotifyService {
 
   getRecommendedTracks = async (accessToken: string, seedTrackIds: string[]) => {
     this.spotify.setAccessToken(accessToken);
+
     const me = await this.me(accessToken);
+
     const { body } = await this.spotify.getRecommendations({
       seed_tracks: seedTrackIds.slice(0, Math.min(5, seedTrackIds.length)),
       market: me.body.country,
       limit: 5,
     });
+
     return body.tracks;
   };
 }

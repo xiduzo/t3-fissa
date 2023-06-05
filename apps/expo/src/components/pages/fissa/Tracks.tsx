@@ -176,7 +176,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         ListFooterComponent={<ListFooterComponent tracksShown={showTracks} />}
       />
       <Animated.View
-        className="absolute bottom-32 w-full items-center md:bottom-36"
+        className="absolute items-center w-full bottom-32 md:bottom-36"
         style={{ opacity: showBackAnimation, marginBottom }}
       >
         <Button title="Back to current song" onPress={() => scrollToCurrentIndex()} />

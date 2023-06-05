@@ -17,21 +17,21 @@ const sortTrack = (a: { time: Date; trackId: string }, b: { time: Date; trackId:
   return aTime - bTime;
 };
 
-export const sortFissaTracksOrder = <
-  T extends {
-    score: number;
-    trackId: string;
-    lastUpdateAt: Date;
-    createdAt: Date;
-    hasBeenPlayed: boolean;
-  },
->(
+type SortableTrack = {
+  score: number;
+  trackId: string;
+  lastUpdateAt: Date;
+  createdAt: Date;
+  hasBeenPlayed: boolean;
+};
+
+export const sortFissaTracksOrder = <T extends SortableTrack>(
   tracks?: T[],
   activeTrackId?: string | null,
 ) => {
   if (!tracks) return [];
 
-  let tracksToReturn: T[] = [];
+  let sortedTracks: T[] = [];
 
   const playedTracks = tracks.filter(
     ({ hasBeenPlayed, trackId }) => hasBeenPlayed && trackId !== activeTrackId,
@@ -53,11 +53,11 @@ export const sortFissaTracksOrder = <
     return b.score - a.score;
   });
 
-  tracksToReturn = tracksToReturn.concat(sortedPlayedTracks);
-  if (activeTrack) tracksToReturn.push(activeTrack);
-  tracksToReturn = tracksToReturn.concat(sortedUnplayedTracks);
+  sortedTracks = sortedTracks.concat(sortedPlayedTracks);
+  if (activeTrack) sortedTracks.push(activeTrack);
+  sortedTracks = sortedTracks.concat(sortedUnplayedTracks);
 
-  return tracksToReturn;
+  return sortedTracks;
 };
 
 export const randomSort = () => Number(Math.random() > 0.5);

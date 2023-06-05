@@ -10,11 +10,9 @@ class NativeToast extends Toaster {
     switch (Platform.OS) {
       case "ios":
       case "macos":
-        Toast.show({ type, text1: message, text2, visibilityTime });
-        break;
+        return Toast.show({ type, text1: message, text2, visibilityTime });
       case "android":
-        ToastAndroid.show(message, visibilityTime);
-        break;
+        return ToastAndroid.show(message, visibilityTime);
     }
   }
 

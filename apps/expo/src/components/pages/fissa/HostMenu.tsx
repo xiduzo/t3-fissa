@@ -129,7 +129,7 @@ const SpeakerButton = () => {
       <Popover visible={selectDevice} onRequestClose={toggleSelectDevice}>
         <SelectDevice onSelectDevice={handleDeviceSelect} inverted />
         {activeDevice && (
-          <View className="space-y-6 py-4">
+          <View className="py-4 space-y-6">
             <Slider
               minimumValue={0}
               maximumValue={100}
