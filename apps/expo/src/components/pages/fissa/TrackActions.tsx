@@ -54,18 +54,18 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
 
   const isOwner = useMemo(() => fissa?.by.email === user?.email, [fissa?.by, user]);
   const hasBeenPlayed = useMemo(
-    () => fissa?.tracks.find(({ trackId }) => trackId === track.id)?.hasBeenPlayed,
-    [track.id, fissa?.tracks],
+    () => fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed,
+    [track?.id, fissa?.tracks],
   );
 
   const canRemoveTrack = useMemo(() => {
     const isAddedByUser =
-      fissa?.tracks.find(({ trackId }) => trackId === track.id)?.by?.email === user?.id;
+      fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.by?.email === user?.id;
 
     if (isAddedByUser) return true;
 
     return isOwner;
-  }, [fissa?.tracks, user, isOwner]);
+  }, [track?.id, fissa?.tracks, user, isOwner]);
 
   const handleVote = useCallback(
     (vote: number) => async () => {

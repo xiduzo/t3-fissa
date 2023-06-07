@@ -44,9 +44,8 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
 
   return (
     <TouchableHighlight
-      {...props}
       accessibilityLabel={title}
-      disabled={props.disabled}
+      {...props}
       onPress={handlePress}
       className={`rounded-full ${props.className}`}
       underlayColor={theme[inverted ? "900" : "500"] + "10"}
@@ -106,9 +105,9 @@ export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
 
   return (
     <TouchableHighlight
-      {...props}
       accessibilityLabel={props.title}
       accessibilityRole="button"
+      {...props}
       className={fab({ position, className: props.className })}
       onPress={handlePress}
     >

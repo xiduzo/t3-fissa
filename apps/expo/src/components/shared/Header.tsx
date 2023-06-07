@@ -25,7 +25,11 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
       >
         <View>
           {props.back && props.options.headerBackVisible && (
-            <IconButton icon="arrow-left" title={props.options.headerBackTitle ?? "Go back"} />
+            <IconButton
+              icon="arrow-left"
+              title={props.options.headerBackTitle ?? "Go back"}
+              onPress={back}
+            />
           )}
           {props.options.headerLeft?.({ canGoBack: true })}
         </View>

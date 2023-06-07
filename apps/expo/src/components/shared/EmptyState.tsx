@@ -13,11 +13,16 @@ export const EmptyState: FC<Props & PropsWithChildren> = ({ icon, title, subtitl
       >
         {icon}
       </Typography>
-      <Typography className="pt-4" centered variant="h2" accessibilityLabel={`${icon}: ${title}`}>
+      <Typography
+        className="pt-4"
+        centered
+        variant="h2"
+        accessibilityLabel={`${icon}: ${title}, ${subtitle}`}
+      >
         {title}
       </Typography>
       {subtitle && (
-        <Typography className="pt-4" centered>
+        <Typography className="pt-4" centered accessibilityElementsHidden>
           {subtitle}
         </Typography>
       )}

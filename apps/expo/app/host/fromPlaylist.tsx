@@ -26,8 +26,8 @@ const FromPlaylist = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View className="h-full justify-between">
-        <Typography variant="h1" className="px-6 pb-8 pt-4">
+      <View className="justify-between h-full">
+        <Typography variant="h1" className="px-6 pt-4 pb-8">
           Select playlist
         </Typography>
         <PlaylistList
@@ -36,11 +36,23 @@ const FromPlaylist = () => {
         />
       </View>
       <Popover visible={!!selectedPlaylist} onRequestClose={() => setSelectedPlaylist(null)}>
-        <Typography variant="h2" centered inverted className="mb-8">
+        <Typography variant="h2" centered inverted className="mb-8" accessibilityElementsHidden>
           Your fissa will start based on
         </Typography>
-        <PlaylistListItem playlist={selectedPlaylist!} hasBorder inverted className="mb-8" />
-        <Button title="Let's kick it" inverted onPress={start} disabled={isLoading} />
+        <PlaylistListItem
+          playlist={selectedPlaylist!}
+          hasBorder
+          inverted
+          className="mb-8"
+          accessibilityElementsHidden
+        />
+        <Button
+          title="Let's kick it"
+          inverted
+          onPress={start}
+          disabled={isLoading}
+          accessibilityLabel={`Start fissa based on ${selectedPlaylist?.name}`}
+        />
       </Popover>
     </SafeAreaView>
   );

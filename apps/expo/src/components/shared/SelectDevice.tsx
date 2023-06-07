@@ -41,6 +41,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
               variant="text"
               title={device.name}
               onPress={onSelectDevice(device)}
+              accessibilityLabel={`Play via ${device.name}, ${device.type}`}
               className="flex-row items-center justify-start px-8"
             />
           ))}

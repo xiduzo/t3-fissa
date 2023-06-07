@@ -73,7 +73,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const trackEnd = useCallback(
-    (track: SpotifyApi.TrackObjectFull): JSX.Element | undefined => {
+    (track?: SpotifyApi.TrackObjectFull): JSX.Element | undefined => {
+      if (!track) return;
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
       if (!localTrack) return;

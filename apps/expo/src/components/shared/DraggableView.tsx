@@ -8,6 +8,7 @@ export const DraggableView: FC<Props> = ({ children, touchThreshold = 10, ...vie
     onStartShouldSetPanResponder: () => true,
     // https://stackoverflow.com/a/44671267/4655177
     onMoveShouldSetPanResponder: (e, gestureState) => {
+      console.log(e);
       const { dx, dy } = gestureState;
 
       return Math.max(Math.abs(dx), Math.abs(dy)) > touchThreshold;

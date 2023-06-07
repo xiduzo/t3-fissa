@@ -65,11 +65,14 @@ export const ListItem: FC<Props> = ({
         <View>
           <Image className={image({ bigImage })} hasBorder={hasBorder} source={imageUri} />
           <Animated.View
-            className="absolute h-20 w-20 items-center justify-center rounded-xl"
+            className="absolute items-center justify-center w-20 h-20 rounded-xl"
             style={{ backgroundColor }}
           >
             <Animated.View style={{ transform: [{ scale }] }}>
-              <Typography className="text-2xl">✅</Typography>
+              {/* For some reason `accessibilityElementsHidden` does not hide it from the screen reader */}
+              <Typography className="text-2xl" accessibilityElementsHidden accessibilityLabel={""}>
+                ✅
+              </Typography>
             </Animated.View>
           </Animated.View>
         </View>
@@ -91,9 +94,9 @@ export const ListItem: FC<Props> = ({
               </Typography>
             )}
           </View>
-          {extra && <View className="mt-1 w-full">{extra}</View>}
+          {extra && <View className="w-full mt-1">{extra}</View>}
         </Animated.View>
-        {end && <View className="mr-1 w-6 items-center">{end}</View>}
+        {end && <View className="items-center w-6 mr-1">{end}</View>}
       </Animated.View>
     </TouchableWithoutFeedback>
   );
