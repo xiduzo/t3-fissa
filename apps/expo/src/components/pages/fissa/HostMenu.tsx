@@ -73,7 +73,7 @@ const SkipTrackButton = () => {
       inverted
       onPress={mutateAsync}
       disabled={isLoading}
-      title="skip song"
+      title="play next song"
       icon="skip-forward"
     />
   );

@@ -136,6 +136,7 @@ export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, dimmed, ...props
     <TouchableHighlight
       {...props}
       accessibilityLabel={props.title}
+      accessibilityRole="button"
       className={`-m-2 rounded-full p-2 ${props.className}`}
       underlayColor={theme[inverted ? "900" : "500"] + "30"}
     >

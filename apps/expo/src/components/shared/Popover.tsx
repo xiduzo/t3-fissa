@@ -46,13 +46,14 @@ export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }
     return animate;
   }, [props.visible, animate]);
 
+  // TODO: set accessibility focus when visible like toaster
   return (
-    <SafeAreaView className="absolute flex-1" importantForAccessibility="yes">
+    <SafeAreaView className="absolute flex-1">
       <Modal {...props} animationType="slide" transparent onRequestClose={close}>
-        <View className="h-full justify-end">
+        <View className="justify-end h-full">
           <Animated.View
             onTouchStart={close}
-            className="absolute h-full w-full"
+            className="absolute w-full h-full"
             style={{
               backgroundColor: theme[900] + "80",
               opacity: fadeAnimation,
