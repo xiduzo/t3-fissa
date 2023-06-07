@@ -47,7 +47,7 @@ export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }
   }, [props.visible, animate]);
 
   return (
-    <SafeAreaView className="absolute flex-1">
+    <SafeAreaView className="absolute flex-1" importantForAccessibility="yes">
       <Modal {...props} animationType="slide" transparent onRequestClose={close}>
         <View className="h-full justify-end">
           <Animated.View

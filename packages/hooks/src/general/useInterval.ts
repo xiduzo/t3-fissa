@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 
 // Will use a minimum of 1ms delay to avoid infinite loops
-export const useInterval = (callback: () => void, delayInMs = 1000) => {
+export const useInterval = (callback: () => void | Promise<void>, delayInMs = 1000) => {
   const savedCallback = useRef(callback);
 
   useIsomorphicLayoutEffect(() => {

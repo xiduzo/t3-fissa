@@ -68,7 +68,7 @@ const Index = () => {
   useEffect(() => {
     Animated.timing(colorAnimation, {
       toValue: 1,
-      duration: 3000,
+      duration: 3500,
       useNativeDriver: false,
     }).start(() => {
       if (!canSkipToHome.current) {
@@ -111,10 +111,15 @@ const Index = () => {
             transform: [{ translateY }],
           }}
         >
-          <Typography variant="h1" centered className="mb-4">
+          <Typography
+            variant="h1"
+            centered
+            className="mb-4"
+            accessibilityLabel={`A collaborative live playlist, together with your friends`}
+          >
             A collaborative live playlist
           </Typography>
-          <Typography variant="h5" centered>
+          <Typography variant="h5" centered accessibilityElementsHidden>
             together with your friends
           </Typography>
         </Animated.View>
@@ -125,9 +130,20 @@ const Index = () => {
             transform: [{ scale: notSignedInAnimation }],
           }}
         >
-          <Button icon="spotify" onPress={signIn} title="Connect to get started" />
+          <Button
+            icon="spotify"
+            onPress={signIn}
+            title="Connect to get started"
+            accessibilityLabel="Connect to spotify to get started"
+          />
         </Animated.View>
-        <Typography centered className="mb-8" variant="bodyM" animatedColor={color}>
+        <Typography
+          centered
+          className="mb-8"
+          variant="bodyM"
+          animatedColor={color}
+          accessibilityLabel="Fissa, by Milanovski and Xiduzo"
+        >
           Made by Milanovski and Xiduzo
         </Typography>
       </View>

@@ -1,11 +1,11 @@
 import { FC, useContext, useEffect, useMemo, useRef } from "react";
 import { Animated, Dimensions, GestureResponderEvent, Modal, View } from "react-native";
-import * as Haptics from "expo-haptics";
+import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
 import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
-import { AnimationSpeed } from "@fissa/utils";
+import { AnimationSpeed, logger } from "@fissa/utils";
 
 import { useAuth } from "../../../../providers";
 import { Action, Badge, TrackEnd, TrackListItem } from "../../../shared";
@@ -36,7 +36,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   useEffect(() => {
     if (!track) return;
 
-    Haptics.selectionAsync();
+    selectionAsync().catch(logger.warning);
     const offset = touchStartPosition.current - windowCenter;
 
     Animated.timing(focussedAnimation, {
@@ -90,8 +90,8 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
       onTouchEnd={onTouchEnd}
     >
       <Animated.View className="absolute inset-0" style={{ opacity }} />
-      <View className="h-full justify-center" style={{ backgroundColor: theme["900"] }}>
-        <LinearGradient className="flex-1 justify-center" colors={upVoteGradient}>
+      <View className="justify-center h-full" style={{ backgroundColor: theme["900"] }}>
+        <LinearGradient className="justify-center flex-1" colors={upVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -115,7 +115,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
             />
           )}
         </Animated.View>
-        <LinearGradient className="flex-1 justify-center" colors={downVoteGradient}>
+        <LinearGradient className="justify-center flex-1" colors={downVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,

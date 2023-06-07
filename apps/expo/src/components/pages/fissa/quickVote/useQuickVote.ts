@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect } from "react";
 import { Dimensions, GestureResponderEvent } from "react-native";
-import * as Haptics from "expo-haptics";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useCreateVote } from "@fissa/hooks";
 
 import { QuickVoteContext } from "./QuickVoteContext";
@@ -11,9 +11,10 @@ const windowCenter = windowHeight / 2;
 export const useQuickVote = (pin: string) => {
   const { track, vote, setVote, selectTrack } = useContext(QuickVoteContext);
 
+  // TODO: this is duplicate code
   const { mutateAsync } = useCreateVote(String(pin), {
-    onMutate: ({ vote }) => {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
+    onMutate: async ({ vote }) => {
+      await notificationAsync(NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
     },
   });
 

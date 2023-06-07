@@ -37,10 +37,15 @@ const Host = () => {
       <PageTemplate>
         <View />
         <View>
-          <Typography variant="h1" centered className="mb-4">
+          <Typography
+            variant="h1"
+            centered
+            className="mb-4"
+            accessibilityLabel="Host a fissa, how would you like to start"
+          >
             Host a fissa
           </Typography>
-          <Typography centered variant="h5">
+          <Typography centered variant="h5" accessibilityElementsHidden>
             how would you like to start
           </Typography>
         </View>

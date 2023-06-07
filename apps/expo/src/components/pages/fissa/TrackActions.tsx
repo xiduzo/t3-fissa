@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from "react";
-import * as Haptics from "expo-haptics";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useSearchParams } from "expo-router";
 import {
   useCreateVote,
@@ -22,12 +22,8 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
   const { data } = useGetVoteFromUser(String(pin), track.id, user);
 
   const { mutateAsync: voteOnTrack, isLoading: isVoting } = useCreateVote(String(pin), {
-    onMutate: ({ vote }) => {
-      Haptics.notificationAsync(
-        vote > 0
-          ? Haptics.NotificationFeedbackType.Success
-          : Haptics.NotificationFeedbackType.Warning,
-      );
+    onMutate: async ({ vote }) => {
+      await notificationAsync(NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
     },
   });
 
@@ -35,8 +31,8 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
     String(pin),
     track.id,
     {
-      onSettled: () => {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      onSettled: async () => {
+        await notificationAsync(NotificationFeedbackType.Success);
       },
     },
   );

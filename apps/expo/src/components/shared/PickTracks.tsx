@@ -114,7 +114,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                 onPress={clearSelectedPlaylist}
               />
             ),
-          headerRight: () => <IconButton icon="close" title="go to fissa" onPress={back} />,
+          headerRight: () => <IconButton icon="close" title="back to fissa" onPress={back} />,
         }}
       />
       <View className="h-full w-full">

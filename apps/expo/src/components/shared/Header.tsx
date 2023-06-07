@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { theme } from "@fissa/tailwind-config";
 
+import { IconButton } from "./Button";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 
@@ -24,9 +25,7 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
       >
         <View>
           {props.back && props.options.headerBackVisible && (
-            <Typography>
-              <Icon name="arrow-left" onPress={back} />
-            </Typography>
+            <IconButton icon="arrow-left" title={props.options.headerBackTitle ?? "Go back"} />
           )}
           {props.options.headerLeft?.({ canGoBack: true })}
         </View>

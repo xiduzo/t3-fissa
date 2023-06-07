@@ -1,8 +1,8 @@
 import { FC, useCallback, useState } from "react";
-import * as Haptics from "expo-haptics";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useRouter, useSearchParams } from "expo-router";
 import { useGetTracks } from "@fissa/hooks";
-import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
+import { logger, splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
@@ -27,7 +27,7 @@ export const PinCode = () => {
 
   return (
     <>
-      <IconButton icon="setting" onPress={togglePopover} title={`Fissa ${pin} settings`} />
+      <IconButton icon="setting" onPress={togglePopover} title="Actions" />
       <Popover visible={showPopover} onRequestClose={togglePopover}>
         <Action
           title="Leave fissa"
@@ -59,7 +59,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 
   const handleCreatePlaylist = useCallback(async () => {
     setIsCreatingPlaylist(true);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    await notificationAsync(NotificationFeedbackType.Success);
     onRequestClose();
     spotify
       .createPlaylist(user!.id, {
@@ -70,7 +70,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         const uris = tracks?.map(({ uri }) => uri) ?? [];
         const chunks = splitInChunks(uris, 100);
         chunks.forEach((chunk) => {
-          spotify.addTracksToPlaylist(id, chunk);
+          spotify.addTracksToPlaylist(id, chunk).catch(logger.warning);
         });
       })
       .finally(() => {

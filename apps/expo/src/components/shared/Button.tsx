@@ -45,6 +45,7 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
   return (
     <TouchableHighlight
       {...props}
+      accessibilityLabel={title}
       disabled={props.disabled}
       onPress={handlePress}
       className={`rounded-full ${props.className}`}
@@ -106,6 +107,8 @@ export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
   return (
     <TouchableHighlight
       {...props}
+      accessibilityLabel={props.title}
+      accessibilityRole="button"
       className={fab({ position, className: props.className })}
       onPress={handlePress}
     >
@@ -114,7 +117,7 @@ export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
           colors={theme.gradient}
           start={[0, 0]}
           end={[1, 1]}
-          className="h-full w-full items-center justify-center rounded-2xl"
+          className="items-center justify-center w-full h-full rounded-2xl"
         >
           <Icon name={icon} />
         </LinearGradient>
@@ -133,6 +136,7 @@ export const IconButton: FC<PropsWithIcon> = ({ icon, inverted, dimmed, ...props
   return (
     <TouchableHighlight
       {...props}
+      accessibilityLabel={props.title}
       className={`-m-2 rounded-full p-2 ${props.className}`}
       underlayColor={theme[inverted ? "900" : "500"] + "30"}
     >

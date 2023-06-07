@@ -14,7 +14,14 @@ export const Input = forwardRef<TextInput, Props>(
           backgroundColor: variant === "contained" ? theme["100"] + "20" : "transparent",
         }}
       >
-        {startIcon && <Icon name={startIcon} size={18} color={theme["100"] + "70"} />}
+        {startIcon && (
+          <Icon
+            accessibilityElementsHidden
+            name={startIcon}
+            size={18}
+            color={theme["100"] + "70"}
+          />
+        )}
         <TextInput
           ref={ref}
           {...props}

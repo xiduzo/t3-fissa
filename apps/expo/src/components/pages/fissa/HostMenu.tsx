@@ -17,8 +17,10 @@ export const HostMenu = () => {
   const { data: fissa } = useGetFissa(String(pin));
 
   const isOwner = user?.email === fissa?.by.email;
+  const isPlaying = fissa?.currentlyPlayingId;
 
   if (!isOwner) return null;
+  if (!isPlaying) return null;
 
   return (
     <BottomDrawer size="partial">

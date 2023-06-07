@@ -30,17 +30,17 @@ const Fissa = () => {
         options={{
           headerShown: true,
           title: `Fissa ${pin}`,
-          headerRight: () => <PinCode />,
+          headerRight: HeaderRight,
         }}
       />
-      <View className="h-full w-full">
+      <View className="w-full h-full">
         <QuickVoteProvider>
           <FissaTracks pin={String(pin)} />
         </QuickVoteProvider>
         <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}
-          className="absolute bottom-0 h-24 w-full"
+          className="absolute bottom-0 w-full h-24"
         />
         <HostMenu />
       </View>
@@ -49,3 +49,5 @@ const Fissa = () => {
 };
 
 export default Fissa;
+
+const HeaderRight = () => <PinCode />;

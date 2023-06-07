@@ -7,9 +7,10 @@ import {
   TextInputTextInputEventData,
   View,
 } from "react-native";
-import * as Haptics from "expo-haptics";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
+import { logger } from "@fissa/utils";
 
 import { Button, PageTemplate, Rejoin, Typography } from "../src/components";
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
@@ -23,13 +24,13 @@ const Join = () => {
 
   api.fissa.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),
-    onSuccess: async ({ pin }) => {
+    onSuccess: ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      await save(pin);
+      notificationAsync(NotificationFeedbackType.Success).catch(logger.warning);
+      save(pin).catch(logger.warning);
       replace(`/fissa/${pin}`);
     },
-    onError: async ({ message }) => {
+    onError: ({ message }) => {
       toast.warn({ message });
       reset();
     },
@@ -102,7 +103,7 @@ const Join = () => {
                 maxLength={1}
                 keyboardType="numeric"
                 inputMode="numeric"
-                className="p-4 text-center text-5xl font-extrabold"
+                className="p-4 text-5xl font-extrabold text-center"
                 style={{ color: theme["100"] }}
               />
               <View
@@ -118,7 +119,7 @@ const Join = () => {
         <Button
           variant="text"
           title="clear code"
-          className="mb-8 mt-4"
+          className="mt-4 mb-8"
           onPress={reset}
           disabled={!pin.includes("")}
         />

@@ -38,16 +38,21 @@ const Home = () => {
         options={{
           headerShown: true,
           animation: "fade",
-          headerRight: () => <AccountDetails />,
+          headerRight: HeaderRight,
         }}
       />
       <PageTemplate>
         <View />
         <View>
-          <Typography variant="h1" centered className="mb-4">
+          <Typography
+            variant="h1"
+            centered
+            className="mb-4"
+            accessibilityLabel={`Hi there ${user?.display_name}, what are you up to`}
+          >
             Hi there {user?.display_name},
           </Typography>
-          <Typography centered variant="h5">
+          <Typography centered variant="h5" accessibilityElementsHidden>
             what are you up to
           </Typography>
         </View>
@@ -68,6 +73,8 @@ const Home = () => {
 
 export default Home;
 
+const HeaderRight = () => <AccountDetails />;
+
 const AccountDetails = () => {
   const [showAccountDetails, setShowAccountDetails] = useState(false);
   const { signOut, user } = useAuth();
@@ -83,7 +90,7 @@ const AccountDetails = () => {
 
   return (
     <>
-      <IconButton title="show account details" icon="user" onPress={toggleAccountDetails} />
+      <IconButton title="account details" icon="user" onPress={toggleAccountDetails} />
       <Popover visible={showAccountDetails} onRequestClose={toggleAccountDetails}>
         <Typography inverted variant="h3" centered>
           {user?.display_name}

@@ -29,6 +29,7 @@ export const BottomDrawer: FC<Props> = ({
           {title}
           {action && (
             <TouchableOpacity
+              accessibilityLabel={actionTitle ?? "close"}
               disabled={actionDisabled}
               className={actionStyle({ disabled: actionDisabled })}
               onPress={action}

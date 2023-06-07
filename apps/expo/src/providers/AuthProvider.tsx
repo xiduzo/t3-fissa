@@ -18,10 +18,10 @@ import {
   useAuthRequest,
 } from "expo-auth-session";
 import Constants from "expo-constants";
-import * as Haptics from "expo-haptics";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
 import { useInterval } from "@fissa/hooks";
-import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
+import { differenceInMinutes, logger, scopes, useSpotify } from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
@@ -52,7 +52,9 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   );
   const { save: saveSessionToken } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.sessionToken);
 
-  const { save: saveScopes, getValueFor: getScopes } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.scopes);
+  const { save: saveScopes, getValueFor: getScopes } = useEncryptedStorage(
+    ENCRYPTED_STORAGE_KEYS.scopes,
+  );
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
 
@@ -62,7 +64,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (!session_token) return;
       spotify.setAccessToken(access_token);
-      spotify.getMe().then(setUser);
+      spotify.getMe().then(setUser).catch(logger.warning);
 
       await saveSessionToken(session_token);
 
@@ -96,7 +98,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   const signIn = useCallback(async () => {
-    promptAsync();
+    await promptAsync();
   }, [promptAsync]);
 
   useMemo(async () => {
@@ -106,7 +108,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       message: "Setting account details",
       duration: 30 * 1000,
     });
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    await notificationAsync(NotificationFeedbackType.Success);
 
     await saveScopes(scopes.join("_"));
 
@@ -140,7 +142,9 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useInterval(updateTokens, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
-  return <SpotifyContext.Provider value={{ user, signOut, signIn }}>{children}</SpotifyContext.Provider>;
+  return (
+    <SpotifyContext.Provider value={{ user, signOut, signIn }}>{children}</SpotifyContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(SpotifyContext);

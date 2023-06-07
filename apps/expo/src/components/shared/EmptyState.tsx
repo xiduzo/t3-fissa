@@ -5,11 +5,15 @@ import { Typography } from "./Typography";
 
 export const EmptyState: FC<Props & PropsWithChildren> = ({ icon, title, subtitle, children }) => {
   return (
-    <View className="flex-grow justify-center py-20">
-      <Typography style={{ textAlign: "center", fontSize: 90, lineHeight: 110 }} variant="h1">
+    <View className="justify-center flex-grow py-20">
+      <Typography
+        style={{ textAlign: "center", fontSize: 90, lineHeight: 110 }}
+        variant="h1"
+        accessibilityElementsHidden
+      >
         {icon}
       </Typography>
-      <Typography className="pt-4" centered variant="h2">
+      <Typography className="pt-4" centered variant="h2" accessibilityLabel={`${icon}: ${title}`}>
         {title}
       </Typography>
       {subtitle && (

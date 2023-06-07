@@ -1,4 +1,4 @@
-import * as Haptics from "expo-haptics";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useCreateFissa as useBaseCreateFissa } from "@fissa/hooks";
 
@@ -17,7 +17,7 @@ export const useCreateFissa = () => {
       toast.success({ message: "Enjoy your fissa", icon: "🎉" });
       await save(pin);
       push(`/fissa/${pin}`);
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await notificationAsync(NotificationFeedbackType.Success);
     },
     onError: (error) => {
       toast.error({ message: error.message });
