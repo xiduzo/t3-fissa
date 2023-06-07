@@ -23,14 +23,13 @@ export const Action: FC<Props> = ({
     <TouchableHighlight {...props} underlayColor="transparent" className="py-4">
       <View className={content({ layout, reversed })}>
         <View
-          accessibilityLabel=""
           className={iconStyle({ disabled: props.disabled })}
           style={{
             borderColor: theme[!!inverted ? "900" : "100"],
             backgroundColor: active ? theme["900"] : "transparent",
           }}
         >
-          <Typography inverted={!active && inverted} className="">
+          <Typography inverted={!active && inverted}>
             <Icon name={icon} />
           </Typography>
         </View>

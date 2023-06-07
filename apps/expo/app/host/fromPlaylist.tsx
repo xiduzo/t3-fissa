@@ -51,6 +51,7 @@ const FromPlaylist = () => {
           inverted
           onPress={start}
           disabled={isLoading}
+          // TODO: set accessibilityFocus when selectedPlaylist changes
           accessibilityLabel={`Start fissa based on ${selectedPlaylist?.name}`}
         />
       </Popover>

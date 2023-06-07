@@ -33,14 +33,14 @@ const Fissa = () => {
           headerRight: HeaderRight,
         }}
       />
-      <View className="w-full h-full">
+      <View className="h-full w-full">
         <QuickVoteProvider>
           <FissaTracks pin={String(pin)} />
         </QuickVoteProvider>
         <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}
-          className="absolute bottom-0 w-full h-24"
+          className="absolute bottom-0 h-24 w-full"
         />
         <HostMenu />
       </View>

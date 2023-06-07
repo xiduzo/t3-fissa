@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef } from "react";
 import {
+  AccessibilityState,
   Animated,
   TouchableWithoutFeedback,
   TouchableWithoutFeedbackProps,
@@ -57,7 +58,13 @@ export const ListItem: FC<Props> = ({
   });
 
   return (
-    <TouchableWithoutFeedback accessibilityRole="button" {...props}>
+    <TouchableWithoutFeedback
+      accessibilityRole="button"
+      accessibilityState={{
+        selected: !!selected,
+      }}
+      {...props}
+    >
       <Animated.View
         className={container({ hasBorder, className, dimmed })}
         style={[{ borderColor: hasBorder ? theme["900"] + "10" : "transparent" }, props.style]}
@@ -69,7 +76,7 @@ export const ListItem: FC<Props> = ({
             style={{ backgroundColor }}
           >
             <Animated.View style={{ transform: [{ scale }] }}>
-              {/* For some reason `accessibilityElementsHidden` does not hide it from the screen reader */}
+              {/* For some reason `accessibilityElementsHidden` does not hide ✅ from the screen reader */}
               <Typography className="text-2xl" accessibilityElementsHidden accessibilityLabel={""}>
                 ✅
               </Typography>

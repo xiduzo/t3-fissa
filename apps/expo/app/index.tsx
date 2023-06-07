@@ -115,7 +115,7 @@ const Index = () => {
             variant="h1"
             centered
             className="mb-4"
-            accessibilityLabel={`A collaborative live playlist, together with your friends`}
+            accessibilityLabel="A collaborative live playlist, together with your friends"
           >
             A collaborative live playlist
           </Typography>
