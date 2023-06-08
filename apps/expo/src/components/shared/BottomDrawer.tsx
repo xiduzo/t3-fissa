@@ -1,22 +1,21 @@
 import { FC } from "react";
-import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
+import { GestureResponderEvent, View } from "react-native";
 import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
 import { VariantProps, cva } from "@fissa/utils";
 
-import { Icon, IconName } from "./Icon";
-import { Typography } from "./Typography";
+import { IconButton } from "./Button";
+import { IconName } from "./Icon";
 
 export const BottomDrawer: FC<Props> = ({
-  title,
   children,
   action,
   actionTitle,
-  actionDisabled,
   className,
   size,
   actionIcon = "close",
 }) => {
+  console.log({ actionTitle });
   return (
     <View className={bottomDrawer({ size, className })} style={{ shadowColor: theme["900"] }}>
       <LinearGradient
@@ -25,22 +24,15 @@ export const BottomDrawer: FC<Props> = ({
         end={[1, 1]}
         className={linearGradient({ size })}
       >
-        <View className={titleStyle({ hasTitle: !!title })}>
-          {title}
+        <View className="mb-4 flex-row items-center justify-end">
           {action && (
-            <TouchableOpacity
-              accessibilityLabel={actionTitle ?? "close"}
-              disabled={actionDisabled}
-              className={actionStyle({ disabled: actionDisabled })}
+            <IconButton
+              icon={actionIcon}
               onPress={action}
-            >
-              {actionTitle && (
-                <Typography inverted variant="h4">
-                  {actionTitle}
-                </Typography>
-              )}
-              {actionIcon && <Icon name={actionIcon} />}
-            </TouchableOpacity>
+              title={actionTitle ?? "close"}
+              inverted
+              className="mr-0.5"
+            />
           )}
         </View>
         <View className="m-auto w-full max-w-lg px-3">{children}</View>
@@ -50,10 +42,8 @@ export const BottomDrawer: FC<Props> = ({
 };
 
 interface Props extends Omit<LinearGradientProps, "colors">, VariantProps<typeof bottomDrawer> {
-  title?: JSX.Element | false;
   action?: (event: GestureResponderEvent) => void;
-  actionIcon?: IconName | null;
-  actionDisabled?: boolean;
+  actionIcon?: IconName;
   actionTitle?: string;
 }
 
@@ -78,23 +68,5 @@ const linearGradient = cva("md:px-6", {
   },
   defaultVariants: {
     size: "full",
-  },
-});
-
-const titleStyle = cva("flex-row items-center mb-4", {
-  variants: {
-    hasTitle: {
-      true: "justify-between",
-      false: "justify-end",
-    },
-  },
-});
-
-const actionStyle = cva("flex-row items-center space-x-1", {
-  variants: {
-    disabled: {
-      true: "opacity-50",
-      false: "",
-    },
   },
 });

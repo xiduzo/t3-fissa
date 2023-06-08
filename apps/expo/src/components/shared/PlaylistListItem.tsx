@@ -5,6 +5,7 @@ import { ListItem, ListItemProps } from "./ListItem";
 export const PlaylistListItem: FC<Props> = ({ playlist, ...props }) => {
   return (
     <ListItem
+      accessibilityLabel={`${playlist.name} by ${playlist.owner?.display_name}, contains ${playlist.tracks.total} songs`}
       {...props}
       title={playlist.name}
       subtitle={`${playlist.owner?.display_name} • ${playlist.tracks.total} songs`}

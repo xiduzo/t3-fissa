@@ -26,8 +26,12 @@ const FromPlaylist = () => {
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View className="justify-between h-full">
-        <Typography variant="h1" className="px-6 pt-4 pb-8">
+      <View className="h-full justify-between">
+        <Typography
+          variant="h1"
+          className="px-6 pb-8 pt-4"
+          accessibilityLabel="Select playlist to start fissa from"
+        >
           Select playlist
         </Typography>
         <PlaylistList

@@ -14,7 +14,7 @@ import { useSwipe } from "../../hooks";
 import { BottomDrawer } from "./BottomDrawer";
 import { DraggableView } from "./DraggableView";
 
-export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }) => {
+export const Popover: FC<Props> = ({ children, onRequestClose, ...props }) => {
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
   const animate = useCallback((config?: Partial<Animated.TimingAnimationConfig>) => {
@@ -50,18 +50,18 @@ export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }
   return (
     <SafeAreaView className="absolute flex-1">
       <Modal {...props} animationType="slide" transparent onRequestClose={close}>
-        <View className="justify-end h-full">
+        <View className="h-full justify-end">
           <Animated.View
             onTouchStart={close}
-            className="absolute w-full h-full"
+            className="absolute h-full w-full"
             style={{
               backgroundColor: theme[900] + "80",
               opacity: fadeAnimation,
             }}
           />
           <DraggableView onTouchStart={touchStart} onTouchEnd={touchEnd}>
-            <BottomDrawer title={title} action={close} style={{ borderRadius: isActive ? 24 : 0 }}>
-              {props.visible && children}
+            <BottomDrawer action={close} style={{ borderRadius: isActive ? 24 : 0 }}>
+              {children}
             </BottomDrawer>
           </DraggableView>
         </View>
@@ -70,6 +70,4 @@ export const Popover: FC<Props> = ({ children, onRequestClose, title, ...props }
   );
 };
 
-interface Props extends Omit<ModalProps, "style"> {
-  title?: JSX.Element;
-}
+interface Props extends Omit<ModalProps, "style"> {}

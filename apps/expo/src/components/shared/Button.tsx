@@ -47,6 +47,7 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
       accessibilityLabel={title}
       {...props}
       onPress={handlePress}
+      accessibilityRole="button"
       className={`rounded-full ${props.className}`}
       underlayColor={theme[inverted ? "900" : "500"] + "10"}
     >
@@ -116,7 +117,7 @@ export const Fab: FC<FabProps> = ({ icon, position, ...props }) => {
           colors={theme.gradient}
           start={[0, 0]}
           end={[1, 1]}
-          className="items-center justify-center w-full h-full rounded-2xl"
+          className="h-full w-full items-center justify-center rounded-2xl"
         >
           <Icon name={icon} />
         </LinearGradient>

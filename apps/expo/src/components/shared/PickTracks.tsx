@@ -1,12 +1,5 @@
 import { FC, useCallback, useMemo, useRef, useState } from "react";
-import {
-  GestureResponderEvent,
-  NativeSyntheticEvent,
-  TextInput,
-  TextInputChangeEventData,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { NativeSyntheticEvent, TextInput, TextInputChangeEventData, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
@@ -172,15 +165,17 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
           }
         />
 
-        <BottomDrawer
-          action={() => setSelectedTracks([])}
-          actionDisabled={!selectedTracks.length}
-          actionTitle="clear all"
-          actionIcon={null}
-        >
-          <Typography variant="h6" inverted centered className="-mt-[38px] mb-4">
-            {selectedTracks.length} songs selected
-          </Typography>
+        <BottomDrawer>
+          {selectedTracks.length > 0 && (
+            <Button
+              title={`Unselect ${selectedTracks.length} songs`}
+              variant="text"
+              onPress={() => setSelectedTracks([])}
+              inverted
+              disabled={!selectedTracks.length}
+              className="mb-4"
+            />
+          )}
           <Button
             title={actionTitle}
             inverted
