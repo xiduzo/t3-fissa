@@ -3,9 +3,9 @@ import { AppState } from "react-native";
 
 export const useOnActiveApp = (callback: Function) => {
   useEffect(() => {
-    const { remove } = AppState.addEventListener("change", async () => {
+    const { remove } = AppState.addEventListener("change", () => {
       if (AppState.currentState !== "active") return;
-      await callback();
+      callback();
     });
 
     return remove;

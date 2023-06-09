@@ -4,7 +4,7 @@ import { useGetFissaDetails, useGetTracks } from "@fissa/hooks";
 import { RefetchInterval, useTracks } from "@fissa/utils";
 
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../../hooks";
-import { Button } from "./Button";
+import { Button } from "./button";
 
 export const Rejoin = () => {
   const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);

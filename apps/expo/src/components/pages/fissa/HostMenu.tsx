@@ -61,6 +61,7 @@ const SkipTrackButton = () => {
       toast.info({
         icon: "🐍",
         message: "Ssssssssskipping song",
+        duration: 10000,
       });
     },
     onSettled: () => {
@@ -133,7 +134,7 @@ const SpeakerButton = () => {
       <Popover visible={selectDevice} onRequestClose={toggleSelectDevice}>
         <SelectDevice onSelectDevice={handleDeviceSelect} inverted />
         {activeDevice && (
-          <View className="py-4 space-y-6">
+          <View className="space-y-6 py-4">
             <Slider
               minimumValue={0}
               maximumValue={100}

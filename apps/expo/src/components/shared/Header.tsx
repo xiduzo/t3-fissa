@@ -5,9 +5,8 @@ import { useRouter } from "expo-router";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { theme } from "@fissa/tailwind-config";
 
-import { IconButton } from "./Button";
-import { Icon } from "./Icon";
 import { Typography } from "./Typography";
+import { IconButton } from "./button";
 
 export const Header: FC<NativeStackHeaderProps> = (props) => {
   const { back } = useRouter();

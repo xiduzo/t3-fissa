@@ -4,8 +4,8 @@ import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
 import { VariantProps, cva } from "@fissa/utils";
 
-import { IconButton } from "./Button";
 import { IconName } from "./Icon";
+import { IconButton } from "./button";
 
 export const BottomDrawer: FC<Props> = ({
   children,
