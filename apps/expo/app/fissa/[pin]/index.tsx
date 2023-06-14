@@ -4,8 +4,8 @@ import { Stack, useSearchParams } from "expo-router";
 import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
-import { FissaTracks, PinCode } from "../../../src/components";
-import { FissaFab, HostMenu, QuickVoteProvider } from "../../../src/components/pages/fissa";
+import { Fab, FissaTracks, IconButton, Settings } from "../../../src/components";
+import { FissaFab, QuickVoteProvider, SpeakerButton } from "../../../src/components/pages/fissa";
 import { useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
@@ -23,14 +23,14 @@ const Fissa = () => {
         options={{
           headerShown: true,
           title: `Fissa ${pin}`,
-          headerRight: HeaderRight,
+          headerRight: () => <HeaderRight />,
         }}
       />
       <View className="h-full w-full">
         <QuickVoteProvider>
           <FissaTracks pin={String(pin)} />
         </QuickVoteProvider>
-        <FissaFab pin={String(pin)} />
+        <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
         <LinearGradient
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"
@@ -43,4 +43,12 @@ const Fissa = () => {
 
 export default Fissa;
 
-const HeaderRight = () => <PinCode />;
+const HeaderRight = () => {
+  return (
+    <View className="flex-row">
+      <SpeakerButton />
+      <View className="mx-3" />
+      <Settings />
+    </View>
+  );
+};

@@ -8,7 +8,7 @@ import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import { Action, IconButton, Popover } from "../../shared";
 
-export const PinCode = () => {
+export const Settings = () => {
   const { pin } = useSearchParams();
   const { push } = useRouter();
 

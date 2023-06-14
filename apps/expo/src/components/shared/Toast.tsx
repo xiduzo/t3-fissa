@@ -27,7 +27,6 @@ const Toaster: FC<Props> = ({ text1, text2, isVisible }) => {
     const node = findNodeHandle(ref.current);
     if (node === null) return;
 
-    console.log({ node, isVisible });
     AccessibilityInfo.setAccessibilityFocus(node);
   }, [isVisible]);
 

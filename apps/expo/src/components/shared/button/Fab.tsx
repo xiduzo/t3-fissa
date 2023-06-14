@@ -35,7 +35,7 @@ export const Fab: FC<Props> = ({ icon, position, ...props }) => {
       accessibilityLabel={props.title}
       accessibilityRole="button"
       {...props}
-      className={fab({ position, className: props.className })}
+      className="absolute bottom-10 right-8 z-50 flex h-14 w-14 rounded-2xl shadow-xl md:bottom-16"
       onPress={handlePress}
     >
       <Animated.View style={{ transform: [{ scale: shownAnimation }] }}>

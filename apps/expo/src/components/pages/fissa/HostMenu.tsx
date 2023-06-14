@@ -8,7 +8,7 @@ import { useDevices, useSpotify } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import { mapDeviceToIcon, toast } from "../../../utils";
-import { BottomDrawer, IconButton, Popover, SelectDevice } from "../../shared";
+import { IconButton, Popover, SelectDevice, SpeedDialOption } from "../../shared";
 
 export const HostMenu = () => {
   const { pin } = useSearchParams();
@@ -82,6 +82,13 @@ const SkipTrackButton = () => {
 
 const SpeakerButton = () => {
   const spotify = useSpotify();
+  const { pin } = useSearchParams();
+  const { user } = useAuth();
+
+  const { data: fissa } = useGetFissa(String(pin));
+
+  const isOwner = user?.email === fissa?.by.email;
+
   const { activeDevice, fetchDevices } = useDevices();
   const [selectDevice, setSelectDevice] = useState(false);
 
@@ -123,10 +130,11 @@ const SpeakerButton = () => {
     [spotify],
   );
 
+  if (!isOwner) return null;
+
   return (
     <>
       <IconButton
-        inverted
         title="change device"
         icon={mapDeviceToIcon(activeDevice)}
         onPress={toggleSelectDevice}
