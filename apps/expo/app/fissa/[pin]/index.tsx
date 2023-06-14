@@ -4,8 +4,8 @@ import { Stack, useSearchParams } from "expo-router";
 import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
-import { Fab, FissaTracks, IconButton, Settings } from "../../../src/components";
-import { FissaFab, QuickVoteProvider, SpeakerButton } from "../../../src/components/pages/fissa";
+import { Fab, FissaTracks, Settings } from "../../../src/components";
+import { QuickVoteProvider, SpeakerButton } from "../../../src/components/pages/fissa";
 import { useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
@@ -35,7 +35,6 @@ const Fissa = () => {
           colors={["transparent", theme[900]]}
           className="absolute bottom-0 h-24 w-full"
         />
-        <HostMenu />
       </View>
     </View>
   );

@@ -9,6 +9,7 @@ import { Button, ProgressBar, TrackEnd, TrackList } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
 import { SelectedTrackPopover } from "./SelectedTrackPopover";
+import { SkipTrackButton } from "./buttons";
 import { QuickVoteModal, useQuickVote } from "./quickVote";
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
@@ -79,11 +80,16 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
       if (!localTrack) return;
       if (localTrack.hasBeenPlayed) return;
-      if (data?.currentlyPlayingId === track.id) return;
+      if (data?.currentlyPlayingId === track.id) {
+        if (!isOwner) return;
+        console.log({ isOwner });
+
+        return <SkipTrackButton />;
+      }
 
       return <TrackEnd trackId={track.id} pin={pin} />;
     },
-    [data?.tracks, data?.currentlyPlayingId, localTracks],
+    [data?.tracks, data?.currentlyPlayingId, localTracks, isOwner],
   );
 
   const trackExtra = useCallback(
@@ -177,7 +183,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         ListFooterComponent={<ListFooterComponent tracksShown={showTracks} />}
       />
       <Animated.View
-        className="absolute items-center w-full bottom-32 md:bottom-36"
+        className="absolute bottom-32 w-full items-center md:bottom-36"
         style={{ opacity: showBackAnimation, marginBottom }}
       >
         <Button title="Back to current song" onPress={() => scrollToCurrentIndex()} />

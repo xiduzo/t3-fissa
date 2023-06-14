@@ -1,86 +1,15 @@
 import { useCallback, useState } from "react";
-import { View } from "react-native";
+import { Slider, View } from "react-native";
 import { useSearchParams } from "expo-router";
-import Slider from "@react-native-community/slider";
-import { useGetFissa, useSkipTrack } from "@fissa/hooks";
+import { useGetFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices, useSpotify } from "@fissa/utils";
 
-import { useAuth } from "../../../providers";
-import { mapDeviceToIcon, toast } from "../../../utils";
-import { IconButton, Popover, SelectDevice, SpeedDialOption } from "../../shared";
+import { useAuth } from "../../../../providers";
+import { mapDeviceToIcon, toast } from "../../../../utils";
+import { IconButton, Popover, SelectDevice } from "../../../shared";
 
-export const HostMenu = () => {
-  const { pin } = useSearchParams();
-
-  const { user } = useAuth();
-  const { data: fissa } = useGetFissa(String(pin));
-  const { activeDevice } = useDevices();
-
-  const isOwner = user?.email === fissa?.by.email;
-  const isPlaying = fissa?.currentlyPlayingId;
-
-  if (!isOwner) return null;
-  if (!isPlaying) return null;
-  if (!activeDevice) return null;
-
-  return (
-    <BottomDrawer size="partial">
-      <View className="flex-row">
-        <SpeakerButton />
-        <PauseFissaButton />
-        <SkipTrackButton />
-      </View>
-    </BottomDrawer>
-  );
-};
-
-const PauseFissaButton = () => {
-  const spotify = useSpotify();
-
-  const pauseSpotify = useCallback(async () => {
-    try {
-      await spotify.pause();
-    } catch (e) {
-      toast.error({
-        message: `Failed to pause fissa`,
-      });
-    }
-  }, [spotify]);
-
-  return (
-    <IconButton inverted onPress={pauseSpotify} title="pause fissa" icon="pause" className="mx-5" />
-  );
-};
-
-const SkipTrackButton = () => {
-  const { pin } = useSearchParams();
-
-  const { mutateAsync, isLoading } = useSkipTrack(String(pin), {
-    onMutate: () => {
-      toast.info({
-        icon: "🐍",
-        message: "Ssssssssskipping song",
-        duration: 10000,
-      });
-    },
-    onSettled: () => {
-      toast.hide();
-    },
-  });
-
-  return (
-    <IconButton
-      inverted
-      onPress={mutateAsync}
-      disabled={isLoading}
-      title="play next song"
-      icon="skip-forward"
-    />
-  );
-};
-
-const SpeakerButton = () => {
+export const SpeakerButton = () => {
   const spotify = useSpotify();
   const { pin } = useSearchParams();
   const { user } = useAuth();
