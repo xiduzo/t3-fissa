@@ -102,7 +102,12 @@ const HostOfFissaWarning = () => {
         onPress={() => setIsWarningVisible(false)}
         linkTo={`/fissa/${data?.hostOf?.pin}`}
       />
-      <Button inverted variant="text" title="Roger that, I want a new Fissa" />
+      <Button
+        inverted
+        onPress={() => setIsWarningVisible(false)}
+        variant="text"
+        title="Roger that, I want a new Fissa"
+      />
     </Popover>
   );
 };
