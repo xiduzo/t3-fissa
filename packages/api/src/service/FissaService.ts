@@ -91,7 +91,7 @@ export class FissaService extends ServiceWithContext {
   };
 
   byId = async (pin: string) => {
-    return this.db.fissa.findUniqueOrThrow({
+    const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       include: {
         by: { select: { email: true } },
@@ -100,6 +100,13 @@ export class FissaService extends ServiceWithContext {
         },
       },
     });
+
+    await this.db.user.update({
+      where: { id: this.ctx.session?.user.id },
+      data: { partOf: { connect: { pin } } },
+    });
+
+    return fissa;
   };
 
   detailsById = async (pin: string) => {

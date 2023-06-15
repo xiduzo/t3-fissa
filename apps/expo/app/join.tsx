@@ -13,13 +13,11 @@ import { theme } from "@fissa/tailwind-config";
 import { logger } from "@fissa/utils";
 
 import { Button, PageTemplate, Rejoin, Typography } from "../src/components";
-import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../src/hooks/useEncryptedStorage";
 import { toast } from "../src/utils/Toast";
 import { api } from "../src/utils/api";
 
 const Join = () => {
   const { replace } = useRouter();
-  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
   const [pin, setPin] = useState(["", "", "", ""]);
 
   api.fissa.byId.useQuery(pin.join(""), {
@@ -27,7 +25,6 @@ const Join = () => {
     onSuccess: ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
       notificationAsync(NotificationFeedbackType.Success).catch(logger.warning);
-      save(pin).catch(logger.warning);
       replace(`/fissa/${pin}`);
     },
     onError: ({ message }) => {
@@ -103,7 +100,7 @@ const Join = () => {
                 maxLength={1}
                 keyboardType="numeric"
                 inputMode="numeric"
-                className="p-4 text-5xl font-extrabold text-center"
+                className="p-4 text-center text-5xl font-extrabold"
                 style={{ color: theme["100"] }}
               />
               <View
@@ -119,7 +116,7 @@ const Join = () => {
         <Button
           variant="text"
           title="clear code"
-          className="mt-4 mb-8"
+          className="mb-8 mt-4"
           onPress={reset}
           disabled={!pin.includes("")}
         />

@@ -1,22 +1,25 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { View } from "react-native";
-import { useGetFissaDetails, useGetTracks } from "@fissa/hooks";
-import { RefetchInterval, useTracks } from "@fissa/utils";
+import { useGetTracks, useGetUserFissa } from "@fissa/hooks";
+import { useTracks } from "@fissa/utils";
 
-import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../../hooks";
 import { Button } from "./button";
 
 export const Rejoin = () => {
-  const { value } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
-  const { data } = useGetFissaDetails(value!, RefetchInterval.Lazy);
+  const { data } = useGetUserFissa();
 
-  if (!value) return <View />; // no pin stored
-  if (!data) return <View />; // no fissa found
+  const lastFissa = useMemo(() => data?.partOf[0]?.pin, [data?.partOf]);
+
+  if (!lastFissa) return <View />; // We return view for the layout
 
   return (
     <View>
-      <PrefetchTracks pin={value} />
-      <Button variant="text" title={`Re-join last fissa (${value})`} linkTo={`/fissa/${value}`} />
+      <PrefetchTracks pin={lastFissa} />
+      <Button
+        variant="text"
+        title={`Re-join last fissa (${lastFissa})`}
+        linkTo={`/fissa/${lastFissa}`}
+      />
     </View>
   );
 };

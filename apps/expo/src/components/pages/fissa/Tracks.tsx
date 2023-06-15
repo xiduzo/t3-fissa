@@ -82,7 +82,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       if (localTrack.hasBeenPlayed) return;
       if (data?.currentlyPlayingId === track.id) {
         if (!isOwner) return;
-        console.log({ isOwner });
 
         return <SkipTrackButton />;
       }

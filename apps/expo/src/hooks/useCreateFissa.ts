@@ -3,19 +3,15 @@ import { useRouter } from "expo-router";
 import { useCreateFissa as useBaseCreateFissa } from "@fissa/hooks";
 
 import { mapSpotifyTrackToTrpcTrack, toast } from "../utils";
-import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "./useEncryptedStorage";
 
 type Tracks = (SpotifyApi.TrackObjectFull | SpotifyApi.TrackObjectSimplified)[];
 
 export const useCreateFissa = () => {
   const { push } = useRouter();
 
-  const { save } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.lastPin);
-
   const { mutate, mutateAsync, ...rest } = useBaseCreateFissa({
     onSuccess: async ({ pin }) => {
       toast.success({ message: "Enjoy your fissa", icon: "🎉" });
-      await save(pin);
       push(`/fissa/${pin}`);
       await notificationAsync(NotificationFeedbackType.Success);
     },

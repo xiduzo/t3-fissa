@@ -12,6 +12,24 @@ export class AuthService extends ServiceWithContext {
     this.spotifyService = spotifyService ?? new SpotifyService();
   }
 
+  getUserFissa = async () => {
+    const { hostOf, partOf } = await this.db.user.findUniqueOrThrow({
+      where: { id: this.ctx.session?.user.id },
+      select: {
+        hostOf: { select: { pin: true } },
+        partOf: {
+          select: { pin: true },
+          orderBy: { createdAt: Prisma.SortOrder.desc },
+        },
+      },
+    });
+
+    return {
+      hostOf,
+      partOf,
+    };
+  };
+
   getAccessToken = async (code: string, redirectUri: string) => {
     const tokens = await this.spotifyService.codeGrant(code, redirectUri);
 

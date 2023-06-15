@@ -15,7 +15,6 @@ export const BottomDrawer: FC<Props> = ({
   size,
   actionIcon = "close",
 }) => {
-  console.log({ actionTitle });
   return (
     <View className={bottomDrawer({ size, className })} style={{ shadowColor: theme["900"] }}>
       <LinearGradient
