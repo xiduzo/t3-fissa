@@ -87,13 +87,13 @@ const HostOfFissaWarning = () => {
   return (
     <Popover visible={isWarningVisible} onRequestClose={() => setIsWarningVisible(false)}>
       <Typography centered className="text-7xl" variant="h1">
-        🐟
+        🦭
       </Typography>
       <Typography variant="h1" centered className="my-2" inverted>
-        It seems like you forgot that are already hosting a Fissa
+        It seems like you are already hosting a Fissa
       </Typography>
       <Typography variant="bodyL" className="mb-8" centered inverted>
-        Hosting a new Fissa will stop Fissa {data?.hostOf?.pin}!
+        Hosting a new Fissa will stop your current Fissa!
       </Typography>
       <Button
         inverted
