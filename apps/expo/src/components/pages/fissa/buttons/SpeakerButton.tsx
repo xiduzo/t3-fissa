@@ -1,22 +1,17 @@
 import { useCallback, useState } from "react";
 import { Slider, View } from "react-native";
 import { useSearchParams } from "expo-router";
-import { useGetFissa } from "@fissa/hooks";
+import { useIsOwner } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices, useSpotify } from "@fissa/utils";
 
-import { useAuth } from "../../../../providers";
 import { mapDeviceToIcon, toast } from "../../../../utils";
 import { IconButton, Popover, SelectDevice } from "../../../shared";
 
 export const SpeakerButton = () => {
   const spotify = useSpotify();
   const { pin } = useSearchParams();
-  const { user } = useAuth();
-
-  const { data: fissa } = useGetFissa(String(pin));
-
-  const isOwner = user?.email === fissa?.by.email;
+  const isOwner = useIsOwner(String(pin));
 
   const { activeDevice, fetchDevices } = useDevices();
   const [selectDevice, setSelectDevice] = useState(false);

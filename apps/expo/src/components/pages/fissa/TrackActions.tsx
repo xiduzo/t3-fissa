@@ -6,6 +6,7 @@ import {
   useDeleteTrack,
   useGetFissa,
   useGetVoteFromUser,
+  useIsOwner,
   useSkipTrack,
 } from "@fissa/hooks";
 
@@ -16,6 +17,8 @@ import { Action } from "../../shared";
 export const TrackActions: FC<Props> = ({ track, onPress }) => {
   const { pin } = useSearchParams();
   const { data: fissa } = useGetFissa(String(pin));
+
+  const isOwner = useIsOwner(String(pin));
 
   const { user } = useAuth();
 
@@ -52,7 +55,6 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
 
   const isActiveTrack = useMemo(() => fissa?.currentlyPlayingId === track.id, [fissa]);
 
-  const isOwner = useMemo(() => fissa?.by.email === user?.email, [fissa?.by, user]);
   const hasBeenPlayed = useMemo(
     () => fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed,
     [track?.id, fissa?.tracks],

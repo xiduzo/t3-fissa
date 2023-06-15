@@ -1,10 +1,9 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Animated, NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { useGetFissa } from "@fissa/hooks";
+import { useGetFissa, useIsOwner } from "@fissa/hooks";
 import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 
-import { useAuth } from "../../../providers";
 import { Button, ProgressBar, TrackEnd, TrackList } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
@@ -16,7 +15,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
   const { data, isInitialLoading } = useGetFissa(pin);
-  const { user } = useAuth();
+  const isOwner = useIsOwner(pin);
 
   const showBackAnimation = useRef(new Animated.Value(0)).current;
   const lastScrolledTo = useRef<string>();
@@ -38,7 +37,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const isPlaying = !!data?.currentlyPlayingId;
-  const isOwner = user?.email === data?.by.email;
 
   const showTracks = useMemo(() => {
     if (!isOwner) return isPlaying;

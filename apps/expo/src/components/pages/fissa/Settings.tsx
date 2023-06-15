@@ -1,7 +1,7 @@
 import { FC, useCallback, useState } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useRouter, useSearchParams } from "expo-router";
-import { useGetFissa, useGetTracks } from "@fissa/hooks";
+import { useGetTracks, useIsOwner } from "@fissa/hooks";
 import { logger, splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
@@ -95,11 +95,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 const PauseFissaAction = () => {
   const { pin } = useSearchParams();
   const spotify = useSpotify();
-
-  const { user } = useAuth();
-  const { data: fissa } = useGetFissa(String(pin));
-
-  const isOwner = user?.email === fissa?.by.email;
+  const isOwner = useIsOwner(String(pin));
 
   const pauseSpotify = useCallback(async () => {
     try {
