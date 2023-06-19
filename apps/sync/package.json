@@ -8,7 +8,7 @@
     "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "clean": "rm -rf node_modules",
     "test": "vitest",
-    "start": "node --experimental-specifier-resolution=node --max_old_space_size=100 dist",
+    "start": "node --experimental-specifier-resolution=node dist",
     "dev": "pnpm with-env node --experimental-specifier-resolution=node dist",
     "debug": "pnpm with-env node --experimental-specifier-resolution=node --trace_gc --max_old_space_size=300 --inspect dist",
     "with-env": "dotenv -e ../../.env --"
