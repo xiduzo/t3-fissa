@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Slider, View } from "react-native";
-import { useSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 import { useIsOwner } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices, useSpotify } from "@fissa/utils";
@@ -10,7 +10,7 @@ import { IconButton, Popover, SelectDevice } from "../../../shared";
 
 export const SpeakerButton = () => {
   const spotify = useSpotify();
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
   const isOwner = useIsOwner(String(pin));
 
   const { activeDevice, fetchDevices } = useDevices();

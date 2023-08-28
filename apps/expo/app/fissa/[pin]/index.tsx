@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useSearchParams } from "expo-router";
+import { Stack, useGlobalSearchParams } from "expo-router";
 import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
@@ -9,7 +9,7 @@ import { QuickVoteProvider, SpeakerButton } from "../../../src/components/pages/
 import { useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
 
   const invalidate = useInvalidateFissa();
 

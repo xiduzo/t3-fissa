@@ -1,11 +1,11 @@
-import { useRouter, useSearchParams } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import { useAddTracks } from "@fissa/hooks";
 
 import { PickTracks } from "../../../src/components/shared";
 import { toast } from "../../../src/utils";
 
 const AddTracks = () => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
 
   const { back } = useRouter();
 

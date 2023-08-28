@@ -19,7 +19,7 @@
   "dependencies": {
     "@fissa/api": "*",
     "@fissa/utils": "*",
-    "@trpc/client": "^10.21.1",
+    "@trpc/client": "^10.38.0",
     "croner": "^7.0.1",
     "esbuild": "^0.19.2"
   },

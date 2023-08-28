@@ -2,7 +2,7 @@ import { FC, useContext, useEffect, useMemo, useRef } from "react";
 import { Animated, Dimensions, GestureResponderEvent, Modal, View } from "react-native";
 import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { useSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed, logger } from "@fissa/utils";
@@ -15,7 +15,7 @@ const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
 export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
   const { user } = useAuth();
   const { vote, touchStartPosition, track } = useContext(QuickVoteContext);
 
