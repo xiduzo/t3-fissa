@@ -20,15 +20,15 @@
     "@fissa/api": "*",
     "@fissa/utils": "*",
     "@trpc/client": "^10.21.1",
-    "croner": "^6.0.3",
-    "esbuild": "^0.17.18"
+    "croner": "^7.0.1",
+    "esbuild": "^0.19.2"
   },
   "devDependencies": {
     "@fissa/test": "*",
-    "@types/node-cron": "^3.0.7",
-    "dotenv": "^16.0.3",
+    "@types/node-cron": "^3.0.8",
+    "dotenv": "^16.3.1",
     "eslint-config-acme": "0.0.0",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
