@@ -1,7 +1,6 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
   root: true,
-  extends: ["fissa"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
