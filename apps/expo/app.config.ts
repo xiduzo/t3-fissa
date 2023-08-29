@@ -42,6 +42,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   plugins: [
+    "expo-router",
     "./expo-plugins/with-modify-gradle.js",
     [
       "expo-updates",
