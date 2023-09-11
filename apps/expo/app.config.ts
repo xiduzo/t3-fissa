@@ -4,7 +4,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
   slug: "fissa",
   scheme: "com.fissa",
-  version: "3.1.0", // EAS VERSION
+  version: "3.1.3", // EAS VERSION
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",
@@ -28,6 +28,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    versionCode: 313, // EAS VERSION
     package: "com.fissa",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
