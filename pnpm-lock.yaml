@@ -173,7 +173,7 @@ importers:
         specifier: ^8.4.23
         version: 8.4.23
       tailwindcss:
-        specifier: ^3.3.1
+        specifier: 3.3.1
         version: 3.3.1(postcss@8.4.23)
       typescript:
         specifier: ^4.9.5
@@ -249,7 +249,7 @@ importers:
         specifier: ^8.4.23
         version: 8.4.23
       tailwindcss:
-        specifier: ^3.3.1
+        specifier: 3.3.1
         version: 3.3.1(postcss@8.4.23)
       typescript:
         specifier: ^4.9.5
@@ -406,7 +406,7 @@ importers:
         specifier: ^8.4.23
         version: 8.4.23
       tailwindcss:
-        specifier: ^3.3.1
+        specifier: 3.3.1
         version: 3.3.1(postcss@8.4.23)
 
   packages/db:
