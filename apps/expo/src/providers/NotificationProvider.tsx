@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -23,7 +24,7 @@ Notifications.setNotificationHandler({
 const NotificationContext = createContext({});
 
 export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [expoPushToken, setExpoPushToken] = useState("");
+  const [_expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState<Notifications.Notification>();
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
@@ -49,8 +50,12 @@ export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
     };
   }, []);
 
+  const notificationToShow = useMemo(() => ({ notification }), [notification]);
+
   return (
-    <NotificationContext.Provider value={{ notification }}>{children}</NotificationContext.Provider>
+    <NotificationContext.Provider value={notificationToShow}>
+      {children}
+    </NotificationContext.Provider>
   );
 };
 

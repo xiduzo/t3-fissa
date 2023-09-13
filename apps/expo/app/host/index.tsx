@@ -84,6 +84,8 @@ const HostOfFissaWarning = () => {
   const { data } = useGetUserFissa();
   const [isWarningVisible, setIsWarningVisible] = useState(!!data?.hostOf);
 
+  const clearWarning = useCallback(() => setIsWarningVisible(false), []);
+
   return (
     <Popover visible={isWarningVisible} onRequestClose={() => setIsWarningVisible(false)}>
       <Typography centered className="text-7xl" variant="h1">
@@ -99,12 +101,12 @@ const HostOfFissaWarning = () => {
         inverted
         className="mb-4"
         title={`Rejoin Fissa ${data?.hostOf?.pin}`}
-        onPress={() => setIsWarningVisible(false)}
+        onPress={clearWarning}
         linkTo={`/fissa/${data?.hostOf?.pin}`}
       />
       <Button
         inverted
-        onPress={() => setIsWarningVisible(false)}
+        onPress={clearWarning}
         variant="text"
         title="Roger that, I want a new Fissa"
       />
