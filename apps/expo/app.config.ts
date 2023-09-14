@@ -1,10 +1,14 @@
 import { ConfigContext, ExpoConfig } from "@expo/config";
 
+const version = "3.1.5"; // EAS VERSION
+// Should be bumped every time a new build is made
+const buildNumber = "5"; // EAS VERSION
+
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
   slug: "fissa",
   scheme: "com.fissa",
-  version: "3.1.5", // EAS VERSION
+  version,
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",
@@ -21,6 +25,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   },
   assetBundlePatterns: ["**/*"],
   ios: {
+    buildNumber,
     supportsTablet: true,
     bundleIdentifier: "org.reactjs.native.example.fissa",
     config: {
@@ -28,7 +33,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    versionCode: 315, // EAS VERSION
+    versionCode: Number(buildNumber),
     package: "com.fissa",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",

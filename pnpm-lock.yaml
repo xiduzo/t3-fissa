@@ -94,8 +94,8 @@ importers:
         specifier: ^12.2.1
         version: 12.2.1(expo@48.0.12)
       expo-image:
-        specifier: ~1.2.1
-        version: 1.2.1(expo@48.0.12)
+        specifier: ~1.2.3
+        version: 1.2.3(expo@48.0.12)
       expo-linear-gradient:
         specifier: ~12.1.2
         version: 12.1.2(expo@48.0.12)
@@ -5797,8 +5797,8 @@ packages:
       expo: 48.0.12(@babel/core@7.20.12)
     dev: false
 
-  /expo-image@1.2.1(expo@48.0.12):
-    resolution: {integrity: sha512-pYZFN0ctuIBA+sqUiw70rHQQ04WDyEcF549ObArdj0MNgSUCBJMFmu/jrWDmxOpEMF40lfLVIZKigJT7Bw+GYA==}
+  /expo-image@1.2.3(expo@48.0.12):
+    resolution: {integrity: sha512-+Mnx6rcneWSUGfHkUDV3cQ3R4lVwoIDFs/tcXVqnlxyNJdNxpW2cge9pS2Hpj3UDoZVhZPLR8LHS8E9wEaC0NA==}
     peerDependencies:
       expo: '*'
     dependencies:
