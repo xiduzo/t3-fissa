@@ -28,19 +28,23 @@ const useSpotifyStore = create<SpotifyState>((set) => ({
 const newTracks = (
   currentTracks: SpotifyApi.TrackObjectFull[],
   newTracks: SpotifyApi.TrackObjectFull[],
-) => [
-  ...currentTracks.filter(({ id }) => !newTracks.find((track) => track.id === id)),
-  ...newTracks,
-];
+) => {
+  const currentTrackIds = new Set(currentTracks.map(({ id }) => id));
+
+  const mergedTracks = newTracks.filter(({ id }) => !currentTrackIds.has(id));
+
+  return [...currentTracks, ...mergedTracks];
+};
 
 export const useTracks = (trackIds?: string[]) => {
   const { addTracks, tracks, spotify } = useSpotifyStore();
 
-  const cachedTrackIds = useMemo(() => tracks.map(({ id }) => id), [trackIds, tracks]);
+  const cachedTrackIds = useMemo(() => new Set(tracks.map(({ id }) => id)), [tracks]);
 
-  const uncachedTrackIds = useMemo(() => {
-    return trackIds?.filter((trackId) => !cachedTrackIds.includes(trackId)) ?? [];
-  }, [trackIds, cachedTrackIds]);
+  const uncachedTrackIds = useMemo(
+    () => trackIds?.filter((trackId) => !cachedTrackIds.has(trackId)) ?? [],
+    [trackIds, cachedTrackIds],
+  );
 
   const requestedTracks = useMemo(() => {
     return (
@@ -54,9 +58,9 @@ export const useTracks = (trackIds?: string[]) => {
       return tracks;
     });
 
-    const tracks = (await Promise.all(promises)).flat();
+    const newTracks = (await Promise.all(promises)).flat();
 
-    if (tracks.length) addTracks(tracks);
+    if (newTracks.length) addTracks(newTracks);
   }, [uncachedTrackIds, addTracks, spotify]);
 
   return requestedTracks;

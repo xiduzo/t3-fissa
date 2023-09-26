@@ -1,8 +1,4 @@
-import type {
-  GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse,
-} from "next";
+import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
 import { getServerSession as $getServerSession, Session } from "next-auth";
 import { prisma } from "@fissa/db";
 
@@ -17,13 +13,9 @@ type GetServerSessionContext =
 export const getServerSession = async (ctx: GetServerSessionContext) => {
   let session = await $getServerSession(ctx.req, ctx.res, authOptions);
 
-  if (!session) {
-    session = await expoHackServerSession(ctx);
-  }
+  if (!session) session = await expoHackServerSession(ctx);
 
-  if (!session) {
-    session = await trustedServerSession(ctx);
-  }
+  if (!session) session = await trustedServerSession(ctx);
 
   return session;
 };
@@ -48,8 +40,7 @@ const expoHackServerSession = async (ctx?: GetServerSessionContext) => {
 const trustedServerSession = async (ctx?: GetServerSessionContext) => {
   if (!ctx?.req.headers.authorization) return null;
 
-  if (ctx.req.headers.authorization !== process.env.NEXTAUTH_SECRET)
-    return null;
+  if (ctx.req.headers.authorization !== process.env.NEXTAUTH_SECRET) return null;
 
   return { user: { name: "TRUSTED_SERVER_SESSION" } } as Session;
 };

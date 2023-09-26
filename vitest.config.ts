@@ -16,6 +16,6 @@ export default defineConfig({
       // reportsDirectory: 'coverage',
     },
     clearMocks: true,
-    setupFiles: ["./src/setupTests.ts"],
+    setupFiles: ["./setupTests.ts"],
   },
 });

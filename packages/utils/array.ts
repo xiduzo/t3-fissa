@@ -8,22 +8,26 @@ export const splitInChunks = <T>(array: T[], chunkSize = 50): T[][] => {
   return chunks;
 };
 
-const sortTrack = (a: { time: Date; trackId: string }, b: { time: Date; trackId: string }) => {
-  const aTime = a.time.getTime();
-  const bTime = b.time.getTime();
+const sortTrack = (date: keyof Dates) => (a: SortableTrack, b: SortableTrack) => {
+  const aTime = a[date].getTime();
+  const bTime = b[date].getTime();
 
+  if (a.score !== b.score) return b.score - a.score;
   if (aTime === bTime) return a.trackId.localeCompare(b.trackId);
 
   return aTime - bTime;
 };
 
-type SortableTrack = {
-  score: number;
-  trackId: string;
+type Dates = {
   lastUpdateAt: Date;
   createdAt: Date;
-  hasBeenPlayed: boolean;
 };
+
+export type SortableTrack = {
+  score: number;
+  trackId: string;
+  hasBeenPlayed: boolean;
+} & Dates;
 
 export const sortFissaTracksOrder = <T extends SortableTrack>(
   tracks?: T[],
@@ -31,33 +35,23 @@ export const sortFissaTracksOrder = <T extends SortableTrack>(
 ) => {
   if (!tracks) return [];
 
-  let sortedTracks: T[] = [];
+  const { played, unplayed, active } = tracks.reduce(
+    (acc, track) => {
+      const { hasBeenPlayed, trackId } = track;
 
-  const playedTracks = tracks.filter(
-    ({ hasBeenPlayed, trackId }) => hasBeenPlayed && trackId !== activeTrackId,
+      if (trackId === activeTrackId) acc.active = track;
+      else if (hasBeenPlayed) acc.played.push(track);
+      else acc.unplayed.push(track);
+
+      return acc;
+    },
+    { played: [] as T[], unplayed: [] as T[], active: null as T | null },
   );
-  const unplayedTracks = tracks.filter(
-    ({ hasBeenPlayed, trackId }) => !hasBeenPlayed && trackId !== activeTrackId,
-  );
-  const activeTrack = tracks.find(({ trackId }) => trackId === activeTrackId);
 
-  const sortedPlayedTracks = playedTracks.sort((a, b) => {
-    return sortTrack({ ...a, time: a.lastUpdateAt }, { ...b, time: b.lastUpdateAt });
-  });
+  const sortedPlayedTracks = played.sort(sortTrack("lastUpdateAt"));
+  const sortedUnplayedTracks = unplayed.sort(sortTrack("createdAt"));
 
-  const sortedUnplayedTracks = unplayedTracks.sort((a, b) => {
-    if (a.score === b.score) {
-      return sortTrack({ ...a, time: a.createdAt }, { ...b, time: b.createdAt });
-    }
-
-    return b.score - a.score;
-  });
-
-  sortedTracks = sortedTracks.concat(sortedPlayedTracks);
-  if (activeTrack) sortedTracks.push(activeTrack);
-  sortedTracks = sortedTracks.concat(sortedUnplayedTracks);
-
-  return sortedTracks;
+  return [...sortedPlayedTracks, ...(active ? [active] : []), ...sortedUnplayedTracks];
 };
 
 export const randomSort = () => Number(Math.random() > 0.5);
