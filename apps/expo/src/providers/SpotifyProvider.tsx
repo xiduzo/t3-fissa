@@ -104,10 +104,12 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   useMemo(async () => {
     if (response?.type !== "success") return;
 
-    toast.success({
-      message: "Setting account details",
+    toast.info({
+      message: "Getting account details",
+      icon: "🐿️",
       duration: 30 * 1000,
     });
+
     await notificationAsync(NotificationFeedbackType.Success);
 
     await saveScopes(scopes.join("_"));

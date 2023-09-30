@@ -1,5 +1,3 @@
-import { ServerResponse } from "http";
-import { Http2ServerResponse } from "http2";
 import SpotifyWebApi from "spotify-web-api-node";
 
 import { logger } from "../classes";
@@ -31,17 +29,29 @@ export class SpotifyService {
     return body.is_playing;
   };
 
-  playTrack = async (accessToken: string, trackId: string) => {
+  playTrack = async (accessToken: string, trackId: string, triesLeft = 3): Promise<unknown> => {
     this.spotify.setAccessToken(accessToken);
 
     try {
       await this.spotify.play({ uris: [`spotify:track:${trackId}`] });
     } catch (e: any) {
-      if (e.body.reason === "NO_ACTIVE_DEVICE") {
+      if (e.body.error.reason === "NO_ACTIVE_DEVICE") {
         logger.warning(e);
-      } else {
-        logger.error(JSON.stringify(e));
+        const { body } = await this.spotify.getMyDevices();
+
+        const firstDevice = body.devices[0];
+
+        if (!firstDevice?.id) return logger.error("No device found");
+
+        if (triesLeft === 0) return logger.error("No tries left");
+
+        await this.spotify.transferMyPlayback([firstDevice.id]);
+        await new Promise((resolve) => setTimeout(resolve, 250 + (3 % (triesLeft + 1))));
+        return this.playTrack(accessToken, trackId, triesLeft - 1);
       }
+
+      logger.error(JSON.stringify(e));
+
       return Promise.resolve();
     }
   };
