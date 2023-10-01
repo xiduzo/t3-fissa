@@ -36,7 +36,7 @@ export class SpotifyService {
       await this.spotify.play({ uris: [`spotify:track:${trackId}`] });
     } catch (e: any) {
       if (e.body.error.reason === "NO_ACTIVE_DEVICE") {
-        logger.warning(e);
+        logger.warning("No active device found, trying to transfer playback");
         const { body } = await this.spotify.getMyDevices();
 
         const firstDevice = body.devices[0];
