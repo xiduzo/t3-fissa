@@ -1,8 +1,12 @@
 {
   "crons": [
     {
-      "path": "/api/cron",
-      "schedule": "* * * * *"
+      "path": "/api/sync-fissa",
+      "schedule": "*/1 * * * *"
+    },
+    {
+      "path": "/api/cron/sync-token",
+      "schedule": "*/20 * * * *"
     }
   ]
 }
