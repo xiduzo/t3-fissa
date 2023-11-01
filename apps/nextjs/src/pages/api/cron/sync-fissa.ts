@@ -3,7 +3,8 @@ import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
+const CRON_INTERVAL = 60 * 1000;
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const prisma = new PrismaClient({});
@@ -31,13 +32,12 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
       const endTime = addSeconds(fissa.expectedEndTime, -5);
       const delay = differenceInMilliseconds(endTime, new Date());
 
-      if (delay >= maxDuration * 1000) continue;
+      if (delay >= CRON_INTERVAL) continue;
 
       logger.info(`${fissa.pin}, next track in ${delay}ms`);
 
       const promise = new Promise<string>((resolve) => {
         setTimeout(() => {
-          // resolve(fissa.pin);
           caller.fissa.sync.next(fissa.pin).finally(() => resolve(fissa.pin));
         }, delay);
       });
