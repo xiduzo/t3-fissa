@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
 import { logger } from "@fissa/utils";
 
-import { PrismaClient } from ".prisma/client";
+const client = new PrismaClient({});
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const caller = appRouter.createCaller({

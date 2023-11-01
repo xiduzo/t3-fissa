@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
-
-import { PrismaClient } from ".prisma/client";
 
 export const maxDuration = 60;
 
