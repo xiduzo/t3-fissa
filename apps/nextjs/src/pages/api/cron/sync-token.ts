@@ -3,8 +3,11 @@ import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
 import { logger } from "@fissa/utils";
 
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  const prisma = new PrismaClient({});
   const caller = appRouter.createCaller({
     prisma,
     session: null,

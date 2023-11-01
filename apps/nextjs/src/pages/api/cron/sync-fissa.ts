@@ -6,9 +6,11 @@ import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 export const maxDuration = 120;
 const CRON_INTERVAL = 60 * 1000;
 
-export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  const prisma = new PrismaClient({});
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const caller = appRouter.createCaller({
     prisma,
     session: null,
