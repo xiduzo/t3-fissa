@@ -1,10 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { appRouter } from "@fissa/api";
 import { logger } from "@fissa/utils";
 
-import { api } from "./apiProxy";
+import { PrismaClient } from ".prisma/client";
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  const fissas = await api.fissa.sync.active.query();
+  const caller = appRouter.createCaller({
+    prisma: new PrismaClient({}),
+    session: null,
+  });
+
+  const fissas = await caller.fissa.sync.active();
 
   if (!fissas?.length) {
     res.status(204).json({ name: "No fissa needed to be synced" });
@@ -13,7 +19,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
   for (const fissa of fissas) {
     try {
-      await api.auth.sync.refreshToken.mutate(fissa.pin);
+      await caller.auth.sync.refreshToken(fissa.pin);
     } catch (error) {
       logger.error(`${fissa.pin}, access token refresh failed`, error);
     }

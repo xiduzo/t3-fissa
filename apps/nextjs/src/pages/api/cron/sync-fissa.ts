@@ -1,12 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { appRouter } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
-import { api } from "./apiProxy";
+import { PrismaClient } from ".prisma/client";
 
 export const maxDuration = 60;
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  const fissas = await api.fissa.sync.active.query();
+  const caller = appRouter.createCaller({
+    prisma: new PrismaClient({}),
+    session: null,
+  });
+
+  const fissas = await caller.fissa.sync.active();
 
   if (!fissas?.length) {
     res.status(204).json({ name: "No fissa needed to be synced" });
@@ -30,7 +36,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
       const promise = new Promise<string>((resolve) => {
         setTimeout(() => {
           // resolve(fissa.pin);
-          api.fissa.sync.next.mutate(fissa.pin).finally(() => resolve(fissa.pin));
+          caller.fissa.sync.next(fissa.pin).finally(() => resolve(fissa.pin));
         }, delay);
       });
 
