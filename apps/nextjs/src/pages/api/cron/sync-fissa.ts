@@ -4,6 +4,10 @@ import { appRouter } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
 export const maxDuration = 120;
+export const config = {
+  maxDuration,
+};
+
 const CRON_INTERVAL = 60 * 1000;
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
