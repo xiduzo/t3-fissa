@@ -7,7 +7,7 @@ export const maxDuration = 60;
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const { data } = api.fissa.sync.active.useQuery();
-  const { mutateAsync } = api.fissa.sync.next.useMutation();
+  // const { mutateAsync } = api.fissa.sync.next.useMutation();
 
   if (!data?.length) {
     res.status(204).json({ name: "No fissa needed to be synced" });
@@ -26,17 +26,18 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
       if (delay >= maxDuration * 1000) continue;
 
-      logger.debug(`${fissa.pin}, next track in ${delay}ms`);
+      logger.info(`${fissa.pin}, next track in ${delay}ms`);
 
       const promise = new Promise<string>((resolve) => {
         setTimeout(() => {
-          mutateAsync(fissa.pin).finally(() => resolve(fissa.pin));
+          resolve(fissa.pin);
+          // mutateAsync(fissa.pin).finally(() => resolve(fissa.pin));
         }, delay);
       });
 
       promises.push(promise);
     } catch (error) {
-      console.error(`${fissa.pin}, next track failed`, error);
+      logger.error(`${fissa.pin}, next track failed`, error);
     }
   }
 
