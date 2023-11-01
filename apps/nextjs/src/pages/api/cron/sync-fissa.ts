@@ -19,7 +19,6 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const fissas = await caller.fissa.sync.active();
 
   if (!fissas?.length) {
-    await prisma.$disconnect();
     res.status(204).json({ name: "No fissa needed to be synced" });
     return res.end();
   }
@@ -50,7 +49,6 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
     }
   }
 
-  await prisma.$disconnect();
   await Promise.allSettled(promises);
 
   res.status(200).json({ name: "Sync fissa" });
