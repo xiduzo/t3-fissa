@@ -3,8 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
 import { logger } from "@fissa/utils";
 
-const client = new PrismaClient({});
-
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const caller = appRouter.createCaller({
     prisma: new PrismaClient({}),
