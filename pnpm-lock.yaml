@@ -193,6 +193,9 @@ importers:
       '@fissa/tailwind-config':
         specifier: '*'
         version: link:../../packages/config/tailwind
+      '@fissa/utils':
+        specifier: '*'
+        version: link:../../packages/utils
       '@tanstack/react-query':
         specifier: ^4.29.5
         version: 4.29.5(react-dom@18.2.0)(react-native@0.71.3)(react@18.2.0)

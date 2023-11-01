@@ -17,6 +17,7 @@
     "@fissa/auth": "*",
     "@fissa/db": "*",
     "@fissa/tailwind-config": "*",
+    "@fissa/utils": "*",
     "@tanstack/react-query": "^4.29.5",
     "@trpc/client": "^10.21.1",
     "@trpc/next": "^10.21.1",

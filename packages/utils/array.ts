@@ -23,11 +23,11 @@ type Dates = {
   createdAt: Date;
 };
 
-export type SortableTrack = {
+export type SortableTrack = Dates & {
   score: number;
   trackId: string;
   hasBeenPlayed: boolean;
-} & Dates;
+};
 
 export const sortFissaTracksOrder = <T extends SortableTrack>(
   tracks?: T[],

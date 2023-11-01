@@ -46,17 +46,15 @@ export const useTracks = (trackIds?: string[]) => {
     [trackIds, cachedTrackIds],
   );
 
-  const requestedTracks = useMemo(() => {
-    return (
-      trackIds?.map((trackId) => tracks.find(({ id }) => id === trackId)).filter(Boolean) ?? []
-    );
-  }, [trackIds, tracks]);
+  const requestedTracks = useMemo(
+    () => trackIds?.map((trackId) => tracks.find(({ id }) => id === trackId)).filter(Boolean) ?? [],
+    [trackIds, tracks],
+  );
 
   useMemo(async () => {
-    const promises = splitInChunks(uncachedTrackIds).map(async (chunk) => {
-      const { tracks } = await spotify.getTracks(chunk);
-      return tracks;
-    });
+    const promises = splitInChunks(uncachedTrackIds).map(
+      async (chunk) => (await spotify.getTracks(chunk)).tracks,
+    );
 
     const newTracks = (await Promise.all(promises)).flat();
 
