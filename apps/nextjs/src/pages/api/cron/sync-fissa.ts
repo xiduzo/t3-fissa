@@ -1,22 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
-import { api } from "~/utils/api";
+import { api } from "./apiProxy";
 
 export const maxDuration = 60;
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  const { data } = api.fissa.sync.active.useQuery();
-  // const { mutateAsync } = api.fissa.sync.next.useMutation();
+  const fissas = await api.fissa.sync.active.query();
 
-  if (!data?.length) {
+  if (!fissas?.length) {
     res.status(204).json({ name: "No fissa needed to be synced" });
     return res.end();
   }
 
   const promises: Promise<string>[] = [];
 
-  for (const fissa of data) {
+  for (const fissa of fissas) {
     try {
       // -X seconds to be safe because we check if the user is still listening
       // in spotify anything before playing the next track.
@@ -30,8 +29,8 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
       const promise = new Promise<string>((resolve) => {
         setTimeout(() => {
-          resolve(fissa.pin);
-          // mutateAsync(fissa.pin).finally(() => resolve(fissa.pin));
+          // resolve(fissa.pin);
+          api.fissa.sync.next.mutate(fissa.pin).finally(() => resolve(fissa.pin));
         }, delay);
       });
 
