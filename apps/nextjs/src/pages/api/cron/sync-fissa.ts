@@ -6,14 +6,17 @@ import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 export const maxDuration = 60;
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
+  const prisma = new PrismaClient({});
+
   const caller = appRouter.createCaller({
-    prisma: new PrismaClient({}),
+    prisma,
     session: null,
   });
 
   const fissas = await caller.fissa.sync.active();
 
   if (!fissas?.length) {
+    await prisma.$disconnect();
     res.status(204).json({ name: "No fissa needed to be synced" });
     return res.end();
   }
@@ -45,6 +48,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
     }
   }
 
+  await prisma.$disconnect();
   await Promise.allSettled(promises);
 
   res.status(200).json({ name: "Sync fissa" });
