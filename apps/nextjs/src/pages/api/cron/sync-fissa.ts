@@ -3,12 +3,9 @@ import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
-export const maxDuration = 120;
-export const config = {
-  maxDuration,
-};
-
-const CRON_INTERVAL = 60 * 1000;
+export const maxDuration = 60;
+const cronOffset = 5;
+const CRON_INTERVAL = maxDuration - cronOffset * 1000;
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
@@ -31,10 +28,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
   for (const fissa of fissas) {
     try {
-      // -X seconds to be safe because we check if the user is still listening
-      // in spotify anything before playing the next track.
-      // The service will account for this difference
-      const endTime = addSeconds(fissa.expectedEndTime, -5);
+      const endTime = addSeconds(fissa.expectedEndTime, -cronOffset);
       const delay = differenceInMilliseconds(endTime, new Date());
 
       if (delay >= CRON_INTERVAL) continue;

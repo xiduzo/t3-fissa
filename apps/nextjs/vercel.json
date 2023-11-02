@@ -2,8 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/sync-fissa",
-      "schedule": "*/1 * * * *",
-      "maxDuration": 120
+      "schedule": "*/1 * * * *"
     },
     {
       "path": "/api/cron/sync-token",
