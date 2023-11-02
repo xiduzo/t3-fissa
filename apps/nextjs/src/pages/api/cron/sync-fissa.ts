@@ -4,7 +4,8 @@ import { appRouter } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
 
 export const maxDuration = 60;
-const CRON_INTERVAL = maxDuration * 1000;
+const wiggleTimeInSeconds = 5;
+const CRON_INTERVAL = (maxDuration - wiggleTimeInSeconds) * 1000;
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
@@ -27,7 +28,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
   for (const fissa of fissas) {
     try {
-      const endTime = addSeconds(fissa.expectedEndTime, -7.5);
+      const endTime = addSeconds(fissa.expectedEndTime, -wiggleTimeInSeconds);
       const delay = differenceInMilliseconds(endTime, new Date());
 
       if (delay >= CRON_INTERVAL) continue;
