@@ -33,7 +33,9 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
       if (delay >= CRON_INTERVAL) continue;
 
-      logger.info(`${fissa.pin}, next track in ${delay}ms`);
+      logger.info(
+        `${fissa.pin}, next track in ${delay}ms, process running for: ${process.uptime()}s`,
+      );
 
       const promise = new Promise<string>((resolve) => {
         setTimeout(() => {
