@@ -33,15 +33,19 @@ export class FissaService extends ServiceWithContext {
   };
 
   create = async (tracks: { trackId: string; durationMs: number }[]) => {
+    if (!this.ctx.session) throw new Error("No user session");
+
     const tokens = await this.db.account.findFirstOrThrow({
-      where: { userId: this.ctx.session?.user.id },
+      where: { userId: this.ctx.session.user.id },
       select: { access_token: true, refresh_token: true },
     });
 
     const { access_token } = tokens;
+    if (!access_token) throw new Error("No access token");
+    if (!tracks[0]) throw new Error("No tracks");
 
     await this.db.fissa.deleteMany({
-      where: { userId: this.ctx.session?.user.id },
+      where: { userId: this.ctx.session.user.id },
     });
 
     let fissa: Fissa | undefined = undefined;
@@ -57,13 +61,13 @@ export class FissaService extends ServiceWithContext {
         fissa = await this.db.fissa.create({
           data: {
             pin,
-            expectedEndTime: addMilliseconds(new Date(), tracks[0]!.durationMs),
+            expectedEndTime: addMilliseconds(new Date(), tracks[0].durationMs),
             by: { connect: { id: this.ctx.session?.user.id } },
             tracks: {
               createMany: {
                 data: tracks.map((track) => ({
                   ...track,
-                  userId: this.ctx.session?.user.id!,
+                  userId: this.ctx.session?.user.id ?? "", // TODO why this.ctx.session is possibly null again
                 })),
               },
             },
@@ -76,17 +80,19 @@ export class FissaService extends ServiceWithContext {
       }
     } while (!fissa && tries < 50);
 
-    await this.playTrack(fissa!, tracks[0]!, access_token!);
+    if (!fissa) throw new Error("Failed to create fissa");
+
+    await this.playTrack(fissa, tracks[0], access_token);
 
     if (tracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
       await this.trackService.addRecommendedTracks(
-        fissa!.pin,
+        fissa.pin,
         tracks.map(({ trackId }) => trackId),
-        access_token!,
+        access_token,
       );
     }
 
-    return fissa!;
+    return fissa;
   };
 
   byId = async (pin: string) => {
@@ -140,11 +146,14 @@ export class FissaService extends ServiceWithContext {
   playNextTrack = async (pin: string, instantPlay = false) => {
     const fissa = await this.getFissaDetailedInformation(pin);
 
-    const { access_token } = fissa.by.accounts[0]!;
+    if (!fissa.by.accounts[0]) throw new Error("No fissa found");
+    const { access_token } = fissa.by.accounts[0];
     const { tracks, currentlyPlayingId } = fissa;
 
+    if (!access_token) throw new Error("No access token");
+
     try {
-      const isPlaying = await this.spotifyService.isStillPlaying(access_token!);
+      const isPlaying = await this.spotifyService.isStillPlaying(access_token);
 
       if (!instantPlay && !currentlyPlayingId) return;
       if (!instantPlay && !isPlaying) return this.stopFissa(pin);
@@ -168,7 +177,7 @@ export class FissaService extends ServiceWithContext {
           .slice(0, TRACKS_BEFORE_ADDING_RECOMMENDATIONS);
 
         try {
-          await this.trackService.addRecommendedTracks(pin, trackIds, access_token!);
+          await this.trackService.addRecommendedTracks(pin, trackIds, access_token);
         } catch (e) {
           console.error(`${fissa.pin}, failed adding recommended tracks`, e);
         }
@@ -177,7 +186,7 @@ export class FissaService extends ServiceWithContext {
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
 
       await this.updateScores(fissa);
-      await this.playTrack(fissa, nextTrack, access_token!);
+      await this.playTrack(fissa, nextTrack, access_token);
     } catch (e) {
       console.error(e);
       await this.stopFissa(pin);

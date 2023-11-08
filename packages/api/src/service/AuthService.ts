@@ -1,7 +1,7 @@
 import { Prisma } from "@fissa/db";
 import { SpotifyService, addMonths, addSeconds, differenceInMinutes, isPast } from "@fissa/utils";
 
-import { Context, ServiceWithContext } from "../utils/context";
+import { ServiceWithContext, type Context } from "../utils/context";
 
 export class AuthService extends ServiceWithContext {
   private spotifyService: SpotifyService = new SpotifyService();
@@ -49,9 +49,11 @@ export class AuthService extends ServiceWithContext {
       existingUser = await this.db.user.findUniqueOrThrow(findUser);
     }
 
+    if (!existingUser.sessions[0]) return tokens.body;
+
     return {
       ...tokens.body,
-      session_token: existingUser.sessions[0]?.sessionToken!,
+      session_token: existingUser.sessions[0].sessionToken,
     };
   };
 
@@ -86,9 +88,11 @@ export class AuthService extends ServiceWithContext {
       },
     });
 
+    if (!session) return tokens.body;
+
     return {
       ...tokens.body,
-      session_token: session?.sessionToken!,
+      session_token: session.sessionToken,
     };
   };
 
@@ -113,12 +117,15 @@ export class AuthService extends ServiceWithContext {
     if (differenceInMinutes(lastUpdateAt, new Date()) > 20) return;
 
     const { accounts } = fissa.by;
-    const { expires_at, refresh_token } = accounts[0]!;
+    if (!accounts[0]) return;
+    const { expires_at, refresh_token } = accounts[0];
+
+    if (!refresh_token) return;
 
     // Token is still valid
-    if (differenceInMinutes(expires_at!, new Date()) >= 20) return;
+    if (differenceInMinutes(expires_at ?? new Date(), new Date()) >= 20) return;
 
-    return this.refreshToken(refresh_token!);
+    return this.refreshToken(refresh_token);
   };
 
   private createUser = async (

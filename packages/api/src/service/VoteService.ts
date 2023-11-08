@@ -19,19 +19,21 @@ export class VoteService extends ServiceWithContext {
   };
 
   getVoteFromUser = async (pin: string, trackId: string) => {
+    if (!this.ctx.session) throw new Error("No session");
     return this.db.vote.findUnique({
       where: {
         trackId_userId_pin: {
           pin,
           trackId,
-          userId: this.ctx.session?.user.id!,
+          userId: this.ctx.session.user.id,
         },
       },
     });
   };
 
   createVote = async (pin: string, trackId: string, vote: number) => {
-    const userId = this.ctx.session?.user.id!;
+    if (!this.ctx.session) throw new Error("No session");
+    const userId = this.ctx.session.user.id;
 
     const response = await this.db.vote.upsert({
       where: { trackId_userId_pin: { pin, trackId, userId } },
@@ -46,7 +48,8 @@ export class VoteService extends ServiceWithContext {
 
   createVotes = async (pin: string, trackIds: string[], vote: number) => {
     await this.db.$transaction(async (transaction) => {
-      const userId = this.ctx.session?.user.id!;
+      if (!this.ctx.session) throw new Error("No session");
+      const userId = this.ctx.session.user.id;
       await transaction.vote.deleteMany({
         where: { pin, trackId: { in: trackIds }, userId },
       });

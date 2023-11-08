@@ -54,7 +54,9 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       await saveTokens(tokens);
     },
     onSettled: () => {
-      toast.hide();
+      setTimeout(() => {
+        toast.hide();
+      }, 1000);
     },
   });
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
@@ -113,25 +115,26 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     await promptAsync();
   }, [promptAsync]);
 
-  useMemo(async () => {
+  useEffect(() => {
     if (response?.type !== "success") return;
 
     toast.info({
-      message: "Getting account details",
+      message: "Setting account details",
       icon: "🐿️",
       duration: 30 * 1000,
     });
 
-    await notificationAsync(NotificationFeedbackType.Success);
+    notificationAsync(NotificationFeedbackType.Success).catch(console.info);
 
-    await saveScopes(scopes.join("_"));
+    saveScopes(scopes.join("_")).catch(console.info);
 
     const { code } = response.params;
     if (!code) return toast.error({ message: `Something went wrong...` });
 
-    const { redirectUri } = request!;
-    await mutateAsync({ code, redirectUri });
-  }, [response, request, saveScopes, saveTokens]);
+    if (!request) return;
+    const { redirectUri } = request;
+    mutateAsync({ code, redirectUri }).catch(console.info);
+  }, [response, request, saveScopes, saveTokens, mutateAsync]);
 
   useEffect(() => {
     if (user) return;
@@ -169,7 +172,7 @@ export const useAuth = () => useContext(SpotifyContext);
 const config: AuthRequestConfig = {
   scopes: scopes,
   responseType: ResponseType.Code,
-  clientId: Constants.expoConfig?.extra?.spotifyClientId,
+  clientId: Constants.expoConfig?.extra?.spotifyClientId as string,
   usePKCE: false,
   redirectUri: makeRedirectUri({
     scheme: `${Constants.expoConfig?.scheme}://redirect`,

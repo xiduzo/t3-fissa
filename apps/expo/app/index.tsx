@@ -89,7 +89,7 @@ const Index = () => {
         replace("/home");
       });
     });
-  }, [replace]);
+  }, [replace, signedInAnimation, notSignedInAnimation, colorAnimation]);
 
   return (
     <Animated.View style={{ backgroundColor }} className="h-full items-center justify-between px-6">

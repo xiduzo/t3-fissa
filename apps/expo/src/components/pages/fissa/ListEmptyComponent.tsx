@@ -1,4 +1,4 @@
-import { FC, useCallback } from "react";
+import { useCallback, type FC } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useSearchParams } from "expo-router";
 import { useIsOwner, useRestartFissa } from "@fissa/hooks";
@@ -28,15 +28,16 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
 
   const handleDeviceSelect = useCallback(
     (device: SpotifyApi.UserDevice) => async () => {
+      if (!device.id) return;
       try {
-        await spotify.transferMyPlayback([device.id!]);
+        await spotify.transferMyPlayback([device.id]);
         await mutateAsync();
       } catch (e) {
         toast.error({
           message: `Failed to connect to ${device.name}`,
         });
       } finally {
-        fetchDevices();
+        fetchDevices().catch(console.log);
       }
     },
     [spotify, fetchDevices, mutateAsync],

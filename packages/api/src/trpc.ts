@@ -118,7 +118,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 /**
  * Reusable middleware that enforces the call comes from an authenticated server
  */
-const enforceIsTrustedServer = t.middleware(({ ctx, next }) => {
+const enforceIsTrustedServer = t.middleware(({ next }) => {
   // TODO: add check for trusted server -> vercel cron job
   // if (ctx.session?.user?.name !== "TRUSTED_SERVER_SESSION") {
   //   throw new TRPCError({ code: "UNAUTHORIZED" });

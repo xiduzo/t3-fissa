@@ -22,8 +22,9 @@ export const SpeakerButton = () => {
 
   const handleDeviceSelect = useCallback(
     (device: SpotifyApi.UserDevice) => async () => {
+      if (!device.id) return;
       try {
-        await spotify.transferMyPlayback([device.id!]);
+        await spotify.transferMyPlayback([device.id]);
         toast.success({
           icon: "🐋",
           message: `Connected to ${device.name}`,

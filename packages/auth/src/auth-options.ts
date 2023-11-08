@@ -1,7 +1,7 @@
-import { prisma } from "@fissa/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type DefaultSession, type NextAuthOptions } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
+import { prisma } from "@fissa/db";
 
 /**
  * Module augmentation for `next-auth` types
@@ -17,11 +17,6 @@ declare module "next-auth" {
       // role: UserRole;
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -42,8 +37,8 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     SpotifyProvider({
-      clientId: process.env.SPOTIFY_CLIENT_ID!,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
+      clientId: process.env.SPOTIFY_CLIENT_ID ?? "NO_SPOTIFY_CLIENT_ID",
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET ?? "NO_SPOTIFY_CLIENT_SECRET",
     }),
     /**
      * ...add more providers here

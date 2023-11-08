@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { type z } from "zod";
 import { SpotifyService } from "@fissa/utils";
 
-import { Z_TRACKS } from "../router/constants";
-import { Context, ServiceWithContext } from "../utils/context";
+import { type Z_TRACKS } from "../router/constants";
+import { ServiceWithContext, type Context } from "../utils/context";
 import { VoteService } from "./VoteService";
 
 export class TrackService extends ServiceWithContext {
