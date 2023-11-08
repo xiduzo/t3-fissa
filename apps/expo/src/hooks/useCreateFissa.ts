@@ -6,17 +6,24 @@ import { mapSpotifyTrackToTrpcTrack, toast } from "../utils";
 
 type Tracks = (SpotifyApi.TrackObjectFull | SpotifyApi.TrackObjectSimplified)[];
 
-export const useCreateFissa = () => {
+type Options = Parameters<typeof useBaseCreateFissa>[0];
+
+export const useCreateFissa = (options?: Options) => {
   const { push } = useRouter();
 
   const { mutate, mutateAsync, ...rest } = useBaseCreateFissa({
-    onSuccess: async ({ pin }) => {
+    ...options,
+    onSuccess: async (...props) => {
+      const [data] = props;
       toast.success({ message: "Enjoy your fissa", icon: "🎉" });
-      push(`/fissa/${pin}`);
+      push(`/fissa/${data.pin}`);
       await notificationAsync(NotificationFeedbackType.Success);
+      await options?.onSuccess?.(...props);
     },
-    onError: (error) => {
-      toast.error({ message: error.message });
+    onError: (...props) => {
+      const [data] = props;
+      toast.error({ message: data.message });
+      options?.onError?.(...props);
     },
   });
 

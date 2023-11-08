@@ -46,7 +46,7 @@ const Join = () => {
         current?.clear();
       });
     },
-    [],
+    [keys],
   );
 
   const handlePress = useCallback(

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Animated, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import * as SystemUI from "expo-system-ui";
@@ -61,8 +61,8 @@ const Index = () => {
     replace("/home");
   }, [user, replace]);
 
-  useMemo(async () => {
-    await SystemUI.setBackgroundColorAsync(theme["900"]);
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(theme["900"]).catch(console.log);
   }, []);
 
   useEffect(() => {

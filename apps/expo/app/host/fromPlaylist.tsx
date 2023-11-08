@@ -16,12 +16,13 @@ const FromPlaylist = () => {
   const { mutateAsync, isLoading } = useCreateFissa();
 
   const start = useCallback(async () => {
-    const spotifyTracks = await getPlaylistTracks(selectedPlaylist!.id, spotify);
+    if (!selectedPlaylist) return;
+    const spotifyTracks = await getPlaylistTracks(selectedPlaylist.id, spotify);
 
     await mutateAsync(spotifyTracks);
 
     setSelectedPlaylist(null);
-  }, [selectedPlaylist]);
+  }, [selectedPlaylist, mutateAsync, spotify]);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
@@ -43,13 +44,15 @@ const FromPlaylist = () => {
         <Typography variant="h2" centered inverted className="mb-8" accessibilityElementsHidden>
           Your fissa will start based on
         </Typography>
-        <PlaylistListItem
-          playlist={selectedPlaylist!}
-          hasBorder
-          inverted
-          className="mb-8"
-          accessibilityElementsHidden
-        />
+        {selectedPlaylist && (
+          <PlaylistListItem
+            playlist={selectedPlaylist}
+            hasBorder
+            inverted
+            className="mb-8"
+            accessibilityElementsHidden
+          />
+        )}
         <Button
           title="Let's kick it"
           inverted

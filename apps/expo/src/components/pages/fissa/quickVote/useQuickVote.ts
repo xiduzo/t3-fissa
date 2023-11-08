@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect } from "react";
-import { Dimensions, GestureResponderEvent } from "react-native";
+import { Dimensions, type GestureResponderEvent } from "react-native";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useCreateVote } from "@fissa/hooks";
 
@@ -19,19 +19,21 @@ export const useQuickVote = (pin: string) => {
   });
 
   const toggleTrackFocus = useCallback(
-    (track?: SpotifyApi.TrackObjectFull) => async (event: GestureResponderEvent) => {
+    (track?: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => {
       selectTrack(event, track);
     },
     [selectTrack],
   );
 
   const handleTouchEnd = useCallback(
-    async (event: GestureResponderEvent) => {
-      if (vote !== 0 && track) mutateAsync(vote, track.id);
+    (event: GestureResponderEvent) => {
+      if (vote !== 0 && track) {
+        mutateAsync(vote, track.id).catch(console.log);
+      }
 
-      await toggleTrackFocus()(event);
+      toggleTrackFocus()(event);
     },
-    [toggleTrackFocus, track, vote],
+    [toggleTrackFocus, track, vote, mutateAsync],
   );
 
   const handleTouchMove = useCallback(
@@ -52,12 +54,12 @@ export const useQuickVote = (pin: string) => {
 
       setVote(0);
     },
-    [track],
+    [track, setVote],
   );
 
   useEffect(() => {
     return () => setVote(0);
-  }, []);
+  }, [setVote]);
 
   return {
     isVoting: !!track,
