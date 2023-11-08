@@ -36,7 +36,7 @@ export const SpeakerButton = () => {
           message: `Failed to connect to ${device.name}`,
         });
       } finally {
-        await fetchDevices();
+        fetchDevices();
       }
     },
     [spotify, fetchDevices, toggleSelectDevice],

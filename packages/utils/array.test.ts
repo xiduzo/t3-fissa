@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { fromPartial } from "@fissa/test";
 
-import { SortableTrack, sortFissaTracksOrder, splitInChunks } from "./array";
+import { sortFissaTracksOrder, splitInChunks, type SortableTrack } from "./array";
 
 describe(sortFissaTracksOrder.name, () => {
   const PLAYED_TRACK = fromPartial<SortableTrack>({

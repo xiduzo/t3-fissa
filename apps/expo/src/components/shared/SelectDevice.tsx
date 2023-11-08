@@ -14,19 +14,19 @@ import { Button } from "./button";
 export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
   const { devices, fetchDevices } = useDevices();
   useOnActiveApp(() => {
-    fetchDevices().catch(console.log);
+    fetchDevices();
   });
 
   const [showHelp, setShowHelp] = useState(false);
 
-  const toggleHelp = useCallback(async () => {
+  const toggleHelp = useCallback(() => {
     setShowHelp((prev) => !prev);
-    await fetchDevices();
+    fetchDevices();
   }, [fetchDevices]);
 
   const openSpotify = useCallback(async () => {
     await Linking.openURL("spotify://");
-    await toggleHelp();
+    toggleHelp();
   }, [toggleHelp]);
 
   return (

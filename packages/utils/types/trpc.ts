@@ -1,5 +1,4 @@
-export type MutationCallbacks<T extends (...args: any) => any> =
-  Parameters<T>[0];
+export type MutationCallbacks<T extends (...args: unknown[]) => unknown> = Parameters<T>[0];
 
 export enum RefetchInterval {
   Fast = 1000,

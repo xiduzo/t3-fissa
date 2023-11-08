@@ -32,8 +32,9 @@ export class SpotifyService {
 
     try {
       await this.spotify.play({ uris: [`spotify:track:${trackId}`] });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      if (e.body.error.reason === "NO_ACTIVE_DEVICE") {
+      if ((e as { body: { error: { reason: string } } }).body.error.reason === "NO_ACTIVE_DEVICE") {
         console.warn("No active device found, trying to transfer playback");
         const { body } = await this.spotify.getMyDevices();
 

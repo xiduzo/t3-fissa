@@ -37,7 +37,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
           message: `Failed to connect to ${device.name}`,
         });
       } finally {
-        fetchDevices().catch(console.log);
+        fetchDevices();
       }
     },
     [spotify, fetchDevices, mutateAsync],
