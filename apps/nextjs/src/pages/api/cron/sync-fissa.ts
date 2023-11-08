@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { type NextApiRequest, type NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
-import { addSeconds, differenceInMilliseconds, logger } from "@fissa/utils";
+import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
 
 export const maxDuration = 60;
 const wiggleTimeInSeconds = 5;
@@ -33,7 +33,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
       if (delay >= CRON_INTERVAL) continue;
 
-      logger.info(
+      console.info(
         `${fissa.pin}, next track in ${delay}ms, process running for: ${process.uptime()}s`,
       );
 
@@ -45,7 +45,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
       promises.push(promise);
     } catch (error) {
-      logger.error(`${fissa.pin}, next track failed`, error);
+      console.error(`${fissa.pin}, next track failed`, error);
     }
   }
 

@@ -1,7 +1,6 @@
-import { FC } from "react";
+import { type FC } from "react";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
-import { IconProps } from "@expo/vector-icons/build/createIconSet";
-import { logger } from "@fissa/utils";
+import { type IconProps } from "@expo/vector-icons/build/createIconSet";
 
 export const Icon: FC<Props> = ({ name, ...props }) => {
   if (Object.keys(Feather.glyphMap).includes(name))
@@ -13,7 +12,7 @@ export const Icon: FC<Props> = ({ name, ...props }) => {
   if (Object.keys(FontAwesome.glyphMap).includes(name))
     return <FontAwesome size={24} {...props} name={name as keyof typeof FontAwesome.glyphMap} />;
 
-  logger.warning(`Icon ${name} not found`);
+  console.warn(`Icon ${name} not found`);
   return null;
 };
 
@@ -21,4 +20,4 @@ export type IconName =
   | keyof typeof FontAwesome.glyphMap
   | keyof typeof AntDesign.glyphMap
   | keyof typeof Feather.glyphMap;
-interface Props extends IconProps<IconName> {}
+type Props = IconProps<IconName>;

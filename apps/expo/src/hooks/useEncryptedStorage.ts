@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
-import { logger } from "@fissa/utils";
 
 interface State {
   items: Map<string, string>;
@@ -36,7 +35,7 @@ export const useEncryptedStorage = (key: string) => {
       .then((value) => {
         setItem(key, value);
       })
-      .catch(logger.error);
+      .catch(console.error);
   }, [getValueFor, key]);
 
   return { value: items.get(key), save, getValueFor };

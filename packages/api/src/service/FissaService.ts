@@ -1,17 +1,16 @@
-import { Fissa, Track } from "@fissa/db";
+import { type Fissa, type Track } from "@fissa/db";
 import {
   NoNextTrack,
   NotTheHost,
   SpotifyService,
   addMilliseconds,
   differenceInMilliseconds,
-  logger,
   randomSort,
   randomize,
   sortFissaTracksOrder,
 } from "@fissa/utils";
 
-import { Context, ServiceWithContext } from "../utils/context";
+import { ServiceWithContext, type Context } from "../utils/context";
 import { TrackService } from "./TrackService";
 
 const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
@@ -71,7 +70,7 @@ export class FissaService extends ServiceWithContext {
           },
         });
       } catch (e) {
-        logger.notice(e);
+        console.notice(e);
         tries++;
         blockedPins.push(pin);
       }
@@ -171,7 +170,7 @@ export class FissaService extends ServiceWithContext {
         try {
           await this.trackService.addRecommendedTracks(pin, trackIds, access_token!);
         } catch (e) {
-          logger.error(`${fissa.pin}, failed adding recommended tracks`, e);
+          console.error(`${fissa.pin}, failed adding recommended tracks`, e);
         }
       }
 
@@ -180,7 +179,7 @@ export class FissaService extends ServiceWithContext {
       await this.updateScores(fissa);
       await this.playTrack(fissa, nextTrack, access_token!);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       await this.stopFissa(pin);
       throw new Error("Something went wrong while playing the next track");
     }

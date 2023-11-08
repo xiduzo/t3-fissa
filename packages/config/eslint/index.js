@@ -22,6 +22,7 @@ const config = {
       "error",
       { prefer: "type-imports", fixStyle: "inline-type-imports" },
     ],
+    "@typescript-eslint/no-misused-promises": ["warn", { checksVoidReturn: { attributes: false } }],
   },
   ignorePatterns: ["**/*.config.js", "**/*.config.cjs", "packages/config/**"],
   reportUnusedDisableDirectives: true,

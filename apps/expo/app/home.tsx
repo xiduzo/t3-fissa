@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { logger, useSpotify } from "@fissa/utils";
+import { useSpotify } from "@fissa/utils";
 
 import {
   Action,
@@ -29,7 +29,7 @@ const Home = () => {
       .then((user) => {
         setIsPremium(user.product === "premium");
       })
-      .catch(logger.error);
+      .catch(console.log);
   }, [spotify]);
 
   return (
@@ -86,7 +86,7 @@ const AccountDetails = () => {
   const handleSignOut = useCallback(() => {
     toggleAccountDetails();
     signOut();
-  }, [toggleAccountDetails]);
+  }, [toggleAccountDetails, signOut]);
 
   return (
     <>

@@ -1,8 +1,8 @@
-import { FC, useCallback, useState } from "react";
+import { useCallback, useState, type FC } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useRouter, useSearchParams } from "expo-router";
 import { useGetTracks, useIsOwner } from "@fissa/hooks";
-import { logger, splitInChunks, useSpotify, useTracks } from "@fissa/utils";
+import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
@@ -71,7 +71,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         const uris = tracks?.map(({ uri }) => uri) ?? [];
         const chunks = splitInChunks(uris, 100);
         chunks.forEach((chunk) => {
-          spotify.addTracksToPlaylist(id, chunk).catch(logger.warning);
+          spotify.addTracksToPlaylist(id, chunk).catch(console.warn);
         });
       })
       .finally(() => {

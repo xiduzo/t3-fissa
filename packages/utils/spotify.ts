@@ -1,6 +1,4 @@
-import SpotifyWebApi from "spotify-web-api-js";
-
-import { logger } from "./classes";
+import type SpotifyWebApi from "spotify-web-api-js";
 
 export const getPlaylistTracks = async (
   playlistId: string,
@@ -40,8 +38,8 @@ export const getPlaylistTracks = async (
 
       const isTestTrack = track.name.toLowerCase().includes("about love");
       if (isTestTrack) {
-        logger.info(JSON.stringify(track));
-        logger.info(track.id);
+        console.info(JSON.stringify(track));
+        console.info(track.id);
       }
 
       // if (!_track.available_markets?.length) return; // We can only allow tracks that are available in at least one market

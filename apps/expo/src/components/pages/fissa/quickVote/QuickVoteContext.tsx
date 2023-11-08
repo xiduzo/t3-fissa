@@ -1,7 +1,13 @@
-import { FC, PropsWithChildren, createContext, useCallback, useRef, useState } from "react";
-import { GestureResponderEvent } from "react-native";
+import {
+  createContext,
+  useCallback,
+  useRef,
+  useState,
+  type FC,
+  type PropsWithChildren,
+} from "react";
+import { type GestureResponderEvent } from "react-native";
 import { impactAsync } from "expo-haptics";
-import { logger } from "@fissa/utils";
 
 export const QuickVoteContext = createContext({
   track: undefined as SpotifyApi.TrackObjectFull | undefined,
@@ -20,7 +26,7 @@ export const QuickVoteProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const newVote = useCallback(
     (next: number) => (prev: number) => {
-      if (prev !== next) impactAsync().catch(logger.warning);
+      if (prev !== next) impactAsync().catch(console.warn);
       return next;
     },
     [],

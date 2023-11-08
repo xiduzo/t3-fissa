@@ -1,27 +1,27 @@
 import * as React from "react";
 import {
-  FC,
-  PropsWithChildren,
   createContext,
   useCallback,
   useContext,
   useMemo,
   useRef,
   useState,
+  type FC,
+  type PropsWithChildren,
 } from "react";
 import { Platform } from "react-native";
 import {
-  AuthRequestConfig,
-  DiscoveryDocument,
   ResponseType,
   makeRedirectUri,
   useAuthRequest,
+  type AuthRequestConfig,
+  type DiscoveryDocument,
 } from "expo-auth-session";
 import Constants from "expo-constants";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
 import { useInterval } from "@fissa/hooks";
-import { differenceInMinutes, logger, scopes, useSpotify } from "@fissa/utils";
+import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
@@ -64,7 +64,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (!session_token) return;
       spotify.setAccessToken(access_token);
-      spotify.getMe().then(setUser).catch(logger.warning);
+      spotify.getMe().then(setUser).catch(console.warn);
 
       await saveSessionToken(session_token);
 

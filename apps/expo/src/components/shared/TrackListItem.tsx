@@ -1,9 +1,9 @@
-import { FC, memo, useCallback, useEffect, useRef } from "react";
-import { Animated, Dimensions, LayoutChangeEvent } from "react-native";
+import { memo, useCallback, useEffect, useRef, type FC } from "react";
+import { Animated, Dimensions, type LayoutChangeEvent } from "react-native";
 import { selectionAsync } from "expo-haptics";
-import { AnimationSpeed, logger } from "@fissa/utils";
+import { AnimationSpeed } from "@fissa/utils";
 
-import { ListItem, ListItemProps } from "./ListItem";
+import { ListItem, type ListItemProps } from "./ListItem";
 
 const windowHeight = Dimensions.get("window").height;
 
@@ -19,7 +19,7 @@ export const TrackListItem: FC<Props> = memo(
 
     useEffect(() => {
       if (!props.selected) return;
-      selectionAsync().catch(logger.warning);
+      selectionAsync().catch(console.warn);
     }, [props.selected]);
 
     useEffect(() => {
