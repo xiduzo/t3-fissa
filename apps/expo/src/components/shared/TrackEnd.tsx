@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { type FC } from "react";
 import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 

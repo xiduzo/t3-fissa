@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { AppState } from "react-native";
 
-export const useOnActiveApp = (callback: Function) => {
+export const useOnActiveApp = (callback: () => void) => {
   useEffect(() => {
-    const { remove } = AppState.addEventListener("change", () => {
+    const subscription = AppState.addEventListener("change", () => {
       if (AppState.currentState !== "active") return;
       callback();
     });
 
-    return remove;
+    return () => {
+      subscription.remove();
+    };
   }, [callback]);
 };

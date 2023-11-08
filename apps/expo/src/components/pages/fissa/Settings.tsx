@@ -1,8 +1,8 @@
-import { FC, useCallback, useState } from "react";
+import { useCallback, useState, type FC } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useRouter, useSearchParams } from "expo-router";
 import { useGetTracks, useIsOwner } from "@fissa/hooks";
-import { logger, splitInChunks, useSpotify, useTracks } from "@fissa/utils";
+import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
@@ -21,7 +21,7 @@ export const Settings = () => {
   const goToHome = useCallback(() => {
     togglePopover();
     push("/home");
-  }, []);
+  }, [togglePopover, push]);
 
   if (!pin) return null;
 
@@ -59,11 +59,12 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
   const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
   const handleCreatePlaylist = useCallback(async () => {
+    if (!user) return;
     setIsCreatingPlaylist(true);
     await notificationAsync(NotificationFeedbackType.Success);
     onRequestClose();
     spotify
-      .createPlaylist(user!.id, {
+      .createPlaylist(user.id, {
         name: `Fissa ${pin}`,
         description: "Playlist created by Fissa",
       })
@@ -71,14 +72,14 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         const uris = tracks?.map(({ uri }) => uri) ?? [];
         const chunks = splitInChunks(uris, 100);
         chunks.forEach((chunk) => {
-          spotify.addTracksToPlaylist(id, chunk).catch(logger.warning);
+          spotify.addTracksToPlaylist(id, chunk).catch(console.warn);
         });
       })
       .finally(() => {
         toast.success({ message: "Playlist created", icon: "🎉" });
         setIsCreatingPlaylist(false);
       });
-  }, [spotify, user, tracks, onRequestClose]);
+  }, [spotify, user, tracks, onRequestClose, pin]);
 
   return (
     <Action

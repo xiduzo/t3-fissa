@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { useMemo, type FC } from "react";
 import { View } from "react-native";
 import { useGetTracks, useGetUserFissa } from "@fissa/hooks";
 import { useTracks } from "@fissa/utils";

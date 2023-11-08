@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, type FC } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useSearchParams } from "expo-router";
 import {
@@ -53,7 +53,7 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
     },
   });
 
-  const isActiveTrack = useMemo(() => fissa?.currentlyPlayingId === track.id, [fissa]);
+  const isActiveTrack = useMemo(() => fissa?.currentlyPlayingId === track.id, [fissa, track.id]);
 
   const hasBeenPlayed = useMemo(
     () => fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed,
@@ -74,18 +74,18 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
       onPress();
       await voteOnTrack(vote, track.id);
     },
-    [track.id, voteOnTrack],
+    [track.id, voteOnTrack, onPress],
   );
 
   const handleDelete = useCallback(async () => {
     onPress();
     await deleteTrack();
-  }, [deleteTrack]);
+  }, [deleteTrack, onPress]);
 
   const handleSkipTrack = useCallback(async () => {
     onPress();
     await skipTrack();
-  }, [skipTrack]);
+  }, [skipTrack, onPress]);
 
   return (
     <>
@@ -146,6 +146,5 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
 
 interface Props {
   track: SpotifyApi.TrackObjectFull;
-  currentTrackIndex: number;
   onPress: () => void;
 }

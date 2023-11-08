@@ -1,11 +1,11 @@
-import { FC, useContext, useEffect, useMemo, useRef } from "react";
-import { Animated, Dimensions, GestureResponderEvent, Modal, View } from "react-native";
+import { useContext, useEffect, useMemo, useRef, type FC } from "react";
+import { Animated, Dimensions, Modal, View, type GestureResponderEvent } from "react-native";
 import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSearchParams } from "expo-router";
 import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
-import { AnimationSpeed, logger } from "@fissa/utils";
+import { AnimationSpeed } from "@fissa/utils";
 
 import { useAuth } from "../../../../providers";
 import { Action, Badge, TrackEnd, TrackListItem } from "../../../shared";
@@ -21,10 +21,10 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
-  const { data } = useGetVoteFromUser(String(pin), track?.id!, user);
+  const { data } = useGetVoteFromUser(String(pin), track?.id ?? "", user);
 
   const opacity = focussedAnimation.interpolate({
-    inputRange: [-Math.abs(touchStartPosition.current), 0],
+    inputRange: [-Math.abs(touchStartPosition), 0],
     outputRange: [0.1, 0.98],
   });
 
@@ -36,8 +36,8 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   useEffect(() => {
     if (!track) return;
 
-    selectionAsync().catch(logger.warning);
-    const offset = touchStartPosition.current - windowCenter;
+    selectionAsync().catch(console.warn);
+    const offset = touchStartPosition - windowCenter;
 
     Animated.timing(focussedAnimation, {
       toValue: offset,
@@ -66,7 +66,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
         useNativeDriver: true,
       }).start();
     };
-  }, [track]);
+  }, [track, focussedAnimation, actionOpacityAnimation, touchStartPosition]);
 
   const upVoteGradient = useMemo(() => {
     const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);
@@ -90,8 +90,11 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
       onTouchEnd={onTouchEnd}
     >
       <Animated.View className="absolute inset-0" style={{ opacity }} />
-      <View className="justify-center h-full" style={{ backgroundColor: theme["900"] }}>
-        <LinearGradient className="justify-center flex-1" colors={upVoteGradient}>
+      <View
+        className="h-full justify-center"
+        style={{ backgroundColor: theme["900"], opacity: 0.95 }}
+      >
+        <LinearGradient className="flex-1 justify-center" colors={upVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -115,7 +118,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
             />
           )}
         </Animated.View>
-        <LinearGradient className="justify-center flex-1" colors={downVoteGradient}>
+        <LinearGradient className="flex-1 justify-center" colors={downVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,

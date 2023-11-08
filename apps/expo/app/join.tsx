@@ -1,16 +1,15 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
-  NativeSyntheticEvent,
   SafeAreaView,
   TextInput,
-  TextInputChangeEventData,
-  TextInputTextInputEventData,
   View,
+  type NativeSyntheticEvent,
+  type TextInputChangeEventData,
+  type TextInputTextInputEventData,
 } from "react-native";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { logger } from "@fissa/utils";
 
 import { Button, PageTemplate, Rejoin, Typography } from "../src/components";
 import { toast } from "../src/utils/Toast";
@@ -24,7 +23,7 @@ const Join = () => {
     enabled: !pin.includes(""),
     onSuccess: ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
-      notificationAsync(NotificationFeedbackType.Success).catch(logger.warning);
+      notificationAsync(NotificationFeedbackType.Success).catch(console.warn);
       replace(`/fissa/${pin}`);
     },
     onError: ({ message }) => {
@@ -47,7 +46,7 @@ const Join = () => {
         current?.clear();
       });
     },
-    [],
+    [keys],
   );
 
   const handlePress = useCallback(

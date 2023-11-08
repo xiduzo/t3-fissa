@@ -1,6 +1,4 @@
-import SpotifyWebApi from "spotify-web-api-js";
-
-import { logger } from "./classes";
+import type SpotifyWebApi from "spotify-web-api-js";
 
 export const getPlaylistTracks = async (
   playlistId: string,
@@ -37,12 +35,6 @@ export const getPlaylistTracks = async (
       if (track.is_playable !== undefined && !track.is_playable) return; // We can only allow tracks that are playable
       // if (!track.preview_url) return; // We can only allow tracks that have a preview url
       if (tracks.find(({ id }) => id === track.id)) return;
-
-      const isTestTrack = track.name.toLowerCase().includes("about love");
-      if (isTestTrack) {
-        logger.info(JSON.stringify(track));
-        logger.info(track.id);
-      }
 
       // if (!_track.available_markets?.length) return; // We can only allow tracks that are available in at least one market
       tracks.push(track);
@@ -128,4 +120,4 @@ const savedTracksPlaylist = (total: number, display_name?: string) =>
         url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
       },
     ],
-  } as any as SpotifyApi.PlaylistObjectFull);
+  } as unknown as SpotifyApi.PlaylistObjectFull);

@@ -12,13 +12,17 @@ import { toast } from "../../src/utils";
 const Host = () => {
   const spotify = useSpotify();
 
-  const { mutateAsync, isLoading } = useCreateFissa();
+  const { mutateAsync, isLoading } = useCreateFissa({
+    onSettled: () => {
+      toast.hide();
+    },
+  });
 
   const handleSurpriseMe = useCallback(async () => {
     toast.info({
       icon: "🦔",
       message: "An explorer I see, making a fissa just for you",
-      duration: 5000,
+      duration: 60 * 1000,
     });
     const { items } = await spotify.getMyTopTracks();
     const { tracks } = await spotify.getRecommendations({
@@ -30,7 +34,7 @@ const Host = () => {
     });
 
     await mutateAsync(tracks);
-  }, [spotify]);
+  }, [spotify, mutateAsync]);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>

@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { useCallback, useState, type FC } from "react";
 import { Linking, View } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices } from "@fissa/utils";
@@ -13,7 +13,9 @@ import { Button } from "./button";
 
 export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
   const { devices, fetchDevices } = useDevices();
-  useOnActiveApp(fetchDevices);
+  useOnActiveApp(() => {
+    fetchDevices().catch(console.log);
+  });
 
   const [showHelp, setShowHelp] = useState(false);
 

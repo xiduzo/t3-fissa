@@ -1,11 +1,12 @@
-import React, { FC, useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, type FC } from "react";
 import {
   Animated,
   Modal,
-  ModalProps,
-  NativeSyntheticEvent,
   SafeAreaView,
   View,
+  type ModalProps,
+  type NativeSyntheticEvent,
+  type NativeTouchEvent,
 } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
@@ -17,21 +18,23 @@ import { DraggableView } from "./DraggableView";
 export const Popover: FC<Props> = ({ children, onRequestClose, ...props }) => {
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
-  const animate = useCallback((config?: Partial<Animated.TimingAnimationConfig>) => {
-    Animated.timing(fadeAnimation, {
-      toValue: 0,
-      duration: AnimationSpeed.Instant,
-      useNativeDriver: true,
-      ...(config ?? {}),
-    }).start();
-  }, []);
+  const animate = useCallback(
+    (config?: Partial<Animated.TimingAnimationConfig>) => {
+      Animated.timing(fadeAnimation, {
+        toValue: 0,
+        duration: AnimationSpeed.VeryFast,
+        useNativeDriver: true,
+        ...(config ?? {}),
+      }).start();
+    },
+    [fadeAnimation],
+  );
 
-  const close = (event: NativeSyntheticEvent<any>) => {
-    animate();
-    // Timeout to make the background opaque again
-    // Before closing the modal to prevent
-    // Weird animation glitches
-    setTimeout(() => onRequestClose?.(event), 25);
+  const close = (event: NativeSyntheticEvent<NativeTouchEvent>) => {
+    const isSwipeEvent = !event.nativeEvent.touches.length;
+    const duration = isSwipeEvent ? AnimationSpeed.Instant : AnimationSpeed.VeryFast;
+    animate({ duration });
+    setTimeout(() => onRequestClose?.(event), duration);
   };
 
   const { touchStart, touchEnd, isActive } = useSwipe({
@@ -48,12 +51,12 @@ export const Popover: FC<Props> = ({ children, onRequestClose, ...props }) => {
 
   // TODO: set accessibility focus when visible like toaster
   return (
-    <SafeAreaView className="absolute flex-1">
+    <SafeAreaView>
       <Modal {...props} animationType="slide" transparent onRequestClose={close}>
         <View className="h-full justify-end">
           <Animated.View
             onTouchStart={close}
-            className="absolute h-full w-full"
+            className="h-full w-full"
             style={{
               backgroundColor: theme[900] + "80",
               opacity: fadeAnimation,
@@ -70,4 +73,4 @@ export const Popover: FC<Props> = ({ children, onRequestClose, ...props }) => {
   );
 };
 
-interface Props extends Omit<ModalProps, "style"> {}
+type Props = Omit<ModalProps, "style">;

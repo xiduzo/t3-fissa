@@ -1,4 +1,4 @@
-import { IconName } from "../components";
+import { type IconName } from "../components";
 
 export const mapDeviceToIcon = (device?: SpotifyApi.UserDevice): IconName => {
   if (!device) return "question";

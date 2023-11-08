@@ -1,7 +1,7 @@
-import { FC } from "react";
-import { Animated, TextProps } from "react-native";
+import { type FC } from "react";
+import { Animated, type TextProps } from "react-native";
 import { theme } from "@fissa/tailwind-config";
-import { VariantProps, cva } from "@fissa/utils";
+import { cva, type VariantProps } from "@fissa/utils";
 
 export const Typography: FC<Props> = ({
   children,
@@ -17,7 +17,7 @@ export const Typography: FC<Props> = ({
     <Animated.Text
       {...props}
       className={typography({ variant, centered, dimmed, className })}
-      style={[{ color: animatedColor ?? theme[!!inverted ? "900" : "100"] }, props.style]}
+      style={[{ color: animatedColor ?? theme[inverted ? "900" : "100"] }, props.style]}
     >
       {children}
     </Animated.Text>

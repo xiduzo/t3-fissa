@@ -13,7 +13,9 @@ const Fissa = () => {
 
   const invalidate = useInvalidateFissa();
 
-  useOnActiveApp(() => invalidate(String(pin)));
+  useOnActiveApp(() => {
+    invalidate(String(pin)).catch(console.log);
+  });
 
   if (!pin) return null;
 

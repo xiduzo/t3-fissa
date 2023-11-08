@@ -1,6 +1,6 @@
 import { Platform, ToastAndroid } from "react-native";
 import Toast from "react-native-toast-message";
-import { Toaster, ToasterProps } from "@fissa/utils";
+import { Toaster, type ToasterProps } from "@fissa/utils";
 
 class NativeToast extends Toaster {
   protected show({ type = "success", message, duration, icon }: ToasterProps) {

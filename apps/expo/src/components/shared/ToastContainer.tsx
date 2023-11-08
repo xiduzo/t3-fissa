@@ -1,6 +1,6 @@
-import { FC, useEffect, useRef } from "react";
+import { useEffect, useRef, type FC } from "react";
 import { AccessibilityInfo, Platform, View, findNodeHandle } from "react-native";
-import Toast, { ToastConfig, ToastConfigParams } from "react-native-toast-message";
+import Toast, { type ToastConfig, type ToastConfigParams } from "react-native-toast-message";
 import { theme } from "@fissa/tailwind-config";
 
 import { Typography } from "./Typography";
@@ -32,7 +32,7 @@ const Toaster: FC<Props> = ({ text1, text2, isVisible }) => {
 
   return (
     <View
-      className="mx-auto mt-2 max-w-[95vw] flex-row items-center rounded-xl p-4 shadow-2xl"
+      className="mx-auto mt-4 max-w-[95vw] flex-row items-center rounded-xl p-4 shadow-2xl"
       importantForAccessibility="yes"
       accessibilityRole="alert"
       ref={ref}
@@ -50,7 +50,7 @@ const Toaster: FC<Props> = ({ text1, text2, isVisible }) => {
   );
 };
 
-interface Props extends ToastConfigParams<any> {
+interface Props extends ToastConfigParams<unknown> {
   /**
    * Emoji which is being shown
    */

@@ -33,7 +33,7 @@ const RootLayout = () => (
 export default RootLayout;
 
 const Updater = () => {
-  const handleUpdate = useCallback(async ({ type }: Updates.UpdateEvent) => {
+  const handleUpdate = useCallback(({ type }: Updates.UpdateEvent) => {
     if (type === Updates.UpdateEventType.ERROR) {
       // Handle error
     } else if (type === Updates.UpdateEventType.NO_UPDATE_AVAILABLE) {
@@ -41,9 +41,7 @@ const Updater = () => {
     } else if (type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
       // Handle update available
       toast.info({ message: "Installing update" });
-      await Updates.fetchUpdateAsync();
-
-      await Updates.reloadAsync();
+      Updates.fetchUpdateAsync().then(Updates.reloadAsync).catch(console.log);
     }
   }, []);
 

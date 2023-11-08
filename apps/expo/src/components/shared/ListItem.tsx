@@ -1,11 +1,10 @@
-import { FC, useEffect, useRef } from "react";
+import { useEffect, useRef, type FC } from "react";
 import {
-  AccessibilityState,
   Animated,
   TouchableWithoutFeedback,
-  TouchableWithoutFeedbackProps,
   View,
-  ViewProps,
+  type TouchableWithoutFeedbackProps,
+  type ViewProps,
 } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
@@ -40,7 +39,7 @@ export const ListItem: FC<Props> = ({
     };
 
     animate(selected ? { toValue: 1, bounciness: 12 } : {});
-  }, [selected]);
+  }, [selected, dimmedAnimation]);
 
   const opacity = dimmedAnimation.interpolate({
     inputRange: [0, 1],
@@ -70,7 +69,13 @@ export const ListItem: FC<Props> = ({
         style={[{ borderColor: hasBorder ? theme["900"] + "10" : "transparent" }, props.style]}
       >
         <View>
-          <Image className={image({ bigImage })} hasBorder={hasBorder} source={imageUri} />
+          <Image
+            aria-hidden
+            alt={title}
+            className={image({ bigImage })}
+            hasBorder={hasBorder}
+            source={imageUri}
+          />
           <Animated.View
             className="absolute h-20 w-20 items-center justify-center rounded-xl"
             style={{ backgroundColor }}
@@ -108,7 +113,7 @@ export const ListItem: FC<Props> = ({
     </TouchableWithoutFeedback>
   );
 };
-export interface ListItemProps extends Props {}
+export type ListItemProps = Props;
 
 interface Props extends TouchableWithoutFeedbackProps, ViewProps {
   imageUri?: string;

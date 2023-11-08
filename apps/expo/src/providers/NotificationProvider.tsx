@@ -1,24 +1,24 @@
 import {
-  FC,
-  PropsWithChildren,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
+  type FC,
+  type PropsWithChildren,
 } from "react";
 import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { logger } from "@fissa/utils";
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
+  handleNotification: () =>
+    Promise.resolve({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
 });
 
 const NotificationContext = createContext({});
@@ -32,14 +32,14 @@ export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => token && setExpoPushToken(token))
-      .catch(logger.error);
+      .catch(console.error);
 
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
       setNotification(notification);
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      logger.debug(response);
+      console.debug(response);
     });
 
     return () => {
@@ -81,12 +81,12 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== "granted") {
-      logger.warning("Failed to get push token for push notification!");
+      console.warn("Failed to get push token for push notification!");
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
-    logger.debug("Must use physical device for Push Notifications");
+    console.debug("Must use physical device for Push Notifications");
   }
 
   return token;

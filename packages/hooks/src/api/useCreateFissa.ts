@@ -1,4 +1,4 @@
-import { MutationCallbacks } from "@fissa/utils";
+import { type MutationCallbacks } from "@fissa/utils";
 
 import { api } from "./api";
 

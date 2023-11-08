@@ -1,6 +1,6 @@
-import { FC } from "react";
-import { View, ViewProps } from "react-native";
-import { VariantProps, cva } from "@fissa/utils";
+import { type FC } from "react";
+import { View, type ViewProps } from "react-native";
+import { cva, type VariantProps } from "@fissa/utils";
 
 export const PageTemplate: FC<Props> = ({ children, className, ...props }) => {
   return (

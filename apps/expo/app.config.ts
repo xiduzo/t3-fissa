@@ -1,4 +1,4 @@
-import { ConfigContext, ExpoConfig } from "@expo/config";
+import { type ConfigContext, type ExpoConfig } from "@expo/config";
 
 const version = "3.1.5"; // EAS VERSION
 // Should be bumped every time a new build is made

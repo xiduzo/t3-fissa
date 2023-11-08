@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
-import { logger } from "@fissa/utils";
 
 interface State {
   items: Map<string, string>;
@@ -22,22 +21,25 @@ const useStore = create<State>((set) => ({
 export const useEncryptedStorage = (key: string) => {
   const { items, setItem } = useStore();
 
-  const save = useCallback(async (value: string) => {
-    await SecureStore.setItemAsync(key, value);
-    setItem(key, value);
-  }, []);
+  const save = useCallback(
+    async (value: string) => {
+      await SecureStore.setItemAsync(key, value);
+      setItem(key, value);
+    },
+    [setItem, key],
+  );
 
   const getValueFor = useCallback(async () => {
     return await SecureStore.getItemAsync(key);
-  }, []);
+  }, [key]);
 
   useEffect(() => {
     getValueFor()
       .then((value) => {
         setItem(key, value);
       })
-      .catch(logger.error);
-  }, [getValueFor, key]);
+      .catch(console.error);
+  }, [getValueFor, key, setItem]);
 
   return { value: items.get(key), save, getValueFor };
 };

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { useEffect, useRef, type FC } from "react";
 import { Animated } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 
@@ -40,7 +40,7 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
       animation.reset();
       amountRef.current = amount;
     });
-  }, [amount]);
+  }, [amount, amountAnimation]);
 
   if (amount === undefined) return null;
 

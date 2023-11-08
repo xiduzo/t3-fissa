@@ -1,5 +1,10 @@
-import { FC, useCallback, useMemo, useRef, useState } from "react";
-import { NativeSyntheticEvent, TextInput, TextInputChangeEventData, View } from "react-native";
+import { useCallback, useEffect, useRef, useState, type FC } from "react";
+import {
+  View,
+  type NativeSyntheticEvent,
+  type TextInput,
+  type TextInputChangeEventData,
+} from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
@@ -59,38 +64,42 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
     });
   }, []);
 
-  useMemo(async () => {
+  useEffect(() => {
     if (!selectedPlaylist) {
       if (!debounced) return setSearchedTracks([]);
-      const { tracks } = await spotify.search(debounced, ["track"]);
-      setSearchedTracks(tracks?.items || []);
+      spotify
+        .search(debounced, ["track"])
+        .then(({ tracks }) => {
+          setSearchedTracks(tracks?.items ?? []);
+        })
+        .catch(console.log);
       return;
     }
 
     if (!debounced) return setFilteredTracks(playlistTracks.current);
     setFilteredTracks(
       playlistTracks.current.filter((track) => {
-        const nameMatch = track.name.toLowerCase().includes(debounced.toLowerCase());
+        const nameMatch = track.name?.toLowerCase().includes(debounced?.toLowerCase());
         if (nameMatch) return nameMatch;
 
         const artistMatch = track.artists.some((artist) =>
-          artist.name.toLowerCase().includes(debounced.toLowerCase()),
+          artist.name?.toLowerCase().includes(debounced?.toLowerCase()),
         );
         if (artistMatch) return artistMatch;
 
-        const albumMatch = track.album.name.toLowerCase().includes(debounced.toLowerCase());
+        const albumMatch = track.album.name?.toLowerCase().includes(debounced?.toLowerCase());
         if (albumMatch) return albumMatch;
       }),
     );
   }, [debounced, selectedPlaylist, spotify, playlistTracks]);
 
-  useMemo(async () => {
+  useEffect(() => {
     if (!selectedPlaylist) return;
 
-    await getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
+    getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
       playlistTracks.current = newTracks;
       setFilteredTracks([...newTracks]);
-    });
+    }).catch(console.log);
   }, [selectedPlaylist, spotify]);
 
   return (
@@ -144,7 +153,12 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                 <>
                   <View className="m-6">
                     <View className="h-40 w-40">
-                      <Image className="h-full w-full" source={selectedPlaylist.images[0]?.url} />
+                      <Image
+                        aria-hidden
+                        alt={selectedPlaylist?.name}
+                        className="h-full w-full"
+                        source={selectedPlaylist.images[0]?.url}
+                      />
                     </View>
                     <Typography variant="h1" className="mt-6">
                       {selectedPlaylist.name}
@@ -166,16 +180,14 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
         />
 
         <BottomDrawer>
-          {selectedTracks.length > 0 && (
-            <Button
-              title={`Unselect ${selectedTracks.length} songs`}
-              variant="text"
-              onPress={() => setSelectedTracks([])}
-              inverted
-              disabled={!selectedTracks.length}
-              className="mb-4"
-            />
-          )}
+          <Button
+            title="Deselect all songs"
+            variant="text"
+            onPress={() => setSelectedTracks([])}
+            inverted
+            disabled={!selectedTracks.length}
+            className="mb-4"
+          />
           <Button
             title={actionTitle}
             inverted

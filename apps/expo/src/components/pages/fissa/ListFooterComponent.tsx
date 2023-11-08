@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { type FC } from "react";
 import { View } from "react-native";
 
 import { Typography } from "../../shared";
@@ -11,7 +11,7 @@ export const ListFooterComponent: FC<{ tracksShown: boolean }> = ({ tracksShown 
       <Typography variant="h1" className="mb-4">
         🦦
       </Typography>
-      <Typography variant="bodyM">Add songs or I'll fill the queue</Typography>
+      <Typography variant="bodyM">Add songs or I&apos;ll fill the queue</Typography>
     </View>
   );
 };

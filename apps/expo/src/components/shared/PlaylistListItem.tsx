@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { type FC } from "react";
 
-import { ListItem, ListItemProps } from "./ListItem";
+import { ListItem, type ListItemProps } from "./ListItem";
 
 export const PlaylistListItem: FC<Props> = ({ playlist, ...props }) => {
   return (

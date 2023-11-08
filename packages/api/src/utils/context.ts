@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { type PrismaClient } from "@prisma/client";
 import { type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { getServerSession, type Session } from "@fissa/auth";
@@ -17,10 +17,10 @@ type CreateContextOptions = {
  * @see https://beta.create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
 export const createContextInner = async (opts: CreateContextOptions) => {
-  return {
+  return Promise.resolve({
     session: opts.session,
     prisma,
-  };
+  });
 };
 
 /**
@@ -28,7 +28,7 @@ export const createContextInner = async (opts: CreateContextOptions) => {
  * @link https://trpc.io/docs/context
  **/
 export const createContext = async (opts?: CreateNextContextOptions) => {
-  let session = await (opts ? getServerSession(opts) : null);
+  const session = await (opts ? getServerSession(opts) : null);
 
   return await createContextInner({
     session,

@@ -1,27 +1,28 @@
 import * as React from "react";
 import {
-  FC,
-  PropsWithChildren,
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
+  type FC,
+  type PropsWithChildren,
 } from "react";
 import { Platform } from "react-native";
 import {
-  AuthRequestConfig,
-  DiscoveryDocument,
   ResponseType,
   makeRedirectUri,
   useAuthRequest,
+  type AuthRequestConfig,
+  type DiscoveryDocument,
 } from "expo-auth-session";
 import Constants from "expo-constants";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
 import { useInterval } from "@fissa/hooks";
-import { differenceInMinutes, logger, scopes, useSpotify } from "@fissa/utils";
+import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
@@ -31,8 +32,12 @@ import { api } from "../utils/api";
 const REFRESH_INTERVAL_MINUTES = 30;
 
 const SpotifyContext = createContext({
-  signOut: () => {},
-  signIn: () => {},
+  signOut: (): void => {
+    return;
+  },
+  signIn: (): void => {
+    return;
+  },
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
 });
 
@@ -44,7 +49,16 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const lastTokenSaveTime = useRef(new Date());
 
-  const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
+  const { mutateAsync } = api.auth.getTokensFromCode.useMutation({
+    onSuccess: async (tokens) => {
+      await saveTokens(tokens);
+    },
+    onSettled: () => {
+      setTimeout(() => {
+        toast.hide();
+      }, 1000);
+    },
+  });
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
 
   const { save: saveRefreshToken, getValueFor: getRefreshToken } = useEncryptedStorage(
@@ -64,14 +78,14 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (!session_token) return;
       spotify.setAccessToken(access_token);
-      spotify.getMe().then(setUser).catch(logger.warning);
+      spotify.getMe().then(setUser).catch(console.warn);
 
       await saveSessionToken(session_token);
 
       refresh_token && (await saveRefreshToken(refresh_token));
       lastTokenSaveTime.current = new Date();
     },
-    [spotify],
+    [spotify, saveSessionToken, saveRefreshToken],
   );
 
   const updateTokens = useCallback(async () => {
@@ -88,65 +102,69 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       if (state.routes[0]?.name === "index") return;
       replace("");
     }
-  }, [user, replace, getState]);
+  }, [replace, getState, getRefreshToken, saveTokens, refresh]);
 
   const signOut = useCallback(async () => {
     await saveSessionToken("");
     await saveRefreshToken("");
     setUser(undefined);
     replace("");
-  }, []);
+  }, [saveRefreshToken, saveSessionToken, replace]);
 
   const signIn = useCallback(async () => {
     await promptAsync();
   }, [promptAsync]);
 
-  useMemo(async () => {
+  useEffect(() => {
     if (response?.type !== "success") return;
 
     toast.info({
-      message: "Getting account details",
+      message: "Setting account details",
       icon: "🐿️",
       duration: 30 * 1000,
     });
 
-    await notificationAsync(NotificationFeedbackType.Success);
+    notificationAsync(NotificationFeedbackType.Success).catch(console.info);
 
-    await saveScopes(scopes.join("_"));
+    saveScopes(scopes.join("_")).catch(console.info);
 
     const { code } = response.params;
     if (!code) return toast.error({ message: `Something went wrong...` });
 
-    const { redirectUri } = request!;
-    const tokens = await mutateAsync({ code, redirectUri });
+    if (!request) return;
+    const { redirectUri } = request;
+    mutateAsync({ code, redirectUri }).catch(console.info);
+  }, [response, request, saveScopes, saveTokens, mutateAsync]);
 
-    toast.hide();
-
-    await saveTokens(tokens);
-  }, [response, request, saveScopes, saveTokens]);
-
-  useMemo(async () => {
+  useEffect(() => {
     if (user) return;
-    const localScopes = await getScopes();
+    getScopes()
+      .then((localScopes) => {
+        if (String(localScopes) !== scopes.join("_")) return;
 
-    if (String(localScopes) !== scopes.join("_")) return;
-
-    await updateTokens();
+        updateTokens().catch(console.info);
+      })
+      .catch(console.info);
   }, [updateTokens, user, getScopes]);
 
-  useOnActiveApp(async () => {
+  useOnActiveApp(() => {
     const { current } = lastTokenSaveTime;
     const difference = differenceInMinutes(new Date(), current);
 
-    if (difference < REFRESH_INTERVAL_MINUTES) return;
-    await updateTokens();
+    if (difference < REFRESH_INTERVAL_MINUTES) {
+      return;
+    }
+
+    updateTokens().catch(console.info);
   });
 
-  useInterval(updateTokens, REFRESH_INTERVAL_MINUTES * 60 * 1000);
+  useInterval(() => {
+    updateTokens().catch(console.info);
+  }, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
-  return (
-    <SpotifyContext.Provider value={{ user, signOut, signIn }}>{children}</SpotifyContext.Provider>
-  );
+  const contextValue = useMemo(() => ({ user, signOut, signIn }), [user, signOut, signIn]);
+
+  return <SpotifyContext.Provider value={contextValue}>{children}</SpotifyContext.Provider>;
 };
 
 export const useAuth = () => useContext(SpotifyContext);
@@ -154,7 +172,7 @@ export const useAuth = () => useContext(SpotifyContext);
 const config: AuthRequestConfig = {
   scopes: scopes,
   responseType: ResponseType.Code,
-  clientId: Constants.expoConfig?.extra?.spotifyClientId,
+  clientId: Constants.expoConfig?.extra?.spotifyClientId as string,
   usePKCE: false,
   redirectUri: makeRedirectUri({
     scheme: `${Constants.expoConfig?.scheme}://redirect`,

@@ -1,7 +1,5 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
-import { logger } from "../classes";
-
 export class SpotifyService {
   private spotify = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -36,21 +34,21 @@ export class SpotifyService {
       await this.spotify.play({ uris: [`spotify:track:${trackId}`] });
     } catch (e: any) {
       if (e.body.error.reason === "NO_ACTIVE_DEVICE") {
-        logger.warning("No active device found, trying to transfer playback");
+        console.warn("No active device found, trying to transfer playback");
         const { body } = await this.spotify.getMyDevices();
 
         const firstDevice = body.devices[0];
 
-        if (!firstDevice?.id) return logger.error("No device found");
+        if (!firstDevice?.id) return console.error("No device found");
 
-        if (triesLeft === 0) return logger.error("No tries left");
+        if (triesLeft === 0) return console.error("No tries left");
 
         await this.spotify.transferMyPlayback([firstDevice.id]);
         await new Promise((resolve) => setTimeout(resolve, 250 + (3 % (triesLeft + 1))));
         return this.playTrack(accessToken, trackId, triesLeft - 1);
       }
 
-      logger.error(JSON.stringify(e));
+      console.error(JSON.stringify(e));
 
       return Promise.resolve();
     }

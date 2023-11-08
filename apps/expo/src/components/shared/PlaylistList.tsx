@@ -1,13 +1,18 @@
-import { FC } from "react";
+import { type FC } from "react";
 import { View } from "react-native";
-import { FlashList, FlashListProps } from "@shopify/flash-list";
+import { FlashList, type FlashListProps } from "@shopify/flash-list";
 import { usePlayLists } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
 import { EmptyState } from "./EmptyState";
 import { PlaylistListItem } from "./PlaylistListItem";
 
-export const PlaylistList: FC<Props> = ({ onPlaylistPress, inverted, playlistListItemEnd, ...props }) => {
+export const PlaylistList: FC<Props> = ({
+  onPlaylistPress,
+  inverted,
+  playlistListItemEnd,
+  ...props
+}) => {
   const { user } = useAuth();
 
   const playlists = usePlayLists(user);
@@ -23,6 +28,7 @@ export const PlaylistList: FC<Props> = ({ onPlaylistPress, inverted, playlistLis
         renderItem={({ item }) => (
           <PlaylistListItem
             className="px-6"
+            inverted={inverted}
             playlist={item}
             onPress={() => onPlaylistPress?.(item)}
             end={playlistListItemEnd}
@@ -37,7 +43,10 @@ export const PlaylistList: FC<Props> = ({ onPlaylistPress, inverted, playlistLis
 const ItemSeparatorComponent = () => <View className="h-6" />;
 
 interface Props
-  extends Omit<FlashListProps<SpotifyApi.PlaylistObjectSimplified>, "renderItem" | "keyExtractor" | "data"> {
+  extends Omit<
+    FlashListProps<SpotifyApi.PlaylistObjectSimplified>,
+    "renderItem" | "keyExtractor" | "data"
+  > {
   onPlaylistPress?: (playlist: SpotifyApi.PlaylistObjectSimplified) => void;
   inverted?: boolean;
   playlistListItemEnd?: JSX.Element;

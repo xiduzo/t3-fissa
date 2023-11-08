@@ -1,10 +1,10 @@
-import { FC, useMemo } from "react";
+import { useMemo, type FC } from "react";
 import { TouchableHighlight } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
-import { Icon, IconName } from "../Icon";
-import { ButtonProps } from "./Button";
+import { Icon, type IconName } from "../Icon";
+import { type ButtonProps } from "./Button";
 
 export const IconButton: FC<Props> = ({ icon, inverted, dimmed, ...props }) => {
   const color = useMemo(() => {
@@ -30,7 +30,7 @@ interface Props extends ButtonProps {
   icon: IconName;
 }
 
-export interface IconButtonProps extends Props {}
+export type IconButtonProps = Props;
 
 const iconButton = cva("-m-2 rounded-full p-2", {
   variants: {

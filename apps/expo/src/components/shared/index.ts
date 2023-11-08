@@ -19,7 +19,7 @@ export * from "./ProgressBar";
 export * from "./Rejoin";
 export * from "./SafeAreaView";
 export * from "./SelectDevice";
-export * from "./Toast";
+export * from "./ToastContainer";
 export * from "./TrackEnd";
 export * from "./TrackList";
 export * from "./TrackListItem";
