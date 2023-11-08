@@ -1,21 +1,13 @@
 import { View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useGlobalSearchParams } from "expo-router";
-import { useInvalidateFissa } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
 import { Fab, FissaTracks, Settings } from "../../../src/components";
 import { QuickVoteProvider, SpeakerButton } from "../../../src/components/pages/fissa";
-import { useOnActiveApp } from "../../../src/hooks";
 
 const Fissa = () => {
   const { pin } = useGlobalSearchParams();
-
-  const invalidate = useInvalidateFissa();
-
-  useOnActiveApp(() => {
-    invalidate(String(pin)).catch(console.log);
-  });
 
   if (!pin) return null;
 

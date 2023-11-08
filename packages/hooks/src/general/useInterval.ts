@@ -11,7 +11,9 @@ export const useInterval = (callback: () => void | Promise<void>, delayInMs = 10
   }, [callback]);
 
   useEffect(() => {
-    const id = setInterval(() => savedCallback.current(), Math.max(1, delayInMs));
+    const id = setInterval(() => {
+      savedCallback.current()?.catch(console.log);
+    }, Math.max(1, delayInMs));
 
     return () => clearInterval(id);
   }, [delayInMs]);

@@ -1,4 +1,4 @@
-import { MutationCallbacks } from "@fissa/utils";
+import { type MutationCallbacks } from "@fissa/utils";
 
 import { api } from "./api";
 
@@ -10,8 +10,8 @@ export const useRestartFissa = (pin: string, callbacks: MutationCallbacks<typeof
   const { mutate, mutateAsync, ...rest } = endpoint({
     ...callbacks,
     onSuccess: async (...props) => {
+      await queryClient.fissa.invalidate();
       callbacks.onSuccess?.(...props);
-      queryClient.fissa.invalidate();
     },
   });
 

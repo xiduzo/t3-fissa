@@ -127,7 +127,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     const timeout = setTimeout(() => {
       // Invalidate the fissa to force fetch the new state
       // When we know the track has ended
-      context.fissa.byId.invalidate().catch(console.warn);
+      context.fissa.byId.invalidate().catch(console.log);
     }, ms);
 
     return () => clearTimeout(timeout);

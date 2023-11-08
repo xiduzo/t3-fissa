@@ -1,4 +1,4 @@
-import { MutationCallbacks } from "@fissa/utils";
+import { type MutationCallbacks } from "@fissa/utils";
 
 import { api } from "./api";
 
@@ -16,9 +16,9 @@ export const useDeleteTrack = (
     onMutate: async (variables) => {
       await queryClient.fissa.byId.invalidate(variables.pin);
 
-      queryClient.fissa.byId.setData(variables.pin, (prev) => ({
-        ...prev!,
-        tracks: [...prev!.tracks.filter(({ trackId }) => trackId !== variables.trackId)],
+      queryClient.fissa.byId.setData(variables.pin, (prev) => prev && ({
+        ...prev,
+        tracks: [...prev.tracks.filter(({ trackId }) => trackId !== variables.trackId)],
       }));
 
       await callbacks.onMutate?.(variables);

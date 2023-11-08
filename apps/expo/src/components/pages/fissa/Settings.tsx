@@ -72,7 +72,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         const uris = tracks?.map(({ uri }) => uri) ?? [];
         const chunks = splitInChunks(uris, 100);
         chunks.forEach((chunk) => {
-          spotify.addTracksToPlaylist(id, chunk).catch(console.warn);
+          spotify.addTracksToPlaylist(id, chunk).catch(console.log);
         });
       })
       .finally(() => {

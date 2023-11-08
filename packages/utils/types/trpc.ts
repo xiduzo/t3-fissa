@@ -1,4 +1,6 @@
-export type MutationCallbacks<T extends (...args: unknown[]) => unknown> = Parameters<T>[0];
+// TODO: use UseTRPCMutationOptions from trpc
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type MutationCallbacks<T extends (...args: any[]) => unknown> = Parameters<T>[0];
 
 export enum RefetchInterval {
   Fast = 1000,

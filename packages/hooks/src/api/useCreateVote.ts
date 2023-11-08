@@ -1,4 +1,4 @@
-import { MutationCallbacks } from "@fissa/utils";
+import { type MutationCallbacks } from "@fissa/utils";
 
 import { api } from "./api";
 
@@ -19,14 +19,14 @@ export const useCreateVote = (pin: string, callbacks: MutationCallbacks<typeof e
       };
       const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
 
-      queryClient.vote.byTrackFromUser.setData(vote, (prev) => ({
-        ...prev!,
+      queryClient.vote.byTrackFromUser.setData(vote, (prev) => prev && ({
+        ...prev,
         ...newVote,
       }));
 
-      queryClient.fissa.byId.setData(newVote.pin, (prev) => ({
-        ...prev!,
-        tracks: prev!.tracks.map((track) => {
+      queryClient.fissa.byId.setData(newVote.pin, (prev) => prev && ({
+        ...prev,
+        tracks: prev.tracks.map((track) => {
           if (track.trackId === newVote.trackId) {
             return {
               ...track,

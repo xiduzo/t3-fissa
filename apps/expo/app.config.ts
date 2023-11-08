@@ -3,7 +3,7 @@ import { ConfigContext, ExpoConfig } from "@expo/config";
 
 const version = "3.2.0"; // EAS VERSION
 // Should be bumped every time a new build is made
-const buildNumber = "3"; // EAS VERSION
+const buildNumber = "6"; // EAS VERSION
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
@@ -34,7 +34,9 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    versionCode: Number(buildNumber),
+    versionCode: Number(
+      version.replace(".", "").replace(".", "") + buildNumber,
+    ),
     package: "com.fissa",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",

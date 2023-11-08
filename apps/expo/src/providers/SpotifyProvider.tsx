@@ -78,7 +78,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (!session_token) return;
       spotify.setAccessToken(access_token);
-      spotify.getMe().then(setUser).catch(console.warn);
+      spotify.getMe().then(setUser).catch(console.log);
 
       await saveSessionToken(session_token);
 

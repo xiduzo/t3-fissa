@@ -1,6 +1,7 @@
-import { MutationCallbacks } from "@fissa/utils";
+import { type MutationCallbacks } from "@fissa/utils";
 
 import { api } from "./api";
+import { type Track } from "@prisma/client";
 
 const endpoint = api.track.addTracks.useMutation;
 
@@ -12,26 +13,22 @@ export const useAddTracks = (pin: string, callbacks: MutationCallbacks<typeof en
     onMutate: async (variables) => {
       const newTrackIds = variables.tracks.map((track) => track.trackId);
       await queryClient.fissa.byId.cancel(variables.pin);
-      queryClient.fissa.byId.setData(variables.pin, (prev) => ({
-        ...prev!,
+      queryClient.fissa.byId.setData(variables.pin, (prev) => prev && ({
+        ...prev,
         tracks: [
           ...variables.tracks.map((track) => ({
-            ...track,
-            score: (prev?.tracks.find(({ trackId }) => trackId === track.trackId)?.score ?? 0) + 1,
-            createdAt: new Date(),
-            by: { email: "optimistic@add.track" },
+            ...track as unknown as Track,
+            by: null
           })),
-          ...prev!.tracks.filter(({ trackId }) => !newTrackIds.includes(trackId)),
-        ],
+          ...prev.tracks.filter(({ trackId }) => !newTrackIds.includes(trackId)),
+        ]
       }));
 
       variables.tracks.forEach((track) => {
-        const vote = {
-          trackId: track.trackId,
-          pin: variables.pin,
-        };
-        queryClient.vote.byTrackFromUser.setData(vote, (prev) => ({
-          ...prev!,
+        const vote = { trackId: track.trackId, pin: variables.pin };
+        
+        queryClient.vote.byTrackFromUser.setData(vote, (prev) => prev && ({
+          ...prev,
           vote: 1,
         }));
       });
@@ -39,11 +36,9 @@ export const useAddTracks = (pin: string, callbacks: MutationCallbacks<typeof en
       await callbacks.onMutate?.(variables);
     },
     onSettled: async (data, error, variables, context) => {
-      for (let track of variables.tracks) {
-        const vote = {
-          trackId: track.trackId,
-          pin: variables.pin,
-        };
+      for (const track of variables.tracks) {
+        const vote = { trackId: track.trackId, pin: variables.pin };
+        
         await queryClient.vote.byTrackFromUser.invalidate(vote);
       }
 

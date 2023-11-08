@@ -23,7 +23,7 @@ const Join = () => {
     enabled: !pin.includes(""),
     onSuccess: ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
-      notificationAsync(NotificationFeedbackType.Success).catch(console.warn);
+      notificationAsync(NotificationFeedbackType.Success).catch(console.log);
       replace(`/fissa/${pin}`);
     },
     onError: ({ message }) => {

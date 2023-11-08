@@ -12,7 +12,7 @@ export const Icon: FC<Props> = ({ name, ...props }) => {
   if (Object.keys(FontAwesome.glyphMap).includes(name))
     return <FontAwesome size={24} {...props} name={name as keyof typeof FontAwesome.glyphMap} />;
 
-  console.warn(`Icon ${name} not found`);
+  console.log(`Icon ${name} not found`);
   return null;
 };
 
