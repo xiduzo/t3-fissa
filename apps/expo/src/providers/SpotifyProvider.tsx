@@ -3,6 +3,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -132,21 +133,26 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     await mutateAsync({ code, redirectUri });
   }, [response, request, saveScopes, saveTokens]);
 
-  useMemo(async () => {
+  useEffect(() => {
     if (user) return;
-    const localScopes = await getScopes();
+    getScopes()
+      .then((localScopes) => {
+        if (String(localScopes) !== scopes.join("_")) return;
 
-    if (String(localScopes) !== scopes.join("_")) return;
-
-    await updateTokens();
+        updateTokens().catch(console.info);
+      })
+      .catch(console.info);
   }, [updateTokens, user, getScopes]);
 
-  useOnActiveApp(async () => {
+  useOnActiveApp(() => {
     const { current } = lastTokenSaveTime;
     const difference = differenceInMinutes(new Date(), current);
 
-    if (difference < REFRESH_INTERVAL_MINUTES) return;
-    await updateTokens();
+    if (difference < REFRESH_INTERVAL_MINUTES) {
+      return;
+    }
+
+    updateTokens().catch(console.info);
   });
 
   useInterval(() => {

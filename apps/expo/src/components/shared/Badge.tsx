@@ -40,7 +40,7 @@ export const Badge: FC<Props> = ({ amount, inverted }) => {
       animation.reset();
       amountRef.current = amount;
     });
-  }, [amount]);
+  }, [amount, amountAnimation]);
 
   if (amount === undefined) return null;
 

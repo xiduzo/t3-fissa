@@ -1,6 +1,7 @@
 import {
   createContext,
   useCallback,
+  useMemo,
   useRef,
   useState,
   type FC,
@@ -12,8 +13,12 @@ import { impactAsync } from "expo-haptics";
 export const QuickVoteContext = createContext({
   track: undefined as SpotifyApi.TrackObjectFull | undefined,
   vote: 0,
-  setVote: (vote: number) => {},
-  selectTrack: (event: GestureResponderEvent, track?: SpotifyApi.TrackObjectFull) => {},
+  setVote: (vote: number): void => {
+    console.log("setVote", vote);
+  },
+  selectTrack: (event: GestureResponderEvent, track?: SpotifyApi.TrackObjectFull): void => {
+    console.log("selectTrack", event, track);
+  },
   touchStartPosition: {
     current: 0,
   },
@@ -47,17 +52,16 @@ export const QuickVoteProvider: FC<PropsWithChildren> = ({ children }) => {
     [],
   );
 
-  return (
-    <QuickVoteContext.Provider
-      value={{
-        track,
-        vote,
-        setVote: handleSetVote,
-        selectTrack: handleSelectTrack,
-        touchStartPosition,
-      }}
-    >
-      {children}
-    </QuickVoteContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      track,
+      vote,
+      setVote: handleSetVote,
+      selectTrack: handleSelectTrack,
+      touchStartPosition,
+    }),
+    [track, vote, handleSetVote, handleSelectTrack, touchStartPosition],
   );
+
+  return <QuickVoteContext.Provider value={contextValue}>{children}</QuickVoteContext.Provider>;
 };

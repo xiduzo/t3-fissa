@@ -1,6 +1,6 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Animated, NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
-import { FlashList } from "@shopify/flash-list";
+import { useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
+import { Animated, View, type NativeScrollEvent, type NativeSyntheticEvent } from "react-native";
+import { type FlashList } from "@shopify/flash-list";
 import { useGetFissa, useIsOwner } from "@fissa/hooks";
 import { sortFissaTracksOrder, useDevices, useTracks } from "@fissa/utils";
 
@@ -50,12 +50,15 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [data?.currentlyPlayingId, localTracks],
   );
 
-  const shouldShowBackButton = useCallback((showShow = false) => {
-    Animated.spring(showBackAnimation, {
-      toValue: Number(showShow),
-      useNativeDriver: false,
-    }).start();
-  }, []);
+  const shouldShowBackButton = useCallback(
+    (showShow = false) => {
+      Animated.spring(showBackAnimation, {
+        toValue: Number(showShow),
+        useNativeDriver: false,
+      }).start();
+    },
+    [showBackAnimation],
+  );
 
   const getTrackVotes = useCallback(
     (track?: SpotifyApi.TrackObjectFull) => {
@@ -68,7 +71,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
       return localTrack.score;
     },
-    [data?.tracks, data?.currentlyPlayingId, localTracks],
+    [data?.tracks, data?.currentlyPlayingId],
   );
 
   const trackEnd = useCallback(
@@ -86,7 +89,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
       return <TrackEnd trackId={track.id} pin={pin} />;
     },
-    [data?.tracks, data?.currentlyPlayingId, localTracks, isOwner],
+    [data?.tracks, data?.currentlyPlayingId, isOwner, pin],
   );
 
   const trackExtra = useCallback(
