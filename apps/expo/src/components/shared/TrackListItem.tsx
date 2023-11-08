@@ -7,7 +7,7 @@ import { ListItem, type ListItemProps } from "./ListItem";
 
 const windowHeight = Dimensions.get("window").height;
 
-export const TrackListItem: FC<Props> = memo(
+const TrackListItem: FC<Props> = memo(
   ({ track, index, ...props }) => {
     const positionAnimation = useRef(new Animated.Value(0)).current;
     const previousIndex = useRef(index ?? 0);
@@ -63,8 +63,10 @@ export const TrackListItem: FC<Props> = memo(
   },
 );
 
+TrackListItem.displayName = "TrackListItem";
+
 interface Props extends Omit<ListItemProps, "title" | "subtitle" | "imageUri"> {
   track: SpotifyApi.TrackObjectFull;
   index?: number;
-  rerenderTrigger?: any;
+  rerenderTrigger?: unknown;
 }

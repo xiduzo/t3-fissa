@@ -1,18 +1,19 @@
-import { FC, useCallback, useMemo } from "react";
+import { useCallback, useMemo, type FC } from "react";
 import {
-  GestureResponderEvent,
-  ButtonProps as NativeButtonProps,
   TouchableHighlight,
   View,
+  type GestureResponderEvent,
+  type ButtonProps as NativeButtonProps,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { VariantProps, cva } from "@fissa/utils";
+import { cva, type VariantProps } from "@fissa/utils";
 
-import { Icon, IconName } from "../Icon";
+import { Icon, type IconName } from "../Icon";
 import { Typography } from "../Typography";
 
 export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...props }) => {
+  const { onPress, linkTo } = props;
   const { push } = useRouter();
 
   const textInverted = useMemo(() => {
@@ -33,11 +34,11 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
-      props.onPress?.(event);
+      onPress?.(event);
 
-      if (props.linkTo) push(props.linkTo);
+      if (linkTo) push(linkTo);
     },
-    [props.onPress, props.linkTo],
+    [onPress, linkTo, push],
   );
 
   return (
@@ -87,7 +88,7 @@ interface Props extends NativeButtonProps, VariantProps<typeof button> {
   icon?: IconName;
 }
 
-export interface ButtonProps extends Props {}
+export type ButtonProps = Props;
 
 const button = cva(
   `flex flex-row items-center justify-center space-x-4 border-2 p-5 rounded-full`,

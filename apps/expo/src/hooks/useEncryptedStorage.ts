@@ -21,14 +21,17 @@ const useStore = create<State>((set) => ({
 export const useEncryptedStorage = (key: string) => {
   const { items, setItem } = useStore();
 
-  const save = useCallback(async (value: string) => {
-    await SecureStore.setItemAsync(key, value);
-    setItem(key, value);
-  }, []);
+  const save = useCallback(
+    async (value: string) => {
+      await SecureStore.setItemAsync(key, value);
+      setItem(key, value);
+    },
+    [setItem, key],
+  );
 
   const getValueFor = useCallback(async () => {
     return await SecureStore.getItemAsync(key);
-  }, []);
+  }, [key]);
 
   useEffect(() => {
     getValueFor()
@@ -36,7 +39,7 @@ export const useEncryptedStorage = (key: string) => {
         setItem(key, value);
       })
       .catch(console.error);
-  }, [getValueFor, key]);
+  }, [getValueFor, key, setItem]);
 
   return { value: items.get(key), save, getValueFor };
 };

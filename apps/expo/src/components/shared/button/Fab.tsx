@@ -1,34 +1,35 @@
-import { FC, useCallback, useEffect, useRef } from "react";
-import { Animated, GestureResponderEvent, TouchableHighlight } from "react-native";
+import { useCallback, useEffect, useRef, type FC } from "react";
+import { Animated, TouchableHighlight, type GestureResponderEvent } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { VariantProps, cva } from "@fissa/utils";
+import { AnimationSpeed } from "@fissa/utils";
 
 import { Icon } from "../Icon";
-import { IconButtonProps } from "./IconButton";
+import { type IconButtonProps } from "./IconButton";
 
-export const Fab: FC<Props> = ({ icon, position, ...props }) => {
+export const Fab: FC<Props> = ({ icon, ...props }) => {
+  const { onPress, linkTo } = props;
   const shownAnimation = useRef(new Animated.Value(0)).current;
 
   const { push } = useRouter();
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
-      props.onPress?.(event);
+      onPress?.(event);
 
-      if (props.linkTo) push(props.linkTo);
+      if (linkTo) push(linkTo);
     },
-    [props.onPress, props.linkTo],
+    [push, onPress, linkTo],
   );
 
   useEffect(() => {
     Animated.spring(shownAnimation, {
       toValue: 1,
-      delay: 2500,
+      delay: AnimationSpeed.Slow,
       useNativeDriver: false,
     }).start();
-  }, []);
+  }, [shownAnimation]);
 
   return (
     <TouchableHighlight
@@ -52,17 +53,4 @@ export const Fab: FC<Props> = ({ icon, position, ...props }) => {
   );
 };
 
-interface Props extends IconButtonProps, VariantProps<typeof fab> {}
-
-const fab = cva("absolute bottom-10 z-50 flex h-14 w-14 md:bottom-16 rounded-2xl shadow-xl", {
-  variants: {
-    position: {
-      "bottom-left": "left-8",
-      "bottom-right": "right-8",
-      "bottom-center": "left-1/2 transform -translate-x-7",
-    },
-  },
-  defaultVariants: {
-    position: "bottom-right",
-  },
-});
+type Props = IconButtonProps;
