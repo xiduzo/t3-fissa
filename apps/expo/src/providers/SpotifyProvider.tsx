@@ -31,8 +31,12 @@ import { api } from "../utils/api";
 const REFRESH_INTERVAL_MINUTES = 30;
 
 const SpotifyContext = createContext({
-  signOut: () => {},
-  signIn: () => {},
+  signOut: (): void => {
+    return;
+  },
+  signIn: (): void => {
+    return;
+  },
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
 });
 
@@ -44,7 +48,14 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const lastTokenSaveTime = useRef(new Date());
 
-  const { mutateAsync } = api.auth.getTokensFromCode.useMutation();
+  const { mutateAsync } = api.auth.getTokensFromCode.useMutation({
+    onSuccess: async (tokens) => {
+      await saveTokens(tokens);
+    },
+    onSettled: () => {
+      toast.hide();
+    },
+  });
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
 
   const { save: saveRefreshToken, getValueFor: getRefreshToken } = useEncryptedStorage(
@@ -71,7 +82,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       refresh_token && (await saveRefreshToken(refresh_token));
       lastTokenSaveTime.current = new Date();
     },
-    [spotify],
+    [spotify, saveSessionToken, saveRefreshToken],
   );
 
   const updateTokens = useCallback(async () => {
@@ -88,14 +99,14 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       if (state.routes[0]?.name === "index") return;
       replace("");
     }
-  }, [user, replace, getState]);
+  }, [replace, getState, getRefreshToken, saveTokens, refresh]);
 
   const signOut = useCallback(async () => {
     await saveSessionToken("");
     await saveRefreshToken("");
     setUser(undefined);
     replace("");
-  }, []);
+  }, [saveRefreshToken, saveSessionToken, replace]);
 
   const signIn = useCallback(async () => {
     await promptAsync();
@@ -118,11 +129,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     if (!code) return toast.error({ message: `Something went wrong...` });
 
     const { redirectUri } = request!;
-    const tokens = await mutateAsync({ code, redirectUri });
-
-    toast.hide();
-
-    await saveTokens(tokens);
+    await mutateAsync({ code, redirectUri });
   }, [response, request, saveScopes, saveTokens]);
 
   useMemo(async () => {
@@ -142,11 +149,13 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     await updateTokens();
   });
 
-  useInterval(updateTokens, REFRESH_INTERVAL_MINUTES * 60 * 1000);
+  useInterval(() => {
+    updateTokens().catch(console.info);
+  }, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
-  return (
-    <SpotifyContext.Provider value={{ user, signOut, signIn }}>{children}</SpotifyContext.Provider>
-  );
+  const contextValue = useMemo(() => ({ user, signOut, signIn }), [user, signOut, signIn]);
+
+  return <SpotifyContext.Provider value={contextValue}>{children}</SpotifyContext.Provider>;
 };
 
 export const useAuth = () => useContext(SpotifyContext);

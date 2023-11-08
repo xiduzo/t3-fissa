@@ -37,10 +37,11 @@ const getBaseUrl = () => {
    * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
    * you don't have anything else running on it, or you'd have to change it.
    */
-  // @ts-ignore-next-line
-  const localhost = Constants.expoConfig?.hostUri?.split(":")[0];
+  const config = Constants.expoConfig as { hostUri?: string; extra?: { vercelUrl?: string } };
+
+  const localhost = config.hostUri?.split(":")[0];
   if (!localhost) {
-    return process.env.VERCEL_URL ?? Constants.expoConfig?.extra?.vercelUrl;
+    return process.env.VERCEL_URL ?? config.extra?.vercelUrl;
   }
 
   return `http://${localhost}:3000`;
