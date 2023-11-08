@@ -162,7 +162,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     if (lastScrolledTo.current === data?.currentlyPlayingId) return;
     if (!data?.currentlyPlayingId) return;
 
-    console.log("scrolling to current index");
     setTimeout(
       () => {
         setTimeout(scrollToCurrentIndex, AnimationSpeed.VeryFast);

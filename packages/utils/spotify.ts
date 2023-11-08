@@ -36,12 +36,6 @@ export const getPlaylistTracks = async (
       // if (!track.preview_url) return; // We can only allow tracks that have a preview url
       if (tracks.find(({ id }) => id === track.id)) return;
 
-      const isTestTrack = track.name.toLowerCase().includes("about love");
-      if (isTestTrack) {
-        console.info(JSON.stringify(track));
-        console.info(track.id);
-      }
-
       // if (!_track.available_markets?.length) return; // We can only allow tracks that are available in at least one market
       tracks.push(track);
     });
@@ -126,4 +120,4 @@ const savedTracksPlaylist = (total: number, display_name?: string) =>
         url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",
       },
     ],
-  } as any as SpotifyApi.PlaylistObjectFull);
+  } as unknown as SpotifyApi.PlaylistObjectFull);

@@ -79,15 +79,15 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
     if (!debounced) return setFilteredTracks(playlistTracks.current);
     setFilteredTracks(
       playlistTracks.current.filter((track) => {
-        const nameMatch = track.name.toLowerCase().includes(debounced.toLowerCase());
+        const nameMatch = track.name?.toLowerCase().includes(debounced?.toLowerCase());
         if (nameMatch) return nameMatch;
 
         const artistMatch = track.artists.some((artist) =>
-          artist.name.toLowerCase().includes(debounced.toLowerCase()),
+          artist.name?.toLowerCase().includes(debounced?.toLowerCase()),
         );
         if (artistMatch) return artistMatch;
 
-        const albumMatch = track.album.name.toLowerCase().includes(debounced.toLowerCase());
+        const albumMatch = track.album.name?.toLowerCase().includes(debounced?.toLowerCase());
         if (albumMatch) return albumMatch;
       }),
     );
@@ -180,16 +180,14 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
         />
 
         <BottomDrawer>
-          {selectedTracks.length > 0 && (
-            <Button
-              title={`Unselect ${selectedTracks.length} songs`}
-              variant="text"
-              onPress={() => setSelectedTracks([])}
-              inverted
-              disabled={!selectedTracks.length}
-              className="mb-4"
-            />
-          )}
+          <Button
+            title="Deselect all songs"
+            variant="text"
+            onPress={() => setSelectedTracks([])}
+            inverted
+            disabled={!selectedTracks.length}
+            className="mb-4"
+          />
           <Button
             title={actionTitle}
             inverted

@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["index.ts", "uuid.ts"],
+  "include": ["index.ts", "uuid.ts", "setupTests.ts"],
   "compilerOptions": {
     "types": ["node"]
   }
