@@ -7,7 +7,7 @@ import { ListItem, type ListItemProps } from "./ListItem";
 
 const windowHeight = Dimensions.get("window").height;
 
-const TrackListItem: FC<Props> = memo(
+export const TrackListItem: FC<Props> = memo(
   ({ track, index, ...props }) => {
     const positionAnimation = useRef(new Animated.Value(0)).current;
     const previousIndex = useRef(index ?? 0);
@@ -41,7 +41,7 @@ const TrackListItem: FC<Props> = memo(
           useNativeDriver: false,
         }).start();
       });
-    }, [index]);
+    }, [index, positionAnimation]);
 
     return (
       <Animated.View onLayout={setHeight} style={{ top: positionAnimation }}>

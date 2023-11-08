@@ -1,10 +1,16 @@
-import { FC, useEffect, useState } from "react";
-import { View, ViewProps } from "react-native";
+import { useEffect, useState, type FC } from "react";
+import { View, type ViewProps } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
-import { VariantProps, cva, differenceInMilliseconds } from "@fissa/utils";
+import { cva, differenceInMilliseconds, type VariantProps } from "@fissa/utils";
 
-export const ProgressBar: FC<Props> = ({ expectedEndTime, track, disabled, inverted, className }) => {
+export const ProgressBar: FC<Props> = ({
+  expectedEndTime,
+  track,
+  disabled,
+  inverted,
+  className,
+}) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

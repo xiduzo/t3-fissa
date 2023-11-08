@@ -1,5 +1,10 @@
-import { FC, useCallback, useMemo, useRef, useState } from "react";
-import { NativeSyntheticEvent, TextInput, TextInputChangeEventData, View } from "react-native";
+import { useCallback, useEffect, useRef, useState, type FC } from "react";
+import {
+  View,
+  type NativeSyntheticEvent,
+  type TextInput,
+  type TextInputChangeEventData,
+} from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
@@ -59,11 +64,15 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
     });
   }, []);
 
-  useMemo(async () => {
+  useEffect(() => {
     if (!selectedPlaylist) {
       if (!debounced) return setSearchedTracks([]);
-      const { tracks } = await spotify.search(debounced, ["track"]);
-      setSearchedTracks(tracks?.items || []);
+      spotify
+        .search(debounced, ["track"])
+        .then(({ tracks }) => {
+          setSearchedTracks(tracks?.items ?? []);
+        })
+        .catch(console.log);
       return;
     }
 
@@ -84,13 +93,13 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
     );
   }, [debounced, selectedPlaylist, spotify, playlistTracks]);
 
-  useMemo(async () => {
+  useEffect(() => {
     if (!selectedPlaylist) return;
 
-    await getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
+    getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
       playlistTracks.current = newTracks;
       setFilteredTracks([...newTracks]);
-    });
+    }).catch(console.log);
   }, [selectedPlaylist, spotify]);
 
   return (
@@ -144,7 +153,12 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                 <>
                   <View className="m-6">
                     <View className="h-40 w-40">
-                      <Image className="h-full w-full" source={selectedPlaylist.images[0]?.url} />
+                      <Image
+                        aria-hidden
+                        alt={selectedPlaylist?.name}
+                        className="h-full w-full"
+                        source={selectedPlaylist.images[0]?.url}
+                      />
                     </View>
                     <Typography variant="h1" className="mt-6">
                       {selectedPlaylist.name}
