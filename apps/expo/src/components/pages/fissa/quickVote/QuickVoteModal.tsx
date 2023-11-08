@@ -21,10 +21,10 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
-  const { data } = useGetVoteFromUser(String(pin), track?.id!, user);
+  const { data } = useGetVoteFromUser(String(pin), track?.id ?? "", user);
 
   const opacity = focussedAnimation.interpolate({
-    inputRange: [-Math.abs(touchStartPosition.current), 0],
+    inputRange: [-Math.abs(touchStartPosition), 0],
     outputRange: [0.1, 0.98],
   });
 
@@ -37,7 +37,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
     if (!track) return;
 
     selectionAsync().catch(console.warn);
-    const offset = touchStartPosition.current - windowCenter;
+    const offset = touchStartPosition - windowCenter;
 
     Animated.timing(focussedAnimation, {
       toValue: offset,
@@ -66,7 +66,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
         useNativeDriver: true,
       }).start();
     };
-  }, [track]);
+  }, [track, focussedAnimation, actionOpacityAnimation, touchStartPosition]);
 
   const upVoteGradient = useMemo(() => {
     const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);
@@ -90,7 +90,10 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
       onTouchEnd={onTouchEnd}
     >
       <Animated.View className="absolute inset-0" style={{ opacity }} />
-      <View className="h-full justify-center" style={{ backgroundColor: theme["900"] }}>
+      <View
+        className="h-full justify-center"
+        style={{ backgroundColor: theme["900"], opacity: 0.95 }}
+      >
         <LinearGradient className="flex-1 justify-center" colors={upVoteGradient}>
           <Animated.View
             style={{

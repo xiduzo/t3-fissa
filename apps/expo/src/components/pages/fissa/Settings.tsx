@@ -21,7 +21,7 @@ export const Settings = () => {
   const goToHome = useCallback(() => {
     togglePopover();
     push("/home");
-  }, []);
+  }, [togglePopover, push]);
 
   if (!pin) return null;
 
@@ -59,11 +59,12 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
   const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
   const handleCreatePlaylist = useCallback(async () => {
+    if (!user) return;
     setIsCreatingPlaylist(true);
     await notificationAsync(NotificationFeedbackType.Success);
     onRequestClose();
     spotify
-      .createPlaylist(user!.id, {
+      .createPlaylist(user.id, {
         name: `Fissa ${pin}`,
         description: "Playlist created by Fissa",
       })
@@ -78,7 +79,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
         toast.success({ message: "Playlist created", icon: "🎉" });
         setIsCreatingPlaylist(false);
       });
-  }, [spotify, user, tracks, onRequestClose]);
+  }, [spotify, user, tracks, onRequestClose, pin]);
 
   return (
     <Action
