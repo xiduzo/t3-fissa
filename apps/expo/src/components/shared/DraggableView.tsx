@@ -1,5 +1,5 @@
-import React, { FC, useRef } from "react";
-import { Animated, PanResponder, ViewProps } from "react-native";
+import React, { useRef, type FC } from "react";
+import { Animated, PanResponder, type ViewProps } from "react-native";
 
 export const DraggableView: FC<Props> = ({ children, touchThreshold = 10, ...viewProps }) => {
   const pan = useRef(new Animated.ValueXY()).current;

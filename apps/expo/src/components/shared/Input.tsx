@@ -1,42 +1,38 @@
 import { forwardRef } from "react";
-import { TextInput, TextInputProps, View } from "react-native";
+import { TextInput, View, type TextInputProps } from "react-native";
 import { theme } from "@fissa/tailwind-config";
-import { VariantProps, cva } from "@fissa/utils";
+import { cva, type VariantProps } from "@fissa/utils";
 
-import { Icon, IconName } from "./Icon";
+import { Icon, type IconName } from "./Icon";
 
-export const Input = forwardRef<TextInput, Props>(
-  ({ variant, className, startIcon, ...props }, ref) => {
-    return (
-      <View
-        className={view({ className })}
+export const Input = forwardRef<TextInput, Props>(function Input(
+  { variant, className, startIcon, ...props },
+  ref,
+) {
+  return (
+    <View
+      className={view({ className })}
+      style={{
+        backgroundColor: variant === "contained" ? theme["100"] + "20" : "transparent",
+      }}
+    >
+      {startIcon && (
+        <Icon accessibilityElementsHidden name={startIcon} size={18} color={theme["100"] + "70"} />
+      )}
+      <TextInput
+        ref={ref}
+        {...props}
+        className={input({ disabled: !props.editable })}
+        clearButtonMode="always"
+        blurOnSubmit
+        placeholderTextColor={theme["100"] + "70"}
         style={{
-          backgroundColor: variant === "contained" ? theme["100"] + "20" : "transparent",
+          color: theme["100"],
         }}
-      >
-        {startIcon && (
-          <Icon
-            accessibilityElementsHidden
-            name={startIcon}
-            size={18}
-            color={theme["100"] + "70"}
-          />
-        )}
-        <TextInput
-          ref={ref}
-          {...props}
-          className={input({ disabled: !props.editable })}
-          clearButtonMode="always"
-          blurOnSubmit
-          placeholderTextColor={theme["100"] + "70"}
-          style={{
-            color: theme["100"],
-          }}
-        />
-      </View>
-    );
-  },
-);
+      />
+    </View>
+  );
+});
 
 interface Props extends VariantProps<typeof input>, TextInputProps {
   startIcon?: IconName;

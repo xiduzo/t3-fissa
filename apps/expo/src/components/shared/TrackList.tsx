@@ -42,7 +42,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
           ref={ref}
           estimatedItemSize={80}
           keyExtractor={({ id }) => id}
-          extraData={extraData ?? selectedTracks}
+          extraData={(extraData as unknown) ?? selectedTracks}
           renderItem={({ item, index }) => {
             const isHeader = props.stickyHeaderIndices?.includes(index);
 

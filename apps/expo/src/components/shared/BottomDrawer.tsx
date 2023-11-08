@@ -1,10 +1,10 @@
-import { FC } from "react";
-import { GestureResponderEvent, View } from "react-native";
-import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
+import { type FC } from "react";
+import { View, type GestureResponderEvent } from "react-native";
+import { LinearGradient, type LinearGradientProps } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
-import { VariantProps, cva } from "@fissa/utils";
+import { cva, type VariantProps } from "@fissa/utils";
 
-import { IconName } from "./Icon";
+import { type IconName } from "./Icon";
 import { IconButton } from "./button";
 
 export const BottomDrawer: FC<Props> = ({

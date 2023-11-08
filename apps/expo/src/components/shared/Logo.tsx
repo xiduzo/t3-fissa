@@ -1,8 +1,14 @@
-import { FC } from "react";
-import { Animated, RegisteredStyle, StyleSheet, ViewStyle } from "react-native";
-import LottieView from "lottie-react-native";
+import { type FC } from "react";
+import { Animated, StyleSheet, type RegisteredStyle, type ViewStyle } from "react-native";
+import LottieView, { type AnimationObject } from "lottie-react-native";
 import { theme } from "@fissa/tailwind-config";
 
+type Source =
+  | string
+  | AnimationObject
+  | {
+      uri: string;
+    };
 export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
   const style = [viewStyle, styles.commonStyling];
 
@@ -11,7 +17,8 @@ export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
       return (
         <Animated.View style={style} aria-hidden={true}>
           <LottieView
-            source={require("../../../assets/animations/animation_blueey.json")}
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            source={require("../../../assets/animations/animation_blueey.json") as Source}
             {...props}
           />
         </Animated.View>
@@ -20,7 +27,8 @@ export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
       return (
         <Animated.View style={style} aria-hidden={true}>
           <LottieView
-            source={require("../../../assets/animations/animation_pinkey.json")}
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            source={require("../../../assets/animations/animation_pinkey.json") as Source}
             style={{ zIndex: -1 }}
             {...props}
           />
@@ -30,7 +38,8 @@ export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
       return (
         <Animated.View style={style} aria-hidden={true}>
           <LottieView
-            source={require("../../../assets/animations/animation_greeny.json")}
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            source={require("../../../assets/animations/animation_greeny.json") as Source}
             {...props}
           />
         </Animated.View>
@@ -39,27 +48,20 @@ export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
       return (
         <Animated.View style={style} aria-hidden={true}>
           <LottieView
-            source={require("../../../assets/animations/animation_limey.json")}
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            source={require("../../../assets/animations/animation_limey.json") as Source}
             {...props}
           />
         </Animated.View>
       );
+    case "orangy": // TODO add orangy lottie file
     case "sunny":
-      return (
-        <Animated.View style={style} aria-hidden={true}>
-          <LottieView
-            source={require("../../../assets/animations/animation_sunny.json")}
-            {...props}
-          />
-        </Animated.View>
-      );
-    // TODO add orangy lottie file
-    case "orangy":
     default:
       return (
         <Animated.View style={style} aria-hidden={true}>
           <LottieView
-            source={require("../../../assets/animations/animation_sunny.json")}
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            source={require("../../../assets/animations/animation_sunny.json") as Source}
             {...props}
           />
         </Animated.View>

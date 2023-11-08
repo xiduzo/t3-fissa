@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { useEffect, useRef, type FC } from "react";
 import { Animated } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 

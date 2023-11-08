@@ -1,9 +1,9 @@
-import { FC } from "react";
-import { ButtonProps, TouchableHighlight, View } from "react-native";
+import { type FC } from "react";
+import { TouchableHighlight, View, type ButtonProps } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
-import { Icon, IconName } from "./Icon";
+import { Icon, type IconName } from "./Icon";
 import { Typography } from "./Typography";
 
 export const Action: FC<Props> = ({
@@ -25,7 +25,7 @@ export const Action: FC<Props> = ({
         <View
           className={iconStyle({ disabled: props.disabled })}
           style={{
-            borderColor: theme[!!inverted ? "900" : "100"],
+            borderColor: theme[inverted ? "900" : "100"],
             backgroundColor: active ? theme["900"] : "transparent",
           }}
         >
