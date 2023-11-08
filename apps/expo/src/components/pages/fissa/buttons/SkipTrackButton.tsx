@@ -1,11 +1,11 @@
-import { useSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 import { useSkipTrack } from "@fissa/hooks";
 
 import { toast } from "../../../../utils";
 import { IconButton } from "../../../shared";
 
 export const SkipTrackButton = () => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
 
   const { mutateAsync, isLoading } = useSkipTrack(String(pin), {
     onMutate: () => {

@@ -1,8 +1,9 @@
-import { type ConfigContext, type ExpoConfig } from "@expo/config";
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { ConfigContext, ExpoConfig } from "@expo/config";
 
-const version = "3.1.5"; // EAS VERSION
+const version = "3.2.0"; // EAS VERSION
 // Should be bumped every time a new build is made
-const buildNumber = "5"; // EAS VERSION
+const buildNumber = "3"; // EAS VERSION
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",

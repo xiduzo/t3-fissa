@@ -1,6 +1,6 @@
 import { useCallback, type FC } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
-import { useSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 import { useIsOwner, useRestartFissa } from "@fissa/hooks";
 import { useDevices, useSpotify } from "@fissa/utils";
 
@@ -8,7 +8,7 @@ import { toast } from "../../../utils";
 import { Button, EmptyState, SelectDevice } from "../../shared";
 
 export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
   const isOwner = useIsOwner(String(pin));
 
   const spotify = useSpotify();

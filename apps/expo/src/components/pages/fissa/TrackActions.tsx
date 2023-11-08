@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, type FC } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
-import { useSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 import {
   useCreateVote,
   useDeleteTrack,
@@ -15,7 +15,7 @@ import { toast } from "../../../utils";
 import { Action } from "../../shared";
 
 export const TrackActions: FC<Props> = ({ track, onPress }) => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
   const { data: fissa } = useGetFissa(String(pin));
 
   const isOwner = useIsOwner(String(pin));

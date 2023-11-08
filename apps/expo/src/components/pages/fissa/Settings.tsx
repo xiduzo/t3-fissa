@@ -1,6 +1,6 @@
 import { useCallback, useState, type FC } from "react";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
-import { useRouter, useSearchParams } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import { useGetTracks, useIsOwner } from "@fissa/hooks";
 import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
@@ -9,7 +9,7 @@ import { toast } from "../../../utils";
 import { Action, IconButton, Popover } from "../../shared";
 
 export const Settings = () => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
   const { push } = useRouter();
 
   const [showPopover, setShowPopover] = useState(false);
@@ -94,7 +94,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 };
 
 const PauseFissaAction = () => {
-  const { pin } = useSearchParams();
+  const { pin } = useGlobalSearchParams();
   const spotify = useSpotify();
   const isOwner = useIsOwner(String(pin));
 
