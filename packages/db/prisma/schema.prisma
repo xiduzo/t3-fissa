@@ -23,12 +23,13 @@ model Fissa {
     by User @relation(fields: [userId], references: [id])
     userId String @map("user_id") @unique
 
-    users User[] @relation("PartOfFissa")
+    users UserInFissa[] @relation("PartOf")
 
     createdAt DateTime @map("created_at") @default(now())
     lastUpdateAt DateTime @map("last_update_at") @updatedAt @default(now())
 
     tracks Track[]
+    votes Vote[]
 
     @@map("fissas")
 }
@@ -66,10 +67,26 @@ model Vote {
     track Track @relation(fields: [trackId, pin], references: [trackId, pin], onDelete: Cascade)
     trackId String @map("track_id") @db.VarChar(22)
     
+    fissa Fissa @relation(fields: [pin], references: [pin])
     pin String @db.VarChar(4)
 
     @@id([trackId, userId, pin])
     @@map("votes")
+}
+
+model UserInFissa {
+    createdAt DateTime @map("created_at") @default(now())
+
+    fissa Fissa @relation(fields: [pin], references: [pin], name: "PartOf", onDelete: Cascade)
+    pin String @db.VarChar(4)
+
+    user User @relation(fields: [userId], references: [id], name: "IsIn", onDelete: Cascade)
+    userId String @map("user_id")
+
+    points Int @default(50)
+
+    @@id([pin, userId])
+    @@map("users_in_fissas")
 }
 
 
@@ -118,7 +135,7 @@ model User {
     votes         Vote[]
     hostOf        Fissa?
 
-    partOf        Fissa[] @relation("PartOfFissa")
+    isIn          UserInFissa[] @relation("IsIn")
     tracks        Track[]
 
     @@map("users")

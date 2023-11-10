@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { TrackService } from "../service/TrackService";
+import { VoteService } from "../service/VoteService";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
@@ -16,16 +17,17 @@ const deleteTrack = z.object({
 
 export const trackRouter = createTRPCRouter({
   byPin: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
-    const service = new TrackService(ctx);
+    const service = new TrackService(ctx, new VoteService(ctx));
     return service.byPin(input);
   }),
 
   addTracks: protectedProcedure.input(addTracks).mutation(async ({ ctx, input }) => {
-    const service = new TrackService(ctx);
+    const service = new TrackService(ctx, new VoteService(ctx));
+
     await service.addTracks(input.pin, input.tracks);
   }),
   deleteTrack: protectedProcedure.input(deleteTrack).mutation(async ({ ctx, input }) => {
-    const service = new TrackService(ctx);
+    const service = new TrackService(ctx, new VoteService(ctx));
     await service.deleteTrack(input.pin, input.trackId);
   }),
 });

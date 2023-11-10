@@ -99,8 +99,8 @@ importers:
         specifier: ~1.5.1
         version: 1.5.1(expo@49.0.16)
       expo-linear-gradient:
-        specifier: ~12.1.2
-        version: 12.1.2(expo@49.0.16)
+        specifier: ~12.5.0
+        version: 12.5.0(expo@49.0.16)
       expo-linking:
         specifier: ~6.0.0
         version: 6.0.0(expo@49.0.16)
@@ -6059,8 +6059,8 @@ packages:
       expo: 49.0.16(@babel/core@7.20.12)
     dev: false
 
-  /expo-linear-gradient@12.1.2(expo@49.0.16):
-    resolution: {integrity: sha512-e1d6Hq5qsRL8sWutrOuQhuir4vHiRJ1PmvDIL8P33mt51Y8VFTQjTG/mr5qJlT8lUD/ADJfaBLzV7SNqSuDTLQ==}
+  /expo-linear-gradient@12.5.0(expo@49.0.16):
+    resolution: {integrity: sha512-GOV2wODawr2biRCtF2Yb5+wLzvnwXS8dAblfQO7qjyh4f7TDTJn7X0TlVSDMNhIdbAcZBrdxvGFeE2iXdzQ6ow==}
     peerDependencies:
       expo: '*'
     dependencies:

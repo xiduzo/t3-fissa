@@ -12,6 +12,7 @@
     "clean:workspaces": "turbo clean",
     "db:generate": "turbo db:generate",
     "db:push": "turbo db:push db:generate",
+    "db:push:force": "turbo db:push:force db:generate",
     "dev": "turbo dev --parallel",
     "dev:ios": "turbo dev:ios",
     "format": "prettier --write \"**/*.{js,cjs,mjs,ts,tsx,md,json}\" --ignore-path .gitignore",

@@ -1,32 +1,31 @@
 import { Prisma } from "@fissa/db";
-import { SpotifyService, addMonths, addSeconds, differenceInMinutes, isPast } from "@fissa/utils";
+import {
+  addMonths,
+  addSeconds,
+  differenceInMinutes,
+  isPast,
+  type SpotifyService,
+} from "@fissa/utils";
 
 import { ServiceWithContext, type Context } from "../utils/context";
 
 export class AuthService extends ServiceWithContext {
-  private spotifyService: SpotifyService = new SpotifyService();
-
-  constructor(ctx: Context, spotifyService?: SpotifyService) {
+  constructor(ctx: Context, private readonly spotifyService: SpotifyService) {
     super(ctx);
-
-    this.spotifyService = spotifyService ?? new SpotifyService();
   }
 
   getUserFissa = async () => {
-    const { hostOf, partOf } = await this.db.user.findUniqueOrThrow({
+    const { hostOf, isIn } = await this.db.user.findUniqueOrThrow({
       where: { id: this.ctx.session?.user.id },
       select: {
         hostOf: { select: { pin: true } },
-        partOf: {
-          select: { pin: true },
-          orderBy: { createdAt: Prisma.SortOrder.desc },
-        },
+        isIn: { select: { pin: true }, orderBy: { createdAt: Prisma.SortOrder.desc } },
       },
     });
 
     return {
       hostOf,
-      partOf,
+      isIn,
     };
   };
 

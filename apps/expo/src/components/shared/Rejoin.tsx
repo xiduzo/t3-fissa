@@ -8,7 +8,7 @@ import { Button } from "./button";
 export const Rejoin = () => {
   const { data } = useGetUserFissa();
 
-  const lastFissa = useMemo(() => data?.partOf[0]?.pin, [data?.partOf]);
+  const lastFissa = useMemo(() => data?.isIn[0]?.pin, [data?.isIn]);
 
   if (!lastFissa) return <View />; // We return view for the layout
 

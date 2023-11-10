@@ -1,16 +1,12 @@
 import { type z } from "zod";
-import { SpotifyService } from "@fissa/utils";
 
 import { type Z_TRACKS } from "../router/constants";
 import { ServiceWithContext, type Context } from "../utils/context";
-import { VoteService } from "./VoteService";
+import { type VoteService } from "./VoteService";
 
 export class TrackService extends ServiceWithContext {
-  private voteService: VoteService;
-
-  constructor(ctx: Context, voteService?: VoteService) {
+  constructor(ctx: Context, private readonly voteService: VoteService) {
     super(ctx);
-    this.voteService = voteService ?? new VoteService(ctx);
   }
 
   byPin = async (pin: string) => {
@@ -50,30 +46,16 @@ export class TrackService extends ServiceWithContext {
     return this.voteService.createVotes(pin, trackIds, 1);
   };
 
-  addRecommendedTracks = async (pin: string, trackIds: string[], accessToken: string) => {
-    const service = new SpotifyService();
-    const recommendations = await service.getRecommendedTracks(accessToken, trackIds);
-
-    return this.db.fissa.update({
-      where: { pin },
-      data: {
-        tracks: {
-          createMany: {
-            data: recommendations.map(({ id, duration_ms }) => ({
-              trackId: id,
-              durationMs: duration_ms,
-              userId: this.ctx.session?.user?.id,
-            })),
-            skipDuplicates: true,
-          },
-        },
-      },
-    });
-  };
-
   deleteTrack = async (pin: string, trackId: string) => {
     return this.db.track.delete({
       where: { pin_trackId: { pin, trackId } },
+    });
+  };
+
+  addTrackScore = async (pin: string, trackId: string, score: number) => {
+    return this.db.track.update({
+      where: { pin_trackId: { pin, trackId } },
+      data: { score: { increment: score } },
     });
   };
 }

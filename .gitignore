@@ -28,6 +28,7 @@ dist/
 # production
 build
 apps/expo/ios/*
+apps/expo/*.aab
 
 # misc
 .DS_Store

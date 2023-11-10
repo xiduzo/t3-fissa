@@ -1,33 +1,28 @@
 import { type Fissa, type Track } from "@fissa/db";
 import {
-  NoNextTrack,
-  NotTheHost,
-  SpotifyService,
   addMilliseconds,
   differenceInMilliseconds,
-  randomSort,
+  NoNextTrack,
+  NotTheHost,
   randomize,
+  randomSort,
   sortFissaTracksOrder,
+  type SpotifyService,
 } from "@fissa/utils";
 
 import { ServiceWithContext, type Context } from "../utils/context";
-import { TrackService } from "./TrackService";
+import { EarnedPoints } from "../utils/EarnedPoints";
 
 const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
 
 export class FissaService extends ServiceWithContext {
-  private spotifyService: SpotifyService = new SpotifyService();
-  private trackService: TrackService;
-
-  constructor(ctx: Context, spotifyService?: SpotifyService, trackService?: TrackService) {
+  constructor(ctx: Context, private readonly spotifyService: SpotifyService) {
     super(ctx);
-    this.spotifyService = spotifyService ?? new SpotifyService();
-    this.trackService = trackService ?? new TrackService(ctx);
   }
 
   activeFissas = async () => {
     return this.db.fissa.findMany({
-      where: { currentlyPlaying: { isNot: null } },
+      where: { currentlyPlaying: { isNot: undefined } },
       select: { pin: true, expectedEndTime: true },
     });
   };
@@ -85,7 +80,7 @@ export class FissaService extends ServiceWithContext {
     await this.playTrack(fissa, tracks[0], access_token);
 
     if (tracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-      await this.trackService.addRecommendedTracks(
+      await this.addRecommendedTracks(
         fissa.pin,
         tracks.map(({ trackId }) => trackId),
         access_token,
@@ -96,6 +91,9 @@ export class FissaService extends ServiceWithContext {
   };
 
   byId = async (pin: string) => {
+    if (!this.ctx.session?.user) throw new Error("no user");
+    const userId = this.ctx.session.user.id;
+
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       include: {
@@ -106,9 +104,10 @@ export class FissaService extends ServiceWithContext {
       },
     });
 
-    await this.db.user.update({
-      where: { id: this.ctx.session?.user.id },
-      data: { partOf: { connect: { pin } } },
+    await this.db.userInFissa.upsert({
+      where: { pin_userId: { pin, userId } },
+      create: { pin, userId },
+      update: {},
     });
 
     return fissa;
@@ -129,6 +128,13 @@ export class FissaService extends ServiceWithContext {
     const fissa = await this.byId(pin);
 
     if (fissa.userId !== this.ctx.session?.user.id) throw new NotTheHost();
+
+    if (!fissa.currentlyPlayingId) return;
+
+    await this.db.track.update({
+      where: { pin_trackId: { pin, trackId: fissa.currentlyPlayingId } },
+      data: { totalScore: { decrement: EarnedPoints.SkipTrack } },
+    });
 
     return this.playNextTrack(pin, true);
   };
@@ -177,7 +183,7 @@ export class FissaService extends ServiceWithContext {
           .slice(0, TRACKS_BEFORE_ADDING_RECOMMENDATIONS);
 
         try {
-          await this.trackService.addRecommendedTracks(pin, trackIds, access_token);
+          await this.addRecommendedTracks(pin, trackIds, access_token);
         } catch (e) {
           console.error(`${fissa.pin}, failed adding recommended tracks`, e);
         }
@@ -185,7 +191,7 @@ export class FissaService extends ServiceWithContext {
 
       await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
 
-      await this.updateScores(fissa);
+      await this.trackPlayed(fissa);
       await this.playTrack(fissa, nextTrack, access_token);
     } catch (e) {
       console.error(e);
@@ -218,25 +224,19 @@ export class FissaService extends ServiceWithContext {
     });
   };
 
-  private updateScores = async ({
+  private trackPlayed = async ({
     currentlyPlayingId,
     pin,
   }: Pick<Fissa, "currentlyPlayingId" | "pin">) => {
     if (!currentlyPlayingId) return;
 
-    await this.db.$transaction(async (transaction) => {
-      const scores = await this.db.vote.findMany({
-        where: { pin, trackId: currentlyPlayingId },
-      });
-
-      const increment = scores.reduce((acc, { vote }) => acc + vote, 0);
-
+    return this.db.$transaction(async (transaction) => {
       await transaction.track.update({
         where: { pin_trackId: { pin, trackId: currentlyPlayingId } },
         data: {
           hasBeenPlayed: true,
           score: 0, // Reset current score
-          totalScore: { increment }, // Update total score
+          totalScore: { increment: EarnedPoints.PlayedTrack },
         },
       });
 
@@ -264,7 +264,6 @@ export class FissaService extends ServiceWithContext {
       });
     });
 
-    // play next track
     await this.spotifyService.playTrack(accessToken, trackId);
   };
 
@@ -274,5 +273,25 @@ export class FissaService extends ServiceWithContext {
     );
 
     return sortFissaTracksOrder(tracksToSort);
+  };
+
+  private addRecommendedTracks = async (pin: string, trackIds: string[], accessToken: string) => {
+    const recommendations = await this.spotifyService.getRecommendedTracks(accessToken, trackIds);
+
+    return this.db.fissa.update({
+      where: { pin },
+      data: {
+        tracks: {
+          createMany: {
+            data: recommendations.map(({ id, duration_ms }) => ({
+              trackId: id,
+              durationMs: duration_ms,
+              userId: this.ctx.session?.user?.id,
+            })),
+            skipDuplicates: true,
+          },
+        },
+      },
+    });
   };
 }
