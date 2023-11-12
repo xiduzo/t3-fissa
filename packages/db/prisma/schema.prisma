@@ -67,7 +67,7 @@ model Vote {
     track Track @relation(fields: [trackId, pin], references: [trackId, pin], onDelete: Cascade)
     trackId String @map("track_id") @db.VarChar(22)
     
-    fissa Fissa @relation(fields: [pin], references: [pin])
+    fissa Fissa @relation(fields: [pin], references: [pin], onDelete: Cascade)
     pin String @db.VarChar(4)
 
     @@id([trackId, userId, pin])
