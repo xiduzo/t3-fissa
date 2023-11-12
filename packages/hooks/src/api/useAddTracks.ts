@@ -1,7 +1,6 @@
-import { type MutationCallbacks } from "@fissa/utils";
+import { sortFissaTracksOrder, type MutationCallbacks } from "@fissa/utils";
 
 import { api } from "./api";
-import { type Track } from "@prisma/client";
 
 const endpoint = api.track.addTracks.useMutation;
 
@@ -13,24 +12,41 @@ export const useAddTracks = (pin: string, callbacks: MutationCallbacks<typeof en
     onMutate: async (variables) => {
       const newTrackIds = variables.tracks.map((track) => track.trackId);
       await queryClient.fissa.byId.cancel(variables.pin);
-      queryClient.fissa.byId.setData(variables.pin, (prev) => prev && ({
-        ...prev,
-        tracks: [
-          ...variables.tracks.map((track) => ({
-            ...track as unknown as Track,
-            by: null
-          })),
-          ...prev.tracks.filter(({ trackId }) => !newTrackIds.includes(trackId)),
-        ]
-      }));
+      queryClient.fissa.byId.setData(
+        variables.pin,
+        (prev) =>
+          prev && {
+            ...prev,
+            tracks: sortFissaTracksOrder([
+              ...variables.tracks.map((track) => ({
+                by: null,
+                lastUpdateAt: new Date(),
+                createdAt: new Date(),
+                hasBeenPlayed: false,
+                score:
+                  (prev.tracks.find(({ trackId }) => trackId === track.trackId)?.score ?? 0) + 1,
+                pin: variables.pin,
+                trackId: track.trackId,
+                durationMs: track.durationMs,
+                totalScore: 0,
+                userId: null,
+              })),
+              ...prev.tracks.filter(({ trackId }) => !newTrackIds.includes(trackId)),
+            ]),
+          },
+      );
 
       variables.tracks.forEach((track) => {
         const vote = { trackId: track.trackId, pin: variables.pin };
-        
-        queryClient.vote.byTrackFromUser.setData(vote, (prev) => prev && ({
-          ...prev,
-          vote: 1,
-        }));
+
+        queryClient.vote.byTrackFromUser.setData(
+          vote,
+          (prev) =>
+            prev && {
+              ...prev,
+              vote: 1,
+            },
+        );
       });
 
       await callbacks.onMutate?.(variables);
@@ -38,7 +54,7 @@ export const useAddTracks = (pin: string, callbacks: MutationCallbacks<typeof en
     onSettled: async (data, error, variables, context) => {
       for (const track of variables.tracks) {
         const vote = { trackId: track.trackId, pin: variables.pin };
-        
+
         await queryClient.vote.byTrackFromUser.invalidate(vote);
       }
 

@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
-import { useSpotify } from "@fissa/utils";
 
 import {
   Action,
@@ -19,18 +18,6 @@ import { useAuth } from "../src/providers";
 
 const Home = () => {
   const { user } = useAuth();
-  const spotify = useSpotify();
-
-  const [isPremium, setIsPremium] = useState(false);
-
-  useEffect(() => {
-    spotify
-      .getMe()
-      .then((user) => {
-        setIsPremium(user.product === "premium");
-      })
-      .catch(console.log);
-  }, [spotify]);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme["900"] }}>
@@ -58,8 +45,13 @@ const Home = () => {
         </View>
         <View>
           <Button title="join a fissa" className="mb-6" linkTo="/join" />
-          <Button title="host a fissa" disabled={!isPremium} variant="outlined" linkTo="/host" />
-          {!isPremium && (
+          <Button
+            title="host a fissa"
+            disabled={user?.product !== "premium"}
+            variant="outlined"
+            linkTo="/host"
+          />
+          {user?.product !== "premium" && (
             <Typography dimmed centered className="mt-4" variant="bodyM">
               Only spotify premium users can host a fissa
             </Typography>

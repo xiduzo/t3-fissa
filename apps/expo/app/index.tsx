@@ -134,6 +134,7 @@ const Index = () => {
             icon="spotify"
             onPress={signIn}
             title="Connect to get started"
+            disabled={!!user}
             accessibilityLabel="Connect to spotify to get started"
           />
         </Animated.View>
