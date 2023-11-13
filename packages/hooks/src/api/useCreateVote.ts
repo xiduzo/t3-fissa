@@ -19,23 +19,31 @@ export const useCreateVote = (pin: string, callbacks: MutationCallbacks<typeof e
       };
       const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
 
-      queryClient.vote.byTrackFromUser.setData(vote, (prev) => prev && ({
-        ...prev,
-        ...newVote,
-      }));
+      queryClient.vote.byTrackFromUser.setData(
+        vote,
+        (prev) =>
+          prev && {
+            ...prev,
+            ...newVote,
+          },
+      );
 
-      queryClient.fissa.byId.setData(newVote.pin, (prev) => prev && ({
-        ...prev,
-        tracks: prev.tracks.map((track) => {
-          if (track.trackId === newVote.trackId) {
-            return {
-              ...track,
-              score: track.score + newVote.vote - (previousVote?.vote ?? 0),
-            };
-          }
-          return track;
-        }),
-      }));
+      queryClient.fissa.byId.setData(
+        newVote.pin,
+        (prev) =>
+          prev && {
+            ...prev,
+            tracks: prev.tracks.map((track) => {
+              if (track.trackId === newVote.trackId) {
+                return {
+                  ...track,
+                  score: track.score + newVote.vote - (previousVote?.vote ?? 0),
+                };
+              }
+              return track;
+            }),
+          },
+      );
 
       await callbacks.onMutate?.(newVote);
 
@@ -53,7 +61,7 @@ export const useCreateVote = (pin: string, callbacks: MutationCallbacks<typeof e
 
   return {
     ...rest,
-    mutate: async (vote: number, trackId: string) => mutate({ pin, trackId, vote }),
+    mutate: (vote: number, trackId: string) => mutate({ pin, trackId, vote }),
     mutateAsync: async (vote: number, trackId: string) => mutateAsync({ pin, trackId, vote }),
   };
 };

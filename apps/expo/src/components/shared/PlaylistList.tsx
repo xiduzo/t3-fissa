@@ -17,7 +17,6 @@ export const PlaylistList: FC<Props> = ({
   const { user } = useAuth();
 
   const playlists = usePlayLists(user);
-  console.log({ playlists: playlists.map((playlist) => playlist.owner.id), user: user?.id });
 
   return (
     <View className="h-full w-full">

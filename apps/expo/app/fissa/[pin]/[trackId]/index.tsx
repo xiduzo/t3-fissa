@@ -23,7 +23,7 @@ const AddToPlaylist = () => {
       if (playlist.id === SAVED_TRACKS_PLAYLIST_ID) {
         await spotify.addToMySavedTracks([track.id]);
       } else {
-        await spotify.addTracksToPlaylist(playlist.id, [track.id]);
+        await spotify.addTracksToPlaylist(playlist.id, [track.uri]);
       }
       toast.success({
         icon: "🐘",
@@ -41,6 +41,7 @@ const AddToPlaylist = () => {
           headerShown: true,
           headerBackVisible: true,
           title: `Save to spotify`,
+          animation: "slide_from_bottom",
           // headerRight: () => <HeaderRight />,
         }}
       />
