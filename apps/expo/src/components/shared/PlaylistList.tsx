@@ -11,17 +11,21 @@ export const PlaylistList: FC<Props> = ({
   onPlaylistPress,
   inverted,
   playlistListItemEnd,
+  onlyUserPlaylists,
   ...props
 }) => {
   const { user } = useAuth();
 
   const playlists = usePlayLists(user);
+  console.log({ playlists: playlists.map((playlist) => playlist.owner.id), user: user?.id });
 
   return (
     <View className="h-full w-full">
       <FlashList
         {...props}
-        data={playlists}
+        data={playlists.filter(
+          (playlists) => !onlyUserPlaylists || playlists.owner.id === user?.id,
+        )}
         keyExtractor={({ id }) => id}
         estimatedItemSize={80}
         ItemSeparatorComponent={ItemSeparatorComponent}
@@ -50,4 +54,5 @@ interface Props
   onPlaylistPress?: (playlist: SpotifyApi.PlaylistObjectSimplified) => void;
   inverted?: boolean;
   playlistListItemEnd?: JSX.Element;
+  onlyUserPlaylists?: boolean;
 }

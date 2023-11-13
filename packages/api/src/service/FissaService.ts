@@ -149,6 +149,25 @@ export class FissaService extends ServiceWithContext {
     return this.playNextTrack(pin, true);
   };
 
+  pause = async (pin: string) => {
+    const fissa = await this.db.fissa.findUniqueOrThrow({
+      where: { pin },
+      select: { userId: true },
+    });
+
+    if (fissa.userId !== this.ctx.session?.user.id) throw new NotTheHost();
+
+    const { access_token } = await this.db.account.findFirstOrThrow({
+      where: { userId: this.ctx.session.user.id },
+      select: { access_token: true },
+    });
+
+    if (!access_token) throw new Error("No access token");
+
+    await this.spotifyService.pause(access_token);
+    await this.stopFissa(pin);
+  };
+
   playNextTrack = async (pin: string, instantPlay = false) => {
     const fissa = await this.getFissaDetailedInformation(pin);
 

@@ -7,5 +7,6 @@ export * from "./useGetFissa";
 export * from "./useGetTracks";
 export * from "./useGetUserFissa";
 export * from "./useGetVoteFromUser";
+export * from "./usePauseFissa";
 export * from "./useRestartFissa";
 export * from "./useSkipTrack";

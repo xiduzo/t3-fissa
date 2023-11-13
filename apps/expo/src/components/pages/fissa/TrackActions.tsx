@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, type FC } from "react";
-import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
-import { useGlobalSearchParams } from "expo-router";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import {
   useCreateVote,
   useDeleteTrack,
@@ -17,6 +17,7 @@ import { Action } from "../../shared";
 export const TrackActions: FC<Props> = ({ track, onPress }) => {
   const { pin } = useGlobalSearchParams();
   const { data: fissa } = useGetFissa(String(pin));
+  const { push } = useRouter();
 
   const isOwner = useIsOwner(String(pin));
 
@@ -140,6 +141,16 @@ export const TrackActions: FC<Props> = ({ track, onPress }) => {
           subtitle="It might move down in the queue"
         />
       )}
+      <Action
+        inverted
+        title="Save to spotify"
+        subtitle="Capture those vibes"
+        icon="spotify"
+        onPress={() => {
+          onPress();
+          push(`/fissa/${fissa?.pin}/${track?.id}`);
+        }}
+      />
     </>
   );
 };

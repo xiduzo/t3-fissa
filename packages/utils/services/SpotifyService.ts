@@ -68,4 +68,9 @@ export class SpotifyService {
 
     return body.tracks;
   };
+
+  pause = async (accessToken: string) => {
+    this.spotify.setAccessToken(accessToken);
+    return this.spotify.pause();
+  };
 }

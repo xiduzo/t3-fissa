@@ -63,7 +63,7 @@ export const getPlaylists = async (
   // Sync so in the meantime we continue fetching playlists
   try {
     const { total } = await spotify.getMySavedTracks(user.id);
-    const playlist = savedTracksPlaylist(total, user.display_name);
+    const playlist = savedTracksPlaylist(total, { display_name: user.display_name, id: user.id });
 
     playlists.push(playlist);
   } catch {
@@ -74,7 +74,7 @@ export const getPlaylists = async (
     const options = {
       offset,
       limit: 50,
-      fields: "items(id,name,owner(display_name),images(url),tracks(total)),next",
+      fields: "items(id,name,owner(id,display_name),images(url),tracks(total)),next",
     };
 
     const { next, items } = await spotify.getUserPlaylists(user.id, options);
@@ -107,14 +107,14 @@ export const scopes = [
   "user-library-modify",
 ];
 
-const SAVED_TRACKS_PLAYLIST_ID = "SAVED_TRACKS_PLAYLIST_ID";
+export const SAVED_TRACKS_PLAYLIST_ID = "SAVED_TRACKS_PLAYLIST_ID";
 
-const savedTracksPlaylist = (total: number, display_name?: string) =>
+const savedTracksPlaylist = (total: number, owner?: { display_name?: string; id: string }) =>
   ({
     name: "Liked songs",
     id: SAVED_TRACKS_PLAYLIST_ID,
     tracks: { total },
-    owner: { display_name },
+    owner,
     images: [
       {
         url: "https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png",

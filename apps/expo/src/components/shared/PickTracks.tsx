@@ -11,14 +11,14 @@ import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed, getPlaylistTracks, useSpotify } from "@fissa/utils";
 
 import { BottomDrawer } from "./BottomDrawer";
+import { Button, IconButton } from "./button";
 import { EmptyState } from "./EmptyState";
 import { Icon } from "./Icon";
-import { Image } from "./Image";
 import { Input } from "./Input";
 import { PlaylistList } from "./PlaylistList";
+import { PlaylistListItem } from "./PlaylistListItem";
 import { TrackList } from "./TrackList";
 import { Typography } from "./Typography";
-import { Button, IconButton } from "./button";
 
 export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks }) => {
   const { back } = useRouter();
@@ -28,11 +28,11 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   const [search, setSearch] = useState("");
   const debounced = useDebounce(search);
 
-  const playlistTracks = useRef<Tracks>([]);
+  const playlistTracks = useRef<SpotifyApi.TrackObjectFull[]>([]);
 
-  const [searchedTracks, setSearchedTracks] = useState<Tracks>([]);
-  const [selectedTracks, setSelectedTracks] = useState<Tracks>([]);
-  const [filteredTracks, setFilteredTracks] = useState<Tracks>([]);
+  const [searchedTracks, setSearchedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [filteredTracks, setFilteredTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
 
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
@@ -108,34 +108,37 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
         options={{
           animation: "fade_from_bottom",
           animationDuration: AnimationSpeed.VeryFast,
-          headerLeft: () =>
-            selectedPlaylist && (
-              <IconButton
-                icon="arrow-left"
-                title="back to playlists"
-                onPress={clearSelectedPlaylist}
-              />
-            ),
+          headerLeft: () => (
+            <>
+              {selectedPlaylist && (
+                <IconButton
+                  className="mr-2"
+                  icon="arrow-left"
+                  title="back to playlists"
+                  onPress={clearSelectedPlaylist}
+                />
+              )}
+              <View className="grow">
+                <Input
+                  startIcon="search"
+                  ref={inputRef}
+                  variant="contained"
+                  placeholder={`Search in ${selectedPlaylist?.name || "spotify"}`}
+                  value={search}
+                  onChange={handleSearch}
+                />
+              </View>
+            </>
+          ),
           headerRight: () => <IconButton icon="close" title="back to fissa" onPress={back} />,
         }}
       />
       <View className="h-full w-full">
-        <View className="my-4 px-6">
-          <Input
-            startIcon="search"
-            ref={inputRef}
-            variant="contained"
-            placeholder={`Search in ${selectedPlaylist?.name || "spotify"}`}
-            value={search}
-            onChange={handleSearch}
-          />
-        </View>
-
         <TrackList
           data={searchedTracks}
           selectedTracks={selectedTracks.map((track) => track.id)}
           onTrackPress={handleTrackPress}
-          ListFooterComponent={<View className="pb-96" />}
+          ListFooterComponent={<View className="pb-72" />}
           ListEmptyComponent={
             <View>
               {!selectedPlaylist && (
@@ -152,23 +155,12 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
               {selectedPlaylist && (
                 <>
                   <View className="m-6">
-                    <View className="h-40 w-40">
-                      <Image
-                        aria-hidden
-                        alt={selectedPlaylist?.name}
-                        className="h-full w-full"
-                        source={selectedPlaylist.images[0]?.url}
-                      />
-                    </View>
-                    <Typography variant="h1" className="mt-6">
-                      {selectedPlaylist.name}
-                    </Typography>
+                    <PlaylistListItem playlist={selectedPlaylist} bigImage />
                   </View>
                   <TrackList
                     data={filteredTracks}
                     onTrackPress={handleTrackPress}
                     selectedTracks={selectedTracks.map((track) => track.id)}
-                    ListFooterComponent={<View className="pb-40" />}
                     ListEmptyComponent={
                       <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
                     }
@@ -178,7 +170,6 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
             </View>
           }
         />
-
         <BottomDrawer>
           <Button
             title="Deselect all songs"
@@ -203,7 +194,5 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
 interface Props {
   disabledAction?: boolean;
   actionTitle: string;
-  onAddTracks: (tracks: Tracks) => Promise<void>;
+  onAddTracks: (tracks: SpotifyApi.TrackObjectFull[]) => Promise<void>;
 }
-
-type Tracks = SpotifyApi.TrackObjectFull[];

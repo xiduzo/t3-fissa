@@ -3,12 +3,12 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as Updates from "expo-updates";
+import * as Sentry from "@sentry/react-native";
 
 import { Header, ToastContainer } from "../src/components/";
 import { NotificationProvider, SpotifyProvider } from "../src/providers";
 import { toast } from "../src/utils";
 import { TRPCProvider } from "../src/utils/api";
-import * as Sentry from "@sentry/react-native";
 
 // This is the main layout of the app
 // It wraps your pages with the providers they need

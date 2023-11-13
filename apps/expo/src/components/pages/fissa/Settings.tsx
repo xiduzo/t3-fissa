@@ -1,7 +1,7 @@
 import { useCallback, useState, type FC } from "react";
-import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
-import { useGetTracks, useIsOwner } from "@fissa/hooks";
+import { useGetTracks, useIsOwner, usePauseFissa } from "@fissa/hooks";
 import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
 import { useAuth } from "../../../providers";
@@ -95,18 +95,19 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 
 const PauseFissaAction = () => {
   const { pin } = useGlobalSearchParams();
-  const spotify = useSpotify();
   const isOwner = useIsOwner(String(pin));
-
-  const pauseSpotify = useCallback(async () => {
-    try {
-      await spotify.pause();
-    } catch (e) {
+  const { mutateAsync, isLoading } = usePauseFissa(String(pin), {
+    onSuccess: () => {
+      toast.success({ message: "Fissa paused", icon: "🦥" });
+    },
+    onError() {
       toast.error({
-        message: `Failed to pause fissa`,
+        message: "Something went wrong, you can always pause Spotify to stop the Fissa!",
       });
-    }
-  }, [spotify]);
+    },
+  });
+
+  const pauseSpotify = useCallback(mutateAsync, [mutateAsync]);
 
   if (!isOwner) return null;
 
@@ -115,7 +116,7 @@ const PauseFissaAction = () => {
       title="Pause fissa"
       subtitle="Nothing lasts forever"
       inverted
-      // disabled={isCreatingPlaylist}
+      disabled={isLoading}
       onPress={pauseSpotify}
       icon="pause"
     />
