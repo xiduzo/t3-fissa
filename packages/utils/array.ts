@@ -56,16 +56,16 @@ export const sortFissaTracksOrder = <T extends SortableTrack>(
 
 export const randomSort = () => Number(Math.random() > 0.5);
 
-export const biasSort = (tracks: { trackId: string; totalScore: number }[]) => {
+export const biasSort = (items: { totalScore: number; trackId: string }[]) => {
   // Step 1: Sort by descending total scores
-  const newTracks = [...tracks].sort((a, b) => b.totalScore - a.totalScore);
+  const sortedItems = [...items].sort((a, b) => b.totalScore - a.totalScore);
 
   // Step 2: Introduce randomness with probability inversely proportional to score difference
-  const scores = newTracks.map(({ totalScore }) => totalScore);
+  const scores = sortedItems.map(({ totalScore }) => totalScore);
   const maxScoreDifference = Math.max(...scores) - Math.min(...scores);
 
   // Adjust positions based on probability inversely proportional to score difference
-  return [...newTracks].sort((a, b) => {
+  return [...sortedItems].sort((a, b) => {
     const scoreDifference = b.totalScore - a.totalScore;
     const probability = 1 - scoreDifference / maxScoreDifference;
 
