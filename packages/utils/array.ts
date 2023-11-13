@@ -48,10 +48,28 @@ export const sortFissaTracksOrder = <T extends SortableTrack>(
     { played: [] as T[], unplayed: [] as T[], active: null as T | null },
   );
 
-  const sortedPlayedTracks = played.sort(sortTrack("lastUpdateAt"));
-  const sortedUnplayedTracks = unplayed.sort(sortTrack("createdAt"));
+  const sortedPlayedTracks = [...played].sort(sortTrack("lastUpdateAt"));
+  const sortedUnplayedTracks = [...unplayed].sort(sortTrack("createdAt"));
 
   return [...sortedPlayedTracks, ...(active ? [active] : []), ...sortedUnplayedTracks];
 };
 
 export const randomSort = () => Number(Math.random() > 0.5);
+
+export const biasSort = (tracks: { trackId: string; totalScore: number }[]) => {
+  // Step 1: Sort by descending total scores
+  const newTracks = [...tracks].sort((a, b) => b.totalScore - a.totalScore);
+
+  // Step 2: Introduce randomness with probability inversely proportional to score difference
+  const scores = newTracks.map(({ totalScore }) => totalScore);
+  const maxScoreDifference = Math.max(...scores) - Math.min(...scores);
+
+  // Adjust positions based on probability inversely proportional to score difference
+  return [...newTracks].sort((a, b) => {
+    const scoreDifference = b.totalScore - a.totalScore;
+    const probability = 1 - scoreDifference / maxScoreDifference;
+
+    // Adjust positions based on probability
+    return Math.random() < probability ? 1 : -1;
+  });
+};

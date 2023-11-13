@@ -1,11 +1,11 @@
 import { type Fissa, type Track } from "@fissa/db";
 import {
   addMilliseconds,
+  biasSort,
   differenceInMilliseconds,
   NoNextTrack,
   NotTheHost,
   randomize,
-  randomSort,
   sortFissaTracksOrder,
   type SpotifyService,
 } from "@fissa/utils";
@@ -193,13 +193,7 @@ export class FissaService extends ServiceWithContext {
       if (!nextTrack) throw new NoNextTrack();
 
       if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-        const withPositiveScore = tracks.filter(({ totalScore }) => totalScore > 0);
-        const tracksToMap = withPositiveScore.length ? withPositiveScore : tracks;
-
-        const trackIds = tracksToMap
-          .map(({ trackId }) => trackId)
-          .sort(randomSort)
-          .slice(0, TRACKS_BEFORE_ADDING_RECOMMENDATIONS);
+        const trackIds = biasSort(tracks).map(({ trackId }) => trackId);
 
         try {
           await this.addRecommendedTracks(pin, trackIds, access_token);
