@@ -75,7 +75,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         toValue: Number(Math.abs(offSet) > SCROLL_DISTANCE),
         useNativeDriver: false,
       }).start();
-      if (offSet === 0) return;
+      if (offSet === 0) return setScrollDirection(undefined);
 
       setScrollDirection(offSet > 0 ? "up" : "down");
     },
