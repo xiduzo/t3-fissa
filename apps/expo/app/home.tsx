@@ -6,6 +6,7 @@ import { useGetUserFissa } from "@fissa/hooks";
 import {
   Action,
   Button,
+  ButtonGroup,
   Divider,
   IconButton,
   PageTemplate,
@@ -124,20 +125,21 @@ const HostOfFissaPopover: FC<HostOfFissaPopoverProps> = ({ visible, pin, onReque
       <Typography variant="bodyL" className="mb-8" centered inverted>
         Hosting a new Fissa will stop your current Fissa!
       </Typography>
-      <Button
-        inverted
-        className="mb-4"
-        title={`Rejoin Fissa ${pin}`}
-        onPress={onRequestClose}
-        linkTo={`/fissa/${pin}`}
-      />
-      <Button
-        inverted
-        onPress={onRequestClose}
-        linkTo="/host"
-        variant="text"
-        title="Roger that, I want a new Fissa"
-      />
+      <ButtonGroup>
+        <Button
+          inverted
+          onPress={onRequestClose}
+          linkTo="/host"
+          title="Roger that, I want a new Fissa"
+        />
+        <Button
+          inverted
+          title={`Rejoin Fissa ${pin}`}
+          onPress={onRequestClose}
+          variant="text"
+          linkTo={`/fissa/${pin}`}
+        />
+      </ButtonGroup>
     </Popover>
   );
 };

@@ -20,11 +20,11 @@ import {
 import { useOnActiveApp } from "../../../hooks";
 import { api } from "../../../utils";
 import { Icon, ProgressBar, TrackEnd, TrackList, Typography } from "../../shared";
+import { SkipTrackButton } from "./buttons";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
-import { SelectedTrackPopover } from "./SelectedTrackPopover";
-import { SkipTrackButton } from "./buttons";
 import { QuickVoteModal, useQuickVote } from "./quickVote";
+import { SelectedTrackPopover } from "./SelectedTrackPopover";
 
 const SCROLL_DISTANCE = 150;
 
@@ -37,7 +37,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const buttonOffsetAnimation = useRef(new Animated.Value(0)).current;
   const lastScrolledTo = useRef<string>();
-  const currentIndexOffset = useRef<number>();
+  const currentIndexOffset = useRef(0);
+  const [scrollDirection, setScrollDirection] = useState<"up" | "down" | undefined>();
 
   const marginBottom = buttonOffsetAnimation.interpolate({
     inputRange: [0, 1],
@@ -69,23 +70,26 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const showBackButton = useCallback(
-    (toValue = 0) => {
+    (offSet = 0) => {
       Animated.spring(buttonOffsetAnimation, {
-        toValue,
+        toValue: Number(Math.abs(offSet) > SCROLL_DISTANCE),
         useNativeDriver: false,
       }).start();
+      if (offSet === 0) return;
+
+      setScrollDirection(offSet > 0 ? "up" : "down");
     },
-    [buttonOffsetAnimation],
+    [buttonOffsetAnimation, setScrollDirection],
   );
 
   const getTrackVotes = useCallback(
-    (track?: SpotifyApi.TrackObjectFull) => {
-      if (!track) return;
+    (track: SpotifyApi.TrackObjectFull) => {
+      if (data?.currentlyPlayingId === track.id) return;
+
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
       if (!localTrack) return;
       if (localTrack.hasBeenPlayed) return;
-      if (data?.currentlyPlayingId === track.id) return;
 
       return localTrack.score;
     },
@@ -146,10 +150,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const lockOnActiveTrack = useCallback(
-    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (!currentIndexOffset.current) return;
-
-      const scrollPos = e.nativeEvent.contentOffset.y;
+    ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const scrollPos = nativeEvent.contentOffset.y;
 
       if (Math.abs(scrollPos - currentIndexOffset.current) >= SCROLL_DISTANCE) return;
 
@@ -161,6 +163,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   useEffect(() => {
     if (lastScrolledTo.current === data?.currentlyPlayingId) return;
     if (!data?.currentlyPlayingId) return;
+    if (scrollDirection) return;
 
     setTimeout(
       () => {
@@ -168,7 +171,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       },
       currentIndexOffset.current ? 0 : 500, // give TrackList time to render
     );
-  }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
+  }, [data?.currentlyPlayingId, scrollToCurrentIndex, scrollDirection]);
 
   useOnActiveApp(scrollToCurrentIndex);
 
@@ -176,14 +179,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     <>
       <TrackList
         ref={listRef}
-        onScroll={(e) => {
-          if (!currentIndexOffset.current) return;
-
-          const scrollPos = e.nativeEvent.contentOffset.y;
-
-          showBackButton(
-            Number(Math.abs(scrollPos - currentIndexOffset.current) >= SCROLL_DISTANCE),
-          );
+        onScroll={({ nativeEvent }) => {
+          showBackButton(nativeEvent.contentOffset.y - currentIndexOffset.current);
         }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -215,7 +212,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         ListFooterComponent={<ListFooterComponent tracksShown={showTracks} />}
       />
       <Animated.View
-        className="absolute bottom-32 w-full items-center md:bottom-36"
+        className="absolute bottom-7 z-50 w-full items-center md:bottom-36"
         style={{ opacity: buttonOffsetAnimation, marginBottom }}
       >
         <TouchableHighlight
@@ -225,26 +222,24 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           underlayColor={theme["900"] + "10"}
         >
           <View
-            className="rounded-md border-2 px-3 py-2 shadow-md"
+            className="flex flex-row items-center space-x-4 rounded-md border-2 px-3 py-2 shadow-md"
             style={{
               backgroundColor: theme["900"],
               borderColor: theme["500"],
               shadowColor: theme["900"],
             }}
           >
-            <View className="flex flex-row space-x-4">
-              <Typography style={{ color: theme["500"] }}>
-                <Icon name={"reload1"} />
-              </Typography>
-              <Typography
-                className="font-bold"
-                centered
-                variant="h3"
-                style={{ color: theme["500"] }}
-              >
-                Back to current song
-              </Typography>
-            </View>
+            <Typography
+              className="font-bold"
+              centered
+              variant="bodyM"
+              style={{ color: theme["500"] }}
+            >
+              Current song
+            </Typography>
+            <Typography style={{ color: theme["500"] }}>
+              <Icon name={scrollDirection === "down" ? "arrow-down" : "arrow-up"} />
+            </Typography>
           </View>
         </TouchableHighlight>
       </Animated.View>

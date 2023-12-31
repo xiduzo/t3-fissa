@@ -11,7 +11,7 @@ import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed, getPlaylistTracks, useSpotify } from "@fissa/utils";
 
 import { BottomDrawer } from "./BottomDrawer";
-import { Button, IconButton } from "./button";
+import { Button, ButtonGroup, IconButton } from "./button";
 import { EmptyState } from "./EmptyState";
 import { Icon } from "./Icon";
 import { Input } from "./Input";
@@ -171,20 +171,21 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
           }
         />
         <BottomDrawer>
-          <Button
-            title="Deselect all songs"
-            variant="text"
-            onPress={() => setSelectedTracks([])}
-            inverted
-            disabled={!selectedTracks.length}
-            className="mb-4"
-          />
-          <Button
-            title={actionTitle}
-            inverted
-            disabled={!selectedTracks.length || disabledAction}
-            onPress={handleAddTracks}
-          />
+          <ButtonGroup>
+            <Button
+              title="Deselect all songs"
+              variant="text"
+              onPress={() => setSelectedTracks([])}
+              inverted
+              disabled={!selectedTracks.length}
+            />
+            <Button
+              title={actionTitle}
+              inverted
+              disabled={!selectedTracks.length || disabledAction}
+              onPress={handleAddTracks}
+            />
+          </ButtonGroup>
         </BottomDrawer>
       </View>
     </View>

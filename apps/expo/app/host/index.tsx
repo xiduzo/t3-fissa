@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Stack } from "expo-router";
 import { randomSort, useSpotify } from "@fissa/utils";
 
-import { Button, PageTemplate, Typography } from "../../src/components";
+import { Button, ButtonGroup, PageTemplate, Typography } from "../../src/components";
 import { useCreateFissa } from "../../src/hooks";
 import { toast } from "../../src/utils";
 
@@ -25,54 +25,33 @@ const Host = () => {
     const { items } = await spotify.getMyTopTracks();
     const { tracks } = await spotify.getRecommendations({
       limit: 5,
-      seed_tracks: items
-        .map(({ id }) => id)
-        .sort(randomSort)
-        .slice(0, 5),
+      seed_tracks: items.map(({ id }) => id).sort(randomSort),
     });
 
     await mutateAsync(tracks);
   }, [spotify, mutateAsync]);
 
   return (
-    <PageTemplate>
+    <PageTemplate className="pt-40">
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <View />
       <View>
-        <Typography
-          variant="h1"
-          centered
-          className="mb-4"
-          accessibilityLabel="Host a fissa, how would you like to start"
-        >
+        <Typography variant="h1" centered className="mb-4">
           Host a fissa
         </Typography>
-        <Typography centered variant="h5" accessibilityElementsHidden>
+        <Typography centered variant="h5">
           how would you like to start
         </Typography>
       </View>
-      <View>
-        <Button
-          title="Based on my playlist"
-          className="mb-6"
-          linkTo="/host/fromPlaylist"
-          disabled={isLoading}
-        />
+      <ButtonGroup>
+        <Button title="Based on my playlist" linkTo="/host/fromPlaylist" disabled={isLoading} />
         <Button
           title="Select some songs"
           variant="outlined"
           linkTo="/host/fromTracks"
           disabled={isLoading}
         />
-      </View>
-      <View>
-        <Button
-          title="Surprise me"
-          variant="text"
-          onPress={handleSurpriseMe}
-          disabled={isLoading}
-        />
-      </View>
+      </ButtonGroup>
+      <Button title="Surprise me" variant="text" onPress={handleSurpriseMe} disabled={isLoading} />
     </PageTemplate>
   );
 };
