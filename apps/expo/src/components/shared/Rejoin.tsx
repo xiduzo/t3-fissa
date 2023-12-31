@@ -10,7 +10,7 @@ export const Rejoin = () => {
 
   const lastFissa = useMemo(() => data?.isIn[0]?.pin, [data?.isIn]);
 
-  if (!lastFissa) return <View />; // We return view for the layout
+  if (!lastFissa) return <View className="my-1 h-16" />; // We return view for the layout
 
   return (
     <View>

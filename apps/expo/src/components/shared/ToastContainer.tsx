@@ -1,5 +1,5 @@
 import { useEffect, useRef, type FC } from "react";
-import { AccessibilityInfo, Platform, View, findNodeHandle } from "react-native";
+import { AccessibilityInfo, findNodeHandle, Platform, View } from "react-native";
 import Toast, { type ToastConfig, type ToastConfigParams } from "react-native-toast-message";
 import { theme } from "@fissa/tailwind-config";
 
@@ -17,7 +17,7 @@ export const ToastContainer: FC = () => {
   return <Toast config={toastConfig} />;
 };
 
-const Toaster: FC<Props> = ({ text1, text2, isVisible }) => {
+const Toaster: FC<Props> = ({ text1, text2, isVisible, type }) => {
   const ref = useRef<View>(null);
 
   useEffect(() => {
@@ -35,6 +35,7 @@ const Toaster: FC<Props> = ({ text1, text2, isVisible }) => {
       className="mx-auto mt-4 max-w-[95vw] flex-row items-center rounded-xl p-4 shadow-2xl"
       importantForAccessibility="yes"
       accessibilityRole="alert"
+      accessibilityLabel={`${type}: ${text1}`}
       ref={ref}
       style={{ backgroundColor: theme["100"] }}
     >

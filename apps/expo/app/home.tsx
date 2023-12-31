@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, type FC } from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
+import { Stack, useRouter } from "expo-router";
+import { useGetUserFissa } from "@fissa/hooks";
 
 import {
   Action,
@@ -18,54 +17,67 @@ import { useAuth } from "../src/providers";
 
 const Home = () => {
   const { user } = useAuth();
+  const { data } = useGetUserFissa();
+  const { replace } = useRouter();
+
+  const [showHostOfFissaWarning, setShowHostOfFissaWarning] = useState(false);
+
+  const handleHostFissa = useCallback(() => {
+    if (data?.hostOf) return setShowHostOfFissaWarning(true);
+
+    replace(`/host`);
+  }, [data?.hostOf, replace]);
+
+  const closePopover = useCallback(() => {
+    setShowHostOfFissaWarning(false);
+  }, []);
 
   return (
-    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
+    <PageTemplate className="pt-40">
       <Stack.Screen
         options={{
           headerShown: true,
           animation: "fade",
-          headerRight: HeaderRight,
+          headerRight,
         }}
       />
-      <PageTemplate>
-        <View />
-        <View>
-          <Typography
-            variant="h1"
-            centered
-            className="mb-4"
-            accessibilityLabel={`Hi there ${user?.display_name}, what are you up to`}
-          >
-            Hi there {user?.display_name},
+      <View>
+        <Typography variant="h1" centered className="mb-4">
+          Hi there {user?.display_name},
+        </Typography>
+        <Typography centered variant="h5">
+          what are you up to
+        </Typography>
+      </View>
+      <View className="space-y-6">
+        <Button title="join a fissa" linkTo="/join" />
+        <Button
+          title="host a fissa"
+          disabled={user?.product !== "premium"}
+          variant="outlined"
+          onPress={handleHostFissa}
+        />
+        {user?.product !== "premium" && (
+          <Typography dimmed centered className="mt-4" variant="bodyM">
+            Only spotify premium users can host a fissa
           </Typography>
-          <Typography centered variant="h5" accessibilityElementsHidden>
-            what are you up to
-          </Typography>
-        </View>
-        <View>
-          <Button title="join a fissa" className="mb-6" linkTo="/join" />
-          <Button
-            title="host a fissa"
-            disabled={user?.product !== "premium"}
-            variant="outlined"
-            linkTo="/host"
-          />
-          {user?.product !== "premium" && (
-            <Typography dimmed centered className="mt-4" variant="bodyM">
-              Only spotify premium users can host a fissa
-            </Typography>
-          )}
-        </View>
+        )}
+      </View>
+      <View>
         <Rejoin />
-      </PageTemplate>
-    </SafeAreaView>
+        <HostOfFissaPopover
+          pin={data?.hostOf?.pin}
+          visible={showHostOfFissaWarning}
+          onRequestClose={closePopover}
+        />
+      </View>
+    </PageTemplate>
   );
 };
 
 export default Home;
 
-const HeaderRight = () => <AccountDetails />;
+const headerRight = () => <AccountDetails />;
 
 const AccountDetails = () => {
   const [showAccountDetails, setShowAccountDetails] = useState(false);
@@ -99,3 +111,39 @@ const AccountDetails = () => {
     </>
   );
 };
+
+const HostOfFissaPopover: FC<HostOfFissaPopoverProps> = ({ visible, pin, onRequestClose }) => {
+  return (
+    <Popover visible={visible} onRequestClose={onRequestClose}>
+      <Typography centered className="text-7xl" variant="h1">
+        🦭
+      </Typography>
+      <Typography variant="h1" centered className="my-2" inverted>
+        It seems like you are already hosting a Fissa
+      </Typography>
+      <Typography variant="bodyL" className="mb-8" centered inverted>
+        Hosting a new Fissa will stop your current Fissa!
+      </Typography>
+      <Button
+        inverted
+        className="mb-4"
+        title={`Rejoin Fissa ${pin}`}
+        onPress={onRequestClose}
+        linkTo={`/fissa/${pin}`}
+      />
+      <Button
+        inverted
+        onPress={onRequestClose}
+        linkTo="/host"
+        variant="text"
+        title="Roger that, I want a new Fissa"
+      />
+    </Popover>
+  );
+};
+
+interface HostOfFissaPopoverProps {
+  visible: boolean;
+  onRequestClose: () => void;
+  pin?: string;
+}

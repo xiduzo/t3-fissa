@@ -1,11 +1,9 @@
-import { useCallback, useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { useCallback } from "react";
+import { View } from "react-native";
 import { Stack } from "expo-router";
-import { useGetUserFissa } from "@fissa/hooks";
-import { theme } from "@fissa/tailwind-config";
 import { randomSort, useSpotify } from "@fissa/utils";
 
-import { Button, PageTemplate, Popover, Typography } from "../../src/components";
+import { Button, PageTemplate, Typography } from "../../src/components";
 import { useCreateFissa } from "../../src/hooks";
 import { toast } from "../../src/utils";
 
@@ -37,83 +35,46 @@ const Host = () => {
   }, [spotify, mutateAsync]);
 
   return (
-    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
+    <PageTemplate>
       <Stack.Screen options={{ headerBackVisible: true }} />
-      <HostOfFissaWarning />
-      <PageTemplate>
-        <View />
-        <View>
-          <Typography
-            variant="h1"
-            centered
-            className="mb-4"
-            accessibilityLabel="Host a fissa, how would you like to start"
-          >
-            Host a fissa
-          </Typography>
-          <Typography centered variant="h5" accessibilityElementsHidden>
-            how would you like to start
-          </Typography>
-        </View>
-        <View>
-          <Button
-            title="Based on my playlist"
-            className="mb-6"
-            linkTo="/host/fromPlaylist"
-            disabled={isLoading}
-          />
-          <Button
-            title="Select some songs"
-            variant="outlined"
-            linkTo="/host/fromTracks"
-            disabled={isLoading}
-          />
-        </View>
-        <View>
-          <Button
-            title="Surprise me"
-            variant="text"
-            onPress={handleSurpriseMe}
-            disabled={isLoading}
-          />
-        </View>
-      </PageTemplate>
-    </SafeAreaView>
+      <View />
+      <View>
+        <Typography
+          variant="h1"
+          centered
+          className="mb-4"
+          accessibilityLabel="Host a fissa, how would you like to start"
+        >
+          Host a fissa
+        </Typography>
+        <Typography centered variant="h5" accessibilityElementsHidden>
+          how would you like to start
+        </Typography>
+      </View>
+      <View>
+        <Button
+          title="Based on my playlist"
+          className="mb-6"
+          linkTo="/host/fromPlaylist"
+          disabled={isLoading}
+        />
+        <Button
+          title="Select some songs"
+          variant="outlined"
+          linkTo="/host/fromTracks"
+          disabled={isLoading}
+        />
+      </View>
+      <View>
+        <Button
+          title="Surprise me"
+          variant="text"
+          onPress={handleSurpriseMe}
+          disabled={isLoading}
+        />
+      </View>
+    </PageTemplate>
   );
 };
 
 export default Host;
-
-const HostOfFissaWarning = () => {
-  const { data } = useGetUserFissa();
-  const [isWarningVisible, setIsWarningVisible] = useState(!!data?.hostOf);
-
-  const clearWarning = useCallback(() => setIsWarningVisible(false), []);
-
-  return (
-    <Popover visible={isWarningVisible} onRequestClose={() => setIsWarningVisible(false)}>
-      <Typography centered className="text-7xl" variant="h1">
-        🦭
-      </Typography>
-      <Typography variant="h1" centered className="my-2" inverted>
-        It seems like you are already hosting a Fissa
-      </Typography>
-      <Typography variant="bodyL" className="mb-8" centered inverted>
-        Hosting a new Fissa will stop your current Fissa!
-      </Typography>
-      <Button
-        inverted
-        className="mb-4"
-        title={`Rejoin Fissa ${data?.hostOf?.pin}`}
-        onPress={clearWarning}
-        linkTo={`/fissa/${data?.hostOf?.pin}`}
-      />
-      <Button
-        inverted
-        onPress={clearWarning}
-        variant="text"
-        title="Roger that, I want a new Fissa"
-      />
-    </Popover>
-  );
-};
