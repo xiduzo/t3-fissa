@@ -24,15 +24,13 @@ Notifications.setNotificationHandler({
 const NotificationContext = createContext({});
 
 export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [_expoPushToken, setExpoPushToken] = useState("");
+  const [_expoPushToken, setExpoPushToken] = useState<string>();
   const [notification, setNotification] = useState<Notifications.Notification>();
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then((token) => token && setExpoPushToken(token))
-      .catch(console.error);
+    void registerForPushNotificationsAsync().then(setExpoPushToken);
 
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
       setNotification(notification);

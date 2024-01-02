@@ -19,7 +19,7 @@ export const TrackListItem: FC<Props> = memo(
 
     useEffect(() => {
       if (!props.selected) return;
-      selectionAsync().catch(console.log);
+      void selectionAsync();
     }, [props.selected]);
 
     useEffect(() => {

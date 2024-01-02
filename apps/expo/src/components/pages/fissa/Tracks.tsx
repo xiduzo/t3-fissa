@@ -32,7 +32,16 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const context = api.useContext();
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
-  const { data, isInitialLoading } = useGetFissa(pin);
+  const { data, isInitialLoading } = useGetFissa(pin, {
+    onSuccess: (error) => {
+      // TODO: when joining a fissa that has ended, we should show a message
+      // and redirect to the home page
+      console.log(error);
+      // toast.error({
+      //   message: error.message,
+      // });
+    },
+  });
   const isOwner = useIsOwner(pin);
 
   const buttonOffsetAnimation = useRef(new Animated.Value(0)).current;
@@ -83,8 +92,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const getTrackVotes = useCallback(
-    (track?: SpotifyApi.TrackObjectFull) => {
-      if (!track) return;
+    (track: SpotifyApi.TrackObjectFull) => {
       if (data?.currentlyPlayingId === track.id) return;
 
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
@@ -98,17 +106,12 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   );
 
   const trackEnd = useCallback(
-    (track?: SpotifyApi.TrackObjectFull): JSX.Element | undefined => {
-      if (!track) return;
+    (track: SpotifyApi.TrackObjectFull): JSX.Element | undefined => {
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
       if (!localTrack) return;
       if (localTrack.hasBeenPlayed) return;
-      if (data?.currentlyPlayingId === track.id) {
-        if (!isOwner) return;
-
-        return <SkipTrackButton />;
-      }
+      if (data?.currentlyPlayingId === track.id && isOwner) return <SkipTrackButton />;
 
       return <TrackEnd trackId={track.id} pin={pin} />;
     },
@@ -117,7 +120,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const trackExtra = useCallback(
     (track: SpotifyApi.TrackObjectFull) => {
-      if (track.id !== data?.currentlyPlayingId) return null;
+      if (track.id !== data?.currentlyPlayingId) return;
 
       return <ProgressBar className="mt-4" track={track} expectedEndTime={data.expectedEndTime} />;
     },
@@ -132,7 +135,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     const timeout = setTimeout(() => {
       // Invalidate the fissa to force fetch the new state
       // When we know the track has ended
-      context.fissa.byId.invalidate().catch(console.log);
+      void context.fissa.byId.invalidate();
     }, ms);
 
     return () => clearTimeout(timeout);

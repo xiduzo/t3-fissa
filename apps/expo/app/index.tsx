@@ -62,7 +62,7 @@ const Index = () => {
   }, [user, replace]);
 
   useEffect(() => {
-    SystemUI.setBackgroundColorAsync(theme["900"]).catch(console.log);
+    void SystemUI.setBackgroundColorAsync(theme["900"]);
   }, []);
 
   useEffect(() => {

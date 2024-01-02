@@ -34,11 +34,9 @@ export const useEncryptedStorage = (key: string) => {
   }, [key]);
 
   useEffect(() => {
-    getValueFor()
-      .then((value) => {
-        setItem(key, value);
-      })
-      .catch(console.error);
+    void getValueFor().then((value) => {
+      setItem(key, value);
+    });
   }, [getValueFor, key, setItem]);
 
   return { value: items.get(key), save, getValueFor };

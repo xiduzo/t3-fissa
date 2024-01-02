@@ -36,7 +36,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   useEffect(() => {
     if (!track) return;
 
-    selectionAsync().catch(console.log);
+    void selectionAsync();
     const offset = touchStartPosition - windowCenter;
 
     Animated.timing(focussedAnimation, {

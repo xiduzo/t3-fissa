@@ -18,7 +18,6 @@ const Fissa = () => {
         options={{
           headerShown: true,
           headerLeft: () => <Title pin={String(pin)} />,
-          // title: () => <Title pin={String(pin)} />,
           headerRight,
         }}
       />

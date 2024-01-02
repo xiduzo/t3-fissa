@@ -42,7 +42,7 @@ const Updater = () => {
     } else if (type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
       // Handle update available
       toast.info({ message: "Installing update" });
-      Updates.fetchUpdateAsync().then(Updates.reloadAsync).catch(console.log);
+      void Updates.fetchUpdateAsync().then(Updates.reloadAsync);
     }
   }, []);
 

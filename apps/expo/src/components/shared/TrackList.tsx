@@ -44,6 +44,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
           keyExtractor={(item) => item?.id}
           extraData={(extraData as unknown) ?? selectedTracks}
           renderItem={({ item, index }) => {
+            if (!item) return null; // Somehow items can be undefined
             const isHeader = props.stickyHeaderIndices?.includes(index);
             return (
               <Animated.View
@@ -87,7 +88,7 @@ interface Props
   selectedTracks?: string[];
   activeIndex?: number;
   getTrackVotes?: (track: SpotifyApi.TrackObjectFull) => number | undefined;
-  trackExtra?: (track: SpotifyApi.TrackObjectFull) => JSX.Element | null;
+  trackExtra?: (track: SpotifyApi.TrackObjectFull) => JSX.Element | undefined | null;
   trackEnd?: (track: SpotifyApi.TrackObjectFull) => JSX.Element | undefined;
   onTrackPress?: (track: SpotifyApi.TrackObjectFull) => void;
   onTrackLongPress?: (track: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => void;

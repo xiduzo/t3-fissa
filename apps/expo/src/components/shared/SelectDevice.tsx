@@ -5,11 +5,11 @@ import { useDevices } from "@fissa/utils";
 
 import { useOnActiveApp } from "../../hooks";
 import { mapDeviceToIcon } from "../../utils";
+import { Button } from "./button";
 import { Divider } from "./Divider";
 import { EmptyState } from "./EmptyState";
 import { Popover } from "./Popover";
 import { Typography } from "./Typography";
-import { Button } from "./button";
 
 export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
   const { devices, fetchDevices } = useDevices();

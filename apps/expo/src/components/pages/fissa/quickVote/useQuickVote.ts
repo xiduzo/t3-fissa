@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect } from "react";
 import { Dimensions, type GestureResponderEvent } from "react-native";
-import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { useCreateVote } from "@fissa/hooks";
 
 import { QuickVoteContext } from "./QuickVoteContext";
@@ -27,9 +27,7 @@ export const useQuickVote = (pin: string) => {
 
   const handleTouchEnd = useCallback(
     (event: GestureResponderEvent) => {
-      if (vote !== 0 && track) {
-        mutateAsync(vote, track.id).catch(console.log);
-      }
+      if (vote !== 0 && track) void mutateAsync(vote, track.id);
 
       toggleTrackFocus()(event);
     },

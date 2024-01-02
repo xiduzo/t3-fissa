@@ -28,7 +28,7 @@ export const QuickVoteProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const newVote = useCallback(
     (next: number) => (prev: number) => {
-      if (prev !== next) impactAsync().catch(console.log);
+      if (prev !== next) void impactAsync();
       return next;
     },
     [],

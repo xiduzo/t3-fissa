@@ -12,14 +12,14 @@ import {
 } from "react";
 import { Platform } from "react-native";
 import {
-  ResponseType,
   makeRedirectUri,
+  ResponseType,
   useAuthRequest,
   type AuthRequestConfig,
   type DiscoveryDocument,
 } from "expo-auth-session";
 import Constants from "expo-constants";
-import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
 import { useInterval } from "@fissa/hooks";
 import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
@@ -78,7 +78,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (!session_token) return;
       spotify.setAccessToken(access_token);
-      spotify.getMe().then(setUser).catch(console.log);
+      void spotify.getMe().then(setUser);
 
       await saveSessionToken(session_token);
 
@@ -124,42 +124,38 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       duration: 30 * 1000,
     });
 
-    notificationAsync(NotificationFeedbackType.Success).catch(console.info);
+    void notificationAsync(NotificationFeedbackType.Success);
 
-    saveScopes(scopes.join("_")).catch(console.info);
+    void saveScopes(scopes.join("_"));
 
     const { code } = response.params;
     if (!code) return toast.error({ message: `Something went wrong...` });
 
     if (!request) return;
     const { redirectUri } = request;
-    mutateAsync({ code, redirectUri }).catch(console.info);
+    void mutateAsync({ code, redirectUri });
   }, [response, request, saveScopes, saveTokens, mutateAsync]);
 
   useEffect(() => {
     if (user) return;
-    getScopes()
-      .then((localScopes) => {
-        if (String(localScopes) !== scopes.join("_")) return;
+    void getScopes().then((localScopes) => {
+      if (String(localScopes) !== scopes.join("_")) return;
 
-        updateTokens().catch(console.info);
-      })
-      .catch(console.info);
+      void updateTokens();
+    });
   }, [updateTokens, user, getScopes]);
 
   useOnActiveApp(() => {
     const { current } = lastTokenSaveTime;
     const difference = differenceInMinutes(new Date(), current);
 
-    if (difference < REFRESH_INTERVAL_MINUTES) {
-      return;
-    }
+    if (difference < REFRESH_INTERVAL_MINUTES) return;
 
-    updateTokens().catch(console.info);
+    void updateTokens();
   });
 
   useInterval(() => {
-    updateTokens().catch(console.info);
+    void updateTokens();
   }, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
   const contextValue = useMemo(() => ({ user, signOut, signIn }), [user, signOut, signIn]);

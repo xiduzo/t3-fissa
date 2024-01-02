@@ -54,12 +54,10 @@ export const useTracks = (trackIds?: string[]) => {
   useEffect(() => {
     const promises = splitInChunks(uncachedTrackIds).map((chunk) => spotify.getTracks(chunk));
 
-    Promise.all(promises)
-      .then((response) => {
-        const newTracks = response.map(({ tracks }) => tracks).flat();
-        if (newTracks.length) addTracks(newTracks);
-      })
-      .catch(console.log);
+    void Promise.all(promises).then((response) => {
+      const newTracks = response.map(({ tracks }) => tracks).flat();
+      if (newTracks.length) addTracks(newTracks);
+    });
   }, [uncachedTrackIds, addTracks, spotify]);
 
   return requestedTracks;
@@ -70,7 +68,7 @@ export const usePlayLists = (user?: SpotifyApi.CurrentUsersProfileResponse) => {
 
   useEffect(() => {
     if (!user) return;
-    getPlaylists(user, spotify, setPlayLists).catch(console.log);
+    void getPlaylists(user, spotify, setPlayLists);
   }, [setPlayLists, user, spotify]);
 
   return useSpotifyStore((state) => state.playLists);
@@ -85,10 +83,7 @@ export const useDevices = () => {
   const { spotify, devices, setDevices } = useSpotifyStore();
 
   const fetchDevices = useCallback(() => {
-    spotify
-      .getMyDevices()
-      .then(({ devices }) => setDevices(devices))
-      .catch(console.log);
+    void spotify.getMyDevices().then(({ devices }) => setDevices(devices));
   }, [spotify, setDevices]);
 
   const activeDevice = useMemo(() => {

@@ -67,12 +67,9 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   useEffect(() => {
     if (!selectedPlaylist) {
       if (!debounced) return setSearchedTracks([]);
-      spotify
-        .search(debounced, ["track"])
-        .then(({ tracks }) => {
-          setSearchedTracks(tracks?.items ?? []);
-        })
-        .catch(console.log);
+      void spotify.search(debounced, ["track"]).then(({ tracks }) => {
+        setSearchedTracks(tracks?.items ?? []);
+      });
       return;
     }
 
@@ -96,10 +93,10 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   useEffect(() => {
     if (!selectedPlaylist) return;
 
-    getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
+    void getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
       playlistTracks.current = newTracks;
       setFilteredTracks([...newTracks]);
-    }).catch(console.log);
+    });
   }, [selectedPlaylist, spotify]);
 
   return (
