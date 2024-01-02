@@ -17,15 +17,15 @@ const JoinFissa: NextPage = () => {
     <>
       <Head>
         <title>Join the Fissa!</title>
-        <meta name="description" content={`Join Fissa ${query.pin}`} />
+        <meta name="description" content="Go become the DJ you have always dreamt to be." />
         <link rel="icon" href="/icon.png" />
       </Head>
       <main className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-[#FF5FE5] to-[#FF5F72] p-12 text-[#150423]">
         <section className="space-y-16">
           <h1 className="text-center text-3xl font-bold">Join the Fissa!</h1>
           <p>
-            You have been invited to join Fissa <strong>{query.pin}</strong>! Go become the DJ you
-            have always dreamt to be!
+            You have been invited to join Fissa <strong>{query.pin}</strong>, become the DJ you have
+            always dreamt to be.
           </p>
           <div className="flex flex-col items-center space-y-8">
             <a href="https://apps.apple.com/us/app/fissa-houseparty/id1632218985?itsct=apps_box_badge&itscg=30200">
