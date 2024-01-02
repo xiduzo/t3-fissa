@@ -4,6 +4,7 @@ import { useGlobalSearchParams, useRouter } from "expo-router";
 import { useGetTracks, useIsOwner, usePauseFissa } from "@fissa/hooks";
 import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
+import { useShareFissa } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { toast } from "../../../utils";
 import { Action, IconButton, Popover } from "../../shared";
@@ -30,7 +31,7 @@ export const Settings = () => {
       <IconButton icon="setting" onPress={togglePopover} title="Actions" />
       <Popover visible={showPopover} onRequestClose={togglePopover}>
         <Action
-          title="Leave fissa"
+          title="Leave Fissa"
           subtitle="No worries, you can come back"
           inverted
           onPress={goToHome}
@@ -38,6 +39,7 @@ export const Settings = () => {
         />
         <CreatePlaylistAction pin={String(pin)} onRequestClose={togglePopover} />
         <PauseFissaAction />
+        <ShareFissaAction pin={String(pin)} />
       </Popover>
     </>
   );
@@ -83,8 +85,8 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 
   return (
     <Action
-      title="Create playlist in spotify"
-      subtitle="And keep this fissa's memories"
+      title="Create playlist in Spotify"
+      subtitle="And keep this Fissa's memories"
       inverted
       disabled={isCreatingPlaylist}
       onPress={handleCreatePlaylist}
@@ -113,12 +115,29 @@ const PauseFissaAction = () => {
 
   return (
     <Action
-      title="Pause fissa"
+      title="Pause Fissa"
       subtitle="Nothing lasts forever"
       inverted
       disabled={isLoading}
       onPress={pauseSpotify}
       icon="pause"
+    />
+  );
+};
+
+interface ShareFissaProps {
+  pin: string;
+}
+const ShareFissaAction: FC<ShareFissaProps> = ({ pin }) => {
+  const { shareFissa } = useShareFissa(pin);
+
+  return (
+    <Action
+      title="Share Fissa"
+      subtitle="Everyone secretly wants to be a DJ"
+      inverted
+      onPress={shareFissa}
+      icon="share"
     />
   );
 };

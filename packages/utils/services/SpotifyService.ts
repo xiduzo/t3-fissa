@@ -40,9 +40,9 @@ export class SpotifyService {
 
         const firstDevice = body.devices[0];
 
-        if (!firstDevice?.id) return console.error("No device found");
+        if (!firstDevice?.id) throw new Error("No playback device(s) found");
 
-        if (triesLeft === 0) return console.error("No tries left");
+        if (triesLeft === 0) throw new Error("Could not transfer playback");
 
         await this.spotify.transferMyPlayback([firstDevice.id]);
         await new Promise((resolve) => setTimeout(resolve, 250 + (3 % (triesLeft + 1))));

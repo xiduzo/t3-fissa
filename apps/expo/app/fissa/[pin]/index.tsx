@@ -1,11 +1,12 @@
-import { useCallback, type FC } from "react";
-import { Share, TouchableOpacity, View } from "react-native";
+import { type FC } from "react";
+import { TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useGlobalSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
 import { Fab, FissaTracks, Settings, Typography } from "../../../src/components";
 import { QuickVoteProvider, SpeakerButton } from "../../../src/components/pages/fissa";
+import { useShareFissa } from "../../../src/hooks/useShareFissa";
 
 const Fissa = () => {
   const { pin } = useGlobalSearchParams();
@@ -50,26 +51,11 @@ const HeaderRight = () => {
 };
 
 const Title: FC<{ pin: string }> = ({ pin }) => {
-  const handlePinPress = useCallback(async () => {
-    const isShared = await Share.share(
-      {
-        title: "Join the Fissa!",
-        message: `You have been invited to join the Fissa! https://fissa-houseparty.vercel.app/fissa/${pin}`,
-        url: `https://fissa-houseparty.vercel.app/fissa/${pin}`,
-      },
-      {
-        dialogTitle: "Join the Fissa!",
-        subject: `You have been invited to join the Fissa! https://fissa-houseparty.vercel.app/fissa/${pin}`,
-        tintColor: theme["500"],
-      },
-    );
-
-    console.log(isShared);
-  }, [pin]);
+  const { shareFissa } = useShareFissa(pin);
 
   return (
     <View className="grow">
-      <TouchableOpacity onPress={handlePinPress}>
+      <TouchableOpacity onPress={shareFissa}>
         <Typography variant="h2">Fissa {pin}</Typography>
       </TouchableOpacity>
     </View>

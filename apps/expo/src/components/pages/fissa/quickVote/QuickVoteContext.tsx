@@ -13,10 +13,10 @@ export const QuickVoteContext = createContext({
   track: undefined as SpotifyApi.TrackObjectFull | undefined,
   vote: 0,
   setVote: (vote: number): void => {
-    console.log("setVote", vote);
+    console.debug("no setVote method implemented", vote);
   },
   selectTrack: (event: GestureResponderEvent, track?: SpotifyApi.TrackObjectFull): void => {
-    console.log("selectTrack", event, track);
+    console.debug("no selectTrack method implemented", event, track);
   },
   touchStartPosition: 0,
 });
