@@ -2,26 +2,23 @@ import { type FC } from "react";
 import { View, type GestureResponderEvent } from "react-native";
 import { LinearGradient, type LinearGradientProps } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
-import { cva, type VariantProps } from "@fissa/utils";
 
-import { type IconName } from "./Icon";
 import { IconButton } from "./button";
+import { type IconName } from "./Icon";
 
 export const BottomDrawer: FC<Props> = ({
   children,
   action,
   actionTitle,
-  className,
-  size,
   actionIcon = "close",
 }) => {
   return (
-    <View className={bottomDrawer({ size, className })} style={{ shadowColor: theme["900"] }}>
+    <View className="absolute bottom-0 w-full shadow-xl" style={{ shadowColor: theme["900"] }}>
       <LinearGradient
         colors={theme.gradient}
         start={[0, 0]}
         end={[1, 1]}
-        className={linearGradient({ size })}
+        className="rounded-3xl px-3 pb-10 pt-5 md:px-6"
       >
         <View className="mb-4 flex-row items-center justify-end">
           {action && (
@@ -40,32 +37,8 @@ export const BottomDrawer: FC<Props> = ({
   );
 };
 
-interface Props extends Omit<LinearGradientProps, "colors">, VariantProps<typeof bottomDrawer> {
+interface Props extends Omit<LinearGradientProps, "colors"> {
   action?: (event: GestureResponderEvent) => void;
   actionIcon?: IconName;
   actionTitle?: string;
 }
-
-const bottomDrawer = cva("absolute shadow-xl", {
-  variants: {
-    size: {
-      full: "bottom-0 w-full",
-      partial: "bottom-10  md:bottom-16 w-full flex items-center",
-    },
-  },
-  defaultVariants: {
-    size: "full",
-  },
-});
-
-const linearGradient = cva("md:px-6", {
-  variants: {
-    size: {
-      full: "rounded-3xl pb-10 pt-5 px-3",
-      partial: "rounded-2xl pb-4 px-2",
-    },
-  },
-  defaultVariants: {
-    size: "full",
-  },
-});

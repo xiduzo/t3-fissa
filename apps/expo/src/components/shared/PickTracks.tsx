@@ -10,6 +10,7 @@ import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed, getPlaylistTracks, useSpotify } from "@fissa/utils";
 
+import { PageTemplate } from "../pages/PageTemplate";
 import { BottomDrawer } from "./BottomDrawer";
 import { Button, ButtonGroup, IconButton } from "./button";
 import { EmptyState } from "./EmptyState";
@@ -100,7 +101,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   }, [selectedPlaylist, spotify]);
 
   return (
-    <View style={{ backgroundColor: theme["900"] }}>
+    <PageTemplate fullScreen>
       <Stack.Screen
         options={{
           animation: "fade_from_bottom",
@@ -185,7 +186,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
           </ButtonGroup>
         </BottomDrawer>
       </View>
-    </View>
+    </PageTemplate>
   );
 };
 

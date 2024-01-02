@@ -80,11 +80,15 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const showBackButton = useCallback(
     (offSet = 0) => {
+      const absoluteOffset = Math.abs(offSet);
+      const shouldTriggerScroll = absoluteOffset > SCROLL_DISTANCE;
+
       Animated.spring(buttonOffsetAnimation, {
-        toValue: Number(Math.abs(offSet) > SCROLL_DISTANCE),
+        toValue: Number(shouldTriggerScroll),
         useNativeDriver: false,
       }).start();
-      if (offSet === 0) return setScrollDirection(undefined);
+
+      if (!shouldTriggerScroll) return setScrollDirection(undefined);
 
       setScrollDirection(offSet > 0 ? "up" : "down");
     },

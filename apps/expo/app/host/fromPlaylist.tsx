@@ -1,10 +1,16 @@
 import { useCallback, useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 import { Stack } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
 import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 
-import { Button, PlaylistList, PlaylistListItem, Popover, Typography } from "../../src/components";
+import {
+  Button,
+  PageTemplate,
+  PlaylistList,
+  PlaylistListItem,
+  Popover,
+  Typography,
+} from "../../src/components";
 import { useCreateFissa } from "../../src/hooks";
 
 const FromPlaylist = () => {
@@ -25,7 +31,7 @@ const FromPlaylist = () => {
   }, [selectedPlaylist, mutateAsync, spotify]);
 
   return (
-    <SafeAreaView style={{ backgroundColor: theme["900"] }}>
+    <PageTemplate fullScreen>
       <Stack.Screen options={{ headerBackVisible: true }} />
       <View className="h-full justify-between">
         <Typography
@@ -62,7 +68,7 @@ const FromPlaylist = () => {
           accessibilityLabel={`Start fissa based on ${selectedPlaylist?.name}`}
         />
       </Popover>
-    </SafeAreaView>
+    </PageTemplate>
   );
 };
 

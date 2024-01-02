@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useGlobalSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 
-import { Fab, FissaTracks, Settings, Typography } from "../../../src/components";
+import { Fab, FissaTracks, PageTemplate, Settings, Typography } from "../../../src/components";
 import { QuickVoteProvider, SpeakerButton } from "../../../src/components/pages/fissa";
 import { useShareFissa } from "../../../src/hooks/useShareFissa";
 
@@ -14,7 +14,7 @@ const Fissa = () => {
   if (!pin) return null;
 
   return (
-    <View style={{ backgroundColor: theme["900"] }}>
+    <PageTemplate fullScreen>
       <Stack.Screen
         options={{
           headerShown: true,
@@ -22,17 +22,15 @@ const Fissa = () => {
           headerRight,
         }}
       />
-      <View className="h-full w-full">
-        <QuickVoteProvider>
-          <FissaTracks pin={String(pin)} />
-        </QuickVoteProvider>
-        <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
-        <LinearGradient
-          colors={["transparent", theme[900]]}
-          className="absolute bottom-0 h-24 w-full"
-        />
-      </View>
-    </View>
+      <QuickVoteProvider>
+        <FissaTracks pin={String(pin)} />
+      </QuickVoteProvider>
+      <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
+      <LinearGradient
+        colors={["transparent", theme[900]]}
+        className="absolute bottom-0 h-24 w-full"
+      />
+    </PageTemplate>
   );
 };
 

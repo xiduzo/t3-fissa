@@ -69,7 +69,7 @@ export class FissaService extends ServiceWithContext {
           },
         });
       } catch (e) {
-        console.log(e);
+        console.debug(e);
         tries++;
         blockedPins.push(pin);
       }

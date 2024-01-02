@@ -1,10 +1,9 @@
 import { useCallback, useMemo } from "react";
 import { View } from "react-native";
 import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
 import { SAVED_TRACKS_PLAYLIST_ID, useSpotify, useTracks } from "@fissa/utils";
 
-import { PlaylistList, TrackListItem } from "../../../../src/components";
+import { PageTemplate, PlaylistList, TrackListItem } from "../../../../src/components";
 import { toast } from "../../../../src/utils";
 
 const AddToPlaylist = () => {
@@ -35,14 +34,13 @@ const AddToPlaylist = () => {
   );
 
   return (
-    <View style={{ backgroundColor: theme["900"] }}>
+    <PageTemplate>
       <Stack.Screen
         options={{
           headerShown: true,
           headerBackVisible: true,
           title: `Save to spotify`,
           animation: "slide_from_bottom",
-          // headerRight: () => <HeaderRight />,
         }}
       />
       <PlaylistList
@@ -55,7 +53,7 @@ const AddToPlaylist = () => {
         }
         ListFooterComponent={<View className="pb-12" />}
       />
-    </View>
+    </PageTemplate>
   );
 };
 
