@@ -3,6 +3,9 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { theme } from "@fissa/tailwind-config";
+
+import { Layout } from "~/components/Layout";
 
 const JoinFissa: NextPage = () => {
   const { query } = useRouter();
@@ -20,12 +23,19 @@ const JoinFissa: NextPage = () => {
         <meta name="description" content="Go become the DJ you have always dreamt to be." />
         <link rel="icon" href="/icon.png" />
       </Head>
-      <main className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-[#FF5FE5] to-[#FF5F72] p-12 text-[#150423]">
-        <section className="space-y-16">
+      <Layout>
+        <section className="mt-32 space-y-16 text-center">
           <h1 className="text-center text-3xl font-bold">Join the Fissa!</h1>
           <p>
-            You have been invited to join Fissa <strong>{query.pin}</strong>, become the DJ you have
-            always dreamt to be.
+            You have been invited to join Fissa{" "}
+            <strong
+              style={{
+                color: theme["500"],
+              }}
+            >
+              {query.pin}
+            </strong>
+            , become the DJ you have always dreamt to be.
           </p>
           <div className="flex flex-col items-center space-y-8">
             <a href="https://apps.apple.com/us/app/fissa-houseparty/id1632218985?itsct=apps_box_badge&itscg=30200">
@@ -47,7 +57,7 @@ const JoinFissa: NextPage = () => {
             </a>
           </div>
         </section>
-      </main>
+      </Layout>
     </>
   );
 };

@@ -44,9 +44,17 @@ const Join = () => {
       keys.forEach(({ current }, index) => {
         if (index < selectedIndex) return;
         current?.clear();
+        setPin((prev) => {
+          const newPin = [...prev];
+          newPin[index] = "";
+          return newPin;
+        });
       });
+
+      if (selectedIndex === 0) return;
+      if (pin[selectedIndex - 1] === "") keys[selectedIndex - 1]?.current?.focus();
     },
-    [keys],
+    [keys, pin],
   );
 
   const handleChange = useCallback(
@@ -93,7 +101,7 @@ const Join = () => {
     <PageTemplate className="justify-start space-y-14">
       <Stack.Screen options={{ headerBackVisible: true }} />
       <Typography variant="h5" centered>
-        Enter session code of the Fissa you want to join
+        Enter the session code of the Fissa you want to join
       </Typography>
       <View className="flex-row justify-around space-x-4">
         {keys.map((key, index) => (
