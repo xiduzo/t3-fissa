@@ -9,12 +9,13 @@ import {
 } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { theme } from "@fissa/tailwind-config";
 
 import { hexToRgb } from "~/utils/hexToRgb";
 import { Layout } from "~/components/Layout";
+import { useTheme } from "~/providers/ThemeProvider";
 
 const Home: NextPage = () => {
+  const { theme } = useTheme();
   const [pin, setPin] = useState(["", "", "", ""]);
 
   const key1 = useRef<HTMLInputElement>(null);

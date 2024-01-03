@@ -1,18 +1,15 @@
-import { useEffect, useState, type FC, type PropsWithChildren } from "react";
-import { theme } from "@fissa/tailwind-config";
+import { type FC, type PropsWithChildren } from "react";
+
+import { useTheme } from "~/providers/ThemeProvider";
 
 export const Layout: FC<PropsWithChildren> = ({ children }) => {
-  const [colors, setColors] = useState(theme);
-  useEffect(() => {
-    setColors(theme);
-  }, []);
-
+  const { theme } = useTheme();
   return (
     <main
       className="min-h-screen w-screen p-3 md:p-6 lg:p-12"
       style={{
-        background: colors["900"],
-        color: colors["100"],
+        background: theme["900"],
+        color: theme["100"],
       }}
     >
       {children}

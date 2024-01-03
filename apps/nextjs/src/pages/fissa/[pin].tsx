@@ -3,12 +3,13 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { theme } from "@fissa/tailwind-config";
 
 import { Layout } from "~/components/Layout";
+import { useTheme } from "~/providers/ThemeProvider";
 
 const JoinFissa: NextPage = () => {
   const { query } = useRouter();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!query.pin) return;
