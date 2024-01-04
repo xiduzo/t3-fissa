@@ -7,6 +7,8 @@ import { Button, ButtonGroup, PageTemplate, Typography } from "../../src/compone
 import { useCreateFissa } from "../../src/hooks";
 import { toast } from "../../src/utils";
 
+const MAX_SEED_TRACKS = 5;
+
 const Host = () => {
   const spotify = useSpotify();
 
@@ -22,13 +24,23 @@ const Host = () => {
       message: "An explorer I see, making a fissa just for you",
       duration: 60 * 1000,
     });
-    const { items } = await spotify.getMyTopTracks();
-    const { tracks } = await spotify.getRecommendations({
-      limit: 5,
-      seed_tracks: items.map(({ id }) => id).sort(randomSort),
-    });
+    try {
+      const { items } = await spotify.getMyTopTracks();
+      const { tracks } = await spotify.getRecommendations({
+        limit: 10,
+        seed_tracks: items
+          .map(({ id }) => id)
+          .sort(randomSort)
+          .slice(0, MAX_SEED_TRACKS),
+      });
 
-    await mutateAsync(tracks);
+      await mutateAsync(tracks);
+    } catch (e) {
+      console.error(e);
+      toast.error({
+        message: "Woops, something went wrong. Try again later.",
+      });
+    }
   }, [spotify, mutateAsync]);
 
   return (

@@ -25,7 +25,7 @@ export class FissaService extends ServiceWithContext {
 
   activeFissas = async () => {
     return this.db.fissa.findMany({
-      where: { currentlyPlaying: { isNot: undefined } },
+      where: { currentlyPlayingId: { not: null } },
       select: { pin: true, expectedEndTime: true },
     });
   };
@@ -226,6 +226,7 @@ export class FissaService extends ServiceWithContext {
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
   ) => {
+    console.log({ accessToken });
     const promise = this.spotifyService.playTrack(accessToken, trackId);
 
     await this.db.fissa.update({
