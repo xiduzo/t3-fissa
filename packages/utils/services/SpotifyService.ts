@@ -1,5 +1,7 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
+import { sleep } from "../sleep";
+
 export class SpotifyService {
   private spotify = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -45,7 +47,7 @@ export class SpotifyService {
         if (triesLeft === 0) throw new Error("Could not transfer playback");
 
         await this.spotify.transferMyPlayback([firstDevice.id]);
-        await new Promise((resolve) => setTimeout(resolve, 250 + (3 % (triesLeft + 1))));
+        await sleep(250 + (3 % (triesLeft + 1)));
         return this.playTrack(accessToken, trackId, triesLeft - 1);
       }
 

@@ -18,19 +18,19 @@ const sync = createTRPCRouter({
 export const fissaRouter = createTRPCRouter({
   skipTrack: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
-    return service.skipTrack(input);
+    return service.skipTrack(input, ctx.session.user.id);
   }),
   restart: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
-    return service.restart(input);
+    return service.restart(input, ctx.session.user.id);
   }),
   create: protectedProcedure.input(Z_TRACKS).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
-    return service.create(input);
+    return service.create(input, ctx.session.user.id);
   }),
   byId: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
-    return service.byId(input);
+    return service.byId(input, ctx.session.user.id);
   }),
   detailsById: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
@@ -38,7 +38,7 @@ export const fissaRouter = createTRPCRouter({
   }),
   pause: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
-    return service.pause(input);
+    return service.pause(input, ctx.session.user.id);
   }),
   sync,
 });

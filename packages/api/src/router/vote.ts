@@ -28,10 +28,10 @@ export const voteRouter = createTRPCRouter({
   }),
   byTrackFromUser: protectedProcedure.input(vote).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
-    return service.getVoteFromUser(input.pin, input.trackId);
+    return service.getVoteFromUser(input.pin, input.trackId, ctx.session.user.id);
   }),
   create: protectedProcedure.input(createVote).mutation(async ({ ctx, input }) => {
     const service = new VoteService(ctx);
-    return service.createVote(input.pin, input.trackId, input.vote);
+    return service.createVote(input.pin, input.trackId, input.vote, ctx.session.user.id);
   }),
 });

@@ -24,7 +24,7 @@ export const trackRouter = createTRPCRouter({
   addTracks: protectedProcedure.input(addTracks).mutation(async ({ ctx, input }) => {
     const service = new TrackService(ctx, new VoteService(ctx));
 
-    await service.addTracks(input.pin, input.tracks);
+    await service.addTracks(input.pin, input.tracks, ctx.session.user.id);
   }),
   deleteTrack: protectedProcedure.input(deleteTrack).mutation(async ({ ctx, input }) => {
     const service = new TrackService(ctx, new VoteService(ctx));

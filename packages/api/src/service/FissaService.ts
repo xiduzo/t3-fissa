@@ -3,9 +3,12 @@ import {
   addMilliseconds,
   biasSort,
   differenceInMilliseconds,
+  FissaIsPaused,
   NoNextTrack,
+  NotAbleToAccessSpotify,
   NotTheHost,
   randomize,
+  sleep,
   sortFissaTracksOrder,
   type SpotifyService,
 } from "@fissa/utils";
@@ -27,80 +30,59 @@ export class FissaService extends ServiceWithContext {
     });
   };
 
-  create = async (tracks: { trackId: string; durationMs: number }[]) => {
-    if (!this.ctx.session) throw new Error("No user session");
-
-    const tokens = await this.db.account.findFirstOrThrow({
-      where: { userId: this.ctx.session.user.id },
-      select: { access_token: true, refresh_token: true },
-    });
-
-    const { access_token } = tokens;
-    if (!access_token) throw new Error("No access token");
+  create = async (tracks: { trackId: string; durationMs: number }[], userId: string) => {
     if (!tracks[0]) throw new Error("No tracks");
 
-    await this.db.fissa.deleteMany({
-      where: { userId: this.ctx.session.user.id },
+    const { access_token } = await this.db.account.findFirstOrThrow({
+      where: { userId },
+      select: { access_token: true },
     });
+
+    if (!access_token) throw new NotAbleToAccessSpotify();
+
+    await this.db.fissa.deleteMany({ where: { userId } });
 
     let fissa: Fissa | undefined = undefined;
     let tries = 0;
-    const blockedPins: string[] = [];
+    const triedPins: string[] = [];
 
     do {
-      const pin = this.generatePin();
+      const pin = randomize("0", 4);
 
-      if (blockedPins.includes(pin)) continue;
+      if (triedPins.includes(pin)) continue;
 
       try {
         fissa = await this.db.fissa.create({
           data: {
             pin,
             expectedEndTime: addMilliseconds(new Date(), tracks[0].durationMs),
-            by: { connect: { id: this.ctx.session?.user.id } },
-            tracks: {
-              createMany: {
-                data: tracks.map((track) => ({
-                  ...track,
-                  userId: this.ctx.session?.user.id ?? "", // TODO why this.ctx.session is possibly null again
-                })),
-              },
-            },
+            by: { connect: { id: userId } },
+            tracks: { createMany: { data: tracks.map((track) => ({ ...track, userId })) } },
           },
         });
       } catch (e) {
-        console.debug(e);
         tries++;
-        blockedPins.push(pin);
+        triedPins.push(pin);
       }
     } while (!fissa && tries < 50);
 
     if (!fissa) throw new Error("Failed to create fissa");
 
-    await this.playTrack(fissa, tracks[0], access_token);
-
     if (tracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-      await this.addRecommendedTracks(
-        fissa.pin,
-        tracks.map(({ trackId }) => trackId),
-        access_token,
-      );
+      await this.addRecommendedTracks(fissa.pin, tracks, access_token);
     }
+
+    await this.playTrack(fissa, tracks[0], access_token);
 
     return fissa;
   };
 
-  byId = async (pin: string) => {
-    if (!this.ctx.session?.user) throw new Error("no user");
-    const userId = this.ctx.session.user.id;
-
+  byId = async (pin: string, userId: string) => {
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       include: {
         by: { select: { email: true } },
-        tracks: {
-          include: { by: { select: { email: true } } },
-        },
+        tracks: { include: { by: { select: { email: true } } } },
       },
     });
 
@@ -124,12 +106,11 @@ export class FissaService extends ServiceWithContext {
     });
   };
 
-  skipTrack = async (pin: string) => {
-    const fissa = await this.byId(pin);
+  skipTrack = async (pin: string, userId: string) => {
+    const fissa = await this.byId(pin, userId);
 
-    if (fissa.userId !== this.ctx.session?.user.id) throw new NotTheHost();
-
-    if (!fissa.currentlyPlayingId) return;
+    if (fissa.userId !== userId) throw new NotTheHost();
+    if (!fissa.currentlyPlayingId) throw new FissaIsPaused();
 
     await this.db.track.update({
       where: { pin_trackId: { pin, trackId: fissa.currentlyPlayingId } },
@@ -139,83 +120,66 @@ export class FissaService extends ServiceWithContext {
     return this.playNextTrack(pin, true);
   };
 
-  restart = async (pin: string) => {
+  restart = async (pin: string, userId: string) => {
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       select: { userId: true },
     });
 
-    if (fissa.userId !== this.ctx.session?.user.id) throw new NotTheHost();
+    if (fissa.userId !== userId) throw new NotTheHost();
+
     return this.playNextTrack(pin, true);
   };
 
-  pause = async (pin: string) => {
+  pause = async (pin: string, userId: string) => {
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
-      select: { userId: true },
+      include: { by: { include: { accounts: { select: { access_token: true } } } } },
     });
 
-    if (fissa.userId !== this.ctx.session?.user.id) throw new NotTheHost();
+    if (fissa.userId !== userId) throw new NotTheHost();
+    if (!fissa.by.accounts[0]?.access_token) throw new NotAbleToAccessSpotify();
 
-    const { access_token } = await this.db.account.findFirstOrThrow({
-      where: { userId: this.ctx.session.user.id },
-      select: { access_token: true },
-    });
-
-    if (!access_token) throw new Error("No access token");
-
-    await this.spotifyService.pause(access_token);
-    await this.stopFissa(pin);
+    await this.stopFissa(pin, fissa.by.accounts[0]?.access_token);
   };
 
   playNextTrack = async (pin: string, instantPlay = false) => {
-    const fissa = await this.getFissaDetailedInformation(pin);
+    const { by, tracks, currentlyPlayingId, expectedEndTime } =
+      await this.getFissaDetailedInformation(pin);
 
-    if (!fissa.by.accounts[0]) throw new Error("No fissa found");
-    const { access_token } = fissa.by.accounts[0];
-    const { tracks, currentlyPlayingId } = fissa;
+    if (!by.accounts[0]) throw new NotAbleToAccessSpotify();
 
-    if (!access_token) throw new Error("No access token");
+    const { access_token } = by.accounts[0];
+    if (!access_token) throw new NotAbleToAccessSpotify();
 
     try {
       const isPlaying = await this.spotifyService.isStillPlaying(access_token);
 
-      if (!instantPlay && !currentlyPlayingId) return;
-      if (!instantPlay && !isPlaying) return this.stopFissa(pin);
-
-      const expectedEndTime = instantPlay ? new Date() : fissa.expectedEndTime;
-      const playIn = differenceInMilliseconds(expectedEndTime, new Date());
-
-      const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
-
-      if (!nextTracks?.length) return this.stopFissa(pin);
-      const nextTrack = nextTracks[0];
-      if (!nextTrack) throw new NoNextTrack();
-
-      if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-        const trackIds = biasSort(tracks).map(({ trackId }) => trackId);
-
-        try {
-          await this.addRecommendedTracks(pin, trackIds, access_token);
-        } catch (e) {
-          console.error(`${fissa.pin}, failed adding recommended tracks`, e);
-        }
+      if (!instantPlay && (!currentlyPlayingId || !isPlaying)) {
+        return this.stopFissa(pin, access_token);
       }
 
-      await new Promise((resolve) => setTimeout(resolve, playIn)); // Wait for track to end
+      const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
+      if (!nextTracks[0]) throw new NoNextTrack();
 
-      await this.trackPlayed(fissa);
-      await this.playTrack(fissa, nextTrack, access_token);
+      if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
+        await this.addRecommendedTracks(pin, biasSort(tracks), access_token);
+      }
+
+      const timeToPlay = instantPlay ? new Date() : expectedEndTime;
+      await sleep(differenceInMilliseconds(timeToPlay, new Date())); // Wait for track to end
+
+      await this.trackPlayed({ pin, currentlyPlayingId });
+
+      await this.playTrack({ pin }, nextTracks[0], access_token);
     } catch (e) {
       console.error(e);
-      await this.stopFissa(pin);
-      throw new Error("Something went wrong while playing the next track");
+      await this.stopFissa(pin, access_token);
     }
   };
 
-  private generatePin = () => randomize("0", 4);
-
-  private stopFissa = async (pin: string) => {
+  private stopFissa = async (pin: string, accessToken: string) => {
+    await this.spotifyService.pause(accessToken);
     return this.db.fissa.update({
       where: { pin },
       data: { currentlyPlaying: { disconnect: true } },
@@ -229,9 +193,7 @@ export class FissaService extends ServiceWithContext {
         pin: true,
         currentlyPlayingId: true,
         expectedEndTime: true,
-        by: {
-          select: { accounts: { select: { access_token: true }, take: 1 } },
-        },
+        by: { select: { accounts: { select: { access_token: true }, take: 1 } } },
         tracks: { where: { hasBeenPlayed: false } },
       },
     });
@@ -264,20 +226,17 @@ export class FissaService extends ServiceWithContext {
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
   ) => {
-    await this.db.$transaction(async (transaction) => {
-      // Update room to new track id currently playing
-      await transaction.fissa.update({
-        where: { pin },
-        data: {
-          currentlyPlaying: {
-            connect: { pin_trackId: { pin, trackId } },
-          },
-          expectedEndTime: addMilliseconds(new Date(), durationMs),
-        },
-      });
+    const promise = this.spotifyService.playTrack(accessToken, trackId);
+
+    await this.db.fissa.update({
+      where: { pin },
+      data: {
+        currentlyPlaying: { connect: { pin_trackId: { pin, trackId } } },
+        expectedEndTime: addMilliseconds(new Date(), durationMs),
+      },
     });
 
-    await this.spotifyService.playTrack(accessToken, trackId);
+    return promise;
   };
 
   private getNextTracks = (tracks: Track[], currentlyPlayingId?: string | null) => {
@@ -288,23 +247,32 @@ export class FissaService extends ServiceWithContext {
     return sortFissaTracksOrder(tracksToSort);
   };
 
-  private addRecommendedTracks = async (pin: string, trackIds: string[], accessToken: string) => {
-    const recommendations = await this.spotifyService.getRecommendedTracks(accessToken, trackIds);
+  private addRecommendedTracks = async (
+    pin: string,
+    tracks: { trackId: string }[],
+    accessToken: string,
+  ) => {
+    try {
+      const trackIds = tracks.map(({ trackId }) => trackId);
+      const recommendations = await this.spotifyService.getRecommendedTracks(accessToken, trackIds);
 
-    return this.db.fissa.update({
-      where: { pin },
-      data: {
-        tracks: {
-          createMany: {
-            data: recommendations.map(({ id, duration_ms }) => ({
-              trackId: id,
-              durationMs: duration_ms,
-              userId: this.ctx.session?.user?.id,
-            })),
-            skipDuplicates: true,
+      return this.db.fissa.update({
+        where: { pin },
+        data: {
+          tracks: {
+            createMany: {
+              data: recommendations.map(({ id, duration_ms }) => ({
+                trackId: id,
+                durationMs: duration_ms,
+                userId: this.ctx.session?.user.id,
+              })),
+              skipDuplicates: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (e) {
+      console.error(`${pin}, failed adding recommended tracks`, e);
+    }
   };
 }

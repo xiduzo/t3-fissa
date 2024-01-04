@@ -16,7 +16,7 @@ export class TrackService extends ServiceWithContext {
     });
   };
 
-  addTracks = async (pin: string, tracks: z.infer<typeof Z_TRACKS>) => {
+  addTracks = async (pin: string, tracks: z.infer<typeof Z_TRACKS>, userId: string) => {
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       select: { tracks: { select: { trackId: true } } },
@@ -31,10 +31,7 @@ export class TrackService extends ServiceWithContext {
       data: {
         tracks: {
           createMany: {
-            data: newTracks.map((track) => ({
-              ...track,
-              userId: this.ctx.session?.user?.id,
-            })),
+            data: newTracks.map((track) => ({ ...track, userId })),
             skipDuplicates: true,
           },
         },
@@ -43,7 +40,7 @@ export class TrackService extends ServiceWithContext {
 
     const trackIds = tracks.map(({ trackId }) => trackId);
 
-    return this.voteService.createVotes(pin, trackIds, 1);
+    return this.voteService.createVotes(pin, trackIds, 1, userId);
   };
 
   deleteTrack = async (pin: string, trackId: string) => {

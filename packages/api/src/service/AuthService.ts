@@ -15,18 +15,13 @@ export class AuthService extends ServiceWithContext {
   }
 
   getUserFissa = async () => {
-    const { hostOf, isIn } = await this.db.user.findUniqueOrThrow({
+    return this.db.user.findUniqueOrThrow({
       where: { id: this.ctx.session?.user.id },
       select: {
         hostOf: { select: { pin: true } },
         isIn: { select: { pin: true }, orderBy: { createdAt: Prisma.SortOrder.desc } },
       },
     });
-
-    return {
-      hostOf,
-      isIn,
-    };
   };
 
   getAccessToken = async (code: string, redirectUri: string) => {
@@ -41,18 +36,16 @@ export class AuthService extends ServiceWithContext {
       },
     };
 
-    let existingUser = await this.db.user.findUnique(findUser);
+    let user = await this.db.user.findUnique(findUser);
 
-    if (!existingUser) {
-      await this.createUser(spotifyUser.body, tokens);
-      existingUser = await this.db.user.findUniqueOrThrow(findUser);
+    if (!user) {
+      await this.createAccount(spotifyUser.body, tokens);
+      user = await this.db.user.findUniqueOrThrow(findUser);
     }
-
-    if (!existingUser.sessions[0]) return tokens.body;
 
     return {
       ...tokens.body,
-      session_token: existingUser.sessions[0].sessionToken,
+      session_token: user?.sessions[0]?.sessionToken,
     };
   };
 
@@ -87,11 +80,9 @@ export class AuthService extends ServiceWithContext {
       },
     });
 
-    if (!session) return tokens.body;
-
     return {
       ...tokens.body,
-      session_token: session.sessionToken,
+      session_token: session?.sessionToken,
     };
   };
 
@@ -111,13 +102,10 @@ export class AuthService extends ServiceWithContext {
       },
     });
 
-    const { lastUpdateAt } = fissa;
+    if (differenceInMinutes(fissa.lastUpdateAt, new Date()) > 20) return;
 
-    if (differenceInMinutes(lastUpdateAt, new Date()) > 20) return;
-
-    const { accounts } = fissa.by;
-    if (!accounts[0]) return;
-    const { expires_at, refresh_token } = accounts[0];
+    if (!fissa.by.accounts[0]) return;
+    const { expires_at, refresh_token } = fissa.by.accounts[0];
 
     if (!refresh_token) return;
 
@@ -127,7 +115,7 @@ export class AuthService extends ServiceWithContext {
     return this.refreshToken(refresh_token);
   };
 
-  private createUser = async (
+  private createAccount = async (
     spotifyUser: SpotifyApi.CurrentUsersProfileResponse,
     tokens: Awaited<ReturnType<SpotifyService["codeGrant"]>>,
   ) => {

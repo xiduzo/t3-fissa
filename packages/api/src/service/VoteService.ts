@@ -18,23 +18,13 @@ export class VoteService extends ServiceWithContext {
     );
   };
 
-  getVoteFromUser = async (pin: string, trackId: string) => {
-    if (!this.ctx.session) throw new Error("No session");
+  getVoteFromUser = async (pin: string, trackId: string, userId: string) => {
     return this.db.vote.findUnique({
-      where: {
-        trackId_userId_pin: {
-          pin,
-          trackId,
-          userId: this.ctx.session.user.id,
-        },
-      },
+      where: { trackId_userId_pin: { pin, trackId, userId } },
     });
   };
 
-  createVote = async (pin: string, trackId: string, vote: number) => {
-    if (!this.ctx.session) throw new Error("No session");
-    const userId = this.ctx.session.user.id;
-
+  createVote = async (pin: string, trackId: string, vote: number, userId: string) => {
     const response = await this.db.vote.upsert({
       where: { trackId_userId_pin: { pin, trackId, userId } },
       create: { pin, trackId, vote, userId },
@@ -46,20 +36,13 @@ export class VoteService extends ServiceWithContext {
     return response;
   };
 
-  createVotes = async (pin: string, trackIds: string[], vote: number) => {
+  createVotes = async (pin: string, trackIds: string[], vote: number, userId: string) => {
     await this.db.$transaction(async (transaction) => {
-      if (!this.ctx.session) throw new Error("No session");
-      const userId = this.ctx.session.user.id;
       await transaction.vote.deleteMany({
         where: { pin, trackId: { in: trackIds }, userId },
       });
-      await this.db.vote.createMany({
-        data: trackIds.map((trackId) => ({
-          pin,
-          trackId,
-          vote,
-          userId,
-        })),
+      await transaction.vote.createMany({
+        data: trackIds.map((trackId) => ({ pin, trackId, vote, userId })),
       });
     });
 
@@ -76,18 +59,20 @@ export class VoteService extends ServiceWithContext {
       new Map<string, number>(),
     );
 
-    const updateMany = Array.from(update.entries()).map(([trackId, score]) => ({
-      where: { pin, trackId },
-      data: {
-        score,
-        totalScore: { increment: vote }, // Make sure the total score reflects the vote so it won't be picked when adding to the queue
-        hasBeenPlayed: false, // Whenever we cast a vote, this means either the track is in the queue or will be put there because of the vote
-      },
-    }));
-
     return this.db.fissa.update({
       where: { pin },
-      data: { tracks: { updateMany } },
+      data: {
+        tracks: {
+          updateMany: Array.from(update.entries()).map(([trackId, score]) => ({
+            where: { pin, trackId },
+            data: {
+              score,
+              totalScore: { increment: vote }, // Make sure the total score reflects the vote so it won't be picked when adding to the queue
+              hasBeenPlayed: false, // Whenever we cast a vote, this means either the track is in the queue or will be put there because of the vote
+            },
+          })),
+        },
+      },
     });
   };
 }
