@@ -14,7 +14,7 @@ const Fissa = () => {
   if (!pin) return null;
 
   return (
-    <PageTemplate fullScreen>
+    <PageTemplate fullScreen className="max-w-screen-2xl">
       <Stack.Screen
         options={{
           headerShown: true,

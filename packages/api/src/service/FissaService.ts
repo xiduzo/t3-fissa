@@ -95,17 +95,6 @@ export class FissaService extends ServiceWithContext {
     return fissa;
   };
 
-  detailsById = async (pin: string) => {
-    return this.db.fissa.findUnique({
-      where: { pin },
-      select: {
-        by: { select: { email: true } },
-        expectedEndTime: true,
-        currentlyPlayingId: true,
-      },
-    });
-  };
-
   skipTrack = async (pin: string, userId: string) => {
     const fissa = await this.byId(pin, userId);
 
@@ -155,9 +144,7 @@ export class FissaService extends ServiceWithContext {
     try {
       const isPlaying = await this.spotifyService.isStillPlaying(access_token);
 
-      if (!instantPlay && (!currentlyPlayingId || !isPlaying)) {
-        return this.stopFissa(pin, access_token);
-      }
+      if (!instantPlay && (!currentlyPlayingId || !isPlaying)) throw new Error("Stop fissa");
 
       const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
       if (!nextTracks[0]) throw new NoNextTrack();
@@ -179,11 +166,15 @@ export class FissaService extends ServiceWithContext {
   };
 
   private stopFissa = async (pin: string, accessToken: string) => {
-    await this.spotifyService.pause(accessToken);
-    return this.db.fissa.update({
-      where: { pin },
-      data: { currentlyPlaying: { disconnect: true } },
-    });
+    try {
+      await this.db.fissa.update({
+        where: { pin },
+        data: { currentlyPlaying: { disconnect: true } },
+      });
+      return this.spotifyService.pause(accessToken);
+    } catch (e) {
+      console.error(`${pin}, failed stopping fissa`, e);
+    }
   };
 
   private getFissaDetailedInformation = async (pin: string) => {
@@ -226,18 +217,15 @@ export class FissaService extends ServiceWithContext {
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
   ) => {
-    console.log({ accessToken });
-    const promise = this.spotifyService.playTrack(accessToken, trackId);
+    await this.spotifyService.playTrack(accessToken, trackId);
 
-    await this.db.fissa.update({
+    return this.db.fissa.update({
       where: { pin },
       data: {
         currentlyPlaying: { connect: { pin_trackId: { pin, trackId } } },
         expectedEndTime: addMilliseconds(new Date(), durationMs),
       },
     });
-
-    return promise;
   };
 
   private getNextTracks = (tracks: Track[], currentlyPlayingId?: string | null) => {

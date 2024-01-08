@@ -32,10 +32,6 @@ export const fissaRouter = createTRPCRouter({
     const service = new FissaService(ctx, new SpotifyService());
     return service.byId(input, ctx.session.user.id);
   }),
-  detailsById: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService());
-    return service.detailsById(input);
-  }),
   pause: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
     return service.pause(input, ctx.session.user.id);
