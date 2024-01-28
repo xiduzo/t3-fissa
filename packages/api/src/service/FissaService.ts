@@ -231,7 +231,7 @@ export class FissaService extends ServiceWithContext {
 
     // TODO: We should ban this track from being played again
     //       as apparently it's not playable
-    if (!playing) return this.playNextTrack(pin);
+    if (!playing) return this.playNextTrack(pin, true);
   };
 
   private getNextTracks = (tracks: Track[], currentlyPlayingId?: string | null) => {
