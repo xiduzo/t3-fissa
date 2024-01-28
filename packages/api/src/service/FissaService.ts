@@ -134,7 +134,7 @@ export class FissaService extends ServiceWithContext {
     await this.stopFissa(pin, fissa.by.accounts[0]?.access_token);
   };
 
-  playNextTrack = async (pin: string, instantPlay = false) => {
+  playNextTrack = async (pin: string, forceToPlay = false) => {
     const { by, tracks, currentlyPlayingId, expectedEndTime } =
       await this.getFissaDetailedInformation(pin);
 
@@ -144,9 +144,10 @@ export class FissaService extends ServiceWithContext {
     if (!access_token) throw new NotAbleToAccessSpotify();
 
     try {
-      const isPlaying = await this.spotifyService.isStillPlaying(access_token);
-
-      if (!instantPlay && (!currentlyPlayingId || !isPlaying)) throw new ForceStopFissa();
+      if (!forceToPlay) {
+        const isPlaying = await this.spotifyService.isStillPlaying(access_token);
+        if (!isPlaying || !currentlyPlayingId) throw new ForceStopFissa();
+      }
 
       const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
       if (!nextTracks[0]) throw new NoNextTrack();
@@ -155,7 +156,7 @@ export class FissaService extends ServiceWithContext {
         await this.addRecommendedTracks(pin, biasSort(tracks), access_token);
       }
 
-      const timeToPlay = instantPlay ? new Date() : expectedEndTime;
+      const timeToPlay = forceToPlay ? new Date() : expectedEndTime;
       await sleep(differenceInMilliseconds(timeToPlay, new Date())); // Wait for track to end
 
       await this.trackPlayed({ pin, currentlyPlayingId });
