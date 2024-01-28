@@ -1,3 +1,5 @@
+import { NotImplemented } from "./Error";
+
 export class Toaster {
   protected defaultIcon(type: ToastType) {
     switch (type) {
@@ -31,11 +33,11 @@ export class Toaster {
   }
 
   protected show(_: ToasterProps) {
-    throw new Error("Not implemented");
+    throw new NotImplemented();
   }
 
   public hide() {
-    throw new Error("Not implemented");
+    throw new NotImplemented();
   }
 }
 

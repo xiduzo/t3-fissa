@@ -1,6 +1,9 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
+import { UnableToPlayTrack } from "../classes";
 import { sleep } from "../sleep";
+
+const TRIES_TO_PLAY = 3;
 
 export class SpotifyService {
   private spotify = new SpotifyWebApi({
@@ -29,31 +32,33 @@ export class SpotifyService {
     return body.is_playing;
   };
 
-  playTrack = async (accessToken: string, trackId: string, triesLeft = 3): Promise<unknown> => {
+  playTrack = async (accessToken: string, trackId: string, trial = 0): Promise<boolean> => {
     this.spotify.setAccessToken(accessToken);
 
     try {
       await this.spotify.play({ uris: [`spotify:track:${trackId}`] });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      if ((e as { body: { error: { reason: string } } }).body.error.reason === "NO_ACTIVE_DEVICE") {
+      await sleep(500); // Arbitrary wait time, sue me
+      const { body } = await this.spotify.getMyCurrentPlaybackState();
+      return Promise.resolve(body.is_playing);
+    } catch (e: unknown) {
+      if (trial > TRIES_TO_PLAY) throw new UnableToPlayTrack("Could not play track");
+
+      const error = e as { body: { error: { reason: string } } };
+      const reason = error?.body?.error?.reason ?? "";
+      if (reason === "NO_ACTIVE_DEVICE") {
         console.log("No active device found, trying to transfer playback");
         const { body } = await this.spotify.getMyDevices();
 
         const firstDevice = body.devices[0];
 
-        if (!firstDevice?.id) throw new Error("No playback device(s) found");
-
-        if (triesLeft === 0) throw new Error("Could not transfer playback");
+        if (!firstDevice?.id) throw new UnableToPlayTrack("No playback device(s) found");
 
         await this.spotify.transferMyPlayback([firstDevice.id]);
-        await sleep(250 + (3 % (triesLeft + 1)));
-        return this.playTrack(accessToken, trackId, triesLeft - 1);
+        await sleep(500); // Arbitrary wait time, sue me
+        return this.playTrack(accessToken, trackId, trial + 1);
       }
 
-      console.error(JSON.stringify(e));
-
-      return Promise.resolve();
+      return Promise.resolve(false);
     }
   };
 

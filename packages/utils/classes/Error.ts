@@ -25,3 +25,31 @@ export class NoNextTrack extends Error {
     this.name = NoNextTrack.name;
   }
 }
+
+export class UnableToPlayTrack extends Error {
+  public constructor(message = "Unable to play track") {
+    super(message);
+    this.name = UnableToPlayTrack.name;
+  }
+}
+
+export class NotImplemented extends Error {
+  public constructor(message = "Not implemented") {
+    super(message);
+    this.name = NotImplemented.name;
+  }
+}
+
+export class ForceStopFissa extends Error {
+  public constructor(message = "Forcefully stop fissa") {
+    super(message);
+    this.name = ForceStopFissa.name;
+  }
+}
+
+export class UnableToCreateFissa extends Error {
+  public constructor(message = "Unable to create fissa") {
+    super(message);
+    this.name = UnableToCreateFissa.name;
+  }
+}

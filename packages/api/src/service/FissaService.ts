@@ -4,12 +4,14 @@ import {
   biasSort,
   differenceInMilliseconds,
   FissaIsPaused,
+  ForceStopFissa,
   NoNextTrack,
   NotAbleToAccessSpotify,
   NotTheHost,
   randomize,
   sleep,
   sortFissaTracksOrder,
+  UnableToCreateFissa,
   type SpotifyService,
 } from "@fissa/utils";
 
@@ -31,7 +33,7 @@ export class FissaService extends ServiceWithContext {
   };
 
   create = async (tracks: { trackId: string; durationMs: number }[], userId: string) => {
-    if (!tracks[0]) throw new Error("No tracks");
+    if (!tracks[0]) throw new UnableToCreateFissa("No tracks");
 
     const { access_token } = await this.db.account.findFirstOrThrow({
       where: { userId },
@@ -66,7 +68,7 @@ export class FissaService extends ServiceWithContext {
       }
     } while (!fissa && tries < 50);
 
-    if (!fissa) throw new Error("Failed to create fissa");
+    if (!fissa) throw new UnableToCreateFissa("No unique pin found");
 
     if (tracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
       await this.addRecommendedTracks(fissa.pin, tracks, access_token);
@@ -144,7 +146,7 @@ export class FissaService extends ServiceWithContext {
     try {
       const isPlaying = await this.spotifyService.isStillPlaying(access_token);
 
-      if (!instantPlay && (!currentlyPlayingId || !isPlaying)) throw new Error("Stop fissa");
+      if (!instantPlay && (!currentlyPlayingId || !isPlaying)) throw new ForceStopFissa();
 
       const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
       if (!nextTracks[0]) throw new NoNextTrack();
@@ -217,15 +219,19 @@ export class FissaService extends ServiceWithContext {
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
   ) => {
-    await this.spotifyService.playTrack(accessToken, trackId);
+    const playing = await this.spotifyService.playTrack(accessToken, trackId);
 
-    return this.db.fissa.update({
+    await this.db.fissa.update({
       where: { pin },
       data: {
         currentlyPlaying: { connect: { pin_trackId: { pin, trackId } } },
         expectedEndTime: addMilliseconds(new Date(), durationMs),
       },
     });
+
+    // TODO: We should ban this track from being played again
+    //       as apparently it's not playable
+    if (!playing) return this.playNextTrack(pin);
   };
 
   private getNextTracks = (tracks: Track[], currentlyPlayingId?: string | null) => {
