@@ -220,7 +220,7 @@ export class FissaService extends ServiceWithContext {
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
   ) => {
-    const playing = await this.spotifyService.playTrack(accessToken, trackId);
+    const playing = this.spotifyService.playTrack(accessToken, trackId);
 
     await this.db.fissa.update({
       where: { pin },
@@ -232,7 +232,7 @@ export class FissaService extends ServiceWithContext {
 
     // TODO: We should ban this track from being played again
     //       as apparently it's not playable
-    if (!playing) return this.playNextTrack(pin, true);
+    if (!(await playing)) return this.playNextTrack(pin, true);
   };
 
   private getNextTracks = (tracks: Track[], currentlyPlayingId?: string | null) => {

@@ -37,7 +37,7 @@ export class SpotifyService {
 
     try {
       await this.spotify.play({ uris: [`spotify:track:${trackId}`] });
-      await sleep(500); // Arbitrary wait time, sue me
+      await sleep(1500); // Arbitrary wait time, sue me
       const { body } = await this.spotify.getMyCurrentPlaybackState();
       return Promise.resolve(body.is_playing);
     } catch (e: unknown) {
@@ -54,7 +54,7 @@ export class SpotifyService {
         if (!firstDevice?.id) throw new UnableToPlayTrack("No playback device(s) found");
 
         await this.spotify.transferMyPlayback([firstDevice.id]);
-        await sleep(500); // Arbitrary wait time, sue me
+        await sleep(1500); // Arbitrary wait time, sue me
         return this.playTrack(accessToken, trackId, trial + 1);
       }
 
