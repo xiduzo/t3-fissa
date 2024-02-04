@@ -16,8 +16,9 @@ const AddTracks = () => {
       toast.error({ message: "Failed to add songs" });
     },
     onMutate: async ({ tracks, pin }) => {
-      const newTrackIds = tracks.map((track) => track.trackId);
       await queryClient.fissa.byId.cancel(pin);
+
+      const newTrackIds = tracks.map((track) => track.trackId);
       queryClient.fissa.byId.setData(
         pin,
         (prev) =>
@@ -42,30 +43,23 @@ const AddTracks = () => {
           },
       );
 
-      tracks.forEach((track) => {
-        const vote = { trackId: track.trackId, pin: pin };
-
-        queryClient.vote.byTrackFromUser.setData(
-          vote,
-          (prev) =>
-            prev && {
-              ...prev,
-              vote: 1,
-            },
-        );
+      tracks.forEach(({ trackId }) => {
+        queryClient.vote.byTrackFromUser.setData({ trackId, pin }, () => ({
+          vote: 1,
+          trackId,
+          pin,
+          userId: "", // Will be set by the server
+        }));
       });
 
       toast.success({ message: `Added ${tracks.length} songs` });
       back();
     },
-    onSettled: async (data, _, variables) => {
-      for (const track of variables.tracks) {
-        const vote = { trackId: track.trackId, pin: variables.pin };
-
-        await queryClient.vote.byTrackFromUser.invalidate(vote);
+    onSettled: async (_, __, { tracks, pin }) => {
+      for (const { trackId } of tracks) {
+        await queryClient.vote.byTrackFromUser.invalidate({ trackId, pin });
       }
-
-      await queryClient.fissa.byId.invalidate(variables.pin);
+      await queryClient.fissa.byId.invalidate(pin);
     },
   });
 

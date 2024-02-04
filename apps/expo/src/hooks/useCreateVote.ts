@@ -6,52 +6,37 @@ export const useCreateVote = (pin: string) => {
   const queryClient = api.useContext();
 
   const { mutate, mutateAsync, ...rest } = api.vote.create.useMutation({
-    onMutate: async (newVote) => {
-      await queryClient.vote.byTrackFromUser.cancel(newVote);
-      await queryClient.fissa.byId.cancel(newVote.pin);
+    onMutate: async ({ pin, trackId, vote }) => {
+      await queryClient.fissa.byId.cancel(pin);
 
-      const vote = {
-        pin: newVote.pin,
-        trackId: newVote.trackId,
-      };
-      const previousVote = queryClient.vote.byTrackFromUser.getData(vote);
+      const previousVote = queryClient.vote.byTrackFromUser.getData({ pin, trackId });
 
-      queryClient.vote.byTrackFromUser.setData(
+      queryClient.vote.byTrackFromUser.setData({ pin, trackId }, () => ({
+        pin,
+        trackId,
         vote,
-        (prev) =>
-          prev && {
-            ...prev,
-            ...newVote,
-          },
-      );
+        userId: "", // Does not matter, will be set on the server
+      }));
 
       queryClient.fissa.byId.setData(
-        newVote.pin,
+        pin,
         (prev) =>
           prev && {
             ...prev,
             tracks: prev.tracks.map((track) => {
-              if (track.trackId === newVote.trackId) {
-                return {
-                  ...track,
-                  score: track.score + newVote.vote - (previousVote?.vote ?? 0),
-                };
+              if (track.trackId === trackId) {
+                track.score += vote - (previousVote?.vote ?? 0);
               }
               return track;
             }),
           },
       );
 
-      await notificationAsync(NotificationFeedbackType[newVote.vote > 0 ? "Success" : "Warning"]);
-
-      return previousVote;
+      await notificationAsync(NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
     },
-    onSettled: async (data, _, variables) => {
-      await queryClient.fissa.byId.invalidate(variables.pin);
-      await queryClient.vote.byTrackFromUser.invalidate({
-        pin: variables.pin,
-        trackId: variables.trackId,
-      });
+    onSettled: async (data, _, { pin, trackId }) => {
+      await queryClient.fissa.byId.invalidate(pin);
+      await queryClient.vote.byTrackFromUser.invalidate({ pin, trackId });
     },
   });
 

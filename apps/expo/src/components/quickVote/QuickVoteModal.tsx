@@ -6,8 +6,7 @@ import { useGlobalSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
-import { useGetVoteFromUser } from "../../hooks";
-import { useAuth } from "../../providers";
+import { api } from "../../utils";
 import { Action, Badge, TrackEnd, TrackListItem } from "../shared";
 import { QuickVoteContext } from "./QuickVoteContext";
 
@@ -16,12 +15,20 @@ const windowCenter = windowHeight / 2;
 
 export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   const { pin } = useGlobalSearchParams();
-  const { user } = useAuth();
   const { vote, touchStartPosition, track } = useContext(QuickVoteContext);
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
-  const { data } = useGetVoteFromUser(String(pin), String(track?.id), user);
+
+  const { data } = api.vote.byTrackFromUser.useQuery(
+    {
+      pin: String(pin),
+      trackId: String(track?.id),
+    },
+    {
+      enabled: !!track,
+    },
+  );
 
   const opacity = focussedAnimation.interpolate({
     inputRange: [-Math.abs(touchStartPosition), 0],

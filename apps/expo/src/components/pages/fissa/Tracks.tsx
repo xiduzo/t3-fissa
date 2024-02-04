@@ -18,13 +18,7 @@ import {
   useTracks,
 } from "@fissa/utils";
 
-import {
-  useCreateVote,
-  useGetVoteFromUser,
-  useIsOwner,
-  useOnActiveApp,
-  useSkipTrack,
-} from "../../../hooks";
+import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { api } from "../../../utils";
 import { QuickVoteModal, useQuickVote } from "../../quickVote";
@@ -50,7 +44,9 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
-  const { data, isInitialLoading } = api.fissa.byId.useQuery(pin);
+  const { data, isInitialLoading } = api.fissa.byId.useQuery(pin, {
+    refetchInterval: 6000, // TODO: signal (push notification) from the server instead of polling?
+  });
 
   const isOwner = useIsOwner(pin);
 
@@ -311,7 +307,7 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
 
   const { user } = useAuth();
 
-  const { data } = useGetVoteFromUser(String(pin), track.id, user);
+  const { data } = api.vote.byTrackFromUser.useQuery({ pin: String(pin), trackId: track.id });
 
   const { mutateAsync: voteOnTrack, isLoading: isVoting } = useCreateVote(String(pin));
 
