@@ -47,18 +47,11 @@ const SCROLL_DISTANCE = 150;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const context = api.useContext();
+
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
-  const { data, isInitialLoading } = api.fissa.byId.useQuery(pin, {
-    onSuccess: (fissa) => {
-      // TODO: when joining a fissa that has ended, we should show a message
-      // and redirect to the home page
-      console.log(fissa);
-      // toast.error({
-      //   message: error.message,
-      // });
-    },
-  });
+  const { data, isInitialLoading } = api.fissa.byId.useQuery(pin);
+
   const isOwner = useIsOwner(pin);
 
   const buttonOffsetAnimation = useRef(new Animated.Value(0)).current;

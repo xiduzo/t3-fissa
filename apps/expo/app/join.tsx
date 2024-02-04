@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   TextInput,
   View,
@@ -20,6 +20,7 @@ const Join = () => {
 
   const { isFetching } = api.fissa.byId.useQuery(pin.join(""), {
     enabled: !pin.includes(""),
+    retry: false,
     onSuccess: ({ pin }) => {
       toast.success({ message: "Enjoy the fissa", icon: "🎉" });
       void notificationAsync(NotificationFeedbackType.Success);
@@ -90,12 +91,6 @@ const Join = () => {
       keys[0]?.current?.focus();
     }, 100);
   }, [keys]);
-
-  useEffect(() => {
-    if (pin.includes("")) return;
-
-    toast.info({ message: `Joining Fissa ${pin.join("")}`, duration: 60000 });
-  }, [pin]);
 
   return (
     <PageTemplate className="justify-start space-y-14">

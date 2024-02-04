@@ -21,15 +21,13 @@ const Home: NextPage = () => {
   const [pin, setPin] = useState(["", "", "", ""]);
   api.fissa.byId.useQuery(pin.includes("") ? "" : pin.join(""), {
     retry: false,
+    enabled: !pin.includes(""),
     onSuccess: (data) => {
       window.location.href = `/fissa/${data.pin}`;
     },
     onError: (error) => {
       toast.error({ message: error.message });
-      setPin(["", "", "", ""]);
-      setTimeout(() => {
-        key1.current?.focus();
-      }, 100);
+      handleClear();
     },
   });
 
@@ -88,6 +86,13 @@ const Home: NextPage = () => {
     [keys, pin],
   );
 
+  const handleClear = useCallback(() => {
+    setPin(["", "", "", ""]);
+    setTimeout(() => {
+      keys[0]?.current?.focus();
+    }, 100);
+  }, [keys]);
+
   useEffect(() => {
     keys[0]?.current?.focus();
   }, [keys]);
@@ -132,6 +137,7 @@ const Home: NextPage = () => {
           </section>
           <button
             disabled={!pin.includes("")}
+            onClick={handleClear}
             className="w-full rounded-full bg-opacity-0 p-4 font-bold transition-all duration-100 hover:bg-opacity-10"
             style={{
               background: `rgb(${hexToRgb(theme["100"]).rgb} / var(--tw-bg-opacity)`,

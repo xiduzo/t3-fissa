@@ -46,7 +46,7 @@ export class SpotifyService {
       const error = e as { body: { error: { reason: string } } };
       const reason = error?.body?.error?.reason ?? "";
       if (reason === "NO_ACTIVE_DEVICE") {
-        console.log("No active device found, trying to transfer playback");
+        console.warn("No active device found, trying to transfer playback");
         const { body } = await this.spotify.getMyDevices();
 
         const firstDevice = body.devices[0];

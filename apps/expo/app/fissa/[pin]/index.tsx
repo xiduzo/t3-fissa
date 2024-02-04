@@ -1,7 +1,8 @@
 import { useCallback, useState, type FC } from "react";
 import { TouchableOpacity, View } from "react-native";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useGlobalSearchParams } from "expo-router";
+import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import Slider from "@react-native-community/slider";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices, useSpotify } from "@fissa/utils";
@@ -18,10 +19,20 @@ import {
   Typography,
 } from "../../../src/components";
 import { useIsOwner, useOnActiveApp, useShareFissa } from "../../../src/hooks";
-import { mapDeviceToIcon, toast } from "../../../src/utils";
+import { api, mapDeviceToIcon, toast } from "../../../src/utils";
 
 const Fissa = () => {
   const { pin } = useGlobalSearchParams();
+  const { replace } = useRouter();
+
+  api.fissa.byId.useQuery(String(pin), {
+    onError: (error) => {
+      toast.error({ message: error.message });
+      void notificationAsync(NotificationFeedbackType.Error);
+      // Fissa does not exist (anymore)
+      replace("/home");
+    },
+  });
 
   if (!pin) return null;
 

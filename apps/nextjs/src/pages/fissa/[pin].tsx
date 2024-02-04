@@ -13,6 +13,7 @@ const JoinFissa: NextPage = () => {
   const { query } = useRouter();
   const { theme } = useTheme();
   const shown = useRef(false);
+  const router = useRouter();
 
   api.fissa.byId.useQuery(String(query.pin), {
     retry: false,
@@ -24,10 +25,9 @@ const JoinFissa: NextPage = () => {
     onError: (error) => {
       toast.error({ message: error.message });
       // TODO: navigate to home page
+      void router.replace("/");
     },
   });
-
-  console.log(query.pin);
 
   return (
     <>
