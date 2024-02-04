@@ -1,21 +1,33 @@
-import { useEffect } from "react";
+import { useRef } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
+import { api } from "~/utils/api";
 import { Layout } from "~/components/Layout";
+import { toast } from "~/components/Toast";
 import { useTheme } from "~/providers/ThemeProvider";
 
 const JoinFissa: NextPage = () => {
   const { query } = useRouter();
   const { theme } = useTheme();
+  const shown = useRef(false);
 
-  useEffect(() => {
-    if (!query.pin) return;
+  api.fissa.byId.useQuery(String(query.pin), {
+    retry: false,
+    enabled: !shown.current,
+    onSuccess: (data) => {
+      shown.current = true;
+      window.location.replace(`com.fissa://fissa/${data.pin}`);
+    },
+    onError: (error) => {
+      toast.error({ message: error.message });
+      // TODO: navigate to home page
+    },
+  });
 
-    window.location.replace(`com.fissa://fissa/${query.pin}`);
-  }, [query.pin]);
+  console.log(query.pin);
 
   return (
     <>

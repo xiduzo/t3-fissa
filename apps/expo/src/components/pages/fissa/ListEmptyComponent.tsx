@@ -1,10 +1,10 @@
 import { useCallback, type FC } from "react";
-import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { useGlobalSearchParams } from "expo-router";
-import { useIsOwner, useRestartFissa } from "@fissa/hooks";
 import { useDevices, useSpotify } from "@fissa/utils";
 
-import { toast } from "../../../utils";
+import { useIsOwner } from "../../../hooks";
+import { api, toast } from "../../../utils";
 import { Button, EmptyState, SelectDevice } from "../../shared";
 
 export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
@@ -13,12 +13,14 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
 
   const spotify = useSpotify();
   const { activeDevice, fetchDevices } = useDevices();
+  const queryClient = api.useContext();
 
-  const { mutateAsync } = useRestartFissa(String(pin), {
+  const { mutateAsync } = api.fissa.restart.useMutation({
     onMutate: async () => {
       await notificationAsync(NotificationFeedbackType.Warning);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.fissa.invalidate();
       toast.success({
         icon: "🎉",
         message: "Let's go!",
@@ -26,12 +28,16 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
     },
   });
 
+  const handleRestartFissa = useCallback(async () => {
+    await mutateAsync(String(pin));
+  }, [mutateAsync, pin]);
+
   const handleDeviceSelect = useCallback(
     (device: SpotifyApi.UserDevice) => async () => {
       if (!device.id) return;
       try {
         await spotify.transferMyPlayback([device.id]);
-        await mutateAsync();
+        await handleRestartFissa();
       } catch (e) {
         toast.error({
           message: `Failed to connect to ${device.name}`,
@@ -40,7 +46,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
         fetchDevices();
       }
     },
-    [spotify, fetchDevices, mutateAsync],
+    [spotify, fetchDevices, handleRestartFissa],
   );
 
   if (isLoading) return <EmptyState icon="🐕" title="Fetching songs" subtitle="Good boy" />;
@@ -63,7 +69,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
       title="This fissa is asleep"
       subtitle={!isOwner && "Poke your host to continue"}
     >
-      {isOwner && <Button onPress={mutateAsync} title="Continue fissa" />}
+      {isOwner && <Button onPress={handleRestartFissa} title="Continue fissa" />}
     </EmptyState>
   );
 };

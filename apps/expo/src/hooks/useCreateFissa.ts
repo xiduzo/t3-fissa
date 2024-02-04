@@ -1,17 +1,14 @@
-import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { useRouter } from "expo-router";
-import { useCreateFissa as useBaseCreateFissa } from "@fissa/hooks";
 
-import { mapSpotifyTrackToTrpcTrack, toast } from "../utils";
+import { api, mapSpotifyTrackToTrpcTrack, toast } from "../utils";
 
 type Tracks = (SpotifyApi.TrackObjectFull | SpotifyApi.TrackObjectSimplified)[];
 
-type Options = Parameters<typeof useBaseCreateFissa>[0];
-
-export const useCreateFissa = (options?: Options) => {
+export const useCreateFissa = (options?: Parameters<typeof api.fissa.create.useMutation>[0]) => {
   const { push } = useRouter();
 
-  const { mutate, mutateAsync, ...rest } = useBaseCreateFissa({
+  const { mutate, mutateAsync, ...rest } = api.fissa.create.useMutation({
     ...options,
     onSuccess: async (...props) => {
       const [data] = props;

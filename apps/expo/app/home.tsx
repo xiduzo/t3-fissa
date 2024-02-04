@@ -1,7 +1,6 @@
 import React, { useCallback, useState, type FC } from "react";
 import { View } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { useGetUserFissa } from "@fissa/hooks";
 
 import {
   Action,
@@ -15,10 +14,11 @@ import {
   Typography,
 } from "../src/components";
 import { useAuth } from "../src/providers";
+import { api } from "../src/utils";
 
 const Home = () => {
   const { user } = useAuth();
-  const { data } = useGetUserFissa();
+  const { data } = api.auth.getUserFissa.useQuery();
   const { replace } = useRouter();
 
   const [showHostOfFissaWarning, setShowHostOfFissaWarning] = useState(false);

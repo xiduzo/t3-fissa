@@ -3,12 +3,12 @@ import { Animated, Dimensions, Modal, View, type GestureResponderEvent } from "r
 import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
-import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
-import { useAuth } from "../../../../providers";
-import { Action, Badge, TrackEnd, TrackListItem } from "../../../shared";
+import { useGetVoteFromUser } from "../../hooks";
+import { useAuth } from "../../providers";
+import { Action, Badge, TrackEnd, TrackListItem } from "../shared";
 import { QuickVoteContext } from "./QuickVoteContext";
 
 const windowHeight = Dimensions.get("window").height;
@@ -21,7 +21,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
-  const { data } = useGetVoteFromUser(String(pin), track?.id ?? "", user);
+  const { data } = useGetVoteFromUser(String(pin), String(track?.id), user);
 
   const opacity = focussedAnimation.interpolate({
     inputRange: [-Math.abs(touchStartPosition), 0],

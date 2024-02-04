@@ -1,7 +1,7 @@
 import { type FC } from "react";
-import { useGetVoteFromUser } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 
+import { useGetVoteFromUser } from "../../hooks";
 import { useAuth } from "../../providers";
 import { Icon } from "./Icon";
 

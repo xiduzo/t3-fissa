@@ -1,2 +1,1 @@
-export * from "./trpc";
-export * from "./animation";
+export * from "./AnimationSpeed";

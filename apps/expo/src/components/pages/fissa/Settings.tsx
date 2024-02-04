@@ -1,12 +1,11 @@
 import { useCallback, useState, type FC } from "react";
 import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
-import { useGetTracks, useIsOwner, usePauseFissa } from "@fissa/hooks";
 import { splitInChunks, useSpotify, useTracks } from "@fissa/utils";
 
-import { useShareFissa } from "../../../hooks";
+import { useIsOwner, useShareFissa } from "../../../hooks";
 import { useAuth } from "../../../providers";
-import { toast } from "../../../utils";
+import { api, toast } from "../../../utils";
 import { Action, IconButton, Popover } from "../../shared";
 
 export const Settings = () => {
@@ -54,7 +53,9 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
   const { user } = useAuth();
   const spotify = useSpotify();
 
-  const { data } = useGetTracks(pin);
+  const { data } = api.track.byPin.useQuery(pin, {
+    refetchOnMount: true,
+  });
 
   const tracks = useTracks(data?.map(({ trackId }) => trackId));
 
@@ -98,7 +99,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 const PauseFissaAction = () => {
   const { pin } = useGlobalSearchParams();
   const isOwner = useIsOwner(String(pin));
-  const { mutateAsync, isLoading } = usePauseFissa(String(pin), {
+  const { mutateAsync, isLoading } = api.fissa.pause.useMutation({
     onSuccess: () => {
       toast.success({ message: "Fissa paused", icon: "🦥" });
     },
@@ -109,7 +110,7 @@ const PauseFissaAction = () => {
     },
   });
 
-  const pauseSpotify = useCallback(mutateAsync, [mutateAsync]);
+  const pauseSpotify = useCallback(() => mutateAsync(String(pin)), [mutateAsync, pin]);
 
   if (!isOwner) return null;
 

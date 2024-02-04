@@ -15,6 +15,7 @@
     "Ionicons",
     "NEXTAUTH",
     "tanstack",
+    "toastify",
     "zustand"
   ],
   "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]]

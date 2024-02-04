@@ -21,8 +21,7 @@ import {
 import Constants from "expo-constants";
 import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
-import { useInterval } from "@fissa/hooks";
-import { differenceInMinutes, scopes, useSpotify } from "@fissa/utils";
+import { differenceInMinutes, scopes, useInterval, useSpotify } from "@fissa/utils";
 
 import { useOnActiveApp } from "../hooks";
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";

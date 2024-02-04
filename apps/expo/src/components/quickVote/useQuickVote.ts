@@ -1,8 +1,7 @@
 import { useCallback, useContext, useEffect } from "react";
 import { Dimensions, type GestureResponderEvent } from "react-native";
-import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
-import { useCreateVote } from "@fissa/hooks";
 
+import { useCreateVote } from "../../hooks";
 import { QuickVoteContext } from "./QuickVoteContext";
 
 const windowHeight = Dimensions.get("window").height;
@@ -11,12 +10,7 @@ const windowCenter = windowHeight / 2;
 export const useQuickVote = (pin: string) => {
   const { track, vote, setVote, selectTrack } = useContext(QuickVoteContext);
 
-  // TODO: this is duplicate code
-  const { mutateAsync } = useCreateVote(String(pin), {
-    onMutate: async ({ vote }) => {
-      await notificationAsync(NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
-    },
-  });
+  const { mutateAsync } = useCreateVote(String(pin));
 
   const toggleTrackFocus = useCallback(
     (track?: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => {

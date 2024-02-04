@@ -79,7 +79,7 @@ export class FissaService extends ServiceWithContext {
     return fissa;
   };
 
-  byId = async (pin: string, userId: string) => {
+  byId = async (pin: string, userId?: string) => {
     const fissa = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       include: {
@@ -88,11 +88,13 @@ export class FissaService extends ServiceWithContext {
       },
     });
 
-    await this.db.userInFissa.upsert({
-      where: { pin_userId: { pin, userId } },
-      create: { pin, userId },
-      update: {},
-    });
+    if (userId) {
+      await this.db.userInFissa.upsert({
+        where: { pin_userId: { pin, userId } },
+        create: { pin, userId },
+        update: {},
+      });
+    }
 
     return fissa;
   };

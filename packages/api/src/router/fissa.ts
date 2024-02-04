@@ -1,7 +1,7 @@
 import { SpotifyService } from "@fissa/utils";
 
 import { FissaService } from "../service/FissaService";
-import { createTRPCRouter, protectedProcedure, serviceProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure, serviceProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
 const sync = createTRPCRouter({
@@ -28,9 +28,9 @@ export const fissaRouter = createTRPCRouter({
     const service = new FissaService(ctx, new SpotifyService());
     return service.create(input, ctx.session.user.id);
   }),
-  byId: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
+  byId: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
-    return service.byId(input, ctx.session.user.id);
+    return service.byId(input, ctx.session?.user.id);
   }),
   pause: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());

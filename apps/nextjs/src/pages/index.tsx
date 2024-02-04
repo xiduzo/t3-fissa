@@ -10,13 +10,28 @@ import {
 import type { NextPage } from "next";
 import Head from "next/head";
 
+import { api } from "~/utils/api";
 import { hexToRgb } from "~/utils/hexToRgb";
 import { Layout } from "~/components/Layout";
+import { toast } from "~/components/Toast";
 import { useTheme } from "~/providers/ThemeProvider";
 
 const Home: NextPage = () => {
   const { theme } = useTheme();
   const [pin, setPin] = useState(["", "", "", ""]);
+  api.fissa.byId.useQuery(pin.includes("") ? "" : pin.join(""), {
+    retry: false,
+    onSuccess: (data) => {
+      window.location.href = `/fissa/${data.pin}`;
+    },
+    onError: (error) => {
+      toast.error({ message: error.message });
+      setPin(["", "", "", ""]);
+      setTimeout(() => {
+        key1.current?.focus();
+      }, 100);
+    },
+  });
 
   const key1 = useRef<HTMLInputElement>(null);
   const key2 = useRef<HTMLInputElement>(null);
@@ -77,12 +92,6 @@ const Home: NextPage = () => {
     keys[0]?.current?.focus();
   }, [keys]);
 
-  useEffect(() => {
-    if (pin.includes("")) return;
-
-    window.location.href = `/fissa/${pin.join("")}`;
-  }, [pin]);
-
   return (
     <>
       <Head>
@@ -91,7 +100,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/icon.png" />
       </Head>
       <Layout>
-        <section className="container mt-32 space-y-12">
+        <section className="container mx-auto mt-32 space-y-12">
           <h1 className="text-center text-3xl">
             Enter the session code of the Fissa you want to join
           </h1>

@@ -6,8 +6,9 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from "react-native";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import { type FlashList } from "@shopify/flash-list";
-import { useGetFissa, useIsOwner } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
 import {
   AnimationSpeed,
@@ -17,14 +18,30 @@ import {
   useTracks,
 } from "@fissa/utils";
 
-import { useOnActiveApp } from "../../../hooks";
+import {
+  useCreateVote,
+  useGetVoteFromUser,
+  useIsOwner,
+  useOnActiveApp,
+  useSkipTrack,
+} from "../../../hooks";
+import { useAuth } from "../../../providers";
 import { api } from "../../../utils";
-import { Icon, ProgressBar, TrackEnd, TrackList, Typography } from "../../shared";
-import { SkipTrackButton } from "./buttons";
+import { QuickVoteModal, useQuickVote } from "../../quickVote";
+import {
+  Action,
+  Divider,
+  Icon,
+  IconButton,
+  Popover,
+  ProgressBar,
+  TrackEnd,
+  TrackList,
+  TrackListItem,
+  Typography,
+} from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
-import { QuickVoteModal, useQuickVote } from "./quickVote";
-import { SelectedTrackPopover } from "./SelectedTrackPopover";
 
 const SCROLL_DISTANCE = 150;
 
@@ -32,11 +49,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const context = api.useContext();
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
-  const { data, isInitialLoading } = useGetFissa(pin, {
-    onSuccess: (error) => {
+  const { data, isInitialLoading } = api.fissa.byId.useQuery(pin, {
+    onSuccess: (fissa) => {
       // TODO: when joining a fissa that has ended, we should show a message
       // and redirect to the home page
-      console.log(error);
+      console.log(fissa);
       // toast.error({
       //   message: error.message,
       // });
@@ -260,3 +277,165 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     </>
   );
 };
+
+const SkipTrackButton = () => {
+  const { pin } = useGlobalSearchParams();
+
+  const { mutateAsync, isLoading } = useSkipTrack(String(pin));
+
+  return (
+    <IconButton
+      onPress={mutateAsync}
+      disabled={isLoading}
+      title="play next song"
+      icon="skip-forward"
+    />
+  );
+};
+
+const SelectedTrackPopover: FC<SelectedTrackPopoverProps> = ({ track, onRequestClose }) => {
+  return (
+    <Popover visible={!!track} onRequestClose={onRequestClose}>
+      {track && <TrackListItem inverted track={track} hasBorder />}
+      <Divider />
+      {track && <TrackActions track={track} onPress={onRequestClose} />}
+    </Popover>
+  );
+};
+
+interface SelectedTrackPopoverProps {
+  track?: SpotifyApi.TrackObjectFull;
+  onRequestClose: () => void;
+}
+
+const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
+  const { pin } = useGlobalSearchParams();
+  const { data: fissa } = api.fissa.byId.useQuery(String(pin));
+
+  const { push } = useRouter();
+
+  const isOwner = useIsOwner(String(pin));
+
+  const { user } = useAuth();
+
+  const { data } = useGetVoteFromUser(String(pin), track.id, user);
+
+  const { mutateAsync: voteOnTrack, isLoading: isVoting } = useCreateVote(String(pin));
+
+  const { mutateAsync: deleteTrack, isLoading: isDeleting } = api.track.deleteTrack.useMutation({
+    onSettled: async () => {
+      await notificationAsync(NotificationFeedbackType.Success);
+    },
+  });
+
+  const { mutateAsync: skipTrack, isLoading: isSkipping } = useSkipTrack(String(pin), {
+    onMutate: () => {
+      onPress();
+    },
+  });
+
+  const isActiveTrack = useMemo(() => fissa?.currentlyPlayingId === track.id, [fissa, track.id]);
+
+  const hasBeenPlayed = useMemo(
+    () => fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed,
+    [track?.id, fissa?.tracks],
+  );
+
+  const canRemoveTrack = useMemo(() => {
+    const isAddedByUser =
+      fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.by?.email === user?.id;
+
+    if (isAddedByUser) return true;
+
+    return isOwner;
+  }, [track?.id, fissa?.tracks, user, isOwner]);
+
+  const handleVote = useCallback(
+    (vote: number) => async () => {
+      onPress();
+      await voteOnTrack(vote, track.id);
+    },
+    [track.id, voteOnTrack, onPress],
+  );
+
+  const handleDelete = useCallback(async () => {
+    onPress();
+    await deleteTrack({ pin: String(pin), trackId: track.id });
+  }, [deleteTrack, onPress, pin, track.id]);
+
+  const handleSkipTrack = useCallback(async () => {
+    onPress();
+    await skipTrack();
+  }, [skipTrack, onPress]);
+
+  return (
+    <>
+      {hasBeenPlayed && (
+        <Action
+          onPress={handleVote(1)}
+          inverted
+          icon="sync"
+          title="Replay song"
+          subtitle="What a banger this was!"
+        />
+      )}
+      {!isActiveTrack && !hasBeenPlayed && (
+        <Action
+          onPress={handleVote(1)}
+          inverted
+          active={data?.vote === 1}
+          disabled={isVoting || data?.vote === 1}
+          icon="arrow-up"
+          title="Up-vote song"
+          subtitle="It might move up in the queue"
+        />
+      )}
+      {canRemoveTrack && !isActiveTrack && !hasBeenPlayed && (
+        <Action
+          inverted
+          onPress={handleDelete}
+          icon="trash"
+          disabled={isDeleting}
+          title="Remove song"
+          subtitle="Mistakes were made"
+        />
+      )}
+      {isActiveTrack && !hasBeenPlayed && (
+        <Action
+          title="Skip song"
+          subtitle={isOwner ? "Use your powers wisely" : "Poke your host to skip"}
+          inverted
+          disabled={!isOwner || isSkipping}
+          onPress={handleSkipTrack}
+          icon="skip-forward"
+        />
+      )}
+      {!isActiveTrack && !hasBeenPlayed && (
+        <Action
+          onPress={handleVote(-1)}
+          inverted
+          active={data?.vote === -1}
+          disabled={isVoting || data?.vote === -1}
+          icon="arrow-down"
+          title="Down-vote song"
+          subtitle="It might move down in the queue"
+        />
+      )}
+      <Action
+        inverted
+        title="Save to spotify"
+        subtitle="Capture those vibes"
+        icon="spotify"
+        onPress={() => {
+          onPress();
+          push(`/fissa/${fissa?.pin}/${track?.id}`);
+        }}
+      />
+    </>
+  );
+};
+
+interface TrackActionsProps {
+  track: SpotifyApi.TrackObjectFull;
+  onPress: () => void;
+}

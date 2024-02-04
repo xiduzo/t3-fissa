@@ -6,11 +6,10 @@ import {
   type TextInputChangeEventData,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { useDebounce } from "@fissa/hooks";
 import { theme } from "@fissa/tailwind-config";
-import { AnimationSpeed, getPlaylistTracks, useSpotify } from "@fissa/utils";
+import { AnimationSpeed, getPlaylistTracks, useDebounceValue, useSpotify } from "@fissa/utils";
 
-import { PageTemplate } from "../pages/PageTemplate";
+import { PageTemplate } from "../PageTemplate";
 import { BottomDrawer } from "./BottomDrawer";
 import { Button, ButtonGroup, IconButton } from "./button";
 import { EmptyState } from "./EmptyState";
@@ -27,7 +26,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
 
   const inputRef = useRef<TextInput>(null);
   const [search, setSearch] = useState("");
-  const debounced = useDebounce(search);
+  const [debounced] = useDebounceValue(search, 150);
 
   const playlistTracks = useRef<SpotifyApi.TrackObjectFull[]>([]);
 

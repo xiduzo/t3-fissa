@@ -18,7 +18,6 @@
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@fissa/api": "*",
-    "@fissa/hooks": "*",
     "@fissa/tailwind-config": "*",
     "@fissa/utils": "*",
     "@react-native-community/slider": "^4.4.3",

@@ -1,14 +1,11 @@
-import { type MutationCallbacks } from "@fissa/utils";
+import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 
-import { api } from "./api";
+import { api } from "../utils";
 
-const endpoint = api.vote.create.useMutation;
-
-export const useCreateVote = (pin: string, callbacks: MutationCallbacks<typeof endpoint> = {}) => {
+export const useCreateVote = (pin: string) => {
   const queryClient = api.useContext();
 
-  const { mutate, mutateAsync, ...rest } = endpoint({
-    ...callbacks,
+  const { mutate, mutateAsync, ...rest } = api.vote.create.useMutation({
     onMutate: async (newVote) => {
       await queryClient.vote.byTrackFromUser.cancel(newVote);
       await queryClient.fissa.byId.cancel(newVote.pin);
@@ -45,17 +42,16 @@ export const useCreateVote = (pin: string, callbacks: MutationCallbacks<typeof e
           },
       );
 
-      await callbacks.onMutate?.(newVote);
+      await notificationAsync(NotificationFeedbackType[newVote.vote > 0 ? "Success" : "Warning"]);
 
       return previousVote;
     },
-    onSettled: async (data, error, variables, context) => {
+    onSettled: async (data, _, variables) => {
       await queryClient.fissa.byId.invalidate(variables.pin);
       await queryClient.vote.byTrackFromUser.invalidate({
         pin: variables.pin,
         trackId: variables.trackId,
       });
-      await callbacks.onSettled?.(data, error, variables, context);
     },
   });
 
