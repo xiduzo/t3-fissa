@@ -26,6 +26,9 @@ export const useCreateVote = (pin: string) => {
             tracks: prev.tracks.map((track) => {
               if (track.trackId === trackId) {
                 track.score += vote - (previousVote?.vote ?? 0);
+                // Replaying a track just gives it a vote,
+                // Make sure to reset the hasBeenPlayed flag
+                track.hasBeenPlayed = false;
               }
               return track;
             }),
