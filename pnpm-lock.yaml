@@ -441,8 +441,8 @@ importers:
         specifier: ^18.16.0
         version: 18.16.0
       '@types/randomatic':
-        specifier: ^3.1.3
-        version: 3.1.3
+        specifier: ^3.1.5
+        version: 3.1.5
 
 packages:
 
@@ -3759,8 +3759,8 @@ packages:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: false
 
-  /@types/randomatic@3.1.3:
-    resolution: {integrity: sha512-UlYMg/XxN+YMh6vAiB879yh2bhaTOU0DB1g4NGIhzlaiSf22rAVKIGTvH8HjCXu+wfFvjAWHuPG5waN4btEubw==}
+  /@types/randomatic@3.1.5:
+    resolution: {integrity: sha512-VCwCTw6qh1pRRw+5rNTAwqPmf6A+hdrkdM7dBpZVmhl7g+em3ONXlYK/bWPVKqVGMWgP0d1bog8Vc/X6zRwRRQ==}
     dev: true
 
   /@types/react-dom@18.2.15:
