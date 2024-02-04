@@ -7,8 +7,9 @@ import { prisma } from "@fissa/db";
 /**
  * Replace this with an object if you want to pass things to createContextInner
  */
-type CreateContextOptions = {
+export type CreateContextOptions = {
   session: Session | null;
+  headers?: CreateNextContextOptions["req"]["headers"];
 };
 
 /** Use this helper for:
@@ -18,7 +19,7 @@ type CreateContextOptions = {
  */
 export const createContextInner = async (opts: CreateContextOptions) => {
   return Promise.resolve({
-    session: opts.session,
+    ...opts,
     prisma,
   });
 };
@@ -32,6 +33,7 @@ export const createContext = async (opts?: CreateNextContextOptions) => {
 
   return await createContextInner({
     session,
+    headers: opts?.req.headers,
   });
 };
 
