@@ -37,25 +37,23 @@ const Fissa = () => {
   if (!pin) return null;
 
   return (
-    <>
-      <PageTemplate fullScreen className="max-w-screen-2xl">
-        <Stack.Screen
-          options={{
-            headerShown: true,
-            headerLeft,
-            headerRight,
-          }}
-        />
-        <QuickVoteProvider>
-          <FissaTracks pin={String(pin)} />
-        </QuickVoteProvider>
-      </PageTemplate>
+    <PageTemplate fullScreen className="max-w-screen-2xl">
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerLeft,
+          headerRight,
+        }}
+      />
+      <QuickVoteProvider>
+        <FissaTracks pin={String(pin)} />
+      </QuickVoteProvider>
       <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
       <LinearGradient
         colors={["transparent", theme[900]]}
-        className="absolute bottom-0 h-24 w-full"
+        className="absolute bottom-0 h-24 w-screen"
       />
-    </>
+    </PageTemplate>
   );
 };
 
