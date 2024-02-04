@@ -42,7 +42,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 
 const enforceIsTrustedServer = t.middleware(({ next, ctx }) => {
   // TODO: add check for trusted server -> vercel cron job
-  console.log(ctx.headers);
+  console.info("headers", ctx.headers);
 
   return next();
 });

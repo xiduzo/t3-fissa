@@ -100,92 +100,96 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   }, [selectedPlaylist, spotify]);
 
   return (
-    <PageTemplate fullScreen>
-      <Stack.Screen
-        options={{
-          animation: "fade_from_bottom",
-          animationDuration: AnimationSpeed.VeryFast,
-          headerLeft: () => (
-            <>
-              {selectedPlaylist && (
-                <IconButton
-                  className="mr-2"
-                  icon="arrow-left"
-                  title="back to playlists"
-                  onPress={clearSelectedPlaylist}
-                />
-              )}
-              <View className="grow">
-                <Input
-                  startIcon="search"
-                  ref={inputRef}
-                  variant="contained"
-                  placeholder={`Search in ${selectedPlaylist?.name || "spotify"}`}
-                  value={search}
-                  onChange={handleSearch}
-                />
-              </View>
-            </>
-          ),
-          headerRight: () => <IconButton icon="close" title="back to fissa" onPress={back} />,
-        }}
-      />
-      <View className="h-full w-full">
-        <TrackList
-          data={searchedTracks}
-          selectedTracks={selectedTracks.map((track) => track.id)}
-          onTrackPress={handleTrackPress}
-          ListFooterComponent={<View className="pb-72" />}
-          ListEmptyComponent={
-            <View>
-              {!selectedPlaylist && (
-                <>
-                  <Typography variant="h1" className="m-6">
-                    Your playlists
-                  </Typography>
-                  <PlaylistList
-                    onPlaylistPress={setSelectedPlaylist}
-                    playlistListItemEnd={<Icon name="chevron-right" color={theme["100"] + "80"} />}
+    <>
+      <PageTemplate fullScreen>
+        <Stack.Screen
+          options={{
+            animation: "fade_from_bottom",
+            animationDuration: AnimationSpeed.VeryFast,
+            headerLeft: () => (
+              <>
+                {selectedPlaylist && (
+                  <IconButton
+                    className="mr-2"
+                    icon="arrow-left"
+                    title="back to playlists"
+                    onPress={clearSelectedPlaylist}
                   />
-                </>
-              )}
-              {selectedPlaylist && (
-                <>
-                  <View className="m-6">
-                    <PlaylistListItem playlist={selectedPlaylist} bigImage />
-                  </View>
-                  <TrackList
-                    data={filteredTracks}
-                    onTrackPress={handleTrackPress}
-                    selectedTracks={selectedTracks.map((track) => track.id)}
-                    ListEmptyComponent={
-                      <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
-                    }
+                )}
+                <View className="grow">
+                  <Input
+                    startIcon="search"
+                    ref={inputRef}
+                    variant="contained"
+                    placeholder={`Search in ${selectedPlaylist?.name || "spotify"}`}
+                    value={search}
+                    onChange={handleSearch}
                   />
-                </>
-              )}
-            </View>
-          }
+                </View>
+              </>
+            ),
+            headerRight: () => <IconButton icon="close" title="back to fissa" onPress={back} />,
+          }}
         />
-        <BottomDrawer>
-          <ButtonGroup>
-            <Button
-              title="Deselect all songs"
-              variant="text"
-              onPress={() => setSelectedTracks([])}
-              inverted
-              disabled={!selectedTracks.length}
-            />
-            <Button
-              title={actionTitle}
-              inverted
-              disabled={!selectedTracks.length || disabledAction}
-              onPress={handleAddTracks}
-            />
-          </ButtonGroup>
-        </BottomDrawer>
-      </View>
-    </PageTemplate>
+        <View className=" h-full w-full">
+          <TrackList
+            data={searchedTracks}
+            selectedTracks={selectedTracks.map((track) => track.id)}
+            onTrackPress={handleTrackPress}
+            ListFooterComponent={<View className="pb-72" />}
+            ListEmptyComponent={
+              <View>
+                {!selectedPlaylist && (
+                  <>
+                    <Typography variant="h1" className="m-6">
+                      Your playlists
+                    </Typography>
+                    <PlaylistList
+                      onPlaylistPress={setSelectedPlaylist}
+                      playlistListItemEnd={
+                        <Icon name="chevron-right" color={theme["100"] + "80"} />
+                      }
+                    />
+                  </>
+                )}
+                {selectedPlaylist && (
+                  <>
+                    <View className="m-6">
+                      <PlaylistListItem playlist={selectedPlaylist} bigImage />
+                    </View>
+                    <TrackList
+                      data={filteredTracks}
+                      onTrackPress={handleTrackPress}
+                      selectedTracks={selectedTracks.map((track) => track.id)}
+                      ListEmptyComponent={
+                        <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
+                      }
+                    />
+                  </>
+                )}
+              </View>
+            }
+          />
+        </View>
+      </PageTemplate>
+      <BottomDrawer>
+        <ButtonGroup>
+          <Button
+            title="Deselect all songs"
+            variant="text"
+            onPress={() => setSelectedTracks([])}
+            inverted
+            disabled={!selectedTracks.length}
+          />
+          <Button
+            title={actionTitle}
+            inverted
+            disabled={!selectedTracks.length || disabledAction}
+            onPress={handleAddTracks}
+          />
+        </ButtonGroup>
+      </BottomDrawer>
+    </>
   );
 };
 

@@ -17,11 +17,14 @@ export const PageTemplate: FC<Props> = ({ children, className, fullScreen, ...pr
 
 interface Props extends ViewProps, VariantProps<typeof pageTemplate> {}
 
-const pageTemplate = cva("m-auto h-full w-full max-w-lg justify-between", {
+const pageTemplate = cva("m-auto h-full w-full justify-between", {
   variants: {
+    /**
+     * Fullscreen means `max-w-screen-2xl` (1536px)
+     */
     fullScreen: {
-      true: "",
-      false: "p-6 pb-4",
+      true: "max-w-screen-2xl",
+      false: "p-6 pb-4 max-w-lg",
     },
   },
   defaultVariants: {
