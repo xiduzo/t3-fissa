@@ -14,7 +14,7 @@
     "@fissa/db": "*",
     "@next-auth/prisma-adapter": "^1.0.7",
     "next": "^13.3.1",
-    "next-auth": "^4.22.1",
+    "next-auth": "^4.24.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
