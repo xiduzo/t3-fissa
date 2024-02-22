@@ -97,7 +97,10 @@ const SpeakerButton = () => {
   // TODO: this call might be an unnecessary extra call even though it increases the UX.
   //       If the user decided to change the device outside of the app we are not aware of it.
   //       In this case re-fetching the devices should make sure we are aware of the current state.
-  useOnActiveApp(fetchDevices);
+  useOnActiveApp(() => {
+    // We only need to fetch the devices if the user is the owner of the fissa
+    isOwner && fetchDevices();
+  });
 
   const [selectDevice, setSelectDevice] = useState(false);
 

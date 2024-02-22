@@ -18,6 +18,7 @@ const sync = createTRPCRouter({
 export const fissaRouter = createTRPCRouter({
   skipTrack: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
+    // TODO: add track id to skip to validate if the track is still playing?
     return service.skipTrack(input, ctx.session.user.id);
   }),
   restart: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
