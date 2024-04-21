@@ -17,12 +17,12 @@
     "@trpc/client": "^10.21.1",
     "@trpc/server": "^10.21.1",
     "spotify-web-api-node": "^5.0.2",
-    "superjson": "1.12.3",
-    "zod": "^3.21.4"
+    "superjson": "2.2.1",
+    "zod": "^3.22.5"
   },
   "devDependencies": {
     "@fissa/eslint-config": "*",
-    "@types/spotify-web-api-node": "^5.0.7",
+    "@types/spotify-web-api-node": "^5.0.11",
     "eslint": "^8.57.0",
     "typescript": "^5.4.5"
   }
