@@ -36,7 +36,7 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
 
       const promise = new Promise<string>((resolve) => {
         setTimeout(() => {
-          caller.fissa.sync.next(fissa.pin).finally(() => resolve(fissa.pin));
+          caller.fissa.sync.next(fissa.pin).catch(console.error).finally(() => resolve(fissa.pin));
         }, delay);
       });
 

@@ -78,6 +78,9 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
           void spotify.addTracksToPlaylist(id, chunk);
         });
       })
+      .catch(() => {
+        toast.warn({ message: "Oops, failed to create playlist..." });
+      })
       .finally(() => {
         toast.success({ message: "Playlist created", icon: "🎉" });
         setIsCreatingPlaylist(false);
