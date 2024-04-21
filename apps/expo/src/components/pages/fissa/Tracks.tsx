@@ -312,6 +312,7 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
   const { mutateAsync: voteOnTrack, isLoading: isVoting } = useCreateVote(String(pin));
 
   const { mutateAsync: deleteTrack, isLoading: isDeleting } = api.track.deleteTrack.useMutation({
+    // TODO: optimistic update
     onSettled: async () => {
       await notificationAsync(NotificationFeedbackType.Success);
     },

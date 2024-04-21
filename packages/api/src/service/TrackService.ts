@@ -45,13 +45,16 @@ export class TrackService extends ServiceWithContext {
 
   deleteTrack = async (pin: string, trackId: string) => {
     try {
-      return this.db.track.delete({
+      const track = await this.db.track.delete({
         where: { pin_trackId: { pin, trackId } },
       });
+      return track
     } catch (error) {
-      console.error(error);
+      // If the track is not found, we can ignore the error
+      // TODO: make a generic prisma error handler
+      // https://www.prisma.io/docs/orm/reference/error-reference#prismaclientknownrequesterror
+      return Promise.resolve()
     }
-
   };
 
   addTrackScore = async (pin: string, trackId: string, score: number) => {

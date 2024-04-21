@@ -145,7 +145,7 @@ const Index = () => {
           animatedColor={color}
           accessibilityLabel="Fissa, by Milanovski and Xiduzo"
         >
-          Made by Milanovski and Xiduzo
+          By Milanovski and Xiduzo
         </Typography>
       </View>
     </Animated.View>
