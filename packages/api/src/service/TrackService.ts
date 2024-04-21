@@ -44,9 +44,14 @@ export class TrackService extends ServiceWithContext {
   };
 
   deleteTrack = async (pin: string, trackId: string) => {
-    return this.db.track.delete({
-      where: { pin_trackId: { pin, trackId } },
-    });
+    try {
+      return this.db.track.delete({
+        where: { pin_trackId: { pin, trackId } },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
   };
 
   addTrackScore = async (pin: string, trackId: string, score: number) => {
