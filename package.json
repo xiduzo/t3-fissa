@@ -25,15 +25,14 @@
   },
   "dependencies": {
     "@fissa/eslint-config": "*",
-    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
-    "@manypkg/cli": "^0.20.0",
-    "@total-typescript/ts-reset": "^0.4.2",
-    "@types/prettier": "^2.7.2",
-    "eslint": "^8.39.0",
-    "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.2.7",
-    "turbo": "^1.9.3",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.5"
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@manypkg/cli": "^0.21.4",
+    "@total-typescript/ts-reset": "^0.5.1",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.2.8",
+    "turbo": "^1.13.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
   }
 }

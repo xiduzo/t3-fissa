@@ -23,7 +23,7 @@
   "devDependencies": {
     "@fissa/eslint-config": "*",
     "@types/spotify-web-api-node": "^5.0.7",
-    "eslint": "^8.39.0",
-    "typescript": "^5.2.2"
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
   }
 }

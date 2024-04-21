@@ -59,10 +59,10 @@
     "@expo/config-plugins": "^7.2.5",
     "@fissa/eslint-config": "*",
     "@types/react": "^18.2.37",
-    "eslint": "^8.39.0",
+    "eslint": "^8.57.0",
     "postcss": "^8.4.23",
     "tailwindcss": "3.3.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.5"
   },
   "private": true
 }
