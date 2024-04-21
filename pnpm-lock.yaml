@@ -408,11 +408,11 @@ importers:
   packages/utils:
     dependencies:
       class-variance-authority:
-        specifier: ^0.5.2
-        version: 0.5.2(typescript@5.4.5)
+        specifier: ^0.7.0
+        version: 0.7.0
       date-fns:
-        specifier: ^2.29.3
-        version: 2.29.3
+        specifier: ^3.6.0
+        version: 3.6.0
       randomatic:
         specifier: ^3.1.1
         version: 3.1.1
@@ -420,18 +420,18 @@ importers:
         specifier: ^1.5.2
         version: 1.5.2
       usehooks-ts:
-        specifier: ^2.12.1
-        version: 2.12.1(react@18.2.0)
+        specifier: ^3.1.0
+        version: 3.1.0(react@18.2.0)
       zustand:
-        specifier: ^4.3.7
-        version: 4.3.7(react@18.2.0)
+        specifier: ^4.5.2
+        version: 4.5.2(react@18.2.0)
     devDependencies:
       '@fissa/test':
         specifier: '*'
         version: link:../test
       '@types/node':
-        specifier: ^18.16.0
-        version: 18.16.0
+        specifier: ^18.19.31
+        version: 18.19.31
       '@types/randomatic':
         specifier: ^3.1.5
         version: 3.1.5
@@ -3477,7 +3477,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.4.2
       '@jest/types': 29.6.3
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       jest-mock: 29.4.2
     dev: false
 
@@ -3487,7 +3487,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.0.2
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       jest-message-util: 29.4.2
       jest-mock: 29.4.2
       jest-util: 29.4.2
@@ -3506,7 +3506,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       '@types/yargs': 15.0.15
       chalk: 4.1.2
     dev: false
@@ -3517,7 +3517,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       '@types/yargs': 16.0.5
       chalk: 4.1.2
     dev: false
@@ -3529,7 +3529,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       '@types/yargs': 17.0.19
       chalk: 4.1.2
     dev: false
@@ -4621,6 +4621,12 @@ packages:
 
   /@types/node@18.16.0:
     resolution: {integrity: sha512-BsAaKhB+7X+H4GnSjGhJG9Qi8Tw+inU9nJDwmD5CgOmBLEI6ArdhikpLX7DjbjDRDTbqZzU2LSQNZg8WGPiSZQ==}
+    dev: true
+
+  /@types/node@18.19.31:
+    resolution: {integrity: sha512-ArgCD39YpyyrtFKIqMDvjz79jto5fcI/SVUs2HwB+f0dAzq68yqOdyaSivLiLugSziTpNXLQrVb7RZFmdZzbhA==}
+    dependencies:
+      undici-types: 5.26.5
 
   /@types/prop-types@15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
@@ -5730,15 +5736,10 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /class-variance-authority@0.5.2(typescript@5.4.5):
-    resolution: {integrity: sha512-j7Qqw3NPbs4IpO80gvdACWmVvHiLLo5MECacUBLnJG17CrLpWaQ7/4OaWX6P0IO1j2nvZ7AuSfBS/ImtEUZJGA==}
-    peerDependencies:
-      typescript: '>= 4.5.5 < 6'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
+  /class-variance-authority@0.7.0:
+    resolution: {integrity: sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==}
     dependencies:
-      typescript: 5.4.5
+      clsx: 2.0.0
     dev: false
 
   /clean-stack@2.2.0:
@@ -5803,6 +5804,11 @@ packages:
   /clone@2.1.2:
     resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
     engines: {node: '>=0.8'}
+    dev: false
+
+  /clsx@2.0.0:
+    resolution: {integrity: sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==}
+    engines: {node: '>=6'}
     dev: false
 
   /clsx@2.1.0:
@@ -6076,9 +6082,8 @@ packages:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: false
 
-  /date-fns@2.29.3:
-    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
-    engines: {node: '>=0.11'}
+  /date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
     dev: false
 
   /dayjs@1.11.7:
@@ -8320,7 +8325,7 @@ packages:
       '@jest/environment': 29.4.2
       '@jest/fake-timers': 29.4.2
       '@jest/types': 29.6.3
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       jest-mock: 29.4.2
       jest-util: 29.4.2
     dev: false
@@ -8350,7 +8355,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       jest-util: 29.4.2
     dev: false
 
@@ -8364,7 +8369,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.5.1
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       chalk: 4.1.2
       ci-info: 3.7.1
       graceful-fs: 4.2.10
@@ -8376,7 +8381,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       chalk: 4.1.2
       ci-info: 3.7.1
       graceful-fs: 4.2.10
@@ -8399,7 +8404,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.16.0
+      '@types/node': 18.19.31
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -12012,6 +12017,9 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: false
 
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
     engines: {node: '>=4'}
@@ -12122,8 +12130,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /usehooks-ts@2.12.1(react@18.2.0):
-    resolution: {integrity: sha512-meo93qn2hyBJdHVczbalnsU2FU2WQ1ZVRmppRn8+P6TXo9hORNe10pFVKJfIBYfb2FFapqNuF5vUviLRSy/vAw==}
+  /usehooks-ts@3.1.0(react@18.2.0):
+    resolution: {integrity: sha512-bBIa7yUyPhE1BCc0GmR96VU/15l/9gP1Ch5mYdLcFBaFGQsdmXkvjV0TtOqW1yUd6VjIwDunm+flSciCQXujiw==}
     engines: {node: '>=16.15.0'}
     peerDependencies:
       react: ^16.8.0  || ^17 || ^18
@@ -12582,13 +12590,16 @@ packages:
     resolution: {integrity: sha512-HqnGsCdVZ2xc0qWPLdO25WnseXThh0kEYKIdV5F/hTHO75hNZFp8thxSeHhiPrHZKrFTo1SOgkAj9po5bexZlw==}
     dev: false
 
-  /zustand@4.3.7(react@18.2.0):
-    resolution: {integrity: sha512-dY8ERwB9Nd21ellgkBZFhudER8KVlelZm8388B5nDAXhO/+FZDhYMuRnqDgu5SYyRgz/iaf8RKnbUs/cHfOGlQ==}
+  /zustand@4.5.2(react@18.2.0):
+    resolution: {integrity: sha512-2cN1tPkDVkwCy5ickKrI7vijSjPksFRfqS6237NzT0vqSsztTNnQdHw9mmN7uBdk3gceVXU0a+21jFzFzAc9+g==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
-      immer: '>=9.0'
+      '@types/react': '>=16.8'
+      immer: '>=9.0.6'
       react: '>=16.8'
     peerDependenciesMeta:
+      '@types/react':
+        optional: true
       immer:
         optional: true
       react:
