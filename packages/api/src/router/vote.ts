@@ -20,7 +20,7 @@ const createVote = vote.extend({
 export const voteRouter = createTRPCRouter({
   byTrack: protectedProcedure.input(vote).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
-    return service.getVotes(input.pin, input.trackId);
+    return service.getVotesFromTrack(input.pin, input.trackId);
   }),
   byFissa: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
@@ -28,7 +28,7 @@ export const voteRouter = createTRPCRouter({
   }),
   byTrackFromUser: protectedProcedure.input(vote).query(({ ctx, input }) => {
     const service = new VoteService(ctx);
-    return service.getVoteFromUser(input.pin, input.trackId, ctx.session.user.id);
+    return service.getUserVote(input.pin, input.trackId, ctx.session.user.id);
   }),
   create: protectedProcedure.input(createVote).mutation(async ({ ctx, input }) => {
     const service = new VoteService(ctx);

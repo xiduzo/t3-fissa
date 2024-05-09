@@ -49,7 +49,7 @@ model Track {
     userId String? @map("user_id")
 
     currentlyPlaying Fissa[] @relation("currently_playing")
-    
+
     votes Vote[]
     score Int @db.SmallInt @default(0) // Value used for ordering tracks in a fissa
     totalScore Int @db.SmallInt @map("total_score") @default(0) // Value used for determining the most popular tracks
@@ -66,7 +66,7 @@ model Vote {
 
     track Track @relation(fields: [trackId, pin], references: [trackId, pin], onDelete: Cascade)
     trackId String @map("track_id") @db.VarChar(22)
-    
+
     fissa Fissa @relation(fields: [pin], references: [pin], onDelete: Cascade)
     pin String @db.VarChar(4)
 
@@ -89,9 +89,19 @@ model UserInFissa {
     @@map("users_in_fissas")
 }
 
+model Badges {
+    id String  @id @default(cuid())
+    user User @relation(fields: [userId], references: [id], name: "HasEarned", onDelete: Cascade)
+    userId String @map("user_id")
+
+    name String
+    score Int @db.SmallInt @default(0)
+    @@map("badges")
+}
+
 
 // NextAuth.js Models
-// NOTE: When using postgresql, mysql or sqlserver, 
+// NOTE: When using postgresql, mysql or sqlserver,
 // uncomment the @db.Text annotations below
 // @see https://next-auth.js.org/schemas/models
 model Account {
@@ -137,6 +147,7 @@ model User {
 
     isIn          UserInFissa[] @relation("IsIn")
     tracks        Track[]
+    badges        Badges[] @relation("HasEarned")
 
     @@map("users")
 }

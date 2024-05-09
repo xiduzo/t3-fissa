@@ -13,16 +13,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "class-variance-authority": "^0.7.0",
-    "date-fns": "^3.6.0",
-    "randomatic": "^3.1.1",
-    "spotify-web-api-js": "^1.5.2",
-    "usehooks-ts": "^3.1.0",
-    "zustand": "^4.5.2"
+    "class-variance-authority": "0.7.0",
+    "date-fns": "3.6.0",
+    "randomatic": "3.1.1",
+    "spotify-web-api-js": "1.5.2",
+    "usehooks-ts": "3.1.0",
+    "zustand": "4.5.2"
   },
   "devDependencies": {
     "@fissa/test": "*",
-    "@types/node": "^18.19.31",
-    "@types/randomatic": "^3.1.5"
+    "@types/node": "20.12.11",
+    "@types/randomatic": "3.1.5"
   }
 }

@@ -1,18 +1,18 @@
 import { type Fissa, type Track } from "@fissa/db";
 import {
-  addMilliseconds,
-  biasSort,
-  differenceInMilliseconds,
-  FissaIsPaused,
-  ForceStopFissa,
-  NoNextTrack,
-  NotAbleToAccessSpotify,
-  NotTheHost,
-  randomize,
-  sleep,
-  sortFissaTracksOrder,
-  UnableToCreateFissa,
-  type SpotifyService,
+    addMilliseconds,
+    biasSort,
+    differenceInMilliseconds,
+    FissaIsPaused,
+    ForceStopFissa,
+    NoNextTrack,
+    NotAbleToAccessSpotify,
+    NotTheHost,
+    randomize,
+    sleep,
+    sortFissaTracksOrder,
+    UnableToCreateFissa,
+    type SpotifyService,
 } from "@fissa/utils";
 
 import { ServiceWithContext, type Context } from "../utils/context";
@@ -107,8 +107,8 @@ export class FissaService extends ServiceWithContext {
 
     await this.db.track.update({
       where: { pin_trackId: { pin, trackId: fissa.currentlyPlayingId } },
-      data: { totalScore: { decrement: EarnedPoints.SkipTrack } },
-    });
+      data: { totalScore: { increment: EarnedPoints.SkipTrack }, score: 0 },
+    })
 
     return this.playNextTrack(pin, true);
   };
@@ -133,37 +133,34 @@ export class FissaService extends ServiceWithContext {
     if (fissa.userId !== userId) throw new NotTheHost();
     if (!fissa.by.accounts[0]?.access_token) throw new NotAbleToAccessSpotify();
 
-    await this.stopFissa(pin, fissa.by.accounts[0]?.access_token);
+    await this.stopFissa(pin, fissa.by.accounts[0].access_token);
   };
 
   playNextTrack = async (pin: string, forceToPlay = false) => {
-    const { by, tracks, currentlyPlayingId, expectedEndTime } =
-      await this.getFissaDetailedInformation(pin);
+    const fissaDetails = await this.getFissaDetailedInformation(pin);
+    const { by, tracks, currentlyPlaying, expectedEndTime } = fissaDetails;
 
-    if (!by.accounts[0]) throw new NotAbleToAccessSpotify();
+    if (!by) throw new NotAbleToAccessSpotify();
 
-    const { access_token } = by.accounts[0];
+    const { access_token } = by;
     if (!access_token) throw new NotAbleToAccessSpotify();
 
     try {
       if (!forceToPlay) {
         const isPlaying = await this.spotifyService.isStillPlaying(access_token);
-        if (!isPlaying || !currentlyPlayingId) throw new ForceStopFissa();
+        if (!isPlaying || !currentlyPlaying?.trackId) throw new ForceStopFissa();
       }
 
-      const nextTracks = this.getNextTracks(tracks, currentlyPlayingId);
-      if (!nextTracks[0]) throw new NoNextTrack();
+      const [nextTrack, ...nextTracks] = this.getNextTracks(tracks, currentlyPlaying?.trackId);
+      if (!nextTrack) throw new NoNextTrack();
 
-      if (nextTracks.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
+      if (nextTracks?.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
         await this.addRecommendedTracks(pin, biasSort(tracks), access_token);
       }
 
       const timeToPlay = forceToPlay ? new Date() : expectedEndTime;
       await sleep(differenceInMilliseconds(timeToPlay, new Date())); // Wait for track to end
-
-      await this.trackPlayed({ pin, currentlyPlayingId });
-
-      await this.playTrack({ pin }, nextTracks[0], access_token);
+      await this.playTrack({ pin }, nextTrack as Track, access_token, currentlyPlaying?.trackId);
     } catch (e) {
       console.error(e);
       await this.stopFissa(pin, access_token);
@@ -183,61 +180,87 @@ export class FissaService extends ServiceWithContext {
   };
 
   private getFissaDetailedInformation = async (pin: string) => {
-    return await this.db.fissa.findUniqueOrThrow({
+    const data = await this.db.fissa.findUniqueOrThrow({
       where: { pin },
       select: {
         pin: true,
-        currentlyPlayingId: true,
+        currentlyPlaying: {
+          select: {
+            trackId: true,
+            by: { select: { accounts: { select: { id: true }, take: 1 } } },
+          }
+        },
         expectedEndTime: true,
-        by: { select: { accounts: { select: { access_token: true }, take: 1 } } },
-        tracks: { where: { hasBeenPlayed: false } },
+        by: { select: { accounts: { select: { access_token: true, id: true }, take: 1 } } },
+        tracks: {
+          where: { hasBeenPlayed: false },
+          select: {
+            userId: true,
+            hasBeenPlayed: true,
+            trackId: true,
+            score: true,
+            lastUpdateAt: true,
+            totalScore: true,
+            createdAt: true,
+            durationMs: true,
+          }
+        },
       },
     });
-  };
 
-  private trackPlayed = async ({
-    currentlyPlayingId,
-    pin,
-  }: Pick<Fissa, "currentlyPlayingId" | "pin">) => {
-    if (!currentlyPlayingId) return;
-
-    return this.db.$transaction(async (transaction) => {
-      await transaction.track.update({
-        where: { pin_trackId: { pin, trackId: currentlyPlayingId } },
-        data: {
-          hasBeenPlayed: true,
-          score: 0, // Reset current score
-          totalScore: { increment: EarnedPoints.PlayedTrack },
-        },
-      });
-
-      await transaction.vote.deleteMany({
-        where: { pin, trackId: currentlyPlayingId },
-      });
-    });
+    return {
+      ...data,
+      by: data.by.accounts[0],
+      currentlyPlaying: {
+        ...data.currentlyPlaying,
+        by: data.currentlyPlaying?.by?.accounts[0],
+      }
+    }
   };
 
   private playTrack = async (
     { pin }: Pick<Fissa, "pin">,
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
+    currentlyPlaying?: { trackId: string, by?: { id: string }},
   ) => {
     const playing = this.spotifyService.playTrack(accessToken, trackId);
 
-    await this.db.fissa.update({
-      where: { pin },
-      data: {
-        currentlyPlaying: { connect: { pin_trackId: { pin, trackId } } },
-        expectedEndTime: addMilliseconds(new Date(), durationMs),
-      },
-    });
+    await this.db.$transaction(async transaction => {
+      if(currentlyPlaying) {
+        await transaction.track.update({
+          where: { pin_trackId: { pin, trackId: currentlyPlaying?.trackId } },
+          data: { hasBeenPlayed: true, totalScore: { increment: EarnedPoints.PlayedTrack }, score: 0 },
+        });
 
-    // TODO: We should ban this track from being played again
-    //       as apparently it's not playable
-    if (!(await playing)) return this.playNextTrack(pin, true);
+        if(currentlyPlaying.by) {
+          await transaction.userInFissa.update({
+            where: { pin_userId: { pin, userId: currentlyPlaying.by.id } },
+            data: {points: { increment: EarnedPoints.PlayedTrack } }
+          })
+        }
+      }
+
+      await transaction.fissa.update({
+        where: { pin },
+        data: {
+          currentlyPlaying: { connect: { pin_trackId: { pin, trackId } } },
+          expectedEndTime: addMilliseconds(new Date(), durationMs),
+        },
+      });
+    })
+
+
+    if (!(await playing)) {
+      // We wanted to play a track but something went wrong
+      // Most likely the track is not available in the country
+      // TODO: We should ban this track from being played again
+      //       as apparently it's not playable
+      return this.playNextTrack(pin, true);
+    }
   };
 
-  private getNextTracks = (tracks: Track[], currentlyPlayingId?: string | null) => {
+  private getNextTracks = (tracks: Pick<Track,'hasBeenPlayed' | 'trackId' | 'score' | 'lastUpdateAt' | 'createdAt'>[], currentlyPlayingId?: string | null) => {
     const tracksToSort = tracks.filter(
       ({ hasBeenPlayed, trackId }) => !hasBeenPlayed && trackId !== currentlyPlayingId,
     );
@@ -262,7 +285,7 @@ export class FissaService extends ServiceWithContext {
               data: recommendations.map(({ id, duration_ms }) => ({
                 trackId: id,
                 durationMs: duration_ms,
-                userId: this.ctx.session?.user.id,
+                userId: this.session?.user.id,
               })),
               skipDuplicates: true,
             },

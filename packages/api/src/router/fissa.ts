@@ -6,19 +6,18 @@ import { Z_PIN, Z_TRACKS } from "./constants";
 
 const sync = createTRPCRouter({
   active: serviceProcedure.query(({ ctx }) => {
-    const service = new FissaService(ctx, new SpotifyService());
-    return service.activeFissas();
+    const fissaService = new FissaService(ctx, new SpotifyService());
+    return fissaService.activeFissas();
   }),
-  next: serviceProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
+  next: serviceProcedure.input(Z_PIN).mutation(async ({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
     return service.playNextTrack(input);
   }),
 });
 
 export const fissaRouter = createTRPCRouter({
-  skipTrack: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
+  skipTrack: protectedProcedure.input(Z_PIN).mutation(async({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
-    // TODO: add track id to skip to validate if the track is still playing?
     return service.skipTrack(input, ctx.session.user.id);
   }),
   restart: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {

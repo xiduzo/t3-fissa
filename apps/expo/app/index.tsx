@@ -1,22 +1,20 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, View } from "react-native";
-import { Stack, useRouter } from "expo-router";
-import * as SystemUI from "expo-system-ui";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
+import { Stack, useRouter } from "expo-router";
+import * as SystemUI from "expo-system-ui";
+import React, { useCallback, useEffect, useRef } from "react";
+import { Animated, View } from "react-native";
 
 import { Button, Logo, Typography } from "../src/components";
 import { useAuth } from "../src/providers";
 
 const Index = () => {
-  const { signIn, user } = useAuth();
+  const { signIn, user, isLoading } = useAuth();
   const { replace } = useRouter();
 
   const colorAnimation = useRef(new Animated.Value(0)).current;
   const notSignedInAnimation = useRef(new Animated.Value(0)).current;
   const signedInAnimation = useRef(new Animated.Value(0)).current;
-  const animationsDone = useRef(false);
-  const canSkipToHome = useRef(false);
 
   const color = colorAnimation.interpolate({
     inputRange: [0, 1],
@@ -53,43 +51,32 @@ const Index = () => {
     outputRange: [1, 1, 0],
   });
 
-  useEffect(() => {
-    if (!user) return;
-    canSkipToHome.current = true;
-    if (!animationsDone.current) return;
+  const colorAnimationCallback: Animated.EndCallback = useCallback(({finished})  => {
+    if(!finished) return
 
-    replace("/home");
-  }, [user, replace]);
+    if (!user) {
+       Animated.spring(notSignedInAnimation, {
+        toValue: 1,
+        useNativeDriver: false,
+      }).start()
+       return
+    }
+
+    Animated.timing(signedInAnimation, {
+      toValue: 1,
+      duration: AnimationSpeed.Fast,
+      useNativeDriver: false,
+    }).start(() => replace("/home"));
+  }, [user, notSignedInAnimation, signedInAnimation, replace])
 
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(theme["900"]);
-  }, []);
-
-  useEffect(() => {
     Animated.timing(colorAnimation, {
       toValue: 1,
       duration: 3500,
       useNativeDriver: false,
-    }).start(() => {
-      if (!canSkipToHome.current) {
-        Animated.spring(notSignedInAnimation, {
-          toValue: 1,
-          useNativeDriver: false,
-        }).start(() => {
-          animationsDone.current = true;
-        });
-        return;
-      }
-
-      Animated.timing(signedInAnimation, {
-        toValue: 1,
-        duration: AnimationSpeed.Fast,
-        useNativeDriver: false,
-      }).start(() => {
-        replace("/home");
-      });
-    });
-  }, [replace, signedInAnimation, notSignedInAnimation, colorAnimation]);
+    }).start(colorAnimationCallback);
+  }, [colorAnimation, colorAnimationCallback]);
 
   return (
     <Animated.View style={{ backgroundColor }} className="h-full items-center justify-between px-6">
@@ -115,12 +102,12 @@ const Index = () => {
             variant="h1"
             centered
             className="mb-4"
-            accessibilityLabel="A collaborative live playlist, together with your friends"
+            accessibilityLabel="A live shared playlist, curated together"
           >
-            A collaborative live playlist
+            A live shared playlist
           </Typography>
           <Typography variant="h5" centered accessibilityElementsHidden>
-            together with your friends
+            curated together
           </Typography>
         </Animated.View>
         <Animated.View
@@ -134,18 +121,19 @@ const Index = () => {
             icon="spotify"
             onPress={signIn}
             title="Connect to get started"
-            disabled={!!user}
+            disabled={!!user || isLoading}
             accessibilityLabel="Connect to spotify to get started"
           />
         </Animated.View>
         <Typography
           centered
-          className="mb-8"
+          className="mb-8 italic"
+          dimmed
           variant="bodyM"
           animatedColor={color}
-          accessibilityLabel="Fissa, by Milanovski and Xiduzo"
+          accessibilityLabel="Fissa is made by Milanovski and Xiduzo"
         >
-          By Milanovski and Xiduzo
+          by Milanovski and Xiduzo
         </Typography>
       </View>
     </Animated.View>

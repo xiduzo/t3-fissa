@@ -14,16 +14,16 @@
     "@fissa/auth": "*",
     "@fissa/db": "*",
     "@fissa/utils": "*",
-    "@trpc/client": "^10.21.1",
-    "@trpc/server": "^10.21.1",
-    "spotify-web-api-node": "^5.0.2",
+    "@trpc/client": "10.21.1",
+    "@trpc/server": "10.21.1",
+    "spotify-web-api-node": "5.0.2",
     "superjson": "2.2.1",
-    "zod": "^3.22.5"
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@fissa/eslint-config": "*",
-    "@types/spotify-web-api-node": "^5.0.11",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5"
+    "@types/spotify-web-api-node": "5.0.11",
+    "eslint": "8.57.0",
+    "typescript": "5.4.5"
   }
 }
