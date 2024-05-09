@@ -6,8 +6,8 @@ import { Z_PIN, Z_TRACKS } from "./constants";
 
 const sync = createTRPCRouter({
   active: serviceProcedure.query(({ ctx }) => {
-    const fissaService = new FissaService(ctx, new SpotifyService());
-    return fissaService.activeFissas();
+    const service = new FissaService(ctx, new SpotifyService());
+    return service.activeFissas();
   }),
   next: serviceProcedure.input(Z_PIN).mutation(async ({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
@@ -16,7 +16,7 @@ const sync = createTRPCRouter({
 });
 
 export const fissaRouter = createTRPCRouter({
-  skipTrack: protectedProcedure.input(Z_PIN).mutation(async({ ctx, input }) => {
+  skipTrack: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService());
     return service.skipTrack(input, ctx.session.user.id);
   }),

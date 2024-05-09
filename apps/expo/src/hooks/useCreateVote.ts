@@ -37,7 +37,7 @@ export const useCreateVote = (pin: string) => {
 
       await notificationAsync(NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
     },
-    onSettled: async (data, _, { pin, trackId }) => {
+    onSettled: async (_data, _, { pin, trackId }) => {
       await queryClient.fissa.byId.invalidate(pin);
       await queryClient.vote.byTrackFromUser.invalidate({ pin, trackId });
     },
