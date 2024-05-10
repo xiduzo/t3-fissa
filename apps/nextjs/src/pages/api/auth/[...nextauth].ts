@@ -1,4 +1,3 @@
-import { authOptions } from "@fissa/auth";
-import NextAuth from "next-auth";
+import NextAuth, { authOptions } from "@fissa/auth";
 
 export default NextAuth(authOptions);
