@@ -1,6 +1,6 @@
-import { type NextApiRequest, type NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
+import { PrismaClient } from "@prisma/client";
+import { type NextApiRequest, type NextApiResponse } from "next";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
@@ -8,7 +8,7 @@ export const prisma = globalForPrisma.prisma || new PrismaClient();
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const caller = appRouter.createCaller({
-    prisma,
+    database: prisma,
     session: null,
   });
 

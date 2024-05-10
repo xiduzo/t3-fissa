@@ -1,23 +1,25 @@
 import "../styles/globals.css";
 
-import type { AppType } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import type { AppType } from "next/app";
 
-import { api } from "~/utils/api";
 import { ToastContainer } from "~/components/Toast";
 import { ThemeProvider } from "~/providers/ThemeProvider";
+import { api } from "~/utils/api";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  // eslint-disable-next-line
+  const MyComponent = Component as any;
   return (
     <SessionProvider session={session}>
       <Analytics />
       <ThemeProvider>
-        <Component {...pageProps} />
+        <MyComponent {...pageProps} />
         <ToastContainer />
       </ThemeProvider>
     </SessionProvider>

@@ -12,7 +12,7 @@ const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 export const prisma = globalForPrisma.prisma || new PrismaClient();
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  const caller = appRouter.createCaller({ prisma, session: null });
+  const caller = appRouter.createCaller({ database: prisma, session: null });
 
   const fissas = await caller.fissa.sync.active();
 
