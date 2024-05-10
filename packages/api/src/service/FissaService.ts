@@ -160,7 +160,7 @@ export class FissaService extends ServiceWithContext {
 
       const timeToPlay = forceToPlay ? new Date() : expectedEndTime;
       await sleep(differenceInMilliseconds(timeToPlay, new Date())); // Wait for track to end
-      await this.playTrack({ pin }, nextTrack as Track, access_token, currentlyPlaying?.trackId);
+      await this.playTrack({ pin }, nextTrack as Track, access_token, currentlyPlaying);
     } catch (e) {
       console.error(e);
       await this.stopFissa(pin, access_token);
@@ -222,12 +222,12 @@ export class FissaService extends ServiceWithContext {
     { pin }: Pick<Fissa, "pin">,
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
-    currentlyPlaying?: { trackId: string, by?: { id: string }},
+    currentlyPlaying?: { trackId?: string, by?: { id: string }},
   ) => {
     const playing = this.spotifyService.playTrack(accessToken, trackId);
 
     await this.db.$transaction(async transaction => {
-      if(currentlyPlaying) {
+      if(currentlyPlaying?.trackId) {
         await transaction.track.update({
           where: { pin_trackId: { pin, trackId: currentlyPlaying?.trackId } },
           data: { hasBeenPlayed: true, totalScore: { increment: EarnedPoints.PlayedTrack }, score: 0 },
@@ -236,7 +236,7 @@ export class FissaService extends ServiceWithContext {
         if(currentlyPlaying.by) {
           await transaction.userInFissa.update({
             where: { pin_userId: { pin, userId: currentlyPlaying.by.id } },
-            data: {points: { increment: EarnedPoints.PlayedTrack } }
+            data: { points: { increment: EarnedPoints.PlayedTrack } }
           })
         }
       }
