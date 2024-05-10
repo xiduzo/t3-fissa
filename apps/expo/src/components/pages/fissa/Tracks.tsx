@@ -1,38 +1,38 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
-import {
-  Animated,
-  TouchableHighlight,
-  View,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
-} from "react-native";
-import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
-import { useGlobalSearchParams, useRouter } from "expo-router";
-import { type FlashList } from "@shopify/flash-list";
 import { theme } from "@fissa/tailwind-config";
 import {
-  AnimationSpeed,
-  differenceInMilliseconds,
-  sortFissaTracksOrder,
-  useDevices,
-  useTracks,
+    AnimationSpeed,
+    differenceInMilliseconds,
+    sortFissaTracksOrder,
+    useDevices,
+    useTracks,
 } from "@fissa/utils";
+import { type FlashList } from "@shopify/flash-list";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { useGlobalSearchParams, useRouter } from "expo-router";
+import { useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
+import {
+    Animated,
+    TouchableHighlight,
+    View,
+    type NativeScrollEvent,
+    type NativeSyntheticEvent,
+} from "react-native";
 
 import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { api } from "../../../utils";
 import { QuickVoteModal, useQuickVote } from "../../quickVote";
 import {
-  Action,
-  Divider,
-  Icon,
-  IconButton,
-  Popover,
-  ProgressBar,
-  TrackEnd,
-  TrackList,
-  TrackListItem,
-  Typography,
+    Action,
+    Divider,
+    Icon,
+    IconButton,
+    Popover,
+    ProgressBar,
+    TrackEnd,
+    TrackList,
+    TrackListItem,
+    Typography,
 } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
@@ -312,6 +312,7 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
   const { mutateAsync: voteOnTrack, isLoading: isVoting } = useCreateVote(String(pin));
 
   const { mutateAsync: deleteTrack, isLoading: isDeleting } = api.track.deleteTrack.useMutation({
+    // TODO: optimistic update
     onSettled: async () => {
       await notificationAsync(NotificationFeedbackType.Success);
     },

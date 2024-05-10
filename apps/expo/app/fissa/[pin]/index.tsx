@@ -1,22 +1,22 @@
-import { useCallback, useState, type FC } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
-import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
-import Slider from "@react-native-community/slider";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices, useSpotify } from "@fissa/utils";
+import Slider from "@react-native-community/slider";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
+import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
+import { useCallback, useState, type FC } from "react";
+import { TouchableOpacity, View } from "react-native";
 
 import {
-  Fab,
-  FissaTracks,
-  IconButton,
-  PageTemplate,
-  Popover,
-  QuickVoteProvider,
-  SelectDevice,
-  Settings,
-  Typography,
+    Fab,
+    FissaTracks,
+    IconButton,
+    PageTemplate,
+    Popover,
+    QuickVoteProvider,
+    SelectDevice,
+    Settings,
+    Typography,
 } from "../../../src/components";
 import { useIsOwner, useOnActiveApp, useShareFissa } from "../../../src/hooks";
 import { api, mapDeviceToIcon, toast } from "../../../src/utils";
@@ -50,8 +50,8 @@ const Fissa = () => {
       </QuickVoteProvider>
       <Fab title="add songs" icon="plus" linkTo={`fissa/${pin}/addTracks`} />
       <LinearGradient
-        colors={["transparent", theme[900]]}
-        className="absolute bottom-0 h-24 w-screen"
+        colors={["transparent", theme['900']]}
+        className="absolute bottom-0 h-24 w-full"
       />
     </PageTemplate>
   );

@@ -74,10 +74,13 @@ async function registerForPushNotificationsAsync() {
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
+    // TODO: update magic strings when enum is exposed from expo-notifications
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (finalStatus !== "granted") {
       console.debug("Failed to get push token for push notification!");
       return;

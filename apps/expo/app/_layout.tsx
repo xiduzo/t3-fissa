@@ -1,17 +1,16 @@
-import React, { useCallback } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import * as Sentry from "@sentry/react-native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as Updates from "expo-updates";
-import * as Sentry from "@sentry/react-native";
+import React, { useEffect } from "react";
+import 'react-native-reanimated'; // https://github.com/expo/expo/issues/28618
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Header, ToastContainer } from "../src/components/";
 import { NotificationProvider, SpotifyProvider } from "../src/providers";
 import { toast } from "../src/utils";
 import { TRPCProvider } from "../src/utils/api";
 
-// This is the main layout of the app
-// It wraps your pages with the providers they need
 const RootLayout = () => (
   <TRPCProvider>
     <NotificationProvider>
@@ -34,19 +33,19 @@ const RootLayout = () => (
 export default Sentry.wrap(RootLayout);
 
 const Updater = () => {
-  const handleUpdate = useCallback(({ type }: Updates.UpdateEvent) => {
-    if (type === Updates.UpdateEventType.ERROR) {
-      // Handle error
-    } else if (type === Updates.UpdateEventType.NO_UPDATE_AVAILABLE) {
-      // Handle no update available
-    } else if (type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
-      // Handle update available
-      toast.info({ message: "Installing update" });
-      void Updates.fetchUpdateAsync().then(Updates.reloadAsync);
-    }
-  }, []);
-
-  Updates.useUpdateEvents(handleUpdate);
+  useEffect(() => {
+    Updates.checkForUpdateAsync().then(async update => {
+      if (update.isAvailable) {
+        toast.info({
+          message: "A new update is available. Downloading...",
+        });
+          await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
+      }
+    }).catch((error) => {
+      console.error("Error fetching latest Expo update", error);
+    });
+  })
 
   return null;
 };

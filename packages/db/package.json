@@ -9,15 +9,15 @@
     "db:generate": "pnpm with-env prisma generate",
     "db:push": "pnpm with-env prisma db push --skip-generate",
     "db:push:force": "pnpm with-env prisma db push --skip-generate --accept-data-loss",
-    "dev": "pnpm with-env prisma studio --port 5556",
+    "dev": "pnpm with-env prisma studio --port 5556 --browser none",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@prisma/client": "^4.13.0"
+    "@prisma/client": "5.13.0"
   },
   "devDependencies": {
-    "dotenv-cli": "^7.2.1",
-    "prisma": "^4.13.0",
-    "typescript": "^5.2.2"
+    "dotenv-cli": "7.4.2",
+    "prisma": "^5.13.0",
+    "typescript": "5.4.5"
   }
 }

@@ -1,7 +1,6 @@
 export enum EarnedPoints {
-  /**
-   * Make sure to decrement
-   */
-  SkipTrack = 50,
-  PlayedTrack = 10,
+  SkipTrack = -20,
+  PlayedTrack = 3,
+  // UpVotedTrack = 1, // Will be handled by voting
+  // DownVotedTrack = -1, // Will be handled by voting
 }

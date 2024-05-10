@@ -1,27 +1,27 @@
-import * as React from "react";
+import { differenceInMinutes, scopes, useInterval, useSpotify } from "@fissa/utils";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FC,
-  type PropsWithChildren,
-} from "react";
-import { Platform } from "react-native";
-import {
-  makeRedirectUri,
-  ResponseType,
-  useAuthRequest,
-  type AuthRequestConfig,
-  type DiscoveryDocument,
+    ResponseType,
+    makeRedirectUri,
+    useAuthRequest,
+    type AuthRequestConfig,
+    type DiscoveryDocument,
 } from "expo-auth-session";
 import Constants from "expo-constants";
-import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
-import { differenceInMinutes, scopes, useInterval, useSpotify } from "@fissa/utils";
+import * as React from "react";
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+    type FC,
+    type PropsWithChildren,
+} from "react";
+import { Platform } from "react-native";
 
 import { useOnActiveApp } from "../hooks";
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
@@ -38,6 +38,7 @@ const SpotifyContext = createContext({
     return;
   },
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
+  isLoading: true
 });
 
 export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -45,6 +46,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
   const { replace } = useRouter();
   const { getState } = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const lastTokenSaveTime = useRef(new Date());
 
@@ -110,8 +112,9 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     replace("");
   }, [saveRefreshToken, saveSessionToken, replace]);
 
-  const signIn = useCallback(async () => {
-    await promptAsync();
+  const signIn = useCallback( () => {
+     void promptAsync().finally(() => setIsLoading(false));
+     setIsLoading(true);
   }, [promptAsync]);
 
   useEffect(() => {
@@ -157,7 +160,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     void updateTokens();
   }, REFRESH_INTERVAL_MINUTES * 60 * 1000);
 
-  const contextValue = useMemo(() => ({ user, signOut, signIn }), [user, signOut, signIn]);
+  const contextValue = useMemo(() => ({ user, signOut, signIn, isLoading }), [user, signOut, signIn, isLoading]);
 
   return <SpotifyContext.Provider value={contextValue}>{children}</SpotifyContext.Provider>;
 };

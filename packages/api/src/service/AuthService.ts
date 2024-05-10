@@ -1,10 +1,10 @@
 import { Prisma } from "@fissa/db";
 import {
-  addMonths,
-  addSeconds,
-  differenceInMinutes,
-  isPast,
-  type SpotifyService,
+    addMonths,
+    addSeconds,
+    differenceInMinutes,
+    isPast,
+    type SpotifyService,
 } from "@fissa/utils";
 
 import { ServiceWithContext, type Context } from "../utils/context";
@@ -16,7 +16,7 @@ export class AuthService extends ServiceWithContext {
 
   getUserFissa = async () => {
     return this.db.user.findUniqueOrThrow({
-      where: { id: this.ctx.session?.user.id },
+      where: { id: this.session?.user.id },
       select: {
         hostOf: { select: { pin: true } },
         isIn: { select: { pin: true }, orderBy: { createdAt: Prisma.SortOrder.desc } },
