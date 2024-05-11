@@ -8,7 +8,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Header, ToastContainer } from "../src/components/";
 import { NotificationProvider, SpotifyProvider } from "../src/providers";
-import { toast } from "../src/utils";
 import { TRPCProvider } from "../src/utils/api";
 
 const RootLayout = () => (
@@ -33,19 +32,23 @@ const RootLayout = () => (
 export default Sentry.wrap(RootLayout);
 
 const Updater = () => {
+
   useEffect(() => {
-    Updates.checkForUpdateAsync().then(async update => {
-      if (update.isAvailable) {
-        toast.info({
-          message: "A new update is available. Downloading...",
-        });
-          await Updates.fetchUpdateAsync();
-          await Updates.reloadAsync();
+    async function updateAsync() {
+      try {
+        const update = await Updates.checkForUpdateAsync();
+
+        if(!update.isAvailable) return
+
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync(); // TODO: let the user know that an update is available and ask them to reload?
+      } catch (error) {
+        console.error("Error fetching latest Expo update", error);
       }
-    }).catch((error) => {
-      console.error("Error fetching latest Expo update", error);
-    });
-  })
+    }
+
+    void updateAsync();
+  }, [])
 
   return null;
 };

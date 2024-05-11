@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useRef, useState, type FC } from "react";
-import {
-  View,
-  type NativeSyntheticEvent,
-  type TextInput,
-  type TextInputChangeEventData,
-} from "react-native";
-import { Stack, useRouter } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed, getPlaylistTracks, useDebounceValue, useSpotify } from "@fissa/utils";
+import { Stack, useRouter } from "expo-router";
+import { useCallback, useEffect, useRef, useState, type FC } from "react";
+import {
+    View,
+    type NativeSyntheticEvent,
+    type TextInput,
+    type TextInputChangeEventData,
+} from "react-native";
 
+import { type FlashList } from "@shopify/flash-list";
 import { PageTemplate } from "../PageTemplate";
 import { BottomDrawer } from "./BottomDrawer";
-import { Button, ButtonGroup, IconButton } from "./button";
 import { EmptyState } from "./EmptyState";
 import { Icon } from "./Icon";
 import { Input } from "./Input";
@@ -19,6 +19,7 @@ import { PlaylistList } from "./PlaylistList";
 import { PlaylistListItem } from "./PlaylistListItem";
 import { TrackList } from "./TrackList";
 import { Typography } from "./Typography";
+import { Button, ButtonGroup, IconButton } from "./button";
 
 export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks }) => {
   const { back } = useRouter();
@@ -27,6 +28,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   const inputRef = useRef<TextInput>(null);
   const [search, setSearch] = useState("");
   const [debounced] = useDebounceValue(search, 150);
+  const ref = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
   const playlistTracks = useRef<SpotifyApi.TrackObjectFull[]>([]);
 
@@ -99,6 +101,10 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
     });
   }, [selectedPlaylist, spotify]);
 
+  useEffect(() => {
+    ref.current?.scrollToIndex({ index: 0, animated: true });
+  }, [searchedTracks])
+
   return (
     <>
       <PageTemplate fullScreen>
@@ -131,9 +137,10 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
             headerRight: () => <IconButton icon="close" title="back to fissa" onPress={back} />,
           }}
         />
-        <View className=" h-full w-full">
+        <View className="h-full w-full">
           <TrackList
             data={searchedTracks}
+            ref={ref}
             selectedTracks={selectedTracks.map((track) => track.id)}
             onTrackPress={handleTrackPress}
             ListFooterComponent={<View className="pb-72" />}
