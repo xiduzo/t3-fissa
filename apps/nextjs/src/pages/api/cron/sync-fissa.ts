@@ -1,7 +1,7 @@
-import { type NextApiRequest, type NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 import { appRouter } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
+import { PrismaClient } from "@prisma/client";
+import { type NextApiRequest, type NextApiResponse } from "next";
 
 export const maxDuration = 60;
 const wiggleTimeInSeconds = 5;
@@ -12,7 +12,13 @@ const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 export const prisma = globalForPrisma.prisma || new PrismaClient();
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  const caller = appRouter.createCaller({ database: prisma, session: null });
+  const caller = appRouter.createCaller({
+    database: prisma,
+    session: null,
+    headers: {
+      authorization: process.env.NEXTAUTH_SECRET,
+    }
+  });
 
   const fissas = await caller.fissa.sync.active();
 

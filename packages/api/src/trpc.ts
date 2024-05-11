@@ -41,8 +41,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 const enforceIsTrustedServer = t.middleware(({ next, ctx }) => {
-  // TODO: add check for trusted server -> vercel cron job
-  console.info("headers", ctx.headers);
+  if(ctx.headers?.authorization !== process.env.NEXTAUTH_SECRET) throw new TRPCError({ code: "UNAUTHORIZED" });
 
   return next();
 });

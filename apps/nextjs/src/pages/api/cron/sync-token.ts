@@ -10,6 +10,9 @@ export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const caller = appRouter.createCaller({
     database: prisma,
     session: null,
+    headers: {
+      authorization: process.env.NEXTAUTH_SECRET,
+    }
   });
 
   const fissas = await caller.fissa.sync.active();
