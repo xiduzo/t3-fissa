@@ -14,7 +14,7 @@
     "@fissa/auth": "*",
     "@fissa/db": "*",
     "@fissa/utils": "*",
-    "@trpc/client": "10.21.1",
+    "@trpc/client": "10.45.2",
     "@trpc/server": "10.21.1",
     "spotify-web-api-node": "5.0.2",
     "superjson": "2.2.1",
