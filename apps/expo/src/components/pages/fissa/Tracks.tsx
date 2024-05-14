@@ -64,7 +64,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull>();
 
-  const { activeDevice } = useDevices();
 
   const localTracks = useTracks(
     sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
@@ -72,17 +71,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const isPlaying = !!data?.currentlyPlayingId;
 
-  const showTracks = useMemo(() => {
-    if (!isOwner) return isPlaying;
-    return isPlaying && !!activeDevice;
-  }, [isPlaying, isOwner, activeDevice]);
+  const { activeDevice } = useDevices(isOwner && !isPlaying);
 
-  const queue = useMemo(() => (showTracks ? localTracks : []), [showTracks, localTracks]);
-
-  const currentTrackIndex = useMemo(
-    () => localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId) ?? 0,
-    [data?.currentlyPlayingId, localTracks],
-  );
+  const showTracks = isOwner ? isPlaying && !!activeDevice : isPlaying;
+  const queue = showTracks ? localTracks : [];
+  const currentTrackIndex = localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId) ?? 0;
 
   const showBackButton = useCallback(
     (offSet = 0) => {

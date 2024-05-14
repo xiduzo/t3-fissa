@@ -1,7 +1,7 @@
-import { useCallback, type FC } from "react";
-import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
-import { useGlobalSearchParams } from "expo-router";
 import { useDevices, useSpotify } from "@fissa/utils";
+import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
+import { useGlobalSearchParams } from "expo-router";
+import { useCallback, type FC } from "react";
 
 import { useIsOwner } from "../../../hooks";
 import { api, toast } from "../../../utils";
@@ -12,7 +12,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const isOwner = useIsOwner(String(pin));
 
   const spotify = useSpotify();
-  const { activeDevice, fetchDevices } = useDevices();
+  const { activeDevice, fetchDevices } = useDevices(false); // only used in `Tracks.tsx` which already fetches devices
   const queryClient = api.useContext();
 
   const { mutateAsync } = api.fissa.restart.useMutation({

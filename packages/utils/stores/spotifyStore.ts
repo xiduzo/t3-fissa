@@ -79,7 +79,7 @@ export const useSpotify = () => {
   return spotify;
 };
 
-export const useDevices = () => {
+export const useDevices = (autoFetch: boolean) => {
   const { spotify, devices, setDevices } = useSpotifyStore();
 
   const fetchDevices = useCallback(() => {
@@ -91,8 +91,10 @@ export const useDevices = () => {
   }, [devices]);
 
   useEffect(() => {
+    if(!autoFetch) return;
+
     fetchDevices();
-  }, [fetchDevices]);
+  }, [fetchDevices,autoFetch]);
 
   return { devices, activeDevice, fetchDevices };
 };

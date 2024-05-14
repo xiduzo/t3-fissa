@@ -92,7 +92,7 @@ const SpeakerButton = () => {
   const { pin } = useGlobalSearchParams();
   const isOwner = useIsOwner(String(pin));
 
-  const { activeDevice, fetchDevices } = useDevices();
+  const { activeDevice, fetchDevices } = useDevices(isOwner);
 
   // TODO: this call might be an unnecessary extra call even though it increases the UX.
   //       If the user decided to change the device outside of the app we are not aware of it.

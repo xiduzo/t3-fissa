@@ -1,7 +1,7 @@
-import { useCallback, useState, type FC } from "react";
-import { Linking, View } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 import { useDevices } from "@fissa/utils";
+import { useCallback, useState, type FC } from "react";
+import { Linking, View } from "react-native";
 
 import { useOnActiveApp } from "../../hooks";
 import { mapDeviceToIcon } from "../../utils";
@@ -12,7 +12,7 @@ import { Popover } from "./Popover";
 import { Typography } from "./Typography";
 
 export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
-  const { devices, fetchDevices } = useDevices();
+  const { devices, fetchDevices } = useDevices(true);
   useOnActiveApp(() => {
     fetchDevices();
   });
