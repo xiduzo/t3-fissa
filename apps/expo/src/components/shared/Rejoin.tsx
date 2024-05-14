@@ -1,6 +1,6 @@
-import { useMemo, type FC } from "react";
-import { View } from "react-native";
 import { useTracks } from "@fissa/utils";
+import { type FC } from "react";
+import { View } from "react-native";
 
 import { api } from "../../utils";
 import { Button } from "./button";
@@ -8,7 +8,7 @@ import { Button } from "./button";
 export const Rejoin = () => {
   const { data } = api.auth.getUserFissa.useQuery();
 
-  const lastFissa = useMemo(() => data?.isIn[0]?.pin, [data?.isIn]);
+  const lastFissa = data?.isIn[0]?.pin;
 
   if (lastFissa?.length !== 4) return <View className="my-1 h-16" />; // We return view for the layout
 

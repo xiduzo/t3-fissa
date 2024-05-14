@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from "react";
-import { View } from "react-native";
-import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import { SAVED_TRACKS_PLAYLIST_ID, useSpotify, useTracks } from "@fissa/utils";
+import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
+import { useCallback } from "react";
+import { View } from "react-native";
 
 import { PageTemplate, PlaylistList, TrackListItem } from "../../../../src/components";
 import { toast } from "../../../../src/utils";
@@ -12,9 +12,7 @@ const AddToPlaylist = () => {
   const spotify = useSpotify();
   const tracks = useTracks([String(trackId)]);
 
-  const track = useMemo(() => {
-    return tracks?.find(({ id }) => id === trackId);
-  }, [trackId, tracks]);
+  const track = tracks?.find(({ id }) => id === trackId);
 
   const handlePlaylistPress = useCallback(
     async (playlist: SpotifyApi.PlaylistObjectSimplified) => {

@@ -1,14 +1,14 @@
-import { useCallback, useMemo, useRef, useState } from "react";
-import {
-  TextInput,
-  View,
-  type NativeSyntheticEvent,
-  type TextInputChangeEventData,
-  type TextInputTextInputEventData,
-} from "react-native";
+import { theme } from "@fissa/tailwind-config";
 import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
+import { useCallback, useMemo, useRef, useState } from "react";
+import {
+    TextInput,
+    View,
+    type NativeSyntheticEvent,
+    type TextInputChangeEventData,
+    type TextInputTextInputEventData,
+} from "react-native";
 
 import { Button, PageTemplate, Typography } from "../src/components";
 import { api } from "../src/utils/api";

@@ -9,7 +9,7 @@ import {
 import { type FlashList } from "@shopify/flash-list";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
+import { useCallback, useEffect, useRef, useState, type FC } from "react";
 import {
     Animated,
     TouchableHighlight,
@@ -317,21 +317,9 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
     },
   });
 
-  const isActiveTrack = useMemo(() => fissa?.currentlyPlayingId === track.id, [fissa, track.id]);
-
-  const hasBeenPlayed = useMemo(
-    () => fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed,
-    [track?.id, fissa?.tracks],
-  );
-
-  const canRemoveTrack = useMemo(() => {
-    const isAddedByUser =
-      fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.by?.email === user?.id;
-
-    if (isAddedByUser) return true;
-
-    return isOwner;
-  }, [track?.id, fissa?.tracks, user, isOwner]);
+  const isActiveTrack = fissa?.currentlyPlayingId === track.id;
+  const hasBeenPlayed =  fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed;
+  const canRemoveTrack = fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.by?.email === user?.id ?? isOwner
 
   const handleVote = useCallback(
     (vote: number) => async () => {

@@ -86,15 +86,13 @@ export const useDevices = (autoFetch: boolean) => {
     void spotify.getMyDevices().then(({ devices }) => setDevices(devices));
   }, [spotify, setDevices]);
 
-  const activeDevice = useMemo(() => {
-    return devices.find(({ is_active }) => is_active);
-  }, [devices]);
+  const activeDevice = devices.find(({ is_active }) => is_active);
 
   useEffect(() => {
     if(!autoFetch) return;
 
     fetchDevices();
-  }, [fetchDevices,autoFetch]);
+  }, [fetchDevices, autoFetch]);
 
   return { devices, activeDevice, fetchDevices };
 };
