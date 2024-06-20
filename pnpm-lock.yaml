@@ -42,8 +42,8 @@ importers:
   apps/expo:
     dependencies:
       '@expo/vector-icons':
-        specifier: 14.0.1
-        version: 14.0.1
+        specifier: 14.0.2
+        version: 14.0.2
       '@fissa/api':
         specifier: '*'
         version: link:../../packages/api
@@ -66,11 +66,11 @@ importers:
         specifier: 4.36.1
         version: 4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(@types/react@18.2.37)(react@18.2.0))(react@18.2.0)
       '@trpc/client':
-        specifier: 10.21.1
-        version: 10.21.1(@trpc/server@10.21.1)
+        specifier: 10.21.2
+        version: 10.21.2(@trpc/server@10.21.1)
       '@trpc/react-query':
         specifier: 10.21.1
-        version: 10.21.1(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(@types/react@18.2.37)(react@18.2.0))(react@18.2.0))(@trpc/client@10.21.1(@trpc/server@10.21.1))(@trpc/server@10.21.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 10.21.1(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(@types/react@18.2.37)(react@18.2.0))(react@18.2.0))(@trpc/client@10.21.2(@trpc/server@10.21.1))(@trpc/server@10.21.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@trpc/server':
         specifier: 10.21.1
         version: 10.21.1
@@ -114,8 +114,8 @@ importers:
         specifier: 1.12.1
         version: 1.12.1
       expo-system-ui:
-        specifier: 3.0.4
-        version: 3.0.4(expo@51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5)))
+        specifier: 3.0.6
+        version: 3.0.6(expo@51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5)))
       expo-updates:
         specifier: 0.25.17
         version: 0.25.17(expo@51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5)))
@@ -1490,8 +1490,8 @@ packages:
     resolution: {integrity: sha512-QdWi16+CHB9JYP7gma19OVVg0BFkvU8zNj9GjWorYI8Iv8FUxjOCcYRuAmX4s/h91e4e7BPsskc8cSrZYho9Ew==}
     engines: {node: '>=12'}
 
-  '@expo/vector-icons@14.0.1':
-    resolution: {integrity: sha512-7oIe1RRWmRQXNxmewsuAaIRNAQfkig7EFTuI5T8PCI7T4q/rS5iXWvlzAEXndkzSOSs7BAANrLyj7AtpEhTksg==}
+  '@expo/vector-icons@14.0.2':
+    resolution: {integrity: sha512-70LpmXQu4xa8cMxjp1fydgRPsalefnHaXLzIwaHMEzcZhnyjw2acZz8azRrZOslPVAWlxItOa2Dd7WtD/kI+CA==}
 
   '@expo/xcpretty@4.3.1':
     resolution: {integrity: sha512-sqXgo1SCv+j4VtYEwl/bukuOIBrVgx6euIoCat3Iyx5oeoXwEA2USCoeL0IPubflMxncA2INkqJ/Wr3NGrSgzw==}
@@ -1822,9 +1822,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@babel/core': '*'
-
-  '@react-native/normalize-colors@0.74.83':
-    resolution: {integrity: sha512-jhCY95gRDE44qYawWVvhTjTplW1g+JtKTKM3f8xYT1dJtJ8QWv+gqEtKcfmOHfDkSDaMKG0AGBaDTSK8GXLH8Q==}
 
   '@react-native/normalize-colors@0.74.84':
     resolution: {integrity: sha512-Y5W6x8cC5RuakUcTVUFNAIhUZ/tYpuqHZlRBoAuakrTwVuoNHXfQki8lj1KsYU7rW6e3VWgdEx33AfOQpdNp6A==}
@@ -2175,6 +2172,11 @@ packages:
     resolution: {integrity: sha512-oZgPbghs9y2frTCA9mZPSAlVknV9stCTKYO5nsvRr0aX+oaA0URoXJTKZTSpLZxLfuwWgxBj4iTiCWWWmaVelw==}
     peerDependencies:
       '@trpc/server': 10.21.1
+
+  '@trpc/client@10.21.2':
+    resolution: {integrity: sha512-It5NjrdOqT9UyrJPzpSfT9SAECFt2QxTM/XOX7PQ2s/CnvFCc4420UITV7lYJiWLsD8zdG1CLLO6KdFvDL11FQ==}
+    peerDependencies:
+      '@trpc/server': 10.21.2
 
   '@trpc/next@10.21.1':
     resolution: {integrity: sha512-xj5hpodCSOj5ROqpZ95ehHFzJLbRhfQ7rCYWRzrQvuk8phJV/O6xsMSVT51ogL4tFDmVPSGCP5x5Z25NzULpzQ==}
@@ -3570,8 +3572,8 @@ packages:
   expo-structured-headers@3.8.0:
     resolution: {integrity: sha512-R+gFGn0x5CWl4OVlk2j1bJTJIz4KO8mPoCHpRHmfqMjmrMvrOM0qQSY3V5NHXwp1yT/L2v8aUmFQsBRIdvi1XA==}
 
-  expo-system-ui@3.0.4:
-    resolution: {integrity: sha512-v1n6hBO30k9qw6RE8/au4yNoovs71ExGuXizJUlR5KSo4Ruogpb+0/2q3uRZMDIYWWCANvms8L0UOh6fQJ5TXg==}
+  expo-system-ui@3.0.6:
+    resolution: {integrity: sha512-ewmGIoVHbcifRr2Kf4EJxc1ZoC3buVwlXUhEUzyX37LRLpMKK4CjIwe3G7N6nZ0DJACTFgY8WpRhbCUPICaOig==}
     peerDependencies:
       expo: '*'
 
@@ -3817,9 +3819,11 @@ packages:
 
   glob@7.1.6:
     resolution: {integrity: sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@7.1.7:
     resolution: {integrity: sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
@@ -3976,6 +3980,7 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -5615,6 +5620,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rollup@4.17.0:
@@ -8019,7 +8025,7 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.3
 
-  '@expo/vector-icons@14.0.1':
+  '@expo/vector-icons@14.0.2':
     dependencies:
       prop-types: 15.8.1
 
@@ -8560,8 +8566,6 @@ snapshots:
       - '@babel/preset-env'
       - supports-color
 
-  '@react-native/normalize-colors@0.74.83': {}
-
   '@react-native/normalize-colors@0.74.84': {}
 
   '@react-native/virtualized-lists@0.74.84(@types/react@18.2.37)(react-native@0.74.2(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(@types/react@18.2.37)(react@18.2.0))(react@18.2.0)':
@@ -8949,6 +8953,10 @@ snapshots:
     dependencies:
       '@trpc/server': 10.21.1
 
+  '@trpc/client@10.21.2(@trpc/server@10.21.1)':
+    dependencies:
+      '@trpc/server': 10.21.1
+
   '@trpc/next@10.21.1(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@types/react@18.2.37)(react@18.2.0))(react@18.2.0))(@trpc/client@10.21.1(@trpc/server@10.21.1))(@trpc/react-query@10.21.1(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@types/react@18.2.37)(react@18.2.0))(react@18.2.0))(@trpc/client@10.21.1(@trpc/server@10.21.1))(@trpc/server@10.21.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/server@10.21.1)(next@14.2.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@types/react@18.2.37)(react@18.2.0))(react@18.2.0)
@@ -8960,10 +8968,10 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       react-ssr-prepass: 1.5.0(react@18.2.0)
 
-  '@trpc/react-query@10.21.1(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(@types/react@18.2.37)(react@18.2.0))(react@18.2.0))(@trpc/client@10.21.1(@trpc/server@10.21.1))(@trpc/server@10.21.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@trpc/react-query@10.21.1(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(@types/react@18.2.37)(react@18.2.0))(react@18.2.0))(@trpc/client@10.21.2(@trpc/server@10.21.1))(@trpc/server@10.21.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0(react@18.2.0))(react-native@0.74.2(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(@types/react@18.2.37)(react@18.2.0))(react@18.2.0)
-      '@trpc/client': 10.21.1(@trpc/server@10.21.1)
+      '@trpc/client': 10.21.2(@trpc/server@10.21.1)
       '@trpc/server': 10.21.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -10635,9 +10643,9 @@ snapshots:
 
   expo-structured-headers@3.8.0: {}
 
-  expo-system-ui@3.0.4(expo@51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))):
+  expo-system-ui@3.0.6(expo@51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))):
     dependencies:
-      '@react-native/normalize-colors': 0.74.83
+      '@react-native/normalize-colors': 0.74.84
       debug: 4.3.4
       expo: 51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))
     transitivePeerDependencies:
@@ -10680,7 +10688,7 @@ snapshots:
       '@expo/config': 9.0.1
       '@expo/config-plugins': 8.0.5
       '@expo/metro-config': 0.18.7
-      '@expo/vector-icons': 14.0.1
+      '@expo/vector-icons': 14.0.2
       babel-preset-expo: 11.0.10(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))
       expo-asset: 10.0.9(expo@51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5)))
       expo-file-system: 17.0.1(expo@51.0.14(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5)))

@@ -3,7 +3,7 @@ import { ConfigContext, ExpoConfig } from "@expo/config";
 
 const version = "3.4.0"; // EAS VERSION
 // Should be bumped every time a new build is made
-const buildNumber = "1"; // EAS VERSION
+const buildNumber = "2"; // EAS VERSION
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
