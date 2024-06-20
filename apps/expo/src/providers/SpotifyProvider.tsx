@@ -1,30 +1,31 @@
 import { differenceInMinutes, scopes, useInterval, useSpotify } from "@fissa/utils";
 import {
-    ResponseType,
-    makeRedirectUri,
-    useAuthRequest,
-    type AuthRequestConfig,
-    type DiscoveryDocument,
+  Prompt,
+  ResponseType,
+  makeRedirectUri,
+  useAuthRequest,
+  type AuthRequestConfig,
+  type DiscoveryDocument,
 } from "expo-auth-session";
 import Constants from "expo-constants";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useNavigation, useRouter } from "expo-router";
 import * as React from "react";
 import {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-    type FC,
-    type PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type PropsWithChildren,
 } from "react";
 import { Platform } from "react-native";
 
-import { useOnActiveApp } from "../hooks";
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
+import { useOnActiveApp } from "../hooks/useOnActiveApp";
 import { toast } from "../utils";
 import { api } from "../utils/api";
 
@@ -83,8 +84,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
       await saveSessionToken(session_token);
 
-      refresh_token && (await saveRefreshToken(refresh_token));
       lastTokenSaveTime.current = new Date();
+      refresh_token && (await saveRefreshToken(refresh_token));
     },
     [spotify, saveSessionToken, saveRefreshToken],
   );
@@ -112,9 +113,9 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     replace("");
   }, [saveRefreshToken, saveSessionToken, replace]);
 
-  const signIn = useCallback( () => {
-     void promptAsync().finally(() => setIsLoading(false));
-     setIsLoading(true);
+  const signIn = useCallback(() => {
+    void promptAsync().then(console.log).finally(() => setIsLoading(false));
+    setIsLoading(true);
   }, [promptAsync]);
 
   useEffect(() => {
@@ -172,6 +173,7 @@ const config: AuthRequestConfig = {
   responseType: ResponseType.Code,
   clientId: Constants.expoConfig?.extra?.spotifyClientId as string,
   usePKCE: false,
+  prompt: Prompt.SelectAccount,
   redirectUri: makeRedirectUri({
     scheme: `${Constants.expoConfig?.scheme}://redirect`,
     native: Platform.select({
@@ -184,4 +186,5 @@ const config: AuthRequestConfig = {
 const discovery: DiscoveryDocument = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
   tokenEndpoint: "https://accounts.spotify.com/api/token",
+  revocationEndpoint: "https://accounts.spotify.com/api/token",
 };

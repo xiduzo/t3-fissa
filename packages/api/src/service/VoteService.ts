@@ -24,10 +24,24 @@ export class VoteService extends ServiceWithContext {
 
   createVote = async (pin: string, trackId: string, vote: number, userId: string) => {
     return this.db.$transaction(async (transaction) => {
-      await transaction.track.update({
-        where: { pin_trackId: { pin, trackId } },
-        data: { score: { increment: vote }, totalScore: { increment: vote } }
+      const previousVote = await transaction.vote.findUnique({
+        where: { trackId_userId_pin: { pin, trackId, userId } }
       })
+
+      // Get the actual vote weight based on the previous vote
+      const voteWeight = previousVote ? vote - previousVote.vote : vote
+
+      const track = await transaction.track.update({
+        where: { pin_trackId: { pin, trackId } },
+        data: { score: { increment: voteWeight }, totalScore: { increment: voteWeight }, hasBeenPlayed: false }
+      })
+
+      if (track.userId && track.userId !== userId) {
+        await transaction.userInFissa.update({
+          where: { pin_userId: { pin, userId: track.userId } },
+          data: { points: { increment: voteWeight } }
+        })
+      }
 
       return transaction.vote.upsert({
         where: { trackId_userId_pin: { pin, trackId, userId } },
@@ -54,7 +68,7 @@ export class VoteService extends ServiceWithContext {
     });
   };
 
-  resetVotes = async (pin:string, trackId: string) => {
-    return this.db.vote.deleteMany({ where: { pin, trackId} })
+  resetVotes = async (pin: string, trackId: string) => {
+    return this.db.vote.deleteMany({ where: { pin, trackId } })
   }
 }

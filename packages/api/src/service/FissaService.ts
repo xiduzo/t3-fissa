@@ -18,7 +18,7 @@ import {
 import { ServiceWithContext, type Context } from "../utils/context";
 import { EarnedPoints } from "../utils/EarnedPoints";
 
-const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
+export const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
 
 export class FissaService extends ServiceWithContext {
   constructor(ctx: Context, private readonly spotifyService: SpotifyService) {
@@ -100,6 +100,7 @@ export class FissaService extends ServiceWithContext {
   };
 
   skipTrack = async (pin: string, userId: string) => {
+    console.log("skipTrack", pin, userId);
     const fissa = await this.byId(pin, userId);
 
     if (fissa.userId !== userId) throw new NotTheHost();
@@ -187,7 +188,7 @@ export class FissaService extends ServiceWithContext {
         currentlyPlaying: {
           select: {
             trackId: true,
-            by: { select: { accounts: { select: { id: true }, take: 1 } } },
+            by: { select: { accounts: { select: { userId: true }, take: 1 } } },
           }
         },
         expectedEndTime: true,
@@ -222,20 +223,24 @@ export class FissaService extends ServiceWithContext {
     { pin }: Pick<Fissa, "pin">,
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
-    currentlyPlaying?: { trackId?: string, by?: { id: string }},
+    currentlyPlaying?: { trackId?: string, by?: { userId: string } },
   ) => {
     const playing = this.spotifyService.playTrack(accessToken, trackId);
 
     await this.db.$transaction(async transaction => {
-      if(currentlyPlaying?.trackId) {
+      if (currentlyPlaying?.trackId) {
         await transaction.track.update({
           where: { pin_trackId: { pin, trackId: currentlyPlaying?.trackId } },
           data: { hasBeenPlayed: true, totalScore: { increment: EarnedPoints.PlayedTrack }, score: 0 },
         });
 
-        if(currentlyPlaying.by) {
+        await transaction.vote.deleteMany({
+          where: { pin, trackId: currentlyPlaying.trackId },
+        });
+
+        if (currentlyPlaying.by) {
           await transaction.userInFissa.update({
-            where: { pin_userId: { pin, userId: currentlyPlaying.by.id } },
+            where: { pin_userId: { pin, userId: currentlyPlaying.by.userId } },
             data: { points: { increment: EarnedPoints.PlayedTrack } }
           })
         }
@@ -254,13 +259,15 @@ export class FissaService extends ServiceWithContext {
     if (!(await playing)) {
       // We wanted to play a track but something went wrong
       // Most likely the track is not available in the country
-      // TODO: We should ban this track from being played again
-      //       as apparently it's not playable
+      await this.db.track.delete({
+        where: { pin_trackId: { pin, trackId } },
+      })
+      // TODO: we should notifiy the Fissa about deletion of this track?
       return this.playNextTrack(pin, true);
     }
   };
 
-  private getNextTracks = (tracks: Pick<Track,'hasBeenPlayed' | 'trackId' | 'score' | 'lastUpdateAt' | 'createdAt'>[], currentlyPlayingId?: string | null) => {
+  private getNextTracks = (tracks: Pick<Track, 'hasBeenPlayed' | 'trackId' | 'score' | 'lastUpdateAt' | 'createdAt'>[], currentlyPlayingId?: string | null) => {
     const tracksToSort = tracks.filter(
       ({ hasBeenPlayed, trackId }) => !hasBeenPlayed && trackId !== currentlyPlayingId,
     );
