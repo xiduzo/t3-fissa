@@ -1,4 +1,4 @@
-import { differenceInMinutes, scopes, useInterval, useSpotify } from "@fissa/utils";
+import { addMinutes, differenceInMinutes, scopes, useInterval, useSpotify } from "@fissa/utils";
 import {
   Prompt,
   ResponseType,
@@ -149,8 +149,7 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [updateTokens, user, getScopes]);
 
   useOnActiveApp(() => {
-    const { current } = lastTokenSaveTime;
-    const difference = differenceInMinutes(new Date(), current);
+    const difference = differenceInMinutes(new Date(), addMinutes(lastTokenSaveTime.current, -2));
 
     if (difference < REFRESH_INTERVAL_MINUTES) return;
 
