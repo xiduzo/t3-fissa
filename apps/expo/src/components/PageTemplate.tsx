@@ -1,7 +1,7 @@
-import { type FC } from "react";
-import { SafeAreaView, View, type ViewProps } from "react-native";
 import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
+import { type FC } from "react";
+import { SafeAreaView, View, type ViewProps } from "react-native";
 
 export const PageTemplate: FC<Props> = ({ children, className, fullScreen, ...props }) => {
   const Wrapper = fullScreen ? View : SafeAreaView;
@@ -15,7 +15,7 @@ export const PageTemplate: FC<Props> = ({ children, className, fullScreen, ...pr
   );
 };
 
-interface Props extends ViewProps, VariantProps<typeof pageTemplate> {}
+interface Props extends ViewProps, VariantProps<typeof pageTemplate> { }
 
 const pageTemplate = cva("m-auto h-full w-full justify-between", {
   variants: {
@@ -24,7 +24,7 @@ const pageTemplate = cva("m-auto h-full w-full justify-between", {
      */
     fullScreen: {
       true: "max-w-screen-2xl",
-      false: "p-6 pb-4 max-w-lg",
+      false: "p-6 pb-8 max-w-lg",
     },
   },
   defaultVariants: {

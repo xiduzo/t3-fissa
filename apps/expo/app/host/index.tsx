@@ -1,7 +1,7 @@
-import { useCallback } from "react";
-import { View } from "react-native";
-import { Stack } from "expo-router";
 import { randomSort, useSpotify } from "@fissa/utils";
+import { Stack } from "expo-router";
+import { useCallback, useState } from "react";
+import { View } from "react-native";
 
 import { Button, ButtonGroup, PageTemplate, Typography } from "../../src/components";
 import { useCreateFissa } from "../../src/hooks";
@@ -11,17 +11,20 @@ const MAX_SEED_TRACKS = 5;
 
 const Host = () => {
   const spotify = useSpotify();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { mutateAsync, isLoading } = useCreateFissa({
+  const { mutateAsync } = useCreateFissa({
     onSettled: () => {
       toast.hide();
+      setIsLoading(false)
     },
   });
 
   const handleSurpriseMe = useCallback(async () => {
+    setIsLoading(true)
     toast.info({
       icon: "🦔",
-      message: "An explorer I see, making a fissa just for you",
+      message: "Explore songs just for you",
       duration: 60 * 1000,
     });
     try {
@@ -36,7 +39,6 @@ const Host = () => {
 
       await mutateAsync(tracks);
     } catch (e) {
-      console.error(e);
       toast.error({
         message: "Woops, something went wrong. Try again later.",
       });

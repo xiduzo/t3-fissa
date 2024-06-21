@@ -1,12 +1,10 @@
+import { Stack, useRouter } from "expo-router";
 import React, { useCallback, useState, type FC } from "react";
 import { View } from "react-native";
-import { Stack, useRouter } from "expo-router";
 
 import {
-  Action,
   Button,
   ButtonGroup,
-  Divider,
   IconButton,
   PageTemplate,
   Popover,
@@ -81,34 +79,11 @@ export default Home;
 const headerRight = () => <AccountDetails />;
 
 const AccountDetails = () => {
-  const [showAccountDetails, setShowAccountDetails] = useState(false);
-  const { signOut, user } = useAuth();
-
-  const toggleAccountDetails = useCallback(() => {
-    setShowAccountDetails((prev) => !prev);
-  }, []);
-
-  const handleSignOut = useCallback(() => {
-    toggleAccountDetails();
-    signOut();
-  }, [toggleAccountDetails, signOut]);
+  const { push } = useRouter();
 
   return (
     <>
-      <IconButton title="account details" icon="user" onPress={toggleAccountDetails} />
-      <Popover visible={showAccountDetails} onRequestClose={toggleAccountDetails}>
-        <Typography inverted variant="h3" centered>
-          {user?.display_name}
-        </Typography>
-        <Divider />
-        <Action
-          icon="user"
-          title="Sign out"
-          subtitle="hasta la vista baby"
-          inverted
-          onPress={handleSignOut}
-        />
-      </Popover>
+      <IconButton title="account details" icon="user" onPress={() => push('/profile')} />
     </>
   );
 };

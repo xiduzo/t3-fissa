@@ -114,15 +114,15 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [saveRefreshToken, saveSessionToken, replace]);
 
   const signIn = useCallback(() => {
-    void promptAsync().then(console.log).finally(() => setIsLoading(false));
     setIsLoading(true);
+    void promptAsync().finally(() => setIsLoading(false));
   }, [promptAsync]);
 
   useEffect(() => {
     if (response?.type !== "success") return;
 
     toast.info({
-      message: "Setting account details",
+      message: "Gathering account details",
       icon: "🐿️",
       duration: 30 * 1000,
     });

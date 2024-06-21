@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { SpotifyService } from "@fissa/utils";
+import { z } from "zod";
 
 import { AuthService } from "../service/AuthService";
 import { createTRPCRouter, protectedProcedure, publicProcedure, serviceProcedure } from "../trpc";
@@ -29,6 +29,10 @@ export const authRouter = createTRPCRouter({
   refreshToken: publicProcedure.input(z.string()).mutation(({ ctx, input }) => {
     const service = new AuthService(ctx, new SpotifyService());
     return service.refreshToken(input);
+  }),
+  getUserStats: protectedProcedure.query(({ ctx }) => {
+    const service = new AuthService(ctx, new SpotifyService());
+    return service.getUserStats(ctx.session.user.id);
   }),
   sync,
 });

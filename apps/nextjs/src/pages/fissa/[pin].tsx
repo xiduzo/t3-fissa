@@ -1,13 +1,13 @@
-import { useRef } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useRef } from "react";
 
-import { api } from "~/utils/api";
 import { Layout } from "~/components/Layout";
 import { toast } from "~/components/Toast";
 import { useTheme } from "~/providers/ThemeProvider";
+import { api } from "~/utils/api";
 
 const JoinFissa: NextPage = () => {
   const { query } = useRouter();
@@ -17,7 +17,7 @@ const JoinFissa: NextPage = () => {
 
   api.fissa.byId.useQuery(String(query.pin), {
     retry: false,
-    enabled: !shown.current,
+    enabled: !shown.current && !!String(query.pin),
     onSuccess: (data) => {
       shown.current = true;
       window.location.replace(`com.fissa://fissa/${data.pin}`);

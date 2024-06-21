@@ -1,10 +1,10 @@
 import { Prisma } from "@fissa/db";
 import {
-    addMonths,
-    addSeconds,
-    differenceInMinutes,
-    isPast,
-    type SpotifyService,
+  addMonths,
+  addSeconds,
+  differenceInMinutes,
+  isPast,
+  type SpotifyService,
 } from "@fissa/utils";
 
 import { ServiceWithContext, type Context } from "../utils/context";
@@ -23,6 +23,16 @@ export class AuthService extends ServiceWithContext {
       },
     });
   };
+
+  getUserStats = async (userId: string) => {
+    return this.db.user.findFirstOrThrow({
+      where: { id: userId },
+      select: {
+        badges: true,
+        createdAt: true
+      }
+    })
+  }
 
   getAccessToken = async (code: string, redirectUri: string) => {
     const tokens = await this.spotifyService.codeGrant(code, redirectUri);

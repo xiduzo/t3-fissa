@@ -2,10 +2,11 @@ import { type z } from "zod";
 
 import { type Z_TRACKS } from "../router/constants";
 import { ServiceWithContext, type Context } from "../utils/context";
+import { type BadgeService } from "./BadgeService";
 import { type VoteService } from "./VoteService";
 
 export class TrackService extends ServiceWithContext {
-  constructor(ctx: Context, private readonly voteService: VoteService) {
+  constructor(ctx: Context, private readonly voteService: VoteService, private readonly badgeService: BadgeService) {
     super(ctx);
   }
 
@@ -25,6 +26,8 @@ export class TrackService extends ServiceWithContext {
         },
       },
     });
+
+    await this.badgeService.tracksAdded(tracks.length)
 
     const trackIds = tracks.map(({ trackId }) => trackId);
 

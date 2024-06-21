@@ -8,15 +8,15 @@ import { useCallback, useState, type FC } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import {
-    Fab,
-    FissaTracks,
-    IconButton,
-    PageTemplate,
-    Popover,
-    QuickVoteProvider,
-    SelectDevice,
-    Settings,
-    Typography,
+  Fab,
+  FissaTracks,
+  IconButton,
+  PageTemplate,
+  Popover,
+  QuickVoteProvider,
+  SelectDevice,
+  Settings,
+  Typography,
 } from "../../../src/components";
 import { useIsOwner, useOnActiveApp, useShareFissa } from "../../../src/hooks";
 import { api, mapDeviceToIcon, toast } from "../../../src/utils";
@@ -26,6 +26,7 @@ const Fissa = () => {
   const { replace } = useRouter();
 
   api.fissa.byId.useQuery(String(pin), {
+    enabled: !!pin,
     onError: (error) => {
       toast.error({ message: error.message });
       void notificationAsync(NotificationFeedbackType.Error);

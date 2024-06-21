@@ -1,27 +1,28 @@
 import { type Fissa, type Track } from "@fissa/db";
 import {
-    addMilliseconds,
-    biasSort,
-    differenceInMilliseconds,
-    FissaIsPaused,
-    ForceStopFissa,
-    NoNextTrack,
-    NotAbleToAccessSpotify,
-    NotTheHost,
-    randomize,
-    sleep,
-    sortFissaTracksOrder,
-    UnableToCreateFissa,
-    type SpotifyService,
+  addMilliseconds,
+  biasSort,
+  differenceInMilliseconds,
+  FissaIsPaused,
+  ForceStopFissa,
+  NoNextTrack,
+  NotAbleToAccessSpotify,
+  NotTheHost,
+  randomize,
+  sleep,
+  sortFissaTracksOrder,
+  UnableToCreateFissa,
+  type SpotifyService,
 } from "@fissa/utils";
 
 import { ServiceWithContext, type Context } from "../utils/context";
 import { EarnedPoints } from "../utils/EarnedPoints";
+import { type BadgeService } from "./BadgeService";
 
 export const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
 
 export class FissaService extends ServiceWithContext {
-  constructor(ctx: Context, private readonly spotifyService: SpotifyService) {
+  constructor(ctx: Context, private readonly spotifyService: SpotifyService, private readonly badgeService: BadgeService) {
     super(ctx);
   }
 
@@ -75,6 +76,7 @@ export class FissaService extends ServiceWithContext {
     }
 
     await this.playTrack(fissa, tracks[0], access_token);
+    await this.badgeService.fissaCreated()
 
     return fissa;
   };
@@ -94,13 +96,13 @@ export class FissaService extends ServiceWithContext {
         create: { pin, userId },
         update: {},
       });
+      await this.badgeService.joinedFissa()
     }
 
     return fissa;
   };
 
   skipTrack = async (pin: string, userId: string) => {
-    console.log("skipTrack", pin, userId);
     const fissa = await this.byId(pin, userId);
 
     if (fissa.userId !== userId) throw new NotTheHost();

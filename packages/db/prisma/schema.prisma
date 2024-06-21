@@ -90,23 +90,25 @@ model UserInFissa {
 }
 
 enum BADGE {
+  TRACKS_ADDED
+  UP_VOTES_RECEIVED
+  DOWN_VOTES_RECEIVED
   FISSAS_CREATED
   FISSAS_JOINED
   UP_VOTES_CAST
   DOWN_VOTES_CAST
-  UP_VOTES_RECEIVED
-  DOWN_VOTES_RECEIVED
   POINTS_EARNED
 }
 
 model Badges {
-  id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id], name: "HasEarned", onDelete: Cascade)
-  userId String @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], name: "HasEarned", onDelete: Cascade)
+  userId      String   @map("user_id")
+  lastUpdated DateTime @updatedAt
 
   name  BADGE
   score Int   @default(0) @db.SmallInt
 
+  @@unique([userId, name])
   @@map("badges")
 }
 
@@ -115,8 +117,7 @@ model Badges {
 // uncomment the @db.Text annotations below
 // @see https://next-auth.js.org/schemas/models
 model Account {
-  id                String   @id @default(cuid())
-  createdAt         DateTime @default(now())
+  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -128,7 +129,7 @@ model Account {
   scope             String?
   id_token          String? // @db.Text
   session_state     String?
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -146,6 +147,7 @@ model Session {
 
 model User {
   id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
   name          String?
   email         String?   @unique
   emailVerified DateTime?

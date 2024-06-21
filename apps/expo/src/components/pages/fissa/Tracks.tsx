@@ -1,21 +1,21 @@
 import { theme } from "@fissa/tailwind-config";
 import {
-    AnimationSpeed,
-    differenceInMilliseconds,
-    sortFissaTracksOrder,
-    useDevices,
-    useTracks,
+  AnimationSpeed,
+  differenceInMilliseconds,
+  sortFissaTracksOrder,
+  useDevices,
+  useTracks,
 } from "@fissa/utils";
 import { type FlashList } from "@shopify/flash-list";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState, type FC } from "react";
 import {
-    Animated,
-    TouchableHighlight,
-    View,
-    type NativeScrollEvent,
-    type NativeSyntheticEvent,
+  Animated,
+  TouchableHighlight,
+  View,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
 } from "react-native";
 
 import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack } from "../../../hooks";
@@ -23,16 +23,16 @@ import { useAuth } from "../../../providers";
 import { api } from "../../../utils";
 import { QuickVoteModal, useQuickVote } from "../../quickVote";
 import {
-    Action,
-    Divider,
-    Icon,
-    IconButton,
-    Popover,
-    ProgressBar,
-    TrackEnd,
-    TrackList,
-    TrackListItem,
-    Typography,
+  Action,
+  Divider,
+  Icon,
+  IconButton,
+  Popover,
+  ProgressBar,
+  TrackEnd,
+  TrackList,
+  TrackListItem,
+  Typography,
 } from "../../shared";
 import { ListEmptyComponent } from "./ListEmptyComponent";
 import { ListFooterComponent } from "./ListFooterComponent";
@@ -292,7 +292,9 @@ interface SelectedTrackPopoverProps {
 
 const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
   const { pin } = useGlobalSearchParams();
-  const { data: fissa } = api.fissa.byId.useQuery(String(pin));
+  const { data: fissa } = api.fissa.byId.useQuery(String(pin), {
+    enabled: !!pin,
+  });
 
   const { push } = useRouter();
 
@@ -318,8 +320,8 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
   });
 
   const isActiveTrack = fissa?.currentlyPlayingId === track.id;
-  const hasBeenPlayed =  fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed;
-  const canRemoveTrack = fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.by?.email === user?.id ?? isOwner
+  const hasBeenPlayed = fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.hasBeenPlayed;
+  const canRemoveTrack = (fissa?.tracks.find(({ trackId }) => trackId === track?.id)?.by?.email === user?.email) || isOwner
 
   const handleVote = useCallback(
     (vote: number) => async () => {

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { BadgeService } from "../service/BadgeService";
 import { TrackService } from "../service/TrackService";
 import { VoteService } from "../service/VoteService";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
@@ -17,15 +18,18 @@ const deleteTrack = z.object({
 
 export const trackRouter = createTRPCRouter({
   byPin: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
-    const service = new TrackService(ctx, new VoteService(ctx));
+    const badgeService = new BadgeService(ctx)
+    const service = new TrackService(ctx, new VoteService(ctx, badgeService), badgeService);
     return service.byPin(input);
   }),
   addTracks: protectedProcedure.input(addTracks).mutation(async ({ ctx, input }) => {
-    const service = new TrackService(ctx, new VoteService(ctx));
+    const badgeService = new BadgeService(ctx)
+    const service = new TrackService(ctx, new VoteService(ctx, badgeService), badgeService);
     return service.addTracks(input.pin, input.tracks, ctx.session.user.id);
   }),
   deleteTrack: protectedProcedure.input(deleteTrack).mutation(async ({ ctx, input }) => {
-    const service = new TrackService(ctx, new VoteService(ctx));
+    const badgeService = new BadgeService(ctx)
+    const service = new TrackService(ctx, new VoteService(ctx, badgeService), badgeService);
     await service.deleteTrack(input.pin, input.trackId);
   }),
 });

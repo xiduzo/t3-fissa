@@ -9,6 +9,7 @@ export * from "./array";
 export * from "./classes";
 export * from "./date";
 export * from "./hooks";
+export * from "./number";
 export * from "./services";
 export * from "./sleep";
 export * from "./spotify";

@@ -1,7 +1,8 @@
 import { ServiceWithContext, type Context } from "../utils/context";
+import { type BadgeService } from "./BadgeService";
 
 export class VoteService extends ServiceWithContext {
-  constructor(ctx: Context) {
+  constructor(ctx: Context, private readonly badgeService: BadgeService) {
     super(ctx);
   }
 
@@ -37,6 +38,7 @@ export class VoteService extends ServiceWithContext {
       })
 
       if (track.userId && track.userId !== userId) {
+        await this.badgeService.voted(vote, track.userId)
         await transaction.userInFissa.update({
           where: { pin_userId: { pin, userId: track.userId } },
           data: { points: { increment: voteWeight } }
