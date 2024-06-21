@@ -58,7 +58,7 @@ export class VoteService extends ServiceWithContext {
       });
 
       await transaction.track.updateMany({
-        data: { score: { increment: vote }, totalScore: { increment: vote } },
+        data: { score: { increment: vote }, totalScore: { increment: vote }, hasBeenPlayed: false },
         where: { pin, trackId: { in: trackIds } }
       })
 
