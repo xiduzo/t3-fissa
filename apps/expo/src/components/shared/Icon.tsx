@@ -1,6 +1,6 @@
-import { type FC } from "react";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { type IconProps } from "@expo/vector-icons/build/createIconSet";
+import { type FC } from "react";
 
 export const Icon: FC<Props> = ({ name, ...props }) => {
   if (Object.keys(Feather.glyphMap).includes(name))

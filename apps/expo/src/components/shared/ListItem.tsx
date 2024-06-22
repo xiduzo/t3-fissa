@@ -1,3 +1,5 @@
+import { theme } from "@fissa/tailwind-config";
+import { cva } from "@fissa/utils";
 import { useEffect, useRef, type FC } from "react";
 import {
   Animated,
@@ -6,8 +8,6 @@ import {
   type TouchableWithoutFeedbackProps,
   type ViewProps,
 } from "react-native";
-import { theme } from "@fissa/tailwind-config";
-import { cva } from "@fissa/utils";
 
 import { Image } from "./Image";
 import { Typography } from "./Typography";
@@ -116,9 +116,9 @@ export const ListItem: FC<Props> = ({
 export type ListItemProps = Props;
 
 interface Props extends TouchableWithoutFeedbackProps, ViewProps {
-  imageUri?: string;
+  imageUri?: string | null;
   title: string;
-  subtitle: string | boolean;
+  subtitle: string | number | boolean;
   subtitlePrefix?: JSX.Element | null;
   extra?: JSX.Element | null;
   end?: JSX.Element | null;

@@ -67,6 +67,8 @@ const HeaderRight = () => {
     <View className="flex-row">
       <SpeakerButton />
       <View className="mx-3" />
+      <FissaMembersButton />
+      <View className="mx-3" />
       <Settings />
     </View>
   );
@@ -173,3 +175,22 @@ const SpeakerButton = () => {
     </>
   );
 };
+
+const FissaMembersButton = () => {
+  const { pin } = useGlobalSearchParams();
+  const { push } = useRouter()
+
+  const { data } = api.fissa.members.useQuery(String(pin), {
+    enabled: !!pin,
+  });
+
+  return (
+    <View className="relative">
+      <IconButton icon="users" title="DJ ranking" onPress={() => push(`/fissa/${pin}/members`)} />
+      <View className="items-center justify-center w-6 absolute rounded-full -right-4 -top-3" style={{
+      }}>
+        <Typography centered className="text-[10px]">{data?.length}</Typography>
+      </View>
+    </View>
+  )
+}

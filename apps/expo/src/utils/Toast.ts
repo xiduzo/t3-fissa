@@ -5,8 +5,7 @@ import Toast from "react-native-toast-message";
 class NativeToast extends Toaster {
   protected show({ type = "success", message, duration, icon }: ToasterProps) {
     const text2 = icon ?? this.defaultIcon(type);
-    const visibilityTime = duration ?? ToastAndroid.SHORT;
-
+    const visibilityTime = duration ?? 1500;
     switch (Platform.OS) {
       case "ios":
       case "macos":

@@ -70,10 +70,13 @@ export class AuthService extends ServiceWithContext {
 
     let session = sessions[0];
 
+
     if (session && isPast(session.expires)) {
       session = await this.db.session.update({
         where: { id: session.id },
-        data: { expires: addMonths(new Date(), 1) },
+        data: {
+          expires: addMonths(new Date(), 1),
+        },
       });
     }
 
@@ -87,6 +90,9 @@ export class AuthService extends ServiceWithContext {
       data: {
         access_token: tokens.body.access_token,
         expires_at: this.expiresAt(tokens.body.expires_in),
+        user: {
+          update: { image: spotifyUser.body.images?.[0]?.url },
+        }
       },
     });
 
@@ -143,6 +149,7 @@ export class AuthService extends ServiceWithContext {
           create: {
             email: spotifyUser.email,
             name: spotifyUser.display_name,
+            image: spotifyUser.images?.[0]?.url,
             sessions: {
               create: {
                 expires: addMonths(new Date(), 1),

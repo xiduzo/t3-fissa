@@ -149,6 +149,21 @@ export class FissaService extends ServiceWithContext {
     await this.stopFissa(pin, fissa.by.accounts[0].access_token);
   };
 
+  members = async (pin: string) => {
+    return this.db.userInFissa.findMany({
+      where: { pin },
+      select: {
+        points: true,
+        user: {
+          select: {
+            name: true,
+            image: true
+          }
+        }
+      },
+    });
+  }
+
   playNextTrack = async (pin: string, forceToPlay = false) => {
     const fissaDetails = await this.getFissaDetailedInformation(pin);
     const { by, tracks, currentlyPlaying, expectedEndTime } = fissaDetails;
