@@ -38,7 +38,7 @@ export class VoteService extends ServiceWithContext {
       })
 
       if (track.userId && track.userId !== userId) {
-        await this.badgeService.voted(vote, track.userId)
+        await this.badgeService.voted(voteWeight, track.userId)
         await transaction.userInFissa.update({
           where: { pin_userId: { pin, userId: track.userId } },
           data: { points: { increment: voteWeight } }

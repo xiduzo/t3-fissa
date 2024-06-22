@@ -20,7 +20,7 @@ const Index = () => {
   }, [signOut, replace])
 
   return (
-    <PageTemplate fullScreen className="p-6 pb-8">
+    <PageTemplate fullScreen className="p-6 pb-4">
       <Stack.Screen
         options={{
           headerShown: true,

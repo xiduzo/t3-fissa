@@ -103,14 +103,24 @@ export class FissaService extends ServiceWithContext {
   };
 
   skipTrack = async (pin: string, userId: string) => {
-    const fissa = await this.byId(pin, userId);
+    await this.db.$transaction(async transaction => {
+      const fissa = await this.byId(pin, userId);
 
-    if (fissa.userId !== userId) throw new NotTheHost();
-    if (!fissa.currentlyPlayingId) throw new FissaIsPaused();
+      if (fissa.userId !== userId) throw new NotTheHost();
+      if (!fissa.currentlyPlayingId) throw new FissaIsPaused();
 
-    await this.db.track.update({
-      where: { pin_trackId: { pin, trackId: fissa.currentlyPlayingId } },
-      data: { totalScore: { increment: EarnedPoints.SkipTrack }, score: 0 },
+      const track = await transaction.track.update({
+        where: { pin_trackId: { pin, trackId: fissa.currentlyPlayingId } },
+        data: { totalScore: { increment: EarnedPoints.SkipTrack }, score: 0 },
+      })
+
+      if (track.userId) {
+        await transaction.userInFissa.update({
+          where: { pin_userId: { pin, userId: track.userId } },
+          data: { points: { increment: EarnedPoints.SkipTrack } },
+        })
+        await this.badgeService.pointsEarned(track.userId, EarnedPoints.SkipTrack)
+      }
     })
 
     return this.playNextTrack(pin, true);
@@ -245,6 +255,7 @@ export class FissaService extends ServiceWithContext {
             where: { pin_userId: { pin, userId: currentlyPlaying.by.userId } },
             data: { points: { increment: EarnedPoints.PlayedTrack } }
           })
+          await this.badgeService.pointsEarned(currentlyPlaying.by.userId, EarnedPoints.PlayedTrack)
         }
       }
 

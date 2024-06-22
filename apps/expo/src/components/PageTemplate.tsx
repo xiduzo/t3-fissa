@@ -24,7 +24,7 @@ const pageTemplate = cva("m-auto h-full w-full justify-between", {
      */
     fullScreen: {
       true: "max-w-screen-2xl",
-      false: "p-6 pb-8 max-w-lg",
+      false: "p-6 pb-4 max-w-lg",
     },
   },
   defaultVariants: {

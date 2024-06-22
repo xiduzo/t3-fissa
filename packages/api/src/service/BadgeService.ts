@@ -103,16 +103,28 @@ export class BadgeService extends ServiceWithContext {
           update: { score: { increment: 1 } }
         })
 
-        if (forUser) {
+        if (forUser && forUser !== userId) {
           const forName = vote > 0 ? BADGE.UP_VOTES_RECEIVED : BADGE.DOWN_VOTES_RECEIVED
           await transaction.badges.upsert({
             where: { userId_name: { userId: forUser, name: forName } },
             create: { userId: forUser, name: forName, score: 1 },
             update: { score: { increment: 1 } }
           })
-
+          await this.pointsEarned(forUser, vote)
         }
       })
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  async pointsEarned(userId: string, amount: number) {
+    try {
+      await this.db.badges.upsert(({
+        where: { userId_name: { userId, name: BADGE.POINTS_EARNED } },
+        create: { userId, name: BADGE.POINTS_EARNED, score: amount },
+        update: { score: { increment: amount } }
+      }))
     } catch (error) {
       console.warn(error)
     }
