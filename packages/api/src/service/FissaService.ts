@@ -96,7 +96,7 @@ export class FissaService extends ServiceWithContext {
         create: { pin, userId },
         update: {},
       });
-      await this.badgeService.joinedFissa()
+      await this.badgeService.joinedFissa(pin)
     }
 
     return fissa;

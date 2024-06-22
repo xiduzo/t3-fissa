@@ -34,12 +34,22 @@ export class BadgeService extends ServiceWithContext {
     }
   }
 
-  async joinedFissa() {
+  async joinedFissa(pin: string) {
     const userId = this.session?.user.id
     if (!userId) return
 
     try {
       await this.db.$transaction(async transaction => {
+        const fissa = await transaction.fissa.findUnique({
+          where: { pin },
+          select: { by: { select: { accounts: { select: { userId: true } } } } }
+        })
+
+        if (fissa?.by?.accounts[0]?.userId === userId) {
+          return
+        }
+
+
         const point = await transaction.badges.findUnique({
           where: { userId_name: { userId, name: BADGE.FISSAS_JOINED } }
         })
