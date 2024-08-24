@@ -1,7 +1,7 @@
+import { AnimationSpeed } from "@fissa/utils";
+import { selectionAsync } from "expo-haptics";
 import { memo, useCallback, useEffect, useRef, type FC } from "react";
 import { Animated, Dimensions, type LayoutChangeEvent } from "react-native";
-import { selectionAsync } from "expo-haptics";
-import { AnimationSpeed } from "@fissa/utils";
 
 import { ListItem, type ListItemProps } from "./ListItem";
 
@@ -49,7 +49,7 @@ export const TrackListItem: FC<Props> = memo(
           {...props}
           title={track.name}
           subtitle={track.artists.map((artist) => artist.name).join(", ")}
-          imageUri={track.album.images[0]?.url}
+          imageUri={track.album.images?.[0]?.url}
         />
       </Animated.View>
     );

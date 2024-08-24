@@ -9,7 +9,7 @@ export const PlaylistListItem: FC<Props> = ({ playlist, ...props }) => {
       {...props}
       title={playlist.name}
       subtitle={`${playlist.owner?.display_name} • ${playlist.tracks.total} songs`}
-      imageUri={playlist.images[0]?.url}
+      imageUri={playlist.images?.[0]?.url}
     />
   );
 };
