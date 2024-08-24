@@ -1,18 +1,18 @@
 import { type Fissa, type Track } from "@fissa/db";
 import {
-  addMilliseconds,
-  biasSort,
-  differenceInMilliseconds,
-  FissaIsPaused,
-  ForceStopFissa,
-  NoNextTrack,
-  NotAbleToAccessSpotify,
-  NotTheHost,
-  randomize,
-  sleep,
-  sortFissaTracksOrder,
-  UnableToCreateFissa,
-  type SpotifyService,
+    addMilliseconds,
+    biasSort,
+    differenceInMilliseconds,
+    FissaIsPaused,
+    ForceStopFissa,
+    NoNextTrack,
+    NotAbleToAccessSpotify,
+    NotTheHost,
+    randomize,
+    sleep,
+    sortFissaTracksOrder,
+    UnableToCreateFissa,
+    type SpotifyService,
 } from "@fissa/utils";
 
 import { ServiceWithContext, type Context } from "../utils/context";
@@ -156,6 +156,7 @@ export class FissaService extends ServiceWithContext {
         points: true,
         user: {
           select: {
+            id: true,
             name: true,
             image: true
           }

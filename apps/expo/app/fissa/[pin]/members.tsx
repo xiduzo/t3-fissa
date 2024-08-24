@@ -26,10 +26,12 @@ const Members = () => {
       />
       <View className="h-full w-full">
         <FlashList
-          estimatedItemSize={48}
+          estimatedItemSize={80}
+          keyExtractor={({ user }) => user.name ?? user.id}
           data={data}
           renderItem={({ item }) => (
             <ListItem
+              className="my-3"
               imageUri={item.user.image}
               title={item.user.name ?? "Anonymous"}
               subtitle={`${item.points} points`}
