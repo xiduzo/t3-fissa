@@ -12,10 +12,10 @@ export function JoinAFissa() {
 
   const amount = useMemo(() => {
     if(data && data > 0) {
-      return data * 4
+      return data
     }
 
-    return Math.floor(Math.random() * 3) + 3
+    return Math.ceil(Math.random() * 3)
   }, [data])
 
   const prefix = useMemo(() => {
