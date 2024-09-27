@@ -26,6 +26,10 @@ export class FissaService extends ServiceWithContext {
     super(ctx);
   }
 
+  activeFissasCount = async () => {
+    return this.db.fissa.count({ where: { currentlyPlayingId: { not: null } } });
+  };
+
   activeFissas = async () => {
     return this.db.fissa.findMany({
       where: { currentlyPlayingId: { not: null } },
