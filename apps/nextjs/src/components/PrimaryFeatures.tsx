@@ -195,7 +195,7 @@ function UpAndDownVote(props: ScreenProps) {
         {...(props.animated ? { ...bodyAnimation, custom: props.custom } : {})}
       >
         <section className='absolute inset-0 flex items-end z-10' style={{backgroundColor: theme[900] + '70'}}>
-          <section className='w-full rounded-t-3xl p-4 md:pb-8 pb-40 bg-gradient-to-br' style={{backgroundColor: theme[500]}}>
+          <section className='w-full rounded-t-3xl p-4 md:pb-8 pb-36 bg-gradient-to-br' style={{backgroundColor: theme[500]}}>
             <article className='text-white flex justify-between space-x-2 items-center'>
                 <section className='flex space-x-3 items-center'>
                   <Image className='rounded-md' src="https://i.scdn.co/image/ab67616d00004851abe13c3228acc0aa278fa4dc" alt="" width={60} height={60} />
