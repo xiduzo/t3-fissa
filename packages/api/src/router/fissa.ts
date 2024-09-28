@@ -17,6 +17,10 @@ const sync = createTRPCRouter({
 });
 
 export const fissaRouter = createTRPCRouter({
+  activeFissaCount: publicProcedure.query(({ ctx }) => {
+    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
+    return service.activeFissasCount();
+  }),
   skipTrack: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
     const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
     return service.skipTrack(input, ctx.session.user.id);

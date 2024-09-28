@@ -66,3 +66,4 @@ const config = {
 
 module.exports = config;
 module.exports.theme = theme;
+module.exports.themes = themes

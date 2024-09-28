@@ -1,8 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useRef } from "react";
+import { Button } from "~/components/Button";
+import { Container } from "~/components/Container";
 
 import { Layout } from "~/components/Layout";
 import { toast } from "~/components/Toast";
@@ -12,6 +13,7 @@ import { api } from "~/utils/api";
 const JoinFissa: NextPage = () => {
   const { query } = useRouter();
   const { theme } = useTheme();
+  console.log(theme)
   const shown = useRef(false);
   const router = useRouter();
 
@@ -37,38 +39,30 @@ const JoinFissa: NextPage = () => {
         <link rel="icon" href="/icon.png" />
       </Head>
       <Layout>
-        <section className="mt-32 space-y-16 text-center">
-          <h1 className="text-center text-3xl font-bold">Join the Fissa!</h1>
-          <p>
-            You have been invited to join Fissa{" "}
-            <strong
-              style={{
-                color: theme["500"],
-              }}
-            >
-              {query.pin}
-            </strong>
-            , become the DJ you have always dreamt to be.
-          </p>
-          <div className="flex flex-col items-center space-y-8">
-            <a href="https://apps.apple.com/us/app/fissa-houseparty/id1632218985?itsct=apps_box_badge&itscg=30200">
-              <Image
-                className="p-3.5"
-                width={192}
-                height={108}
-                src="https://apple-resources.s3.amazonaws.com/media-badges/download-on-the-app-store/black/en-us.svg"
-                alt="Download on the App Store"
-              />
-            </a>
-            <a href="https://play.google.com/store/apps/details?id=com.fissa&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1">
-              <Image
-                width={192}
-                height={108}
-                alt="Get it on Google Play"
-                src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-              />
-            </a>
-          </div>
+        <section
+          id="get-free-shares-today"
+          className="relative overflow-hidden py-48 sm:py-64"
+          style={{ backgroundColor: theme[900] }}
+        >
+          <Container className="relative">
+            <div className="mx-auto max-w-md sm:text-center">
+              <h2 className="text-3xl font-medium tracking-tight sm:text-4xl">
+                You have been invited to join Fissa {query.pin},
+              </h2>
+              <p className="mt-4 text-lg">
+                become the DJ you have always dreamt to be.
+              </p>
+                <Button
+                  className="mt-8"
+                  style={{ backgroundColor: theme[500], color: theme[900] }}
+                  onClick={() => {
+                    window.location.replace(`com.fissa://fissa/${query.pin}`);
+                  }}
+                >
+                Join Fissa {query.pin}
+                </Button>
+            </div>
+          </Container>
         </section>
       </Layout>
     </>

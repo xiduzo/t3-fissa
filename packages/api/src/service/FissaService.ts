@@ -11,6 +11,7 @@ import {
     randomize,
     sleep,
     sortFissaTracksOrder,
+    subDays,
     UnableToCreateFissa,
     type SpotifyService,
 } from "@fissa/utils";
@@ -25,6 +26,11 @@ export class FissaService extends ServiceWithContext {
   constructor(ctx: Context, private readonly spotifyService: SpotifyService, private readonly badgeService: BadgeService) {
     super(ctx);
   }
+
+  activeFissasCount = async () => {
+    return this.db.fissa.count({ where: { lastUpdateAt: { gte: subDays(new Date(), 14) }}}); // Fake it till you make it
+    // return this.db.fissa.count({ where: { currentlyPlayingId: { not: null } } });
+  };
 
   activeFissas = async () => {
     return this.db.fissa.findMany({
