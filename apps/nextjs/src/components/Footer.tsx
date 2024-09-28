@@ -15,8 +15,8 @@ export function Footer() {
         <div className="flex flex-col items-start justify-between gap-y-12 pb-6 pt-16 lg:flex-row lg:items-center lg:py-16">
           <div className='flex-grow'>
             <div className="flex items-center">
-              <Logomark className="h-10 w-10 flex-none rounded-md" />
-              <div className="ml-4">
+              <Logomark className="h-10 w-10 flex-none rounded-md" aria-hidden="true" />
+              <div className="ml-4" aria-label='Fissa, everyone can be a DJ.'>
                 <p className="text-base font-semibold">Fissa</p>
                 <p className="mt-1 text-sm">Everyone can be a DJ.</p>
               </div>

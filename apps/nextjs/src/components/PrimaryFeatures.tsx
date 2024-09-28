@@ -305,18 +305,21 @@ function FeaturesDesktop() {
                 style={{ backgroundColor: theme[900] }}
               />
             )}
-            <div className="relative z-10 p-8">
-              <feature.icon className="h-8 w-8  transition-all duration-150 delay-150" style={{ color: featureIndex === selectedIndex ? theme[100] : theme[900] }} />
-                <h3 className="mt-6 text-lg font-semibold transition-all duration-150 delay-150" style={{ color: featureIndex === selectedIndex ? theme[100] : theme[900] }}>
-                <Tab className="text-left ui-not-focus-visible:outline-none">
-                  <span className="absolute inset-0 rounded-2xl" />
-                  {feature.name}
-                </Tab>
-              </h3>
-              <p className="mt-2 text-sm transition-all duration-150 delay-150" style={{ color: featureIndex === selectedIndex ? theme[100] : theme[900] }}>
-                {feature.description}
-              </p>
-            </div>
+            <Tab className="text-left ui-not-focus-visible:outline-none w-full" onMouseOver={() => {
+              setSelectedIndex(featureIndex)
+            }}>
+              <div className="relative z-10 p-8">
+                <feature.icon className="h-8 w-8  transition-all duration-150 delay-150" style={{ color: featureIndex === selectedIndex ? theme[100] : theme[900] }} />
+                  <h3 className="mt-6 text-lg font-semibold transition-all duration-150 delay-150" style={{ color: featureIndex === selectedIndex ? theme[100] : theme[900] }}>
+
+                    <span className="absolute inset-0 rounded-2xl" />
+                    {feature.name}
+                </h3>
+                <p className="mt-2 text-sm transition-all duration-150 delay-150" style={{ color: featureIndex === selectedIndex ? theme[100] : theme[900] }}>
+                  {feature.description}
+                </p>
+              </div>
+            </Tab>
           </div>
         ))}
       </TabList>
@@ -451,7 +454,7 @@ export function PrimaryFeatures() {
   return (
     <section
       id="features"
-      aria-label="Features for investing all your money"
+      aria-label="Features of Fissa"
       className="py-20 sm:py-32"
       style={{ backgroundColor: theme['100'] }}
     >
@@ -461,7 +464,7 @@ export function PrimaryFeatures() {
             A collaborative and democratic playlist
           </h2>
           <p className="mt-2 text-lg" style={{ color: theme['900'] + '90'}}>
-            Powered by Spotify, controlled by you.<br/>Host a Fissa and let the crowd decide what to play next!
+            Powered by Spotify, controlled by you.<br aria-hidden="true"/>Host a Fissa and let the crowd decide what to play next!
           </p>
         </div>
       </Container>

@@ -9,8 +9,9 @@ export function AppStoreLink() {
       className="flex items-center justify-center"
     >
       <Image
+        aria-hidden="true"
         width={192}
-        height={108}
+        height={75}
         src="https://apple-resources.s3.amazonaws.com/media-badges/download-on-the-app-store/black/en-us.svg"
         alt="Download on the App Store"
       />

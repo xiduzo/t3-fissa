@@ -4,7 +4,7 @@ import { Container } from './Container'
 const faqs = [
   [
     {
-      question: 'Why shouldn\'t I host a Spotify jam istead?',
+      question: 'Why shouldn\'t I host a Spotify jam instead?',
       answer:
         'Fissa does not require you to be on the same network to jam. Besides, Fissa allows you to vote on the next song, allowing you to skip those bad songs on top of the queue.',
     },
@@ -50,7 +50,7 @@ const faqs = [
     {
       question: 'Fissa is awesome!',
       answer:
-        'Not realy a question, but thank you. You are awesome too!',
+        'Not realy a question, but thank you. You are awesome too ♥️!',
     },
   ],
 ]

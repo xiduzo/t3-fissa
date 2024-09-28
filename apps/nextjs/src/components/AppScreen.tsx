@@ -9,7 +9,7 @@ export function AppScreen({
   ...props
 }: React.ComponentPropsWithoutRef<'div'>) {
   return (
-    <div className={clsx('flex flex-col', className)} {...props}>
+    <div className={clsx('flex flex-col', className)} {...props} aria-hidden="true">
       <div className="text-white flex justify-between px-4 pt-2">
         <h1 className='text-xl font-bold'>Fissa 1994</h1>
         <Settings />
