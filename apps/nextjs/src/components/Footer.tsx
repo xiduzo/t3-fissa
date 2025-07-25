@@ -27,7 +27,7 @@ export function Footer() {
           </div>
           <div className="flex flex-col justify-center lg:items-end items-center w-full lg:w-auto">
             <AppStoreLink />
-            <PlayStoreLink />
+            <div className='lg:-mr-3'><PlayStoreLink /></div>
           </div>
         </div>
         <div className="flex flex-col items-center border-t border-gray-200 pb-12 pt-8 md:flex-row-reverse md:justify-between md:pt-6">

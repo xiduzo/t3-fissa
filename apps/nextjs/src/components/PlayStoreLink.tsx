@@ -12,6 +12,7 @@ export function PlayStoreLink() {
         aria-hidden="true"
         width={192}
         height={75}
+        // className="-mr-5"
         src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
         alt="Get it on Google Play"
       />

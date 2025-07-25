@@ -5,7 +5,6 @@ import {
   motion,
   type MotionProps,
   type Variant,
-  type Variants,
 } from 'framer-motion'
 import Image from 'next/image'
 import { Fragment, useEffect, useRef, useState } from 'react'
@@ -49,12 +48,6 @@ const features = [
     screen: TheFissaNeverStops,
   },
 ]
-
-const headerAnimation: Variants = {
-  initial: { opacity: 0, transition: { duration: 0.3 } },
-  animate: { opacity: 1, transition: { duration: 0.3, delay: 0.3 } },
-  exit: { opacity: 0, transition: { duration: 0.3 } },
-}
 
 const maxZIndex = 2147483647
 

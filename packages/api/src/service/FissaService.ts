@@ -294,9 +294,14 @@ export class FissaService extends ServiceWithContext {
     if (!(await playing)) {
       // We wanted to play a track but something went wrong
       // Most likely the track is not available in the country
-      await this.db.track.delete({
-        where: { pin_trackId: { pin, trackId } },
-      })
+      try {
+        await this.db.track.delete({
+          where: { pin_trackId: { pin, trackId } },
+        })
+      } catch {
+        console.warn("something went wrong deleting track", { pin, trackId })
+      }
+
       // TODO: we should notifiy the Fissa about deletion of this track?
       return this.playNextTrack(pin, true);
     }

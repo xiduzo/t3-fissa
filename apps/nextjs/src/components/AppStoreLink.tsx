@@ -10,9 +10,9 @@ export function AppStoreLink() {
     >
       <Image
         aria-hidden="true"
-        width={192}
-        height={75}
-        src="https://apple-resources.s3.amazonaws.com/media-badges/download-on-the-app-store/black/en-us.svg"
+        width={150}
+        height={60}
+        src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
         alt="Download on the App Store"
       />
     </Link>
