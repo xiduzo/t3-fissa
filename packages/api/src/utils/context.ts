@@ -1,6 +1,5 @@
 import { getSession, type Session } from "@fissa/auth";
-import { prisma } from "@fissa/db";
-import { type PrismaClient } from "@prisma/client";
+import { db, type DB } from "@fissa/db";
 import { type inferAsyncReturnType } from "@trpc/server";
 import { type FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 
@@ -12,7 +11,7 @@ export type CreateContextOptions = {
 export const createContextInner = async (opts: CreateContextOptions) => {
   return Promise.resolve({
     ...opts,
-    database: prisma,
+    database: db,
   });
 };
 
@@ -28,7 +27,7 @@ export const createContext = async (opts?: FetchCreateContextFnOptions) => {
 export type Context = inferAsyncReturnType<typeof createContext>;
 
 export abstract class ServiceWithContext {
-  protected db: PrismaClient;
+  protected db: DB;
   protected session: Session | null;
 
   constructor(ctx: Context) {

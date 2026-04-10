@@ -1,17 +1,25 @@
-import { PrismaClient } from "@prisma/client";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema";
 
-export * from "@prisma/client";
+export * from "./schema";
+export type { InferSelectModel } from "drizzle-orm";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+import type { InferSelectModel } from "drizzle-orm";
+import { fissas, tracks } from "./schema";
+export type Fissa = InferSelectModel<typeof fissas>;
+export type Track = InferSelectModel<typeof tracks>;
 
-const log = ["error"]
+const client = postgres(process.env.DATABASE_URL!);
 
-if (process.env.NODE_ENV === "development") {
-  log.push("warn")
-  // log.push("query")
-}
+const createDb = () => drizzle(client, { schema });
 
-// @ts-expect-error log type
-export const prisma = globalForPrisma.prisma || new PrismaClient({ log });
+type DrizzleDB = ReturnType<typeof createDb>;
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+const globalForDb = globalThis as unknown as { db: DrizzleDB };
+
+export const db: DrizzleDB = globalForDb.db ?? createDb();
+
+if (process.env.NODE_ENV !== "production") globalForDb.db = db;
+
+export type DB = DrizzleDB;

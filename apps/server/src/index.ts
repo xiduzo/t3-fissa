@@ -7,9 +7,7 @@ import { logger } from "hono/logger";
 import { Auth, authConfig } from "@fissa/auth";
 import { appRouter, createTRPCContext } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db } from "@fissa/db";
 const app = new Hono();
 
 app.use("*", logger());
@@ -47,7 +45,7 @@ serve({ fetch: app.fetch, port });
 // ---------------------------------------------------------------------------
 
 const serviceCaller = appRouter.createCaller({
-  database: prisma,
+  database: db,
   session: null,
   headers: new Headers({ authorization: process.env.NEXTAUTH_SECRET ?? "" }),
 });

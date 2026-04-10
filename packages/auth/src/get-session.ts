@@ -1,4 +1,5 @@
-import { prisma } from "@fissa/db";
+import { db, sessions } from "@fissa/db";
+import { eq } from "drizzle-orm";
 
 const SESSION_COOKIE = "next-auth.session-token";
 const SECURE_SESSION_COOKIE = "__Secure-next-auth.session-token";
@@ -14,9 +15,10 @@ export const getSession = async (req: Request) => {
 
   const sessionToken = cookies[SECURE_SESSION_COOKIE] ?? cookies[SESSION_COOKIE];
   if (sessionToken) {
-    const record = await prisma.session.findUnique({
-      where: { sessionToken },
-      select: { user: true, expires: true },
+    const record = await db.query.sessions.findFirst({
+      where: eq(sessions.sessionToken, sessionToken),
+      columns: { expires: true },
+      with: { user: true },
     });
 
     if (record && record.expires > new Date()) {
@@ -39,9 +41,10 @@ const expoHackServerSession = async (req: Request) => {
   const authHeader = req.headers.get("authorization");
   if (!authHeader) return null;
 
-  const record = await prisma.session.findUnique({
-    where: { sessionToken: authHeader },
-    select: { user: true, expires: true },
+  const record = await db.query.sessions.findFirst({
+    where: eq(sessions.sessionToken, authHeader),
+    columns: { expires: true },
+    with: { user: true },
   });
 
   if (!record) return null;

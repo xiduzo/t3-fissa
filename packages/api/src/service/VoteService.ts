@@ -1,3 +1,6 @@
+import { tracks, usersInFissas, votes } from "@fissa/db";
+import { and, eq, inArray, sql } from "drizzle-orm";
+
 import { ServiceWithContext, type Context } from "../utils/context";
 import { type BadgeService } from "./BadgeService";
 
@@ -7,70 +10,89 @@ export class VoteService extends ServiceWithContext {
   }
 
   getVotesFromTrack = async (pin: string, trackId: string) => {
-    return this.db.vote.findMany({ where: { pin, trackId } });
-  }
+    return this.db.query.votes.findMany({
+      where: and(eq(votes.pin, pin), eq(votes.trackId, trackId)),
+    });
+  };
 
   getUserVote = async (pin: string, trackId: string, userId: string) => {
-    return this.db.vote.findUnique({ where: { trackId_userId_pin: { pin, trackId, userId } } });
+    return this.db.query.votes.findFirst({
+      where: and(eq(votes.pin, pin), eq(votes.trackId, trackId), eq(votes.userId, userId)),
+    });
   };
 
   getVotesByFissa = async (pin: string) => {
-    const votes = await this.db.vote.findMany({ where: { pin } });
+    const allVotes = await this.db.query.votes.findMany({
+      where: eq(votes.pin, pin),
+    });
 
-    return votes.reduce(
+    return allVotes.reduce(
       (acc, { trackId, vote }) => acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
       new Map<string, number>(),
     );
   };
 
   createVote = async (pin: string, trackId: string, vote: number, userId: string) => {
-    return this.db.$transaction(async (transaction) => {
-      const previousVote = await transaction.vote.findUnique({
-        where: { trackId_userId_pin: { pin, trackId, userId } }
-      })
+    return this.db.transaction(async (tx) => {
+      const previousVote = await tx.query.votes.findFirst({
+        where: and(eq(votes.pin, pin), eq(votes.trackId, trackId), eq(votes.userId, userId)),
+      });
 
-      // Get the actual vote weight based on the previous vote
-      const voteWeight = previousVote ? vote - previousVote.vote : vote
+      const voteWeight = previousVote ? vote - previousVote.vote : vote;
 
-      const track = await transaction.track.update({
-        where: { pin_trackId: { pin, trackId } },
-        data: { score: { increment: voteWeight }, totalScore: { increment: voteWeight }, hasBeenPlayed: false }
-      })
-
-      if (track.userId && track.userId !== userId) {
-        await this.badgeService.voted(voteWeight, track.userId)
-        await transaction.userInFissa.update({
-          where: { pin_userId: { pin, userId: track.userId } },
-          data: { points: { increment: voteWeight } }
+      const [track] = await tx
+        .update(tracks)
+        .set({
+          score: sql`${tracks.score} + ${voteWeight}`,
+          totalScore: sql`${tracks.totalScore} + ${voteWeight}`,
+          hasBeenPlayed: false,
         })
+        .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)))
+        .returning();
+
+      if (track?.userId && track.userId !== userId) {
+        await this.badgeService.voted(voteWeight, track.userId);
+        await tx
+          .update(usersInFissas)
+          .set({ points: sql`${usersInFissas.points} + ${voteWeight}` })
+          .where(and(eq(usersInFissas.pin, pin), eq(usersInFissas.userId, track.userId)));
       }
 
-      return transaction.vote.upsert({
-        where: { trackId_userId_pin: { pin, trackId, userId } },
-        create: { pin, trackId, vote, userId },
-        update: { vote },
-      })
-    })
+      const [result] = await tx
+        .insert(votes)
+        .values({ pin, trackId, vote, userId })
+        .onConflictDoUpdate({
+          target: [votes.trackId, votes.userId, votes.pin],
+          set: { vote },
+        })
+        .returning();
+
+      return result;
+    });
   };
 
   createVotes = async (pin: string, trackIds: string[], vote: number, userId: string) => {
-    return this.db.$transaction(async (transaction) => {
-      await transaction.vote.deleteMany({
-        where: { pin, trackId: { in: trackIds }, userId },
-      });
+    return this.db.transaction(async (tx) => {
+      await tx
+        .delete(votes)
+        .where(and(eq(votes.pin, pin), inArray(votes.trackId, trackIds), eq(votes.userId, userId)));
 
-      await transaction.track.updateMany({
-        data: { score: { increment: vote }, totalScore: { increment: vote }, hasBeenPlayed: false },
-        where: { pin, trackId: { in: trackIds } }
-      })
+      await tx
+        .update(tracks)
+        .set({
+          score: sql`${tracks.score} + ${vote}`,
+          totalScore: sql`${tracks.totalScore} + ${vote}`,
+          hasBeenPlayed: false,
+        })
+        .where(and(eq(tracks.pin, pin), inArray(tracks.trackId, trackIds)));
 
-      return transaction.vote.createMany({
-        data: trackIds.map((trackId) => ({ pin, trackId, vote, userId })),
-      });
+      return tx
+        .insert(votes)
+        .values(trackIds.map((trackId) => ({ pin, trackId, vote, userId })));
     });
   };
 
   resetVotes = async (pin: string, trackId: string) => {
-    return this.db.vote.deleteMany({ where: { pin, trackId } })
-  }
+    return this.db.delete(votes).where(and(eq(votes.pin, pin), eq(votes.trackId, trackId)));
+  };
 }

@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "types": ["node", "@total-typescript/ts-reset"]
   },
   "include": ["src", "index.ts", "transformer.ts"]

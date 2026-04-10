@@ -1,12 +1,17 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import type { AuthConfig } from "@auth/core/types";
 import Spotify from "@auth/core/providers/spotify";
-import { prisma } from "@fissa/db";
+import { db, accounts, sessions, users, verificationTokens } from "@fissa/db";
 
 export const authConfig: AuthConfig = {
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
-  adapter: PrismaAdapter(prisma),
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  }),
   providers: [
     Spotify({
       clientId: process.env.SPOTIFY_CLIENT_ID ?? "NO_SPOTIFY_CLIENT_ID",
