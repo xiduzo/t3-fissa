@@ -64,7 +64,7 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
           url: `${getBaseUrl()}/api/trpc`,
           headers: async () => {
             return {
-              authorization: (await getValueFor()) ?? "",
+              authorization: `Bearer ${(await getValueFor()) ?? ""}`,
             };
           },
         }),

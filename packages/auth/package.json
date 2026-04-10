@@ -11,8 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@auth/core": "^0.34.2",
-    "@auth/drizzle-adapter": "^1.4.0",
+    "better-auth": "^1.2.7",
     "@fissa/db": "*"
   },
   "devDependencies": {

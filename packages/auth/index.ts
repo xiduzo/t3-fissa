@@ -1,6 +1,5 @@
-export { authConfig } from "./src/auth-options";
+export { auth } from "./src/auth";
 export { getSession } from "./src/get-session";
-export { Auth } from "@auth/core";
 
 export type Session = {
   expires: string;

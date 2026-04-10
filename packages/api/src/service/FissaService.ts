@@ -48,10 +48,10 @@ export class FissaService extends ServiceWithContext {
 
     const account = await this.db.query.accounts.findFirst({
       where: (a, { eq }) => eq(a.userId, userId),
-      columns: { access_token: true },
+      columns: { accessToken: true },
     });
 
-    if (!account?.access_token) throw new NotAbleToAccessSpotify();
+    if (!account?.accessToken) throw new NotAbleToAccessSpotify();
 
     await this.db.delete(fissas).where(eq(fissas.userId, userId));
 
@@ -88,10 +88,10 @@ export class FissaService extends ServiceWithContext {
     if (!fissa) throw new UnableToCreateFissa("No unique pin found");
 
     if (trackList.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-      await this.addRecommendedTracks(fissa.pin, trackList, account.access_token);
+      await this.addRecommendedTracks(fissa.pin, trackList, account.accessToken);
     }
 
-    await this.playTrack(fissa, trackList[0] as Track, account.access_token);
+    await this.playTrack(fissa, trackList[0] as Track, account.accessToken);
     await this.badgeService.fissaCreated();
 
     return fissa;
@@ -168,16 +168,16 @@ export class FissaService extends ServiceWithContext {
       with: {
         by: {
           columns: {},
-          with: { accounts: { columns: { access_token: true }, limit: 1 } },
+          with: { accounts: { columns: { accessToken: true }, limit: 1 } },
         },
       },
     });
 
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
     if (fissa.userId !== userId) throw new NotTheHost();
-    if (!fissa.by.accounts[0]?.access_token) throw new NotAbleToAccessSpotify();
+    if (!fissa.by.accounts[0]?.accessToken) throw new NotAbleToAccessSpotify();
 
-    await this.stopFissa(pin, fissa.by.accounts[0].access_token);
+    await this.stopFissa(pin, fissa.by.accounts[0].accessToken);
   };
 
   members = async (pin: string) => {
@@ -196,12 +196,12 @@ export class FissaService extends ServiceWithContext {
 
     if (!by) throw new NotAbleToAccessSpotify();
 
-    const { access_token } = by;
-    if (!access_token) throw new NotAbleToAccessSpotify();
+    const { accessToken } = by;
+    if (!accessToken) throw new NotAbleToAccessSpotify();
 
     try {
       if (!forceToPlay) {
-        const isPlaying = await this.spotifyService.isStillPlaying(access_token);
+        const isPlaying = await this.spotifyService.isStillPlaying(accessToken);
         if (!isPlaying || !currentlyPlaying?.trackId) throw new ForceStopFissa();
       }
 
@@ -209,15 +209,15 @@ export class FissaService extends ServiceWithContext {
       if (!nextTrack) throw new NoNextTrack();
 
       if (nextTracks?.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-        await this.addRecommendedTracks(pin, biasSort(fissaTracks), access_token);
+        await this.addRecommendedTracks(pin, biasSort(fissaTracks), accessToken);
       }
 
       const timeToPlay = forceToPlay ? new Date() : expectedEndTime;
       await sleep(differenceInMilliseconds(timeToPlay, new Date()));
-      await this.playTrack({ pin }, nextTrack as Track, access_token, currentlyPlaying);
+      await this.playTrack({ pin }, nextTrack as Track, accessToken, currentlyPlaying);
     } catch (e) {
       console.error(e);
-      await this.stopFissa(pin, access_token);
+      await this.stopFissa(pin, accessToken);
     }
   };
 
@@ -249,7 +249,7 @@ export class FissaService extends ServiceWithContext {
         },
         by: {
           columns: {},
-          with: { accounts: { columns: { access_token: true, id: true }, limit: 1 } },
+          with: { accounts: { columns: { accessToken: true, id: true }, limit: 1 } },
         },
         tracks: {
           where: (t, { eq }) => eq(t.hasBeenPlayed, false),

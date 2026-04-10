@@ -41,7 +41,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 const enforceIsTrustedServer = t.middleware(({ next, ctx }) => {
-  if (ctx.headers?.get("authorization") !== process.env.NEXTAUTH_SECRET)
+  if (ctx.headers?.get("authorization") !== process.env.BETTER_AUTH_SECRET)
     throw new TRPCError({ code: "UNAUTHORIZED" });
 
   return next();

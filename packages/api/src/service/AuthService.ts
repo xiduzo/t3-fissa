@@ -52,8 +52,8 @@ export class AuthService extends ServiceWithContext {
       columns: { id: true, email: true },
       with: {
         sessions: {
-          columns: { sessionToken: true, expires: true },
-          orderBy: [desc(sessions.expires)],
+          columns: { token: true, expiresAt: true },
+          orderBy: [desc(sessions.expiresAt)],
           limit: 1,
         },
       },
@@ -66,8 +66,8 @@ export class AuthService extends ServiceWithContext {
         columns: { id: true, email: true },
         with: {
           sessions: {
-            columns: { sessionToken: true, expires: true },
-            orderBy: [desc(sessions.expires)],
+            columns: { token: true, expiresAt: true },
+            orderBy: [desc(sessions.expiresAt)],
             limit: 1,
           },
         },
@@ -78,7 +78,7 @@ export class AuthService extends ServiceWithContext {
 
     return {
       ...tokens.body,
-      session_token: user.sessions[0]?.sessionToken,
+      session_token: user.sessions[0]?.token,
     };
   };
 
@@ -91,8 +91,8 @@ export class AuthService extends ServiceWithContext {
       columns: { id: true },
       with: {
         sessions: {
-          columns: { sessionToken: true, expires: true },
-          orderBy: [desc(sessions.expires)],
+          columns: { token: true, expiresAt: true },
+          orderBy: [desc(sessions.expiresAt)],
           limit: 1,
         },
       },
@@ -102,11 +102,11 @@ export class AuthService extends ServiceWithContext {
 
     let session = user.sessions[0];
 
-    if (session && isPast(session.expires)) {
+    if (session && isPast(session.expiresAt)) {
       const [updated] = await this.db
         .update(sessions)
-        .set({ expires: addMonths(new Date(), 1) })
-        .where(eq(sessions.sessionToken, session.sessionToken))
+        .set({ expiresAt: addMonths(new Date(), 1) })
+        .where(eq(sessions.token, session.token))
         .returning();
       session = updated;
     }
@@ -114,13 +114,13 @@ export class AuthService extends ServiceWithContext {
     await this.db
       .update(accounts)
       .set({
-        access_token: tokens.body.access_token,
-        expires_at: this.expiresAt(tokens.body.expires_in),
+        accessToken: tokens.body.access_token,
+        accessTokenExpiresAt: addSeconds(new Date(), tokens.body.expires_in),
       })
       .where(
         and(
-          eq(accounts.provider, "spotify"),
-          eq(accounts.providerAccountId, spotifyUser.body.id),
+          eq(accounts.providerId, "spotify"),
+          eq(accounts.accountId, spotifyUser.body.id),
         ),
       );
 
@@ -131,7 +131,7 @@ export class AuthService extends ServiceWithContext {
 
     return {
       ...tokens.body,
-      session_token: session?.sessionToken,
+      session_token: session?.token,
     };
   };
 
@@ -144,7 +144,7 @@ export class AuthService extends ServiceWithContext {
           columns: {},
           with: {
             accounts: {
-              columns: { expires_at: true, refresh_token: true },
+              columns: { accessTokenExpiresAt: true, refreshToken: true },
               limit: 1,
             },
           },
@@ -156,12 +156,12 @@ export class AuthService extends ServiceWithContext {
     if (differenceInMinutes(fissa.lastUpdateAt, new Date()) > 20) return;
     if (!fissa.by.accounts[0]) return;
 
-    const { expires_at, refresh_token } = fissa.by.accounts[0];
-    if (!refresh_token) return;
+    const { accessTokenExpiresAt, refreshToken } = fissa.by.accounts[0];
+    if (!refreshToken) return;
 
-    if (differenceInMinutes(expires_at ? new Date(expires_at * 1000) : new Date(), new Date()) >= 20) return;
+    if (differenceInMinutes(accessTokenExpiresAt ?? new Date(), new Date()) >= 20) return;
 
-    return this.refreshToken(refresh_token);
+    return this.refreshToken(refreshToken);
   };
 
   private createAccount = async (
@@ -175,6 +175,7 @@ export class AuthService extends ServiceWithContext {
           email: spotifyUser.email,
           name: spotifyUser.display_name,
           image: spotifyUser.images?.[0]?.url,
+          emailVerified: true,
         })
         .returning();
 
@@ -182,24 +183,20 @@ export class AuthService extends ServiceWithContext {
 
       await tx.insert(sessions).values({
         userId: user.id,
-        sessionToken: crypto.randomUUID(),
-        expires: addMonths(new Date(), 1),
+        token: crypto.randomUUID(),
+        expiresAt: addMonths(new Date(), 1),
       });
 
       await tx.insert(accounts).values({
         userId: user.id,
-        provider: "spotify",
-        providerAccountId: spotifyUser.id,
-        type: "oauth",
-        access_token: tokens.body.access_token,
-        refresh_token: tokens.body.refresh_token,
-        expires_at: this.expiresAt(tokens.body.expires_in),
-        token_type: "Bearer",
+        providerId: "spotify",
+        accountId: spotifyUser.id,
+        accessToken: tokens.body.access_token,
+        refreshToken: tokens.body.refresh_token,
+        accessTokenExpiresAt: addSeconds(new Date(), tokens.body.expires_in),
         scope: tokens.body.scope,
       });
     });
   };
-
-  private expiresAt = (expiresIn: number) =>
-    Math.round(addSeconds(new Date(), expiresIn).getTime() / 1000);
 }
+

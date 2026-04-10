@@ -4,7 +4,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
-import { Auth, authConfig } from "@fissa/auth";
+import { auth } from "@fissa/auth";
 import { appRouter, createTRPCContext } from "@fissa/api";
 import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
 import { db } from "@fissa/db";
@@ -30,9 +30,7 @@ app.all("/api/trpc/*", (c) =>
 );
 
 // Auth (Spotify OAuth)
-app.all("/api/auth/*", (c) =>
-  Auth(c.req.raw, { ...authConfig, basePath: "/api/auth" }),
-);
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.get("/health", (c) => c.json({ ok: true }));
 
@@ -47,7 +45,7 @@ serve({ fetch: app.fetch, port });
 const serviceCaller = appRouter.createCaller({
   database: db,
   session: null,
-  headers: new Headers({ authorization: process.env.NEXTAUTH_SECRET ?? "" }),
+  headers: new Headers({ authorization: process.env.BETTER_AUTH_SECRET ?? "" }),
 });
 
 const SYNC_INTERVAL_MS = 55_000;
