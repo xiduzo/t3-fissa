@@ -3,11 +3,11 @@ import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@fissa/api";
 import { transformer } from "@fissa/api/transformer";
+import { env } from "@fissa/env/client";
 
 export const api = createTRPCReact<AppRouter>();
 
-const getBaseUrl = () =>
-  import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const getBaseUrl = () => env.VITE_API_URL;
 
 export const trpcClient = api.createClient({
   transformer,

@@ -7,6 +7,7 @@ import { logger } from "hono/logger";
 import { auth } from "@fissa/auth";
 import { appRouter, createTRPCContext, FissaSyncOrchestrator } from "@fissa/api";
 import { db } from "@fissa/db";
+import { env } from "@fissa/env";
 
 const app = new Hono();
 
@@ -14,7 +15,7 @@ app.use("*", logger());
 app.use(
   "*",
   cors({
-    origin: [process.env.WEB_URL ?? "http://localhost:5173"],
+    origin: [env.WEB_URL],
     credentials: true,
   }),
 );
@@ -34,9 +35,8 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.get("/health", (c) => c.json({ ok: true }));
 
-const port = Number(process.env.PORT ?? 3000);
-console.info(`[server] listening on port ${port}`);
-serve({ fetch: app.fetch, port });
+console.info(`[server] listening on port ${env.PORT}`);
+serve({ fetch: app.fetch, port: env.PORT });
 
 // ---------------------------------------------------------------------------
 // Orchestration loop
@@ -45,7 +45,7 @@ serve({ fetch: app.fetch, port });
 const serviceCaller = appRouter.createCaller({
   database: db,
   session: null,
-  headers: new Headers({ authorization: process.env.BETTER_AUTH_SECRET ?? "" }),
+  headers: new Headers({ authorization: env.BETTER_AUTH_SECRET }),
 });
 
 const orchestrator = new FissaSyncOrchestrator({

@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "better-auth": "^1.2.7",
-    "@fissa/db": "*"
+    "@fissa/db": "*",
+    "@fissa/env": "*"
   },
   "devDependencies": {
     "@fissa/eslint-config": "*",

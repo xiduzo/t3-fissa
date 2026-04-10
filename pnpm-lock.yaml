@@ -192,6 +192,9 @@ importers:
       '@fissa/db':
         specifier: '*'
         version: link:../../packages/db
+      '@fissa/env':
+        specifier: '*'
+        version: link:../../packages/env
       '@fissa/utils':
         specifier: '*'
         version: link:../../packages/utils
@@ -229,6 +232,9 @@ importers:
       '@fissa/api':
         specifier: '*'
         version: link:../../packages/api
+      '@fissa/env':
+        specifier: '*'
+        version: link:../../packages/env
       '@fissa/tailwind-config':
         specifier: '*'
         version: link:../../packages/config/tailwind
@@ -323,6 +329,9 @@ importers:
       '@fissa/db':
         specifier: '*'
         version: link:../db
+      '@fissa/env':
+        specifier: '*'
+        version: link:../env
       '@fissa/utils':
         specifier: '*'
         version: link:../utils
@@ -360,6 +369,9 @@ importers:
       '@fissa/db':
         specifier: '*'
         version: link:../db
+      '@fissa/env':
+        specifier: '*'
+        version: link:../env
       better-auth:
         specifier: ^1.2.7
         version: 1.6.2(@opentelemetry/api@1.9.1)(@prisma/client@5.13.0(prisma@5.13.0))(drizzle-kit@0.29.1)(drizzle-orm@0.38.4(@opentelemetry/api@1.9.1)(@prisma/client@5.13.0(prisma@5.13.0))(@types/react@18.2.37)(kysely@0.28.15)(postgres@3.4.9)(prisma@5.13.0)(react@18.2.0))(prisma@5.13.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vitest@1.6.0(@types/node@20.12.11)(lightningcss@1.19.0)(terser@5.30.4))
@@ -419,6 +431,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@fissa/env':
+        specifier: '*'
+        version: link:../env
       drizzle-orm:
         specifier: ^0.38.3
         version: 0.38.4(@opentelemetry/api@1.9.1)(@prisma/client@5.13.0(prisma@5.13.0))(@types/react@18.2.37)(kysely@0.28.15)(postgres@3.4.9)(prisma@5.13.0)(react@18.2.0)
@@ -432,6 +447,28 @@ importers:
       drizzle-kit:
         specifier: ^0.29.1
         version: 0.29.1
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/env:
+    dependencies:
+      '@t3-oss/env-core':
+        specifier: ^0.10.1
+        version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@fissa/eslint-config':
+        specifier: '*'
+        version: link:../config/eslint
+      '@types/node':
+        specifier: 20.12.11
+        version: 20.12.11
+      eslint:
+        specifier: 8.57.0
+        version: 8.57.0
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2878,6 +2915,15 @@ packages:
   '@szmarczak/http-timer@5.0.1':
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
+
+  '@t3-oss/env-core@0.10.1':
+    resolution: {integrity: sha512-GcKZiCfWks5CTxhezn9k5zWX3sMDIYf6Kaxy2Gx9YEQftFcz8hDRN56hcbylyAO3t4jQnQ5ifLawINsNgCDpOg==}
+    peerDependencies:
+      typescript: '>=5.0.0'
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   '@tanstack/history@1.161.6':
     resolution: {integrity: sha512-NaOGLRrddszbQj9upGat6HG/4TKvXLvu+osAIgfxPYA+eIvYKv8GKDJOrY2D3/U9MRnKfMWD7bU4jeD4xmqyIg==}
@@ -11445,6 +11491,12 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
+  '@t3-oss/env-core@0.10.1(typescript@5.4.5)(zod@3.23.8)':
+    dependencies:
+      zod: 3.23.8
+    optionalDependencies:
+      typescript: 5.4.5
+
   '@tanstack/history@1.161.6': {}
 
   '@tanstack/query-core@4.36.1': {}
@@ -14821,7 +14873,7 @@ snapshots:
 
   mlly@1.6.1:
     dependencies:
-      acorn: 8.11.3
+      acorn: 8.16.0
       pathe: 1.1.2
       pkg-types: 1.1.0
       ufo: 1.5.3
@@ -16239,7 +16291,7 @@ snapshots:
   terser@5.30.4:
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.11.3
+      acorn: 8.16.0
       commander: 2.20.3
       source-map-support: 0.5.21
 

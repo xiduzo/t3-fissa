@@ -5,6 +5,7 @@ packages:
   - packages/api
   - packages/auth
   - packages/db
+  - packages/env
   - packages/utils
   - packages/test
   - packages/hooks

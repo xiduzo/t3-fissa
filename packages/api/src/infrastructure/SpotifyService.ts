@@ -1,6 +1,7 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
 import { UnableToPlayTrack, sleep } from "@fissa/utils";
+import { env } from "@fissa/env";
 
 import type { ISpotifyService } from "../interfaces";
 
@@ -8,8 +9,8 @@ const TRIES_TO_PLAY = 3;
 
 export class SpotifyService implements ISpotifyService {
   private spotify = new SpotifyWebApi({
-    clientId: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    clientId: env.SPOTIFY_CLIENT_ID,
+    clientSecret: env.SPOTIFY_CLIENT_SECRET,
   });
 
   codeGrant = async (code: string, redirectUri: string) => {

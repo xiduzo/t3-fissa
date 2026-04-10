@@ -16,6 +16,7 @@
     "@fissa/api": "*",
     "@fissa/auth": "*",
     "@fissa/db": "*",
+    "@fissa/env": "*",
     "@fissa/utils": "*",
     "@hono/node-server": "^1.13.7",
     "@trpc/server": "10.21.1",

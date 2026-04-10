@@ -2,10 +2,11 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { bearer } from "better-auth/plugins";
 import { db, users, sessions, accounts, verification } from "@fissa/db";
+import { env } from "@fissa/env";
 
 export const auth = betterAuth({
-  secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+  secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.BETTER_AUTH_URL,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -17,11 +18,11 @@ export const auth = betterAuth({
   }),
   socialProviders: {
     spotify: {
-      clientId: process.env.SPOTIFY_CLIENT_ID ?? "",
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET ?? "",
+      clientId: env.SPOTIFY_CLIENT_ID,
+      clientSecret: env.SPOTIFY_CLIENT_SECRET,
     },
   },
   // bearer() lets the Expo app authenticate via Authorization: Bearer <token>
   plugins: [bearer()],
-  trustedOrigins: [process.env.WEB_URL ?? "http://localhost:5173"],
+  trustedOrigins: [env.WEB_URL],
 });

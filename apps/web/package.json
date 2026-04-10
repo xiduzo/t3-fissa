@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@fissa/api": "*",
+    "@fissa/env": "*",
     "@fissa/tailwind-config": "*",
     "@fissa/utils": "*",
     "@headlessui/react": "^2.1.8",
