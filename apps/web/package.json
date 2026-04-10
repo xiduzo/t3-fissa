@@ -1,0 +1,49 @@
+{
+  "name": "@fissa/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm with-env vite build",
+    "clean": "rm -rf dist .turbo node_modules",
+    "dev": "pnpm with-env vite",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@fissa/api": "*",
+    "@fissa/tailwind-config": "*",
+    "@fissa/utils": "*",
+    "@headlessui/react": "^2.1.8",
+    "@tanstack/react-query": "4.36.1",
+    "@tanstack/react-router": "^1.114.23",
+    "@trpc/client": "10.21.1",
+    "@trpc/react-query": "10.21.1",
+    "@trpc/server": "10.21.1",
+    "framer-motion": "^11.5.6",
+    "lucide-react": "^0.445.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-toastify": "10.0.5",
+    "zod": "3.23.8",
+    "use-debounce": "^10.0.0"
+  },
+  "devDependencies": {
+    "@fissa/eslint-config": "*",
+    "@tanstack/router-plugin": "^1.114.23",
+    "@types/node": "20.12.11",
+    "@types/react": "18.2.37",
+    "@types/react-dom": "18.2.15",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "10.4.19",
+    "dotenv-cli": "7.4.2",
+    "eslint": "8.57.0",
+    "postcss": "8.4.38",
+    "tailwindcss": "3.3.1",
+    "typescript": "5.4.5",
+    "vite": "^5.4.11"
+  }
+}

@@ -28,8 +28,8 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 /**
- * Extend this function when going to production by
- * setting the baseUrl to your production API URL.
+ * Extends this function when going to production by
+ * setting the SERVER_URL to your production API URL.
  */
 const getBaseUrl = () => {
   /**
@@ -37,11 +37,11 @@ const getBaseUrl = () => {
    * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
    * you don't have anything else running on it, or you'd have to change it.
    */
-  const config = Constants.expoConfig as { hostUri?: string; extra?: { vercelUrl?: string } };
+  const config = Constants.expoConfig as { hostUri?: string; extra?: { serverUrl?: string } };
 
   const localhost = config.hostUri?.split(":")[0];
   if (!localhost) {
-    return process.env.VERCEL_URL ?? config.extra?.vercelUrl;
+    return process.env.SERVER_URL ?? config.extra?.serverUrl ?? "http://localhost:3000";
   }
 
   return `http://${localhost}:3000`;

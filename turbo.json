@@ -24,7 +24,7 @@
     },
     "build": {
       "dependsOn": ["^build", "^db:generate"],
-      "outputs": [".next/**", ".expo/**", ".sync/**"]
+      "outputs": [".expo/**", ".sync/**", "dist/**"]
     },
     "lint": {},
     "lint:fix": {},
@@ -49,10 +49,10 @@
     "SPOTIFY_CLIENT_ID",
     "SPOTIFY_CLIENT_SECRET",
     "NEXTAUTH_SECRET",
-    "NEXTAUTH_URL",
     "NODE_ENV",
+    "PORT",
     "SKIP_ENV_VALIDATION",
-    "VERCEL",
-    "VERCEL_URL"
+    "VITE_API_URL",
+    "WEB_URL"
   ]
 }
