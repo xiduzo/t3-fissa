@@ -1,46 +1,42 @@
-import { type Fissa, type Track, fissas, tracks, usersInFissas, votes } from "@fissa/db";
+import { type Fissa, type Track, fissas, tracks, usersInFissas, votes, type DB } from "@fissa/db";
 import {
-    addMilliseconds,
-    biasSort,
-    differenceInMilliseconds,
-    FissaIsPaused,
-    ForceStopFissa,
-    NoNextTrack,
-    NotAbleToAccessSpotify,
-    NotTheHost,
-    randomize,
-    sleep,
-    sortFissaTracksOrder,
-    subDays,
-    UnableToCreateFissa,
-    type SpotifyService,
+  addMilliseconds,
+  biasSort,
+  differenceInMilliseconds,
+  FissaIsPaused,
+  ForceStopFissa,
+  NoNextTrack,
+  NotAbleToAccessSpotify,
+  NotTheHost,
+  randomize,
+  sleep,
+  sortFissaTracksOrder,
+  UnableToCreateFissa,
 } from "@fissa/utils";
-import { and, count, eq, gte, isNotNull, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
+import type { Session } from "@fissa/auth";
 
-import { ServiceWithContext, type Context } from "../utils/context";
+import type { IBadgeService, IFissaRepository, ISpotifyService, ITrackRepository } from "../interfaces";
 import { EarnedPoints } from "../utils/EarnedPoints";
-import { type BadgeService } from "./BadgeService";
 
 export const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
 
-export class FissaService extends ServiceWithContext {
-  constructor(ctx: Context, private readonly spotifyService: SpotifyService, private readonly badgeService: BadgeService) {
-    super(ctx);
-  }
+export class FissaService {
+  constructor(
+    private readonly fissaRepo: IFissaRepository,
+    private readonly trackRepo: ITrackRepository,
+    private readonly spotifyService: ISpotifyService,
+    private readonly badgeService: IBadgeService,
+    private readonly db: DB,
+    private readonly session: Session | null,
+  ) {}
 
-  activeFissasCount = async () => {
-    const result = await this.db
-      .select({ count: count() })
-      .from(fissas)
-      .where(gte(fissas.lastUpdateAt, subDays(new Date(), 14)));
-    return result[0]?.count ?? 0;
+  activeFissasCount = async (): Promise<number> => {
+    return this.fissaRepo.count();
   };
 
   activeFissas = async () => {
-    return this.db.query.fissas.findMany({
-      where: isNotNull(fissas.currentlyPlayingId),
-      columns: { pin: true, expectedEndTime: true },
-    });
+    return this.fissaRepo.findActive();
   };
 
   create = async (trackList: { trackId: string; durationMs: number }[], userId: string) => {
@@ -53,7 +49,7 @@ export class FissaService extends ServiceWithContext {
 
     if (!account?.accessToken) throw new NotAbleToAccessSpotify();
 
-    await this.db.delete(fissas).where(eq(fissas.userId, userId));
+    await this.fissaRepo.deleteByUserId(userId);
 
     let fissa: Fissa | undefined = undefined;
     let tries = 0;
@@ -64,24 +60,19 @@ export class FissaService extends ServiceWithContext {
       if (triedPins.includes(pin)) continue;
 
       try {
-        const [created] = await this.db
-          .insert(fissas)
-          .values({
-            pin,
-            expectedEndTime: addMilliseconds(new Date(), trackList[0].durationMs),
-            userId,
-          })
-          .returning();
+        fissa = await this.fissaRepo.create(
+          pin,
+          userId,
+          addMilliseconds(new Date(), trackList[0].durationMs),
+        );
 
-        if (created) {
-          await this.db
-            .insert(tracks)
-            .values(trackList.map((track) => ({ ...track, userId, pin })));
-          fissa = created;
-        }
+        await this.trackRepo.insertMany(
+          trackList.map((track) => ({ ...track, userId, pin })),
+        );
       } catch {
         tries++;
         triedPins.push(pin);
+        fissa = undefined;
       }
     } while (!fissa && tries < 50);
 
@@ -98,13 +89,7 @@ export class FissaService extends ServiceWithContext {
   };
 
   byId = async (pin: string, userId?: string) => {
-    const fissa = await this.db.query.fissas.findFirst({
-      where: eq(fissas.pin, pin),
-      with: {
-        by: { columns: { email: true } },
-        tracks: { with: { by: { columns: { email: true } } } },
-      },
-    });
+    const fissa = await this.fissaRepo.findByPinWithRelations(pin);
 
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
 
@@ -150,10 +135,7 @@ export class FissaService extends ServiceWithContext {
   };
 
   restart = async (pin: string, userId: string) => {
-    const fissa = await this.db.query.fissas.findFirst({
-      where: eq(fissas.pin, pin),
-      columns: { userId: true },
-    });
+    const fissa = await this.fissaRepo.findByPin(pin);
 
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
     if (fissa.userId !== userId) throw new NotTheHost();
@@ -162,22 +144,14 @@ export class FissaService extends ServiceWithContext {
   };
 
   pause = async (pin: string, userId: string) => {
-    const fissa = await this.db.query.fissas.findFirst({
-      where: eq(fissas.pin, pin),
-      columns: { userId: true },
-      with: {
-        by: {
-          columns: {},
-          with: { accounts: { columns: { accessToken: true }, limit: 1 } },
-        },
-      },
-    });
-
+    const fissa = await this.fissaRepo.findByPin(pin);
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
     if (fissa.userId !== userId) throw new NotTheHost();
-    if (!fissa.by.accounts[0]?.accessToken) throw new NotAbleToAccessSpotify();
 
-    await this.stopFissa(pin, fissa.by.accounts[0].accessToken);
+    const ownerAccount = await this.fissaRepo.findOwnerAccount(pin);
+    if (!ownerAccount?.accessToken) throw new NotAbleToAccessSpotify();
+
+    await this.stopFissa(pin, ownerAccount.accessToken);
   };
 
   members = async (pin: string) => {
@@ -191,7 +165,7 @@ export class FissaService extends ServiceWithContext {
   };
 
   playNextTrack = async (pin: string, forceToPlay = false) => {
-    const fissaDetails = await this.getFissaDetailedInformation(pin);
+    const fissaDetails = await this.fissaRepo.findDetailedForSync(pin);
     const { by, trackList: fissaTracks, currentlyPlaying, expectedEndTime } = fissaDetails;
 
     if (!by) throw new NotAbleToAccessSpotify();
@@ -223,61 +197,11 @@ export class FissaService extends ServiceWithContext {
 
   private stopFissa = async (pin: string, accessToken: string) => {
     try {
-      await this.db
-        .update(fissas)
-        .set({ currentlyPlayingId: null, currentlyPlayingPin: null })
-        .where(eq(fissas.pin, pin));
+      await this.fissaRepo.clearCurrentlyPlaying(pin);
       return this.spotifyService.pause(accessToken);
     } catch (e) {
       console.error(`${pin}, failed stopping fissa`, e);
     }
-  };
-
-  private getFissaDetailedInformation = async (pin: string) => {
-    const data = await this.db.query.fissas.findFirst({
-      where: eq(fissas.pin, pin),
-      columns: { pin: true, expectedEndTime: true },
-      with: {
-        currentlyPlaying: {
-          columns: { trackId: true },
-          with: {
-            by: {
-              columns: {},
-              with: { accounts: { columns: { userId: true }, limit: 1 } },
-            },
-          },
-        },
-        by: {
-          columns: {},
-          with: { accounts: { columns: { accessToken: true, id: true }, limit: 1 } },
-        },
-        tracks: {
-          where: (t, { eq }) => eq(t.hasBeenPlayed, false),
-          columns: {
-            userId: true,
-            hasBeenPlayed: true,
-            trackId: true,
-            score: true,
-            lastUpdateAt: true,
-            totalScore: true,
-            createdAt: true,
-            durationMs: true,
-          },
-        },
-      },
-    });
-
-    if (!data) throw new Error(`Fissa not found: ${pin}`);
-
-    return {
-      ...data,
-      trackList: data.tracks,
-      by: data.by.accounts[0],
-      currentlyPlaying: {
-        ...data.currentlyPlaying,
-        by: data.currentlyPlaying?.by?.accounts[0],
-      },
-    };
   };
 
   private playTrack = async (
@@ -307,11 +231,17 @@ export class FissaService extends ServiceWithContext {
           await tx
             .update(usersInFissas)
             .set({ points: sql`${usersInFissas.points} + ${EarnedPoints.PlayedTrack}` })
-            .where(and(eq(usersInFissas.pin, pin), eq(usersInFissas.userId, currentlyPlaying.by.userId)));
+            .where(
+              and(
+                eq(usersInFissas.pin, pin),
+                eq(usersInFissas.userId, currentlyPlaying.by.userId),
+              ),
+            );
           await this.badgeService.pointsEarned(currentlyPlaying.by.userId, EarnedPoints.PlayedTrack);
         }
       }
 
+      // Update currently playing inside the same transaction for atomicity
       await tx
         .update(fissas)
         .set({
@@ -324,9 +254,7 @@ export class FissaService extends ServiceWithContext {
 
     if (!(await playing)) {
       try {
-        await this.db
-          .delete(tracks)
-          .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)));
+        await this.trackRepo.delete(pin, trackId);
       } catch {
         console.warn("something went wrong deleting track", { pin, trackId });
       }
@@ -354,17 +282,14 @@ export class FissaService extends ServiceWithContext {
       const trackIds = trackList.map(({ trackId }) => trackId);
       const recommendations = await this.spotifyService.getRecommendedTracks(accessToken, trackIds);
 
-      await this.db
-        .insert(tracks)
-        .values(
-          recommendations.map(({ id, duration_ms }) => ({
-            trackId: id,
-            durationMs: duration_ms,
-            userId: this.session?.user.id,
-            pin,
-          })),
-        )
-        .onConflictDoNothing();
+      await this.trackRepo.insertMany(
+        recommendations.map(({ id, duration_ms }) => ({
+          trackId: id,
+          durationMs: duration_ms,
+          userId: this.session?.user.id,
+          pin,
+        })),
+      );
     } catch (e) {
       console.error(`${pin}, failed adding recommended tracks`, e);
     }

@@ -25,13 +25,3 @@ export const createContext = async (opts?: FetchCreateContextFnOptions) => {
 };
 
 export type Context = inferAsyncReturnType<typeof createContext>;
-
-export abstract class ServiceWithContext {
-  protected db: DB;
-  protected session: Session | null;
-
-  constructor(ctx: Context) {
-    this.db = ctx.database;
-    this.session = ctx.session;
-  }
-}

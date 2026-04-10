@@ -1,38 +1,37 @@
-import { tracks, usersInFissas, votes } from "@fissa/db";
+import { tracks, usersInFissas, votes, type DB } from "@fissa/db";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
-import { ServiceWithContext, type Context } from "../utils/context";
-import { type BadgeService } from "./BadgeService";
+import type { IBadgeService, IVoteRepository, IVoteRepository as _IVoteRepository, Vote } from "../interfaces";
 
-export class VoteService extends ServiceWithContext {
-  constructor(ctx: Context, private readonly badgeService: BadgeService) {
-    super(ctx);
-  }
+export class VoteService {
+  constructor(
+    private readonly voteRepo: IVoteRepository,
+    private readonly db: DB,
+    private readonly badgeService: IBadgeService,
+  ) {}
 
-  getVotesFromTrack = async (pin: string, trackId: string) => {
-    return this.db.query.votes.findMany({
-      where: and(eq(votes.pin, pin), eq(votes.trackId, trackId)),
-    });
+  getVotesFromTrack = async (pin: string, trackId: string): Promise<Vote[]> => {
+    return this.voteRepo.findByTrack(pin, trackId);
   };
 
-  getUserVote = async (pin: string, trackId: string, userId: string) => {
-    return this.db.query.votes.findFirst({
-      where: and(eq(votes.pin, pin), eq(votes.trackId, trackId), eq(votes.userId, userId)),
-    });
+  getUserVote = async (pin: string, trackId: string, userId: string): Promise<Vote | undefined> => {
+    return this.voteRepo.findByUser(pin, trackId, userId);
   };
 
-  getVotesByFissa = async (pin: string) => {
-    const allVotes = await this.db.query.votes.findMany({
-      where: eq(votes.pin, pin),
-    });
-
+  getVotesByFissa = async (pin: string): Promise<Map<string, number>> => {
+    const allVotes = await this.voteRepo.findByFissa(pin);
     return allVotes.reduce(
       (acc, { trackId, vote }) => acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
       new Map<string, number>(),
     );
   };
 
-  createVote = async (pin: string, trackId: string, vote: number, userId: string) => {
+  createVote = async (
+    pin: string,
+    trackId: string,
+    vote: number,
+    userId: string,
+  ): Promise<Vote | undefined> => {
     return this.db.transaction(async (tx) => {
       const previousVote = await tx.query.votes.findFirst({
         where: and(eq(votes.pin, pin), eq(votes.trackId, trackId), eq(votes.userId, userId)),
@@ -71,8 +70,13 @@ export class VoteService extends ServiceWithContext {
     });
   };
 
-  createVotes = async (pin: string, trackIds: string[], vote: number, userId: string) => {
-    return this.db.transaction(async (tx) => {
+  createVotes = async (
+    pin: string,
+    trackIds: string[],
+    vote: number,
+    userId: string,
+  ): Promise<void> => {
+    await this.db.transaction(async (tx) => {
       await tx
         .delete(votes)
         .where(and(eq(votes.pin, pin), inArray(votes.trackId, trackIds), eq(votes.userId, userId)));
@@ -86,13 +90,13 @@ export class VoteService extends ServiceWithContext {
         })
         .where(and(eq(tracks.pin, pin), inArray(tracks.trackId, trackIds)));
 
-      return tx
+      await tx
         .insert(votes)
         .values(trackIds.map((trackId) => ({ pin, trackId, vote, userId })));
     });
   };
 
-  resetVotes = async (pin: string, trackId: string) => {
-    return this.db.delete(votes).where(and(eq(votes.pin, pin), eq(votes.trackId, trackId)));
+  resetVotes = async (pin: string, trackId: string): Promise<void> => {
+    await this.db.delete(votes).where(and(eq(votes.pin, pin), eq(votes.trackId, trackId)));
   };
 }

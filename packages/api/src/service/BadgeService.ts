@@ -1,89 +1,59 @@
-import { BADGE, badges, fissas } from "@fissa/db";
+import { BADGE, badges, fissas, type DB } from "@fissa/db";
 import { differenceInHours } from "@fissa/utils";
 import { and, eq, sql } from "drizzle-orm";
+import type { Session } from "@fissa/auth";
 
-import { ServiceWithContext } from "../utils/context";
+import type { IBadgeRepository, IBadgeService, IFissaRepository } from "../interfaces";
 
-export class BadgeService extends ServiceWithContext {
-  async fissaCreated() {
+export class BadgeService implements IBadgeService {
+  constructor(
+    private readonly badgeRepo: IBadgeRepository,
+    private readonly fissaRepo: IFissaRepository,
+    private readonly db: DB,
+    private readonly session: Session | null,
+  ) {}
+
+  fissaCreated = async (): Promise<void> => {
     const userId = this.session?.user.id;
     if (!userId) return;
 
     try {
-      await this.db.transaction(async (tx) => {
-        const point = await tx.query.badges.findFirst({
-          where: and(eq(badges.userId, userId), eq(badges.name, BADGE.FISSAS_CREATED)),
-        });
-
-        if (!point) {
-          await tx.insert(badges).values({ userId, name: BADGE.FISSAS_CREATED, score: 1, lastUpdated: new Date() });
-          return;
-        }
-
-        if (differenceInHours(point.lastUpdated, new Date()) < 24) return;
-
-        await tx
-          .update(badges)
-          .set({ score: sql`${badges.score} + 1`, lastUpdated: new Date() })
-          .where(and(eq(badges.userId, userId), eq(badges.name, BADGE.FISSAS_CREATED)));
-      });
+      const point = await this.badgeRepo.findByUserAndName(userId, BADGE.FISSAS_CREATED);
+      if (point && differenceInHours(point.lastUpdated, new Date()) < 24) return;
+      await this.badgeRepo.upsertScore(userId, BADGE.FISSAS_CREATED, 1);
     } catch (error) {
       console.warn(error);
     }
-  }
+  };
 
-  async joinedFissa(pin: string) {
+  joinedFissa = async (pin: string): Promise<void> => {
     const userId = this.session?.user.id;
     if (!userId) return;
 
     try {
-      await this.db.transaction(async (tx) => {
-        const fissa = await tx.query.fissas.findFirst({
-          where: eq(fissas.pin, pin),
-          columns: { userId: true },
-        });
+      const fissa = await this.fissaRepo.findByPin(pin);
+      if (fissa?.userId === userId) return;
 
-        if (fissa?.userId === userId) return;
-
-        const point = await tx.query.badges.findFirst({
-          where: and(eq(badges.userId, userId), eq(badges.name, BADGE.FISSAS_JOINED)),
-        });
-
-        if (!point) {
-          await tx.insert(badges).values({ userId, name: BADGE.FISSAS_JOINED, score: 1, lastUpdated: new Date() });
-          return;
-        }
-
-        if (differenceInHours(point.lastUpdated, new Date()) < 24) return;
-
-        await tx
-          .update(badges)
-          .set({ score: sql`${badges.score} + 1`, lastUpdated: new Date() })
-          .where(and(eq(badges.userId, userId), eq(badges.name, BADGE.FISSAS_JOINED)));
-      });
+      const point = await this.badgeRepo.findByUserAndName(userId, BADGE.FISSAS_JOINED);
+      if (point && differenceInHours(point.lastUpdated, new Date()) < 24) return;
+      await this.badgeRepo.upsertScore(userId, BADGE.FISSAS_JOINED, 1);
     } catch (error) {
       console.warn(error);
     }
-  }
+  };
 
-  async tracksAdded(amount: number) {
+  tracksAdded = async (amount: number): Promise<void> => {
     const userId = this.session?.user.id;
     if (!userId) return;
 
     try {
-      await this.db
-        .insert(badges)
-        .values({ userId, name: BADGE.TRACKS_ADDED, score: amount, lastUpdated: new Date() })
-        .onConflictDoUpdate({
-          target: [badges.userId, badges.name],
-          set: { score: sql`${badges.score} + ${amount}`, lastUpdated: new Date() },
-        });
+      await this.badgeRepo.upsertScore(userId, BADGE.TRACKS_ADDED, amount);
     } catch (error) {
       console.warn(error);
     }
-  }
+  };
 
-  async voted(vote: number, forUser?: string | null) {
+  voted = async (vote: number, forUser?: string | null): Promise<void> => {
     const userId = this.session?.user.id;
     if (!userId) return;
 
@@ -113,19 +83,13 @@ export class BadgeService extends ServiceWithContext {
     } catch (error) {
       console.warn(error);
     }
-  }
+  };
 
-  async pointsEarned(userId: string, amount: number) {
+  pointsEarned = async (userId: string, amount: number): Promise<void> => {
     try {
-      await this.db
-        .insert(badges)
-        .values({ userId, name: BADGE.POINTS_EARNED, score: amount, lastUpdated: new Date() })
-        .onConflictDoUpdate({
-          target: [badges.userId, badges.name],
-          set: { score: sql`${badges.score} + ${amount}`, lastUpdated: new Date() },
-        });
+      await this.badgeRepo.upsertScore(userId, BADGE.POINTS_EARNED, amount);
     } catch (error) {
       console.warn(error);
     }
-  }
+  };
 }
