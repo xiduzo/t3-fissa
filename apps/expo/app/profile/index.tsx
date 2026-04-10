@@ -3,8 +3,8 @@ import { format, formatNumber } from "@fissa/utils"
 import { FlashList } from "@shopify/flash-list"
 import { Stack, useRouter } from "expo-router"
 import { useCallback, useState } from "react"
-import { TouchableHighlight, View } from "react-native"
-import { BADGE } from "../../../../packages/db"
+import { Text, TouchableHighlight, View } from "react-native"
+import { BADGE } from "../../../../packages/db/schema"
 import { Button, PageTemplate, Popover, Typography } from "../../src/components"
 import { useAuth } from "../../src/providers"
 import { api } from "../../src/utils"
@@ -110,14 +110,14 @@ const Badge = ({ badge, score, isLoading }: { badge: BADGE, isLoading: boolean, 
         onPress={() => setSelected(true)}
         underlayColor={theme['100'] + '40'}
       >
-        <View className="items-center border rounded-md w-36 lg:w-56 p-3 space-y-2" style={{
+        <View className="items-center border rounded-md w-36 p-3 space-y-2" style={{
           borderColor: theme['100'] + '40',
         }}>
           <Typography centered dimmed>{BADGE_NAMES[badge].name}</Typography>
-          <View className="w-24 h-24 lg:w-32 lg:h-32 items-center justify-center">
-            <Typography centered dimmed className="text-6xl lg:text-7xl" style={{
-              lineHeight: 70
-            }}>{BADGE_NAMES[badge].icon}</Typography>
+          <View style={{ width: 96, height: 96, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 60, lineHeight: 70, textAlign: 'center', opacity: 0.6 }}>
+              {BADGE_NAMES[badge].icon}
+            </Text>
           </View>
           {!isLoading && <Typography variant='h3'>{formatNumber(score ?? 0)}</Typography>}
           {isLoading && <Typography variant='h3' className="w-6 animate-pulse" style={{ backgroundColor: theme['100'] + '10' }}>&nbsp;</Typography>}

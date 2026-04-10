@@ -24,8 +24,9 @@ export const voteRouter = createTRPCRouter({
   byFissa: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
     return createContainer(ctx).voteService.getVotesByFissa(input);
   }),
-  byTrackFromUser: protectedProcedure.input(vote).query(({ ctx, input }) => {
-    return createContainer(ctx).voteService.getUserVote(input.pin, input.trackId, ctx.session.user.id);
+  byTrackFromUser: protectedProcedure.input(vote).query(async ({ ctx, input }) => {
+    const result = await createContainer(ctx).voteService.getUserVote(input.pin, input.trackId, ctx.session.user.id);
+    return result ?? null;
   }),
   create: protectedProcedure.input(createVote).mutation(async ({ ctx, input }) => {
     return createContainer(ctx).voteService.createVote(input.pin, input.trackId, input.vote, ctx.session.user.id);

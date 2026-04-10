@@ -2,7 +2,6 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { env } from "@fissa/env";
 import { createContext } from "./utils/context";
 
 /**
@@ -42,7 +41,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 const enforceIsTrustedServer = t.middleware(({ next, ctx }) => {
-  if (ctx.headers?.get("authorization") !== env.BETTER_AUTH_SECRET)
+  if (ctx.headers?.get("authorization") !== process.env.BETTER_AUTH_SECRET)
     throw new TRPCError({ code: "UNAUTHORIZED" });
 
   return next();

@@ -329,9 +329,6 @@ importers:
       '@fissa/db':
         specifier: '*'
         version: link:../db
-      '@fissa/env':
-        specifier: '*'
-        version: link:../env
       '@fissa/utils':
         specifier: '*'
         version: link:../utils

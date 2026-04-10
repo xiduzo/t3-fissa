@@ -2,6 +2,8 @@
   "name": "@fissa/api",
   "version": "0.1.0",
   "main": "./index.ts",
+  "react-native": "./client.ts",
+  "browser": "./client.ts",
   "types": "./index.ts",
   "license": "MIT",
   "scripts": {
@@ -13,7 +15,6 @@
   "dependencies": {
     "@fissa/auth": "*",
     "@fissa/db": "*",
-    "@fissa/env": "*",
     "@fissa/utils": "*",
     "@trpc/client": "10.21.1",
     "@trpc/server": "10.21.1",

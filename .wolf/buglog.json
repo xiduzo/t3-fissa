@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-04-10T00:00:00.000Z",
+      "error_message": "TypeError: exclusionList is not a function at metro.config.js:28:29",
+      "file": "apps/expo/metro.config.js",
+      "root_cause": "exclusionList imported from metro-config is not a function in the installed version",
+      "fix": "Replaced exclusionList([/regex/]) with the regex directly as config.resolver.blockList = /regex/",
+      "tags": [
+        "metro",
+        "expo",
+        "blockList",
+        "exclusionList"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-10T00:00:00.000Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-04-10T18:31:37.929Z",
+      "error_message": "Incorrect value in code",
+      "file": "apps/expo/app/profile/index.tsx",
+      "root_cause": "Had \"../../../../packages/db\"",
+      "fix": "Changed to \"../../../../packages/db/schema\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-10T18:31:37.929Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-04-10T18:46:20.728Z",
+      "error_message": "CSS fix: lg",
+      "file": "apps/expo/app/profile/index.tsx",
+      "root_cause": "lg: text-7xl\" style={{ → w-32 lg:h-32 items-center justify-center\">",
+      "fix": "Changed lg: text-7xl\" style={{ → w-32 lg:h-32 items-center justify-center\">",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-10T18:46:20.728Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-04-10T18:53:32.188Z",
+      "error_message": "Incorrect value in code",
+      "file": "apps/expo/app/profile/index.tsx",
+      "root_cause": "Had \"items-center border rounded-md w-36 lg:w-56 p-3 s",
+      "fix": "Changed to \"items-center border rounded-md w-36 p-3 space-y-2",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-10T18:53:32.188Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-04-10T18:58:35.045Z",
+      "error_message": "Null/undefined access in ",
+      "file": "packages/api/src/router/vote.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-10T18:58:35.045Z"
+    }
+  ],
+  "bugs_session_2026_04_10": [
+    {
+      "id": "bug-004",
+      "timestamp": "2026-04-10T20:46:00.000Z",
+      "error_message": "Emoji icons not rendering in badge cards — show '?' placeholder instead",
+      "file": "apps/expo/app/profile/index.tsx",
+      "root_cause": "NativeWind v2 babel transform on Animated.Text interferes with emoji glyph rendering when font-related classes (font-normal, text-6xl) are applied",
+      "fix": "Replaced <Typography> with plain <Text style={{...}}> for emoji rendering to bypass NativeWind transform",
+      "tags": [
+        "nativewind",
+        "emoji",
+        "typography",
+        "expo",
+        "ios"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-10T20:46:00.000Z"
+    }
+  ]
+}

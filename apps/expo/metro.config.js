@@ -22,4 +22,8 @@ config.resolver.nodeModulesPaths = [
 // 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
 // config.resolver.disableHierarchicalLookup = true;
 
+// 4. Block server-only Node.js packages that must never reach the React Native bundle.
+//    These are pulled in transitively by @fissa/db / @fissa/auth (server-side only).
+config.resolver.blockList = /.*\/node_modules\/postgres\/.*/;
+
 module.exports = config;
