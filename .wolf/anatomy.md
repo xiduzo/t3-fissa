@@ -356,7 +356,7 @@
 - `drizzle.config.ts` — Drizzle ORM configuration (~61 tok)
 - `index.ts` — Exports Fissa, Track, db, DB (~227 tok)
 - `package.json` — Node.js package manifest (~176 tok)
-- `schema.ts` — Drop-in replacement for Prisma's `BADGE` enum constant. (~2291 tok)
+- `schema.ts` — Drizzle schema defining all tables, relations, and the `BADGE` enum constant. (~2291 tok)
 - `tsconfig.json` — TypeScript configuration (~43 tok)
 - `tsconfig.tsbuildinfo` (~17982 tok)
 

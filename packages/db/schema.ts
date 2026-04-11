@@ -27,7 +27,7 @@ export const badgeEnum = pgEnum("BADGE", [
   "POINTS_EARNED",
 ]);
 
-/** Drop-in replacement for Prisma's `BADGE` enum constant. */
+/** Enum constant matching the `badgeType` pgEnum values. */
 export const BADGE = {
   TRACKS_ADDED: "TRACKS_ADDED",
   UP_VOTES_RECEIVED: "UP_VOTES_RECEIVED",

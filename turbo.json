@@ -1,17 +1,27 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "globalDependencies": ["**/.env"],
+  "globalDependencies": [
+    "**/.env"
+  ],
   "pipeline": {
     "db:generate": {
-      "inputs": ["prisma/schema.prisma"],
+      "inputs": [
+        "schema.ts",
+        "drizzle.config.ts"
+      ],
+      "cache": false
+    },
+    "db:migrate": {
+      "inputs": [
+        "drizzle/**"
+      ],
       "cache": false
     },
     "db:push": {
-      "inputs": ["prisma/schema.prisma"],
-      "cache": false
-    },
-    "db:push:force": {
-      "inputs": ["prisma/schema.prisma"],
+      "inputs": [
+        "schema.ts",
+        "drizzle.config.ts"
+      ],
       "cache": false
     },
     "dev": {
@@ -23,8 +33,15 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["^build", "^db:generate"],
-      "outputs": [".expo/**", ".sync/**", "dist/**"]
+      "dependsOn": [
+        "^build",
+        "^db:generate"
+      ],
+      "outputs": [
+        ".expo/**",
+        ".sync/**",
+        "dist/**"
+      ]
     },
     "lint": {},
     "lint:fix": {},
@@ -32,14 +49,18 @@
       "cache": false
     },
     "test": {
-      "dependsOn": ["^db:generate"],
+      "dependsOn": [
+        "^db:generate"
+      ],
       "cache": false
     },
     "//#clean": {
       "cache": false
     },
     "type-check": {
-      "dependsOn": ["^db:generate"],
+      "dependsOn": [
+        "^db:generate"
+      ],
       "cache": false
     }
   },
