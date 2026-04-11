@@ -1,10 +1,12 @@
 import { type FC } from "react";
 import { View } from "react-native";
 import { Image as ExpoImage, type ImageProps } from "expo-image";
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
 
+import { useTheme } from "../../providers";
+
 export const Image: FC<Props> = ({ className, hasBorder, ...props }) => {
+  const theme = useTheme();
   return (
     <View
       style={{ backgroundColor: theme["100"] }}

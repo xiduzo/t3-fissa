@@ -6,13 +6,14 @@ import {
   type ButtonProps as NativeButtonProps,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
 
+import { useTheme } from "../../../providers";
 import { Icon, type IconName } from "../Icon";
 import { Typography } from "../Typography";
 
 export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...props }) => {
+  const theme = useTheme();
   const { onPress, linkTo } = props;
   const { push } = useRouter();
 
@@ -30,7 +31,7 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
     }
 
     return "transparent";
-  }, [inverted, variant]);
+  }, [inverted, variant, theme]);
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {

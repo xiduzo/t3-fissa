@@ -58,6 +58,8 @@ export const TrackListItem: FC<Props> = memo(
     if (prev.index !== next.index) return false;
     if (prev.selected !== next.selected) return false;
     if (prev.rerenderTrigger !== next.rerenderTrigger) return false;
+    if (prev.extra !== next.extra) return false;
+    if (prev.end !== next.end) return false;
 
     return true;
   },

@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed, useDebounceValue, useSpotify } from "@fissa/utils";
 import { Stack, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
@@ -10,6 +9,7 @@ import {
 } from "react-native";
 
 import { type FlashListRef } from "@shopify/flash-list";
+import { useTheme } from "../../providers";
 import { usePlaylistTracks } from "../../hooks";
 import { PageTemplate } from "../PageTemplate";
 import { BottomDrawer } from "./BottomDrawer";
@@ -23,6 +23,7 @@ import { Typography } from "./Typography";
 import { Button, ButtonGroup, IconButton } from "./button";
 
 export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks }) => {
+  const theme = useTheme();
   const { back } = useRouter();
   const spotify = useSpotify();
 
@@ -107,7 +108,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                     onPress={clearSelectedPlaylist}
                   />
                 )}
-                <View className="shrink grow">
+                <View className="mr-3 shrink grow">
                   <Input
                     startIcon="search"
                     ref={inputRef}
@@ -124,10 +125,17 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
         />
         <View className="h-full w-full">
           <TrackList
-            data={searchedTracks}
+            data={selectedPlaylist ? filteredTracks : searchedTracks}
             ref={ref}
             selectedTracks={selectedTracks.map((track) => track.id)}
             onTrackPress={handleTrackPress}
+            ListHeaderComponent={
+              selectedPlaylist ? (
+                <View className="m-6">
+                  <PlaylistListItem playlist={selectedPlaylist} bigImage />
+                </View>
+              ) : undefined
+            }
             ListFooterComponent={<View className="pb-72" />}
             ListEmptyComponent={
               <View>
@@ -144,20 +152,8 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                     />
                   </>
                 )}
-                {selectedPlaylist && (
-                  <>
-                    <View className="m-6">
-                      <PlaylistListItem playlist={selectedPlaylist} bigImage />
-                    </View>
-                    <TrackList
-                      data={filteredTracks}
-                      onTrackPress={handleTrackPress}
-                      selectedTracks={selectedTracks.map((track) => track.id)}
-                      ListEmptyComponent={
-                        <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
-                      }
-                    />
-                  </>
+                {selectedPlaylist && isFetchingPlaylistTracks && (
+                  <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
                 )}
               </View>
             }

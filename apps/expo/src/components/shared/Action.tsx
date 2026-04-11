@@ -1,7 +1,8 @@
 import { type FC } from "react";
 import { TouchableHighlight, View, type ButtonProps } from "react-native";
-import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
+
+import { useTheme } from "../../providers";
 
 import { Icon, type IconName } from "./Icon";
 import { Typography } from "./Typography";
@@ -17,6 +18,7 @@ export const Action: FC<Props> = ({
   layout = "row",
   ...props
 }) => {
+  const theme = useTheme();
   if (hidden) return null;
 
   return (

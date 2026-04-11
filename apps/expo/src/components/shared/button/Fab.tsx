@@ -2,13 +2,14 @@ import { useCallback, useEffect, useRef, type FC } from "react";
 import { Animated, TouchableHighlight, type GestureResponderEvent } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
+import { useTheme } from "../../../providers";
 import { Icon } from "../Icon";
 import { type IconButtonProps } from "./IconButton";
 
 export const Fab: FC<Props> = ({ icon, ...props }) => {
+  const theme = useTheme();
   const { onPress, linkTo } = props;
   const shownAnimation = useRef(new Animated.Value(0)).current;
 

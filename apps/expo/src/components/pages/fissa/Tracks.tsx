@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import {
   differenceInMilliseconds,
   sortFissaTracksOrder,
@@ -15,7 +14,7 @@ import {
 } from "react-native";
 
 import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack, useSpotifyTracks, useSpotifyDevices } from "../../../hooks";
-import { useAuth } from "../../../providers";
+import { useAuth, useTheme } from "../../../providers";
 import { api } from "../../../utils";
 import { QuickVoteModal, useQuickVote } from "../../quickVote";
 import {
@@ -36,12 +35,13 @@ import { ListFooterComponent } from "./ListFooterComponent";
 const SCROLL_DISTANCE = 150;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
+  const theme = useTheme();
   const context = api.useUtils();
 
   const listRef = useRef<FlashListRef<SpotifyApi.TrackObjectFull>>(null);
 
   const { data, isLoading: isInitialLoading } = api.fissa.byId.useQuery(pin, {
-    refetchInterval: 15_000,
+    refetchInterval: 5_000,
   });
 
   // Single query for all of the current user's votes in this fissa
@@ -88,7 +88,18 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const showTracks = isOwner ? isPlaying && !!activeDevice : isPlaying;
   const queue = showTracks ? localTracks : [];
-  const currentTrackIndex = Math.max(0, localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId));
+
+  // Derive the active index from trackIds (always in sync with the tRPC data)
+  // rather than from localTracks which depends on the Spotify cache and may
+  // lag behind when the currently-playing track changes.
+  const currentTrackIndex = useMemo(() => {
+    if (!data?.currentlyPlayingId) return 0;
+    const idx = trackIds.indexOf(data.currentlyPlayingId);
+    if (idx === -1) return 0;
+    // localTracks may be shorter than trackIds when Spotify hasn't fetched
+    // every track yet — clamp so we never scroll past the end.
+    return Math.min(idx, Math.max(0, localTracks.length - 1));
+  }, [data?.currentlyPlayingId, trackIds, localTracks.length]);
 
   const showBackButton = useCallback(
     (offSet = 0) => {
@@ -235,6 +246,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onTrackLongPress={toggleTrackFocus}
         trackEnd={trackEnd}
         trackExtra={trackExtra}
+        extraData={`${data?.currentlyPlayingId}-${data?.expectedEndTime?.getTime()}`}
         ListEmptyComponent={
           <View className="mx-6 h-[80vh]">
             <ListEmptyComponent isLoading={isInitialLoading} />

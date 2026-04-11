@@ -7,14 +7,15 @@ import {
   type NativeSyntheticEvent,
   type NativeTouchEvent,
 } from "react-native";
-import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
+import { useTheme } from "../../providers";
 import { useSwipe } from "../../hooks";
 import { BottomDrawer } from "./BottomDrawer";
 import { DraggableView } from "./DraggableView";
 
 export const Popover: FC<Props> = ({ children, onRequestClose, ...props }) => {
+  const theme = useTheme();
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
   const animate = useCallback(

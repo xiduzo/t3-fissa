@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -11,17 +10,19 @@ import {
 import type { TextStyle } from "react-native";
 
 import { Button, PageTemplate, Typography } from "../src/components";
+import { useTheme } from "../src/providers";
 import { api } from "../src/utils/api";
 import { toast } from "../src/utils/Toast";
 
 const PIN_LENGTH = 4;
 
-const inputStyle: TextStyle = {
-  color: theme["100"],
-  textAlign: "center",
-};
-
 const Join = () => {
+  const theme = useTheme();
+
+  const inputStyle: TextStyle = {
+    color: theme["100"],
+    textAlign: "center",
+  };
   const { replace } = useRouter();
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(""));
   const inputRefs = useRef<(TextInput | null)[]>([null, null, null, null]);

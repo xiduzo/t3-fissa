@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import { useSpotify } from "@fissa/utils";
 import Slider from "@react-native-community/slider";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
@@ -19,9 +18,11 @@ import {
   Typography,
 } from "../../../src/components";
 import { useIsOwner, useOnActiveApp, useShareFissa, useSpotifyDevices } from "../../../src/hooks";
+import { useTheme } from "../../../src/providers";
 import { api, mapDeviceToIcon, toast } from "../../../src/utils";
 
 const Fissa = () => {
+  const theme = useTheme();
   const { pin } = useGlobalSearchParams();
   const { replace } = useRouter();
 
@@ -97,6 +98,7 @@ const HeaderLeft: FC = () => {
 };
 
 const SpeakerButton = () => {
+  const theme = useTheme();
   const spotify = useSpotify();
   const { pin } = useGlobalSearchParams();
   const isOwner = useIsOwner(String(pin));

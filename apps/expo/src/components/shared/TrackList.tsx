@@ -1,9 +1,9 @@
 import { forwardRef, useCallback } from "react";
 import { Animated, View, type GestureResponderEvent } from "react-native";
 import { FlashList, type FlashListProps, type FlashListRef } from "@shopify/flash-list";
-import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
+import { useTheme } from "../../providers";
 import { Badge } from "./Badge";
 import { TrackListItem } from "./TrackListItem";
 
@@ -22,6 +22,7 @@ export const TrackList = forwardRef<FlashListRef<SpotifyApi.TrackObjectFull>, Pr
     },
     ref,
   ) {
+    const theme = useTheme();
     const subtitlePrefix = useCallback(
       (item: SpotifyApi.TrackObjectFull) => {
         if (!getTrackVotes) return null;

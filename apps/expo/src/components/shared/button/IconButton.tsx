@@ -1,17 +1,18 @@
 import { useMemo, type FC } from "react";
 import { TouchableHighlight } from "react-native";
-import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
+import { useTheme } from "../../../providers";
 import { Icon, type IconName } from "../Icon";
 import { type ButtonProps } from "./Button";
 
 export const IconButton: FC<Props> = ({ icon, inverted, dimmed, ...props }) => {
+  const theme = useTheme();
   const color = useMemo(() => {
     const baseColor = theme[inverted ? "900" : "100"];
 
     return dimmed ? baseColor + "60" : baseColor;
-  }, [inverted, dimmed]);
+  }, [inverted, dimmed, theme]);
 
   return (
     <TouchableHighlight

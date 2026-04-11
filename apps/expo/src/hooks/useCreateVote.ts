@@ -27,14 +27,16 @@ export const useCreateVote = (pin: string) => {
           prev && {
             ...prev,
             tracks: prev.tracks.map((track) => {
-              if (track.trackId === trackId) {
-                const previousVote = previousVotes?.find((v) => v.trackId === trackId)?.vote ?? 0;
-                track.score += vote - previousVote;
+              if (track.trackId !== trackId) return track;
+
+              const previousVote = previousVotes?.find((v) => v.trackId === trackId)?.vote ?? 0;
+              return {
+                ...track,
+                score: track.score + vote - previousVote,
                 // Replaying a track just gives it a vote,
                 // Make sure to reset the hasBeenPlayed flag
-                track.hasBeenPlayed = false;
-              }
-              return track;
+                hasBeenPlayed: false,
+              };
             }),
           },
       );

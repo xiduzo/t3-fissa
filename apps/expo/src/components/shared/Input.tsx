@@ -1,7 +1,8 @@
 import { forwardRef } from "react";
 import { TextInput, View, type TextInputProps } from "react-native";
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
+
+import { useTheme } from "../../providers";
 
 import { Icon, type IconName } from "./Icon";
 
@@ -9,6 +10,7 @@ export const Input = forwardRef<TextInput, Props>(function Input(
   { variant, className, startIcon, ...props },
   ref,
 ) {
+  const theme = useTheme();
   return (
     <View
       className={view({ className })}

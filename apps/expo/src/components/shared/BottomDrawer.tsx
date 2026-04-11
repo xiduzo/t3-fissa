@@ -1,8 +1,8 @@
 import { type FC } from "react";
 import { View, type GestureResponderEvent } from "react-native";
 import { LinearGradient, type LinearGradientProps } from "expo-linear-gradient";
-import { theme } from "@fissa/tailwind-config";
 
+import { useTheme } from "../../providers";
 import { IconButton } from "./button";
 import { type IconName } from "./Icon";
 
@@ -14,6 +14,7 @@ export const BottomDrawer: FC<Props> = ({
   style,
   ...rest
 }) => {
+  const theme = useTheme();
   return (
     <View className="absolute bottom-0 w-full shadow-xl" style={{ shadowColor: theme["900"] }}>
       <LinearGradient

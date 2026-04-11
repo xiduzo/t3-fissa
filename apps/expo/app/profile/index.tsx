@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config"
 import { format, formatNumber } from "@fissa/utils"
 import { FlashList } from "@shopify/flash-list"
 import { Stack, useRouter } from "expo-router"
@@ -6,7 +5,7 @@ import { useCallback, useState } from "react"
 import { Text, TouchableHighlight, View } from "react-native"
 import { BADGE } from "../../../../packages/db/schema"
 import { Button, PageTemplate, Popover, Typography } from "../../src/components"
-import { useAuth } from "../../src/providers"
+import { useAuth, useTheme } from "../../src/providers"
 import { api } from "../../src/utils"
 
 const Index = () => {
@@ -101,6 +100,7 @@ const BADGE_NAMES: Record<BADGE, Badge> = {
 }
 
 const Badge = ({ badge, score, isLoading }: { badge: BADGE, isLoading: boolean, score?: number }) => {
+  const theme = useTheme()
   const [selected, setSelected] = useState(false)
 
   return (

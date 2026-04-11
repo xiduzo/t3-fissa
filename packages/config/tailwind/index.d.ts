@@ -7,9 +7,21 @@ declare module "@fissa/tailwind-config" {
         900: string
     }
 
-
     const theme: Theme
     const themes: Theme[]
 
     export { theme, themes }
+}
+
+declare module "@fissa/tailwind-config/themes" {
+    export type Theme = {
+        name: string;
+        100: string;
+        500: string;
+        900: string;
+        gradient: [string, string];
+    };
+
+    export const themes: Theme[];
+    export function getThemeForUser(userId: string): Theme;
 }

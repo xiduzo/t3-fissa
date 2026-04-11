@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, type FC } from "react";
@@ -6,10 +5,12 @@ import { Animated, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AnimationSpeed } from "@fissa/utils";
+import { useTheme } from "../../providers";
 import { Typography } from "./Typography";
 import { IconButton } from "./button";
 
 export const Header: FC<NativeStackHeaderProps> = (props) => {
+  const theme = useTheme();
   const backButtonAnimation = useRef(new Animated.Value(0)).current;
 
   const { back } = useRouter();

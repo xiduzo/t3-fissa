@@ -1,7 +1,7 @@
-import { theme } from "@fissa/tailwind-config";
 import { useCallback, useState, type FC } from "react";
 import { Linking, View } from "react-native";
 
+import { useTheme } from "../../providers";
 import { useOnActiveApp, useSpotifyDevices } from "../../hooks";
 import { mapDeviceToIcon } from "../../utils";
 import { Button } from "./button";
@@ -11,6 +11,7 @@ import { Popover } from "./Popover";
 import { Typography } from "./Typography";
 
 export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
+  const theme = useTheme();
   const { devices, refetch: fetchDevices } = useSpotifyDevices(true);
   useOnActiveApp(() => {
     void fetchDevices();

@@ -1,9 +1,9 @@
-import { themes, type Theme } from "@fissa/tailwind-config/themes";
+import { themes, getThemeForUser, type Theme } from "@fissa/tailwind-config/themes";
 import { createContext, useContext, type FC, type PropsWithChildren } from "react";
 
 function getTheme() {
   const minute = new Date().getMinutes();
-  return themes[Math.floor(minute / 10)];
+  return themes[Math.floor(minute / 10)]!;
 }
 
 const theme = getTheme() as Theme;

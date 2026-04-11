@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import * as Sentry from "@sentry/react-native";
 import { Stack } from "expo-router";
 import { isRunningInExpoGo } from "expo";
@@ -11,8 +10,24 @@ import "../global.css";
 import "../src/utils/nativewind-interop";
 
 import { Header, ToastContainer } from "../src/components/";
-import { NotificationProvider, SpotifyProvider } from "../src/providers";
+import { NotificationProvider, SpotifyProvider, ThemeProvider, useTheme } from "../src/providers";
 import { TRPCProvider } from "../src/utils/api";
+
+function ThemedStack() {
+  const theme = useTheme();
+
+  return (
+    <SafeAreaProvider>
+      <Stack
+        screenOptions={{
+          header: (props) => <Header {...props} />,
+          contentStyle: { backgroundColor: theme["900"] },
+        }}
+      />
+      <StatusBar style="light" />
+    </SafeAreaProvider>
+  );
+}
 
 function RootLayout() {
   return (
@@ -20,15 +35,9 @@ function RootLayout() {
       <NotificationProvider>
         <Updater />
         <SpotifyProvider>
-          <SafeAreaProvider>
-            <Stack
-              screenOptions={{
-                header: (props) => <Header {...props} />,
-                contentStyle: { backgroundColor: theme["900"] },
-              }}
-            />
-            <StatusBar style="light" />
-          </SafeAreaProvider>
+          <ThemeProvider>
+            <ThemedStack />
+          </ThemeProvider>
         </SpotifyProvider>
         <ToastContainer />
       </NotificationProvider>

@@ -55,3 +55,15 @@ const limey: Theme = {
 };
 
 export const themes: Theme[] = [sunny, limey, blueey, pinkey, orangy, greeny];
+
+/**
+ * Deterministically select a theme based on a user ID string.
+ * Uses a simple hash so the same user always gets the same theme.
+ */
+export function getThemeForUser(userId: string): Theme {
+  let hash = 0;
+  for (let i = 0; i < userId.length; i++) {
+    hash = (hash * 31 + userId.charCodeAt(i)) | 0;
+  }
+  return themes[Math.abs(hash) % themes.length]!;
+}

@@ -1,8 +1,11 @@
 import { useCallback } from "react";
 import { Share } from "react-native";
-import { theme } from "@fissa/tailwind-config";
+
+import { useTheme } from "../providers";
 
 export const useShareFissa = (pin: string) => {
+  const theme = useTheme();
+
   const shareFissa = useCallback(async () => {
     return Share.share(
       {
@@ -16,7 +19,7 @@ export const useShareFissa = (pin: string) => {
         tintColor: theme["500"],
       },
     );
-  }, [pin]);
+  }, [pin, theme]);
 
   return { shareFissa };
 };

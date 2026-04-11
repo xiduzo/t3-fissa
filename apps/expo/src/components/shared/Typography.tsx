@@ -1,7 +1,8 @@
 import { type FC } from "react";
 import { Animated, type TextProps } from "react-native";
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
+
+import { useTheme } from "../../providers";
 
 export const Typography: FC<Props> = ({
   children,
@@ -13,6 +14,8 @@ export const Typography: FC<Props> = ({
   animatedColor,
   ...props
 }) => {
+  const theme = useTheme();
+
   return (
     <Animated.Text
       {...props}

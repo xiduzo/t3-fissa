@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 import { type JSX, memo, useEffect, useRef, type FC } from "react";
 import {
@@ -9,6 +8,7 @@ import {
   type ViewProps,
 } from "react-native";
 
+import { useTheme } from "../../providers";
 import { Image } from "./Image";
 import { Typography } from "./Typography";
 
@@ -27,6 +27,7 @@ export const ListItem: FC<Props> = memo(({
   dimmed,
   ...props
 }) => {
+  const theme = useTheme();
   const dimmedAnimation = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const animate = (config: Partial<Animated.SpringAnimationConfig> = {}) => {

@@ -2,9 +2,9 @@ import { useContext, useEffect, useMemo, useRef, type FC } from "react";
 import { Animated, Dimensions, Modal, StyleSheet, type GestureResponderEvent } from "react-native";
 import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
+import { useTheme } from "../../providers";
 import { Action, Badge, TrackEnd, TrackListItem } from "../shared";
 import { QuickVoteContext } from "./QuickVoteContext";
 
@@ -12,6 +12,7 @@ const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
 export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteMap }) => {
+  const theme = useTheme();
   const { vote, touchStartPosition, track } = useContext(QuickVoteContext);
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
@@ -68,13 +69,13 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteM
     const isUpVote = vote === 1 || (userVote === 1 && vote !== -1);
 
     return [theme[isUpVote ? "100" : "900"] + "20", theme["900"] + "10"] as const;
-  }, [vote, userVote]);
+  }, [vote, userVote, theme]);
 
   const downVoteGradient = useMemo(() => {
     const isDownVote = vote === -1 || (userVote === -1 && vote !== 1);
 
     return [theme["900"] + "10", theme[isDownVote ? "100" : "900"] + "20"] as const;
-  }, [vote, userVote]);
+  }, [vote, userVote, theme]);
 
   return (
     <Modal
