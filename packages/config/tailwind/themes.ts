@@ -54,13 +54,28 @@ const limey: Theme = {
   gradient: ["#FFF95F", "#BCFF4E"],
 };
 
-export const themes: Theme[] = [sunny, limey, blueey, pinkey, orangy, greeny];
+const extrodonary: Theme = {
+  name: "extrodonary",
+  100: "#E8E8E8",
+  500: "#8C8C8C",
+  900: "#050505",
+  gradient: ["#8C8C8C", "#B0B0B0"],
+};
+
+export const themes: Theme[] = [sunny, blueey, pinkey, limey, orangy, greeny];
+
+const EXTRODONARY_USERS = [
+  "11102251084", // xiduzo
+]
 
 /**
  * Deterministically select a theme based on a user ID string.
  * Uses a simple hash so the same user always gets the same theme.
  */
 export function getThemeForUser(userId: string): Theme {
+
+  if(EXTRODONARY_USERS.includes(userId)) return extrodonary
+
   let hash = 0;
   for (let i = 0; i < userId.length; i++) {
     hash = (hash * 31 + userId.charCodeAt(i)) | 0;

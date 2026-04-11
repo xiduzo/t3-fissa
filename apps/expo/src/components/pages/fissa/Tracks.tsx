@@ -246,7 +246,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onTrackLongPress={toggleTrackFocus}
         trackEnd={trackEnd}
         trackExtra={trackExtra}
-        extraData={`${data?.currentlyPlayingId}-${data?.expectedEndTime?.getTime()}`}
+        extraData={`${data?.currentlyPlayingId}-${data?.expectedEndTime ? new Date(data.expectedEndTime).getTime() : ""}`}
         ListEmptyComponent={
           <View className="mx-6 h-[80vh]">
             <ListEmptyComponent isLoading={isInitialLoading} />

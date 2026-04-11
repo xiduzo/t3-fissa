@@ -59,7 +59,7 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
           dimmed,
         })}
         style={{
-          borderColor: theme[inverted ? "900" : "500"],
+          borderColor: variant === "text" ? "transparent" : theme[inverted ? "900" : "500"],
           backgroundColor,
         }}
       >
@@ -98,7 +98,7 @@ const button = cva(
       variant: {
         outlined: "",
         contained: "",
-        text: "border-0 border-transparent",
+        text: "border-transparent",
       },
       inverted: {
         true: "",
