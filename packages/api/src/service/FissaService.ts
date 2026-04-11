@@ -93,15 +93,15 @@ export class FissaService {
 
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
 
-    if (userId) {
-      await this.db
-        .insert(usersInFissas)
-        .values({ pin, userId })
-        .onConflictDoNothing();
-      await this.badgeService.joinedFissa(pin);
-    }
-
     return fissa;
+  };
+
+  join = async (pin: string, userId: string) => {
+    await this.db
+      .insert(usersInFissas)
+      .values({ pin, userId })
+      .onConflictDoNothing();
+    await this.badgeService.joinedFissa(pin);
   };
 
   skipTrack = async (pin: string, userId: string) => {

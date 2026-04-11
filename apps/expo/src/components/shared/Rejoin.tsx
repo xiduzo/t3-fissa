@@ -1,7 +1,7 @@
-import { useTracks } from "@fissa/utils";
 import { type FC } from "react";
 import { View } from "react-native";
 
+import { useSpotifyTracks } from "../../hooks";
 import { api } from "../../utils";
 import { Button } from "./button";
 
@@ -29,8 +29,8 @@ const PrefetchTracks: FC<{ pin: string }> = ({ pin }) => {
     retry: false,
   });
 
-  // Pre-fetch tracks
-  useTracks(data?.map((track) => track.trackId));
+  // Pre-fetch tracks into TanStack Query cache
+  useSpotifyTracks(data?.map((track) => track.trackId));
 
   return null;
 };

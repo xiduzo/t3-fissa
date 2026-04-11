@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { View } from "react-native";
 import { Stack } from "expo-router";
-import { getPlaylistTracks, useSpotify } from "@fissa/utils";
 
 import {
   Button,
@@ -11,24 +10,21 @@ import {
   Popover,
   Typography,
 } from "../../src/components";
-import { useCreateFissa } from "../../src/hooks";
+import { useCreateFissa, usePlaylistTracks } from "../../src/hooks";
 
 const FromPlaylist = () => {
-  const spotify = useSpotify();
-
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
+
+  const { data: playlistTracks = [] } = usePlaylistTracks(selectedPlaylist?.id ?? null);
 
   const { mutateAsync, isPending } = useCreateFissa();
 
   const start = useCallback(async () => {
-    if (!selectedPlaylist) return;
-    const spotifyTracks = await getPlaylistTracks(selectedPlaylist.id, spotify);
-
-    await mutateAsync(spotifyTracks);
-
+    if (!selectedPlaylist || !playlistTracks.length) return;
+    await mutateAsync(playlistTracks);
     setSelectedPlaylist(null);
-  }, [selectedPlaylist, mutateAsync, spotify]);
+  }, [selectedPlaylist, playlistTracks, mutateAsync]);
 
   return (
     <PageTemplate fullScreen>

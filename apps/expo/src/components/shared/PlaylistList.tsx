@@ -1,9 +1,9 @@
 import { type FC } from "react";
 import { View } from "react-native";
 import { FlashList, type FlashListProps } from "@shopify/flash-list";
-import { usePlayLists } from "@fissa/utils";
 
 import { useAuth } from "../../providers";
+import { useSpotifyPlaylists } from "../../hooks";
 import { EmptyState } from "./EmptyState";
 import { PlaylistListItem } from "./PlaylistListItem";
 
@@ -15,15 +15,14 @@ export const PlaylistList: FC<Props> = ({
   ...props
 }) => {
   const { user } = useAuth();
-
-  const playlists = usePlayLists(user);
+  const { data: playlists = [] } = useSpotifyPlaylists(user);
 
   return (
     <View className="h-full w-full">
       <FlashList
         {...props}
         data={playlists.filter(
-          (playlists) => !onlyUserPlaylists || playlists.owner.id === user?.id,
+          (playlist) => !onlyUserPlaylists || playlist.owner.id === user?.id,
         )}
         keyExtractor={({ id }) => id}
         estimatedItemSize={80}

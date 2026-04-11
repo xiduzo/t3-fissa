@@ -9,4 +9,6 @@ export interface IVoteRepository {
   findByUser(pin: string, trackId: string, userId: string): Promise<Vote | undefined>;
 
   findByFissa(pin: string): Promise<Vote[]>;
+
+  findByFissaFromUser(pin: string, userId: string): Promise<Vote[]>;
 }

@@ -3,13 +3,11 @@ import {
   AnimationSpeed,
   differenceInMilliseconds,
   sortFissaTracksOrder,
-  useDevices,
-  useTracks,
 } from "@fissa/utils";
 import { type FlashList } from "@shopify/flash-list";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
-import { type JSX, useCallback, useEffect, useRef, useState, type FC } from "react";
+import { type JSX, useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
 import {
   Animated,
   TouchableHighlight,
@@ -18,7 +16,7 @@ import {
   type NativeSyntheticEvent,
 } from "react-native";
 
-import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack } from "../../../hooks";
+import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack, useSpotifyTracks, useSpotifyDevices } from "../../../hooks";
 import { useAuth } from "../../../providers";
 import { api } from "../../../utils";
 import { QuickVoteModal, useQuickVote } from "../../quickVote";
@@ -45,8 +43,20 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
   const { data, isLoading: isInitialLoading } = api.fissa.byId.useQuery(pin, {
-    refetchInterval: 6000, // TODO: signal (push notification) from the server instead of polling?
+    refetchInterval: 15_000,
   });
+
+  // Single query for all of the current user's votes in this fissa
+  const { data: userVotes } = api.vote.byFissaFromUser.useQuery(pin);
+  const userVoteMap = useMemo(() => {
+    const map = new Map<string, number>();
+    if (userVotes && Array.isArray(userVotes)) {
+      for (const v of userVotes) {
+        map.set(v.trackId as string, v.vote as number);
+      }
+    }
+    return map;
+  }, [userVotes]);
 
   const isOwner = useIsOwner(pin);
 
@@ -65,13 +75,15 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull>();
 
 
-  const localTracks = useTracks(
-    sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
+  const trackIds = useMemo(
+    () => sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
+    [data?.tracks, data?.currentlyPlayingId],
   );
+  const { data: localTracks = [] } = useSpotifyTracks(trackIds);
 
   const isPlaying = !!data?.currentlyPlayingId;
 
-  const { activeDevice } = useDevices(isOwner && !isPlaying);
+  const { activeDevice } = useSpotifyDevices(isOwner && !isPlaying);
 
   const showTracks = isOwner ? isPlaying && !!activeDevice : isPlaying;
   const queue = showTracks ? localTracks : [];
@@ -116,9 +128,9 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       if (localTrack.hasBeenPlayed) return;
       if (data?.currentlyPlayingId === track.id && isOwner) return <SkipTrackButton />;
 
-      return <TrackEnd trackId={track.id} pin={pin} />;
+      return <TrackEnd vote={userVoteMap.get(track.id)} />;
     },
-    [data?.tracks, data?.currentlyPlayingId, isOwner, pin],
+    [data?.tracks, data?.currentlyPlayingId, isOwner, userVoteMap],
   );
 
   const trackExtra = useCallback(
@@ -253,9 +265,10 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       <SelectedTrackPopover
         onRequestClose={() => setSelectedTrack(undefined)}
         track={selectedTrack}
+        userVoteMap={userVoteMap}
       />
 
-      <QuickVoteModal onTouchEnd={handleTouchEnd} getTrackVotes={getTrackVotes} />
+      <QuickVoteModal onTouchEnd={handleTouchEnd} getTrackVotes={getTrackVotes} userVoteMap={userVoteMap} />
     </>
   );
 };
@@ -275,12 +288,12 @@ const SkipTrackButton = () => {
   );
 };
 
-const SelectedTrackPopover: FC<SelectedTrackPopoverProps> = ({ track, onRequestClose }) => {
+const SelectedTrackPopover: FC<SelectedTrackPopoverProps> = ({ track, onRequestClose, userVoteMap }) => {
   return (
     <Popover visible={!!track} onRequestClose={onRequestClose}>
       {track && <TrackListItem inverted track={track} hasBorder />}
       <Divider />
-      {track && <TrackActions track={track} onPress={onRequestClose} />}
+      {track && <TrackActions track={track} onPress={onRequestClose} userVoteMap={userVoteMap} />}
     </Popover>
   );
 };
@@ -288,9 +301,10 @@ const SelectedTrackPopover: FC<SelectedTrackPopoverProps> = ({ track, onRequestC
 interface SelectedTrackPopoverProps {
   track?: SpotifyApi.TrackObjectFull;
   onRequestClose: () => void;
+  userVoteMap: Map<string, number>;
 }
 
-const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
+const TrackActions: FC<TrackActionsProps> = ({ track, onPress, userVoteMap }) => {
   const { pin } = useGlobalSearchParams();
   const { data: fissa } = api.fissa.byId.useQuery(String(pin), {
     enabled: !!pin,
@@ -302,7 +316,7 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
 
   const { user } = useAuth();
 
-  const { data } = api.vote.byTrackFromUser.useQuery({ pin: String(pin), trackId: track.id });
+  const userVote = userVoteMap.get(track.id);
 
   const { mutateAsync: voteOnTrack, isPending: isVoting } = useCreateVote(String(pin));
 
@@ -356,8 +370,8 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
         <Action
           onPress={handleVote(1)}
           inverted
-          active={data?.vote === 1}
-          disabled={isVoting || data?.vote === 1}
+          active={userVote === 1}
+          disabled={isVoting || userVote === 1}
           icon="arrow-up"
           title="Up-vote song"
           subtitle="It might move up in the queue"
@@ -387,8 +401,8 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
         <Action
           onPress={handleVote(-1)}
           inverted
-          active={data?.vote === -1}
-          disabled={isVoting || data?.vote === -1}
+          active={userVote === -1}
+          disabled={isVoting || userVote === -1}
           icon="arrow-down"
           title="Down-vote song"
           subtitle="It might move down in the queue"
@@ -411,4 +425,5 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
 interface TrackActionsProps {
   track: SpotifyApi.TrackObjectFull;
   onPress: () => void;
+  userVoteMap: Map<string, number>;
 }

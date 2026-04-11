@@ -1,6 +1,6 @@
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
-import { type JSX, useEffect, useRef, type FC } from "react";
+import { type JSX, memo, useEffect, useRef, type FC } from "react";
 import {
   Animated,
   TouchableWithoutFeedback,
@@ -12,7 +12,7 @@ import {
 import { Image } from "./Image";
 import { Typography } from "./Typography";
 
-export const ListItem: FC<Props> = ({
+export const ListItem: FC<Props> = memo(({
   imageUri,
   title,
   subtitle,
@@ -112,7 +112,9 @@ export const ListItem: FC<Props> = ({
       </Animated.View>
     </TouchableWithoutFeedback>
   );
-};
+});
+
+ListItem.displayName = "ListItem";
 export type ListItemProps = Props;
 
 interface Props extends TouchableWithoutFeedbackProps, ViewProps {

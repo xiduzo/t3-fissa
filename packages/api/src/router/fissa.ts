@@ -25,7 +25,10 @@ export const fissaRouter = createTRPCRouter({
     return createContainer(ctx).fissaService.create(input, ctx.session.user.id);
   }),
   byId: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
-    return createContainer(ctx).fissaService.byId(input, ctx.session?.user.id);
+    return createContainer(ctx).fissaService.byId(input);
+  }),
+  join: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
+    return createContainer(ctx).fissaService.join(input, ctx.session.user.id);
   }),
   members: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
     return createContainer(ctx).fissaService.members(input);

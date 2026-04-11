@@ -2,33 +2,22 @@ import { useContext, useEffect, useMemo, useRef, type FC } from "react";
 import { Animated, Dimensions, Modal, View, type GestureResponderEvent } from "react-native";
 import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { useGlobalSearchParams } from "expo-router";
 import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
-import { api } from "../../utils";
 import { Action, Badge, TrackEnd, TrackListItem } from "../shared";
 import { QuickVoteContext } from "./QuickVoteContext";
 
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
-export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
-  const { pin } = useGlobalSearchParams();
+export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteMap }) => {
   const { vote, touchStartPosition, track } = useContext(QuickVoteContext);
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
 
-  const { data } = api.vote.byTrackFromUser.useQuery(
-    {
-      pin: String(pin),
-      trackId: String(track?.id),
-    },
-    {
-      enabled: !!track,
-    },
-  );
+  const userVote = track ? userVoteMap?.get(track.id) : undefined;
 
   const opacity = focussedAnimation.interpolate({
     inputRange: [-Math.abs(touchStartPosition), 0],
@@ -76,16 +65,16 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   }, [track, focussedAnimation, actionOpacityAnimation, touchStartPosition]);
 
   const upVoteGradient = useMemo(() => {
-    const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);
+    const isUpVote = vote === 1 || (userVote === 1 && vote !== -1);
 
     return [theme[isUpVote ? "100" : "900"] + "20", theme["900"] + "10"];
-  }, [vote, data?.vote]);
+  }, [vote, userVote]);
 
   const downVoteGradient = useMemo(() => {
-    const isDownVote = vote === -1 || (data?.vote === -1 && vote !== 1);
+    const isDownVote = vote === -1 || (userVote === -1 && vote !== 1);
 
     return [theme["900"] + "10", theme[isDownVote ? "100" : "900"] + "20"];
-  }, [vote, data?.vote]);
+  }, [vote, userVote]);
 
   return (
     <Modal
@@ -112,7 +101,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
               layout="column"
               title="Up-vote song"
               icon="arrow-up"
-              active={data?.vote === 1}
+              active={userVote === 1}
             />
           </Animated.View>
         </LinearGradient>
@@ -121,7 +110,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
             <TrackListItem
               track={track}
               subtitlePrefix={<Badge amount={getTrackVotes(track)} />}
-              end={<TrackEnd trackId={track.id} pin={String(pin)} />}
+              end={<TrackEnd vote={userVote} />}
             />
           )}
         </Animated.View>
@@ -135,7 +124,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
             <Action
               layout="column"
               reversed
-              active={data?.vote === -1}
+              active={userVote === -1}
               icon="arrow-down"
               title="Down-vote song"
             />
@@ -149,4 +138,5 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
 interface Props {
   onTouchEnd?: (event: GestureResponderEvent) => void;
   getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number | undefined;
+  userVoteMap?: Map<string, number>;
 }

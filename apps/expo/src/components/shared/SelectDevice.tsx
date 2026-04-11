@@ -1,9 +1,8 @@
 import { theme } from "@fissa/tailwind-config";
-import { useDevices } from "@fissa/utils";
 import { useCallback, useState, type FC } from "react";
 import { Linking, View } from "react-native";
 
-import { useOnActiveApp } from "../../hooks";
+import { useOnActiveApp, useSpotifyDevices } from "../../hooks";
 import { mapDeviceToIcon } from "../../utils";
 import { Button } from "./button";
 import { Divider } from "./Divider";
@@ -12,16 +11,16 @@ import { Popover } from "./Popover";
 import { Typography } from "./Typography";
 
 export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
-  const { devices, fetchDevices } = useDevices(true);
+  const { devices, refetch: fetchDevices } = useSpotifyDevices(true);
   useOnActiveApp(() => {
-    fetchDevices();
+    void fetchDevices();
   });
 
   const [showHelp, setShowHelp] = useState(false);
 
   const toggleHelp = useCallback(() => {
     setShowHelp((prev) => !prev);
-    fetchDevices();
+    void fetchDevices();
   }, [fetchDevices]);
 
   const openSpotify = useCallback(async () => {

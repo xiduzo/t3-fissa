@@ -66,11 +66,10 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
         defaultOptions: {
           queries: {
             gcTime: CACHE_TIME_MS,
-            // Stale-while-revalidate: serve cached data instantly, refetch behind the scenes
-            staleTime: 0,
-            refetchOnMount: "always",
+            // Show cached data instantly; background-refetch after 30s staleness.
+            // Queries that need fresher data (e.g. fissa.byId) override this per-call.
+            staleTime: 30_000,
             refetchOnReconnect: "always",
-            refetchOnWindowFocus: "always",
           },
         },
       }),

@@ -23,4 +23,10 @@ export class VoteRepository implements IVoteRepository {
       where: eq(votes.pin, pin),
     });
   };
+
+  findByFissaFromUser = async (pin: string, userId: string): Promise<Vote[]> => {
+    return this.db.query.votes.findMany({
+      where: and(eq(votes.pin, pin), eq(votes.userId, userId)),
+    });
+  };
 }

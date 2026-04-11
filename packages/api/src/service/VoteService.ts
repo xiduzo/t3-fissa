@@ -26,6 +26,10 @@ export class VoteService {
     );
   };
 
+  getVotesByFissaFromUser = async (pin: string, userId: string): Promise<Vote[]> => {
+    return this.voteRepo.findByFissaFromUser(pin, userId);
+  };
+
   createVote = async (
     pin: string,
     trackId: string,
