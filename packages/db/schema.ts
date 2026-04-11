@@ -1,5 +1,6 @@
 import {
   boolean,
+  index,
   integer,
   pgEnum,
   pgTable,
@@ -136,7 +137,10 @@ export const tracks = pgTable(
     score: smallint("score").default(0).notNull(),
     totalScore: smallint("total_score").default(0).notNull(),
   },
-  (t) => [primaryKey({ columns: [t.pin, t.trackId] })],
+  (t) => [
+    primaryKey({ columns: [t.pin, t.trackId] }),
+    index("tracks_pin_idx").on(t.pin),
+  ],
 );
 
 export const votes = pgTable(
@@ -149,7 +153,12 @@ export const votes = pgTable(
     trackId: varchar("track_id", { length: 22 }).notNull(),
     pin: varchar("pin", { length: 4 }).notNull(),
   },
-  (t) => [primaryKey({ columns: [t.trackId, t.userId, t.pin] })],
+  (t) => [
+    primaryKey({ columns: [t.trackId, t.userId, t.pin] }),
+    index("votes_pin_idx").on(t.pin),
+    index("votes_user_id_idx").on(t.userId),
+    index("votes_pin_user_id_idx").on(t.pin, t.userId),
+  ],
 );
 
 export const usersInFissas = pgTable(
@@ -164,7 +173,10 @@ export const usersInFissas = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     points: integer("points").default(50).notNull(),
   },
-  (t) => [primaryKey({ columns: [t.pin, t.userId] })],
+  (t) => [
+    primaryKey({ columns: [t.pin, t.userId] }),
+    index("users_in_fissas_user_id_idx").on(t.userId),
+  ],
 );
 
 export const badges = pgTable(

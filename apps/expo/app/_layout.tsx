@@ -1,10 +1,16 @@
 import * as Sentry from "@sentry/react-native";
+import { initSpotifyPersistence } from "@fissa/utils";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as Updates from "expo-updates";
 import React, { useEffect } from "react";
 import 'react-native-reanimated'; // https://github.com/expo/expo/issues/28618
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
+
+import { sqliteStorage } from "../src/utils/sqlite-storage";
+
+// Wire up SQLite-backed storage for the Zustand spotify cache before the store hydrates.
+initSpotifyPersistence(sqliteStorage);
 
 // Suppress Reanimated strict-mode warnings triggered by NativeWind's internal
 // use of shared values during render — not an issue in our own code.

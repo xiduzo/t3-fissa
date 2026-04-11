@@ -97,7 +97,7 @@ const button = cva(
       variant: {
         outlined: "",
         contained: "",
-        text: "border-transparent",
+        text: "border-0",
       },
       inverted: {
         true: "",

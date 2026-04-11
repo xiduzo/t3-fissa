@@ -10,7 +10,7 @@ export const Image: FC<Props> = ({ className, hasBorder, ...props }) => {
       style={{ backgroundColor: theme["100"] }}
       className={image({ hasBorder: !!hasBorder, className })}
     >
-      <ExpoImage contentFit="cover" {...props} />
+      <ExpoImage contentFit="cover" style={{ width: "100%", height: "100%" }} {...props} />
     </View>
   );
 };

@@ -7,7 +7,7 @@ export const PageTemplate: FC<Props> = ({ children, className, fullScreen, ...pr
   const Wrapper = fullScreen ? View : SafeAreaView;
 
   return (
-    <Wrapper style={{ backgroundColor: theme["900"] }}>
+    <Wrapper style={{ flex: 1, backgroundColor: theme["900"] }}>
       <View {...props} className={pageTemplate({ className, fullScreen })}>
         {children}
       </View>

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Constants from "expo-constants";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
@@ -9,6 +11,7 @@ import superjson from "superjson";
 
 // relative path import to prevent circular dependency
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
+import { sqliteStorage } from "./sqlite-storage";
 
 /**
  * A set of type-safe hooks for consuming your API.
@@ -42,6 +45,14 @@ const getBaseUrl = () => {
   return `http://${localhost}:3000`;
 };
 
+/** 24 hours — how long persisted query data survives. */
+const CACHE_TIME_MS = 24 * 60 * 60 * 1000;
+
+const queryPersister = createAsyncStoragePersister({
+  storage: sqliteStorage,
+  key: "fissa-query-cache",
+});
+
 /**
  * A wrapper for your app that provides the TRPC context.
  * Use only in _app.tsx
@@ -49,7 +60,21 @@ const getBaseUrl = () => {
 export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { getValueFor } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.sessionToken);
 
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            gcTime: CACHE_TIME_MS,
+            // Stale-while-revalidate: serve cached data instantly, refetch behind the scenes
+            staleTime: 0,
+            refetchOnMount: "always",
+            refetchOnReconnect: "always",
+            refetchOnWindowFocus: "always",
+          },
+        },
+      }),
+  );
 
   const [trpcClient] = useState(() =>
     api.createClient({
@@ -69,7 +94,12 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister: queryPersister, maxAge: CACHE_TIME_MS }}
+      >
+        {children}
+      </PersistQueryClientProvider>
     </api.Provider>
   );
 };
