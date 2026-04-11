@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { getPlaylists, getPlaylistTracks, splitInChunks, useSpotify } from "@fissa/utils";
 
 /**
@@ -34,30 +35,40 @@ export const usePlaylistTracks = (playlistId: string | null) => {
 /**
  * Fetch full track objects from Spotify by ID.
  * Batches into chunks of 50 (Spotify API limit).
+ *
+ * The Spotify fetch is keyed by the *set* of IDs (sorted) so we don't
+ * refetch just because the playlist order changed.  A separate useMemo
+ * re-maps the cached tracks into the caller-supplied order so vote-based
+ * reordering is reflected immediately.
  */
 export const useSpotifyTracks = (trackIds?: string[]) => {
   const spotify = useSpotify();
 
-  // Stable query key — sorted so order doesn't matter
+  // Stable query key — sorted so order doesn't matter for fetching
   const sortedKey = trackIds?.length ? [...trackIds].sort().join(",") : "";
 
-  return useQuery({
+  const query = useQuery({
     queryKey: ["spotify", "tracks", sortedKey],
     queryFn: async () => {
       if (!trackIds?.length) return [];
       const chunks = splitInChunks(trackIds);
       const responses = await Promise.all(chunks.map((chunk) => spotify.getTracks(chunk)));
-      const allTracks = responses.flatMap(({ tracks }) => tracks);
-
-      // Build a map for ordered lookup
-      const map = new Map(allTracks.map((t) => [t.id, t]));
-      return trackIds
-        .map((id) => map.get(id))
-        .filter((t): t is SpotifyApi.TrackObjectFull => !!t);
+      return responses.flatMap(({ tracks }) => tracks);
     },
     enabled: !!trackIds?.length,
     staleTime: 10 * 60 * 1000, // 10 min — track metadata is very stable
   });
+
+  // Re-order cached tracks whenever trackIds order changes (e.g. after votes)
+  const ordered = useMemo(() => {
+    if (!query.data?.length || !trackIds?.length) return [];
+    const map = new Map(query.data.map((t) => [t.id, t]));
+    return trackIds
+      .map((id) => map.get(id))
+      .filter((t): t is SpotifyApi.TrackObjectFull => !!t);
+  }, [query.data, trackIds]);
+
+  return { ...query, data: ordered };
 };
 
 /** Fetch the user's connected Spotify devices. */

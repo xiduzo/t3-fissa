@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, type FC } from "react";
-import { Animated, Dimensions, Modal, View, type GestureResponderEvent } from "react-native";
+import { Animated, Dimensions, Modal, StyleSheet, type GestureResponderEvent } from "react-native";
 import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { theme } from "@fissa/tailwind-config";
@@ -67,13 +67,13 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteM
   const upVoteGradient = useMemo(() => {
     const isUpVote = vote === 1 || (userVote === 1 && vote !== -1);
 
-    return [theme[isUpVote ? "100" : "900"] + "20", theme["900"] + "10"];
+    return [theme[isUpVote ? "100" : "900"] + "20", theme["900"] + "10"] as const;
   }, [vote, userVote]);
 
   const downVoteGradient = useMemo(() => {
     const isDownVote = vote === -1 || (userVote === -1 && vote !== 1);
 
-    return [theme["900"] + "10", theme[isDownVote ? "100" : "900"] + "20"];
+    return [theme["900"] + "10", theme[isDownVote ? "100" : "900"] + "20"] as const;
   }, [vote, userVote]);
 
   return (
@@ -85,12 +85,13 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteM
       // But if the track doesn't fire the user still needs a way out
       onTouchEnd={onTouchEnd}
     >
-      <Animated.View className="absolute inset-0" style={{ opacity }} />
-      <View
-        className="h-full justify-center"
-        style={{ backgroundColor: theme["900"], opacity: 0.95 }}
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFillObject,
+          { backgroundColor: theme["900"], opacity, flex: 1, justifyContent: "center" },
+        ]}
       >
-        <LinearGradient className="flex-1 justify-center" colors={upVoteGradient}>
+        <LinearGradient style={{ flex: 1, justifyContent: "center" }} colors={upVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -114,7 +115,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteM
             />
           )}
         </Animated.View>
-        <LinearGradient className="flex-1 justify-center" colors={downVoteGradient}>
+        <LinearGradient style={{ flex: 1, justifyContent: "center" }} colors={downVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -130,7 +131,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteM
             />
           </Animated.View>
         </LinearGradient>
-      </View>
+      </Animated.View>
     </Modal>
   );
 };

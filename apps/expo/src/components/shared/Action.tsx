@@ -30,7 +30,7 @@ export const Action: FC<Props> = ({
           }}
         >
           <Typography inverted={!active && inverted}>
-            <Icon name={icon} />
+            <Icon name={icon} size={20} />
           </Typography>
         </View>
         <View className={text({ disabled: props.disabled, layout })}>

@@ -53,12 +53,13 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const { mutateAsync } = api.auth.getTokensFromCode.useMutation({
     onSuccess: async (tokens) => {
-      await saveTokens(tokens);
+      await saveTokens({
+        ...tokens,
+        refresh_token: tokens.refresh_token ?? undefined,
+      });
     },
-    onSettled: () => {
-      setTimeout(() => {
-        toast.hide();
-      }, 1000);
+    onError: () => {
+      toast.hide("gathering-account");
     },
   });
   const { mutateAsync: refresh } = api.auth.refreshToken.useMutation();
@@ -96,12 +97,15 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
 
     try {
       const tokens = await refresh(refreshToken);
-      await saveTokens(tokens);
+      await saveTokens({
+        ...tokens,
+        refresh_token: tokens.refresh_token ?? undefined,
+      });
     } catch (e) {
       setUser(undefined);
       const state = getState();
 
-      if (state.routes[0]?.name === "index") return;
+      if (state?.routes[0]?.name === "index") return;
       replace("");
     }
   }, [replace, getState, getRefreshToken, saveTokens, refresh]);
@@ -124,7 +128,8 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     toast.info({
       message: "Gathering account details",
       icon: "🐿️",
-      duration: 30 * 1000,
+      duration: 60 * 60 * 1000,
+      id: "gathering-account",
     });
 
     void notificationAsync(NotificationFeedbackType.Success);

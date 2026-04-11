@@ -31,20 +31,22 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
     }).start();
   }, [shownAnimation]);
 
+  const size = 56;
+
   return (
     <TouchableHighlight
       accessibilityLabel={props.title}
       accessibilityRole="button"
       {...props}
-      className="absolute bottom-6 right-6 z-50 flex h-14 w-14 rounded-2xl shadow-xl md:bottom-16"
+      style={{ position: "absolute", bottom: 24, right: 24, zIndex: 50, width: size, height: size, borderRadius: size / 2 }}
       onPress={handlePress}
     >
-      <Animated.View style={{ transform: [{ scale: shownAnimation }] }}>
+      <Animated.View style={{ width: size, height: size, borderRadius: size / 2, transform: [{ scale: shownAnimation }] }}>
         <LinearGradient
-          colors={theme.gradient}
+          colors={theme.gradient as [string, string, ...string[]]}
           start={[0, 0]}
           end={[1, 1]}
-          className="h-full w-full items-center justify-center rounded-2xl"
+          style={{ width: size, height: size, borderRadius: size / 2, alignItems: "center", justifyContent: "center" }}
         >
           <Icon name={icon} />
         </LinearGradient>

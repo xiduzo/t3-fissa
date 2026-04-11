@@ -22,7 +22,7 @@ export const Input = forwardRef<TextInput, Props>(function Input(
       <TextInput
         ref={ref}
         {...props}
-        className={input({ disabled: !props.editable })}
+        className={input({ disabled: props.editable === false })}
         clearButtonMode="always"
         blurOnSubmit
         placeholderTextColor={theme["100"] + "70"}

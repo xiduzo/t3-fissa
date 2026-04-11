@@ -64,7 +64,7 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
       >
         {icon && (
           <Typography inverted={textInverted} variant="h3" className="w-6 text-center">
-            <Icon name={icon} />
+            <Icon name={icon} size={20} />
           </Typography>
         )}
         <Typography

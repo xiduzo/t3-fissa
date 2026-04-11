@@ -1,6 +1,5 @@
 import { theme } from "@fissa/tailwind-config";
 import {
-  AnimationSpeed,
   differenceInMilliseconds,
   sortFissaTracksOrder,
 } from "@fissa/utils";
@@ -10,10 +9,9 @@ import { useGlobalSearchParams, useRouter } from "expo-router";
 import { type JSX, useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
 import {
   Animated,
+  InteractionManager,
   TouchableHighlight,
   View,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
 } from "react-native";
 
 import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack, useSpotifyTracks, useSpotifyDevices } from "../../../hooks";
@@ -61,8 +59,11 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const isOwner = useIsOwner(pin);
 
   const buttonOffsetAnimation = useRef(new Animated.Value(0)).current;
-  const lastScrolledTo = useRef<string>("");
-  const currentIndexOffset = useRef(0);
+  const scrollState = useRef({
+    lastScrolledTo: "",
+    currentOffset: 0,
+    isProgrammaticScroll: false,
+  });
   const [scrollDirection, setScrollDirection] = useState<"up" | "down" | undefined>();
 
   const marginBottom = buttonOffsetAnimation.interpolate({
@@ -87,7 +88,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 
   const showTracks = isOwner ? isPlaying && !!activeDevice : isPlaying;
   const queue = showTracks ? localTracks : [];
-  const currentTrackIndex = localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId) ?? 0;
+  const currentTrackIndex = Math.max(0, localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId));
 
   const showBackButton = useCallback(
     (offSet = 0) => {
@@ -125,8 +126,8 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
       if (!localTrack) return;
-      if (localTrack.hasBeenPlayed) return;
       if (data?.currentlyPlayingId === track.id && isOwner) return <SkipTrackButton />;
+      if (localTrack.hasBeenPlayed) return <TrackEnd />;
 
       return <TrackEnd vote={userVoteMap.get(track.id)} />;
     },
@@ -156,61 +157,72 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     return () => clearTimeout(timeout);
   }, [data?.expectedEndTime, context]);
 
-  const scrollToCurrentIndex = useCallback(
-    (viewOffset = 20) => {
+  const scrollToCurrentIndex = useCallback(() => {
+      scrollState.current.isProgrammaticScroll = true;
       listRef?.current?.scrollToIndex({
         index: currentTrackIndex,
         animated: true,
-        viewOffset: currentTrackIndex === 0 ? 0 : viewOffset,
       });
       showBackButton(0);
+
+      // Safety net: if the programmatic scroll doesn't produce a momentum-end
+      // event (e.g. the list was already at the right position), we still need
+      // to clear the flag so manual scrolls aren't silently swallowed.
+      setTimeout(() => {
+        scrollState.current.isProgrammaticScroll = false;
+      }, 600);
     },
     [currentTrackIndex, showBackButton],
   );
 
-  const lockOnActiveTrack = useCallback(
-    ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const scrollPos = nativeEvent.contentOffset.y;
-
-      if (Math.abs(scrollPos - currentIndexOffset.current) >= SCROLL_DISTANCE) return;
-
-      scrollToCurrentIndex();
-    },
-    [scrollToCurrentIndex],
-  );
+  // Stable ref so useOnActiveApp doesn't re-subscribe on every render
+  const scrollToCurrentIndexRef = useRef(scrollToCurrentIndex);
+  scrollToCurrentIndexRef.current = scrollToCurrentIndex;
 
   useEffect(() => {
-    if (lastScrolledTo.current === data?.currentlyPlayingId) return;
+    if (scrollState.current.lastScrolledTo === data?.currentlyPlayingId) return;
     if (!data?.currentlyPlayingId) return;
-    if (scrollDirection) return;
 
-    setTimeout(
-      () => {
-        setTimeout(scrollToCurrentIndex, AnimationSpeed.VeryFast);
-      },
-      currentIndexOffset.current ? 0 : 500, // give TrackList time to render
-    );
-  }, [data?.currentlyPlayingId, scrollToCurrentIndex, scrollDirection]);
+    // Reset scroll direction so the button hides after a track change
+    setScrollDirection(undefined);
 
-  useOnActiveApp(scrollToCurrentIndex);
+    const task = InteractionManager.runAfterInteractions(() => {
+      scrollToCurrentIndex();
+      scrollState.current.lastScrolledTo = data.currentlyPlayingId!;
+    });
+
+    return () => task.cancel();
+  }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
+
+  useOnActiveApp(useCallback(() => scrollToCurrentIndexRef.current(), []));
 
   return (
     <>
       <TrackList
         ref={listRef}
+        onScrollBeginDrag={() => {
+          // User started dragging — any programmatic scroll is effectively done
+          scrollState.current.isProgrammaticScroll = false;
+        }}
         onScroll={({ nativeEvent }) => {
-          showBackButton(nativeEvent.contentOffset.y - currentIndexOffset.current);
+          // Don't show/hide the button while a programmatic scroll is animating
+          if (scrollState.current.isProgrammaticScroll) return;
+          showBackButton(nativeEvent.contentOffset.y - scrollState.current.currentOffset);
         }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        onScrollEndDrag={lockOnActiveTrack}
         onMomentumScrollEnd={(e) => {
           if (!data?.currentlyPlayingId) return;
-          if (lastScrolledTo.current === data?.currentlyPlayingId) return;
 
-          lastScrolledTo.current = data?.currentlyPlayingId;
-          currentIndexOffset.current = e.nativeEvent.contentOffset.y;
-          lockOnActiveTrack(e);
+          const offset = e.nativeEvent.contentOffset.y;
+
+          // After a programmatic scroll (button press / track change),
+          // record the new baseline offset.
+          if (scrollState.current.isProgrammaticScroll) {
+            scrollState.current.isProgrammaticScroll = false;
+            scrollState.current.currentOffset = offset;
+            return;
+          }
         }}
         stickyHeaderIndices={[currentTrackIndex]}
         invertStickyHeaders
@@ -232,6 +244,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       />
       <Animated.View
         className="absolute bottom-7 z-50 w-full items-center md:bottom-36"
+        pointerEvents={scrollDirection ? "auto" : "none"}
         style={{ opacity: buttonOffsetAnimation, marginBottom }}
       >
         <TouchableHighlight
@@ -377,14 +390,15 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress, userVoteMap }) =>
           subtitle="It might move up in the queue"
         />
       )}
-      {canRemoveTrack && !isActiveTrack && !hasBeenPlayed && (
+      {!isActiveTrack && !hasBeenPlayed && (
         <Action
+          onPress={handleVote(-1)}
           inverted
-          onPress={handleDelete}
-          icon="trash"
-          disabled={isDeleting}
-          title="Remove song"
-          subtitle="Mistakes were made"
+          active={userVote === -1}
+          disabled={isVoting || userVote === -1}
+          icon="arrow-down"
+          title="Down-vote song"
+          subtitle="It might move down in the queue"
         />
       )}
       {isActiveTrack && !hasBeenPlayed && (
@@ -397,17 +411,6 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress, userVoteMap }) =>
           icon="skip-forward"
         />
       )}
-      {!isActiveTrack && !hasBeenPlayed && (
-        <Action
-          onPress={handleVote(-1)}
-          inverted
-          active={userVote === -1}
-          disabled={isVoting || userVote === -1}
-          icon="arrow-down"
-          title="Down-vote song"
-          subtitle="It might move down in the queue"
-        />
-      )}
       <Action
         inverted
         title="Save to spotify"
@@ -418,6 +421,16 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress, userVoteMap }) =>
           push(`/fissa/${fissa?.pin}/${track?.id}`);
         }}
       />
+      {canRemoveTrack && !isActiveTrack && !hasBeenPlayed && (
+        <Action
+          inverted
+          onPress={handleDelete}
+          icon="trash"
+          disabled={isDeleting}
+          title="Remove song"
+          subtitle="Mistakes were made"
+        />
+      )}
     </>
   );
 };

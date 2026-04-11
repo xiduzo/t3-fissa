@@ -1,3 +1,4 @@
+import { theme } from "@fissa/tailwind-config";
 import * as Sentry from "@sentry/react-native";
 import { Stack } from "expo-router";
 import { isRunningInExpoGo } from "expo";
@@ -23,6 +24,7 @@ function RootLayout() {
             <Stack
               screenOptions={{
                 header: (props) => <Header {...props} />,
+                contentStyle: { backgroundColor: theme["900"] },
               }}
             />
             <StatusBar style="light" />

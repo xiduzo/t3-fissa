@@ -3,9 +3,12 @@ import { Platform, ToastAndroid } from "react-native";
 import Toast from "react-native-toast-message";
 
 class NativeToast extends Toaster {
-  protected show({ type = "success", message, duration, icon }: ToasterProps) {
+  private activeId: string | undefined;
+
+  protected show({ type = "success", message, duration, icon, id }: ToasterProps) {
     const text2 = icon ?? this.defaultIcon(type);
     const visibilityTime = duration ?? 1500;
+    this.activeId = id;
     switch (Platform.OS) {
       case "ios":
       case "macos":
@@ -15,7 +18,9 @@ class NativeToast extends Toaster {
     }
   }
 
-  public hide() {
+  public hide(id?: string) {
+    if (id && this.activeId !== id) return;
+    this.activeId = undefined;
     switch (Platform.OS) {
       case "ios":
       case "macos":

@@ -1,39 +1,43 @@
 import { theme } from "@fissa/tailwind-config";
 import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-    TextInput,
-    View,
-    type NativeSyntheticEvent,
-    type TextInputChangeEventData,
-    type TextInputKeyPressEventData,
+  TextInput,
+  View,
+  type NativeSyntheticEvent,
+  type TextInputKeyPressEventData,
 } from "react-native";
+import type { TextStyle } from "react-native";
 
 import { Button, PageTemplate, Typography } from "../src/components";
 import { api } from "../src/utils/api";
 import { toast } from "../src/utils/Toast";
 
+const PIN_LENGTH = 4;
+
+const inputStyle: TextStyle = {
+  color: theme["100"],
+  textAlign: "center",
+};
+
 const Join = () => {
   const { replace } = useRouter();
-  const [pin, setPin] = useState(["", "", "", ""]);
+  const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(""));
+  const inputRefs = useRef<(TextInput | null)[]>([null, null, null, null]);
 
-  const key1 = useRef<TextInput>(null);
-  const key2 = useRef<TextInput>(null);
-  const key3 = useRef<TextInput>(null);
-  const key4 = useRef<TextInput>(null);
-
-  const keys = useMemo(() => [key1, key2, key3, key4], [key1, key2, key3, key4]);
+  const pinString = pin.join("");
+  const isComplete = !pin.includes("");
 
   const reset = useCallback(() => {
-    setPin(["", "", "", ""]);
+    setPin(Array(PIN_LENGTH).fill(""));
     setTimeout(() => {
-      keys[0]?.current?.focus();
+      inputRefs.current[0]?.focus();
     }, 100);
-  }, [keys]);
+  }, []);
 
-  const { data, error, isFetching } = api.fissa.byId.useQuery(pin.join(""), {
-    enabled: !pin.includes(""),
+  const { data, error, isFetching } = api.fissa.byId.useQuery(pinString, {
+    enabled: isComplete,
     retry: false,
   });
 
@@ -51,49 +55,64 @@ const Join = () => {
     toast.warn({ message: error.message });
   }, [error, reset]);
 
-  const handleFocus = useCallback(
-    (selectedIndex: number) => () => {
-      keys.forEach(({ current }, index) => {
-        if (index < selectedIndex) return;
-        current?.clear();
-        setPin((prev) => {
-          const newPin = [...prev];
-          newPin[index] = "";
-          return newPin;
-        });
-      });
+  const focusInput = (index: number) => {
+    if (index >= 0 && index < PIN_LENGTH) {
+      inputRefs.current[index]?.focus();
+    }
+  };
 
-      if (selectedIndex === 0) return;
-      if (pin[selectedIndex - 1] === "") keys[selectedIndex - 1]?.current?.focus();
-    },
-    [keys, pin],
-  );
-
-  const handleChange = useCallback(
-    (index: number) => (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-      const { text } = e.nativeEvent;
-      const nextIndex = index + (text === "" ? -1 : 1);
-      const next = keys[nextIndex];
-      next?.current?.focus();
+  const handleChangeText = useCallback(
+    (index: number) => (text: string) => {
+      // Only accept numeric input
+      const digit = text.replace(/[^0-9]/g, "").slice(-1);
 
       setPin((prev) => {
-        const newPin = [...prev];
-        newPin[index] = text;
-        return newPin;
+        const next = [...prev];
+        next[index] = digit;
+        return next;
       });
+
+      if (digit !== "") {
+        focusInput(index + 1);
+      }
     },
-    [keys],
+    [],
   );
 
   const handleKeyPress = useCallback(
-    (index: number) => (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-      if (e.nativeEvent.key !== "Backspace") return;
-      if (pin[index] !== "") return;
+    (index: number) =>
+      (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+        if (e.nativeEvent.key !== "Backspace") return;
 
-      const next = keys[index - 1];
-      next?.current?.focus();
+        setPin((prev) => {
+          if (prev[index] !== "") {
+            // Clear current field
+            const next = [...prev];
+            next[index] = "";
+            return next;
+          }
+          // Field already empty — move back and clear previous
+          if (index > 0) {
+            const next = [...prev];
+            next[index - 1] = "";
+            focusInput(index - 1);
+            return next;
+          }
+          return prev;
+        });
+      },
+    [],
+  );
+
+  const handleFocus = useCallback(
+    (index: number) => () => {
+      // When tapping a later field, redirect to the first empty slot
+      const firstEmpty = pin.indexOf("");
+      if (firstEmpty !== -1 && firstEmpty < index) {
+        focusInput(firstEmpty);
+      }
     },
-    [keys, pin],
+    [pin],
   );
 
   return (
@@ -103,33 +122,43 @@ const Join = () => {
         Enter the session code of the Fissa you want to join
       </Typography>
       <View className="flex-row justify-around gap-4">
-        {keys.map((key, index) => (
-          <View className="flex-1" key={key.current?.props?.id ?? index}>
+        {pin.map((digit, index) => (
+          <View className="flex-1" key={index}>
             <TextInput
               autoFocus={index === 0}
-              ref={key}
-              editable={pin.includes("")}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
+              value={digit}
+              editable={!isComplete}
               onKeyPress={handleKeyPress(index)}
-              onChange={handleChange(index)}
+              onChangeText={handleChangeText(index)}
               onFocus={handleFocus(index)}
               placeholder="⦚"
+              placeholderTextColor={theme["100"] + "70"}
               maxLength={1}
               keyboardType="numeric"
               inputMode="numeric"
-              accessibilityLabel={`enter pin code digit ${index + 1} of 4`}
-              className="p-4 text-center text-5xl font-extrabold"
-              style={{ color: theme["100"] }}
+              accessibilityLabel={`enter pin code digit ${index + 1} of ${PIN_LENGTH}`}
+              className="p-4 text-5xl font-extrabold"
+              style={inputStyle}
             />
             <View
               className="border-2"
               style={{
-                borderColor: theme[pin.indexOf("") === index ? "500" : "100"],
+                borderColor:
+                  theme[pin.indexOf("") === index ? "500" : "100"],
               }}
             />
           </View>
         ))}
       </View>
-      <Button variant="text" title="clear code" onPress={reset} disabled={isFetching} />
+      <Button
+        variant="text"
+        title="clear code"
+        onPress={reset}
+        disabled={isFetching}
+      />
     </PageTemplate>
   );
 };

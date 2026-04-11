@@ -40,6 +40,7 @@ export const TrackList = forwardRef<FlashListRef<SpotifyApi.TrackObjectFull>, Pr
         <FlashList
           {...props}
           ref={ref}
+          estimatedItemSize={104}
           keyExtractor={(item) => item?.id}
           extraData={(extraData as unknown) ?? selectedTracks}
           renderItem={({ item, index }) => {
@@ -47,10 +48,8 @@ export const TrackList = forwardRef<FlashListRef<SpotifyApi.TrackObjectFull>, Pr
             const isHeader = props.stickyHeaderIndices?.includes(index);
             return (
               <Animated.View
-                className="shadow-xl"
                 style={{
                   backgroundColor: theme["900"],
-                  shadowColor: isHeader ? theme["900"] : "transparent",
                 }}
               >
                 <TrackListItem
@@ -93,7 +92,7 @@ interface Props
   onTrackLongPress?: (track: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => void;
 }
 
-const trackListItem = cva("rounded-2xl transition-all duration-1000 my-3", {
+const trackListItem = cva("rounded-2xl my-3", {
   variants: {
     highlighted: {
       true: "mx-4 p-2 pr-4",

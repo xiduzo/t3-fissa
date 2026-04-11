@@ -38,7 +38,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
   // TanStack Query handles caching + persistence via SQLite
-  const { data: playlistTracks = [] } = usePlaylistTracks(selectedPlaylist?.id ?? null);
+  const { data: playlistTracks = [], isFetching: isFetchingPlaylistTracks } = usePlaylistTracks(selectedPlaylist?.id ?? null);
 
   const filteredTracks = useMemo(() => {
     if (!selectedPlaylist) return [];
