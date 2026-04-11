@@ -1,5 +1,6 @@
 // Learn more: https://docs.expo.dev/guides/monorepos/
 const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
 
 const projectRoot = __dirname;
@@ -19,11 +20,19 @@ config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, "node_modules"),
   path.resolve(workspaceRoot, "node_modules"),
 ];
-// 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
-// config.resolver.disableHierarchicalLookup = true;
+
+// 3. Ensure only one copy of react is used (prevents "Invalid hook call" in monorepo)
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (moduleName === "react" || moduleName === "react/jsx-runtime" || moduleName === "react/jsx-dev-runtime") {
+    return {
+      filePath: require.resolve(moduleName, { paths: [path.resolve(workspaceRoot, "node_modules")] }),
+      type: "sourceFile",
+    };
+  }
+  return context.resolveRequest(context, moduleName, platform);
+};
 
 // 4. Block server-only Node.js packages that must never reach the React Native bundle.
-//    These are pulled in transitively by @fissa/db / @fissa/auth (server-side only).
 config.resolver.blockList = /.*\/node_modules\/postgres\/.*/;
 
-module.exports = config;
+module.exports = withNativeWind(config, { input: "./global.css" });

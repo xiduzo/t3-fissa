@@ -6,6 +6,9 @@ import React, { useEffect } from "react";
 import 'react-native-reanimated'; // https://github.com/expo/expo/issues/28618
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import "../global.css";
+import "../src/utils/nativewind-interop";
+
 import { Header, ToastContainer } from "../src/components/";
 import { NotificationProvider, SpotifyProvider } from "../src/providers";
 import { TRPCProvider } from "../src/utils/api";

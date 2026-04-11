@@ -14,6 +14,8 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",
   splash: {
+    image: "./assets/icon.png",
+    resizeMode: "cover",
     backgroundColor: "#000",
   },
   backgroundColor: "#000",
@@ -25,6 +27,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     policy: "sdkVersion",
   },
   assetBundlePatterns: ["**/*"],
+  newArchEnabled: false,
   ios: {
     buildNumber,
     supportsTablet: true,
@@ -52,6 +55,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "./expo-plugins/with-modify-gradle.js",
+    "@sentry/react-native",
     [
       "expo-updates",
       {
