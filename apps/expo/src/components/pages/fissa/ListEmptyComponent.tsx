@@ -13,7 +13,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
 
   const spotify = useSpotify();
   const { activeDevice, fetchDevices } = useDevices(false); // only used in `Tracks.tsx` which already fetches devices
-  const queryClient = api.useContext();
+  const queryClient = api.useUtils();
 
   const { mutateAsync } = api.fissa.restart.useMutation({
     onMutate: async () => {

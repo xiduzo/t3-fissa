@@ -23,5 +23,6 @@
       "cva\\(([^)]*)\\)",
       "[\"'`]([^\"'`]*).*?[\"'`]"
     ]
-  ]
+  ],
+  "typescript.autoClosingTags": false
 }

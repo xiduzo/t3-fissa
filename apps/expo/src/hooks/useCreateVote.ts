@@ -3,7 +3,7 @@ import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { api } from "../utils";
 
 export const useCreateVote = (pin: string) => {
-  const queryClient = api.useContext();
+  const queryClient = api.useUtils();
 
   const { mutate, mutateAsync, ...rest } = api.vote.create.useMutation({
     onMutate: async ({ pin, trackId, vote }) => {

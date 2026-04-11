@@ -103,66 +103,66 @@ function AddSongsFromSpotify(props: ScreenProps) {
         {...(props.animated ? { ...bodyAnimation, custom: props.custom } : {})}
       >
         <section style={{color: theme[100]}}>
-          <section className='w-full h-8 rounded-md flex items-center px-1 space-x-2' style={{backgroundColor: theme[500] +'30'}}>
+          <section className='w-full h-8 rounded-md flex items-center px-1 gap2' style={{backgroundColor: theme[500] +'30'}}>
             <SearchIcon className='scale-90 opacity-30' />
             <div className='text-xs opacity-20'>Search in Spotify</div>
           </section>
           <h1 className='text-2xl font-bold mt-6 mb-4'>Your playlists</h1>
-          <section className='space-y-4'>
-            <article className='text-white flex justify-between space-x-2 items-center'>
-                <section className='flex space-x-3 items-center'>
+          <section className='gap-4'>
+            <article className='text-white flex justify-between gap2 items-center'>
+                <section className='flex gap3 items-center'>
                   <img className='rounded-md' src="https://misc.scdn.co/liked-songs/liked-songs-300.png" alt="" width={60} height={60} />
                   <section>
                     <h1>Liked songs</h1>
-                    <div className='mt-1 flex space-x-1 items-center'>
+                    <div className='mt-1 flex gap1 items-center'>
                       <h2 className='text-xs' style={{color: theme[100] + '60' }}>Xiduzo • 69 songs</h2>
                     </div>
                   </section>
                 </section>
               <ChevronRight style={{ color: theme[500] + '30'}} />
             </article>
-            <article className='text-white flex justify-between space-x-2 items-center'>
-                <section className='flex space-x-3 items-center'>
+            <article className='text-white flex justify-between gap2 items-center'>
+                <section className='flex gap3 items-center'>
                   <img className='rounded-md' src="https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84aa74bbf82f646a97beb9e4d3" alt="" width={60} height={60} />
                   <section>
                     <h1>Cozy uppers</h1>
-                    <div className='mt-1 flex space-x-1 items-center'>
+                    <div className='mt-1 flex gap1 items-center'>
                       <h2 className='text-xs' style={{color: theme[100] + '60' }}>Milan van der Maaten • 77 s...</h2>
                     </div>
                   </section>
                 </section>
               <ChevronRight style={{ color: theme[500] + '30'}} />
             </article>
-            <article className='text-white flex justify-between space-x-2 items-center'>
-                <section className='flex space-x-3 items-center'>
+            <article className='text-white flex justify-between gap2 items-center'>
+                <section className='flex gap3 items-center'>
                   <img className='rounded-md' src="https://mosaic.scdn.co/300/ab67616d00001e021f9e9f704f7dc5bfd0063e72ab67616d00001e028b90b371248a27daa7e3d774ab67616d00001e02d101716ff456b9955b98199cab67616d00001e02f3c7e4934b8dd9eedf69e6e5" alt="" width={60} height={60} />
                   <section>
                     <h1>Gezellige boel</h1>
-                    <div className='mt-1 flex space-x-1 items-center'>
+                    <div className='mt-1 flex gap1 items-center'>
                       <h2 className='text-xs' style={{color: theme[100] + '60' }}>Bella van Buren • 71 songs</h2>
                     </div>
                   </section>
                 </section>
               <ChevronRight style={{ color: theme[500] + '30'}} />
             </article>
-            <article className='text-white flex justify-between space-x-2 items-center'>
-                <section className='flex space-x-3 items-center'>
+            <article className='text-white flex justify-between gap2 items-center'>
+                <section className='flex gap3 items-center'>
                   <img className='rounded-md' src="https://mosaic.scdn.co/300/ab67616d00001e023452d31d2ef8ce06f151a028ab67616d00001e02734b36a0655aae40d78d70f4ab67616d00001e02b9242ba03ab231608f123e06ab67616d00001e02e9da42890bbd629df1e8f640" alt="" width={60} height={60} />
                   <section>
                     <h1>Ritmo Latino</h1>
-                    <div className='mt-1 flex space-x-1 items-center'>
+                    <div className='mt-1 flex gap1 items-center'>
                       <h2 className='text-xs' style={{color: theme[100] + '60' }}>Val Oceguera • 17 songs</h2>
                     </div>
                   </section>
                 </section>
               <ChevronRight style={{ color: theme[500] + '30'}} />
             </article>
-            <article className='text-white flex justify-between space-x-2 items-center'>
-                <section className='flex space-x-3 items-center'>
+            <article className='text-white flex justify-between gap2 items-center'>
+                <section className='flex gap3 items-center'>
                   <img className='rounded-md' src="https://i.scdn.co/image/ab67706f00000002d12afe707b6db45b89cf6d27" alt="" width={60} height={60} />
                   <section>
                     <h1>RapCaviar</h1>
-                    <div className='mt-1 flex space-x-1 items-center'>
+                    <div className='mt-1 flex gap1 items-center'>
                       <h2 className='text-xs' style={{color: theme[100] + '60' }}>Spotify • 50 songs</h2>
                     </div>
                   </section>
@@ -188,12 +188,12 @@ function UpAndDownVote(props: ScreenProps) {
       >
         <section className='absolute inset-0 flex items-end z-10' style={{backgroundColor: theme[900] + '70'}}>
           <section className='w-full rounded-t-3xl p-4 md:pb-8 pb-36 bg-gradient-to-br' style={{backgroundColor: theme[500]}}>
-            <article className='text-white flex justify-between space-x-2 items-center'>
-                <section className='flex space-x-3 items-center'>
+            <article className='text-white flex justify-between gap2 items-center'>
+                <section className='flex gap3 items-center'>
                   <img className='rounded-md' src="https://i.scdn.co/image/ab67616d00004851abe13c3228acc0aa278fa4dc" alt="" width={60} height={60} />
                   <section>
                     <h1 style={{color: theme[900]}}>Donald Trump</h1>
-                    <div className='mt-1 flex space-x-1 items-center'>
+                    <div className='mt-1 flex gap1 items-center'>
                       <div className='text-xs font-bold p-0.5 px-1 rounded-md' style={{backgroundColor: theme[900] + '50', color: theme[500]}}>0</div>
                       <h2 className='text-xs' style={{color: theme[900] + '90' }}>Mac Miller.</h2>
                     </div>
@@ -201,7 +201,7 @@ function UpAndDownVote(props: ScreenProps) {
                 </section>
             </article>
             <hr className='my-4' style={{borderColor: theme[900] + '60'}}/>
-            <article className='flex space-x-2 items-center'>
+            <article className='flex gap2 items-center'>
               <section className='w-12 h-12 border rounded-md flex items-center justify-center' style={{borderColor: theme[900]}}>
                 <ArrowUp style={{color: theme[900]}} />
               </section>
@@ -210,7 +210,7 @@ function UpAndDownVote(props: ScreenProps) {
                 <div className='opacity-60 text-sm'>It might move up the queue</div>
               </section>
             </article>
-            <article className='flex space-x-2 items-center mt-4'>
+            <article className='flex gap2 items-center mt-4'>
               <section className='w-12 h-12 border rounded-md flex items-center justify-center' style={{borderColor: theme[900]}}>
                 <ArrowDown style={{color: theme[900]}} />
               </section>
@@ -283,7 +283,7 @@ function FeaturesDesktop() {
       onChange={onChange}
       vertical
     >
-      <TabList className="relative z-10 order-last col-span-6 space-y-6">
+      <TabList className="relative z-10 order-last col-span-6 gap-6">
         {features.map((feature, featureIndex) => (
           <div
             key={feature.name}
@@ -384,7 +384,7 @@ function FeaturesMobile() {
     <>
       <div
         ref={slideContainerRef}
-        className="-mb-4 flex snap-x snap-mandatory -space-x-4 overflow-x-auto overscroll-x-contain scroll-smooth pb-4 [scrollbar-width:none] sm:-space-x-6 [&::-webkit-scrollbar]:hidden"
+        className="-mb-4 flex snap-x snap-mandatory -gap4 overflow-x-auto overscroll-x-contain scroll-smooth pb-4 [scrollbar-width:none] sm:-gap6 [&::-webkit-scrollbar]:hidden"
       >
         {features.map((feature, featureIndex) => (
           <div

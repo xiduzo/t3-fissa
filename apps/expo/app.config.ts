@@ -27,7 +27,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     policy: "sdkVersion",
   },
   assetBundlePatterns: ["**/*"],
-  newArchEnabled: false,
+  newArchEnabled: true,
   ios: {
     buildNumber,
     supportsTablet: true,
@@ -56,6 +56,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   plugins: [
     "./expo-plugins/with-modify-gradle.js",
     "@sentry/react-native",
+    "expo-secure-store",
     [
       "expo-updates",
       {

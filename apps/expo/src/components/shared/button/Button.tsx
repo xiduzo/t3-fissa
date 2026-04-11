@@ -91,7 +91,7 @@ interface Props extends NativeButtonProps, VariantProps<typeof button> {
 export type ButtonProps = Props;
 
 const button = cva(
-  `flex flex-row items-center justify-center space-x-4 border-2 p-5 rounded-full`,
+  `flex flex-row items-center justify-center gap-4 border-2 p-5 rounded-full`,
   {
     variants: {
       variant: {

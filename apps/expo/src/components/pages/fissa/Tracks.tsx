@@ -9,7 +9,7 @@ import {
 import { type FlashList } from "@shopify/flash-list";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState, type FC } from "react";
+import { type JSX, useCallback, useEffect, useRef, useState, type FC } from "react";
 import {
   Animated,
   TouchableHighlight,
@@ -40,18 +40,18 @@ import { ListFooterComponent } from "./ListFooterComponent";
 const SCROLL_DISTANCE = 150;
 
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
-  const context = api.useContext();
+  const context = api.useUtils();
 
   const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
 
-  const { data, isInitialLoading } = api.fissa.byId.useQuery(pin, {
+  const { data, isLoading: isInitialLoading } = api.fissa.byId.useQuery(pin, {
     refetchInterval: 6000, // TODO: signal (push notification) from the server instead of polling?
   });
 
   const isOwner = useIsOwner(pin);
 
   const buttonOffsetAnimation = useRef(new Animated.Value(0)).current;
-  const lastScrolledTo = useRef<string>();
+  const lastScrolledTo = useRef<string>("");
   const currentIndexOffset = useRef(0);
   const [scrollDirection, setScrollDirection] = useState<"up" | "down" | undefined>();
 
@@ -229,7 +229,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           underlayColor={theme["900"] + "10"}
         >
           <View
-            className="flex flex-row items-center space-x-4 rounded-md border-2 px-3 py-2 shadow-md"
+            className="flex flex-row items-center gap-4 rounded-md border-2 px-3 py-2 shadow-md"
             style={{
               backgroundColor: theme["900"],
               borderColor: theme["500"],
@@ -263,12 +263,12 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 const SkipTrackButton = () => {
   const { pin } = useGlobalSearchParams();
 
-  const { mutateAsync, isLoading } = useSkipTrack(String(pin));
+  const { mutateAsync, isPending } = useSkipTrack(String(pin));
 
   return (
     <IconButton
       onPress={mutateAsync}
-      disabled={isLoading}
+      disabled={isPending}
       title="play next song"
       icon="skip-forward"
     />
@@ -304,16 +304,16 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
 
   const { data } = api.vote.byTrackFromUser.useQuery({ pin: String(pin), trackId: track.id });
 
-  const { mutateAsync: voteOnTrack, isLoading: isVoting } = useCreateVote(String(pin));
+  const { mutateAsync: voteOnTrack, isPending: isVoting } = useCreateVote(String(pin));
 
-  const { mutateAsync: deleteTrack, isLoading: isDeleting } = api.track.deleteTrack.useMutation({
+  const { mutateAsync: deleteTrack, isPending: isDeleting } = api.track.deleteTrack.useMutation({
     // TODO: optimistic update
     onSettled: async () => {
       await notificationAsync(NotificationFeedbackType.Success);
     },
   });
 
-  const { mutateAsync: skipTrack, isLoading: isSkipping } = useSkipTrack(String(pin), {
+  const { mutateAsync: skipTrack, isPending: isSkipping } = useSkipTrack(String(pin), {
     onMutate: () => {
       onPress();
     },

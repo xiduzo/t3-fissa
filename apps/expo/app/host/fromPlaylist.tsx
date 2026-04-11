@@ -19,7 +19,7 @@ const FromPlaylist = () => {
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
-  const { mutateAsync, isLoading } = useCreateFissa();
+  const { mutateAsync, isPending } = useCreateFissa();
 
   const start = useCallback(async () => {
     if (!selectedPlaylist) return;
@@ -63,7 +63,7 @@ const FromPlaylist = () => {
           title="Let's kick it"
           inverted
           onPress={start}
-          disabled={isLoading}
+          disabled={isPending}
           // TODO: set accessibilityFocus when selectedPlaylist changes
           accessibilityLabel={`Start fissa based on ${selectedPlaylist?.name}`}
         />

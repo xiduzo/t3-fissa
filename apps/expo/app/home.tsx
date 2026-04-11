@@ -48,7 +48,7 @@ const Home = () => {
           what are you up to
         </Typography>
       </View>
-      <View className="space-y-6">
+      <View className="gap-6">
         <Button title="join a fissa" linkTo="/join" />
         <Button
           title="host a fissa"

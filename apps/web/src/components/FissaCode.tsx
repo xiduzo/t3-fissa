@@ -88,8 +88,8 @@ export function FissaCode() {
   }, [keys]);
 
   return (
-    <section className="container mx-auto mt-32 space-y-12">
-      <section className="m-auto flex max-w-md justify-between space-x-4 text-6xl">
+    <section className="container mx-auto mt-32 gap-12">
+      <section className="m-auto flex max-w-md justify-between gap4 text-6xl">
         {keys.map((key, index) => (
           <div className="flex flex-col" key={index}>
             <input

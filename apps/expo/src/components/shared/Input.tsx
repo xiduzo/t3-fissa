@@ -38,7 +38,7 @@ interface Props extends VariantProps<typeof input>, TextInputProps {
   startIcon?: IconName;
 }
 
-const view = cva("flex-row items-center space-x-2 rounded-md px-4 py-3");
+const view = cva("flex-row items-center gap-2 rounded-md px-4 py-3");
 
 const input = cva("flex-grow", {
   variants: {

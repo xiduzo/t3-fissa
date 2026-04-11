@@ -12,7 +12,7 @@ import { api } from "../../src/utils"
 const Index = () => {
   const { user, signOut } = useAuth()
   const { replace } = useRouter()
-  const { data, isInitialLoading } = api.auth.getUserStats.useQuery()
+  const { data, isLoading: isInitialLoading } = api.auth.getUserStats.useQuery()
 
   const signOutUser = useCallback(() => {
     signOut()
@@ -27,12 +27,12 @@ const Index = () => {
           headerBackVisible: true
         }}
       />
-      <View className="space-y-10">
-        <View className="space-y-1">
+      <View className="gap-10">
+        <View className="gap-1">
           <Typography centered variant="h1">{user?.display_name}</Typography>
           <Typography centered dimmed>Joined {format(data?.createdAt ?? new Date(), "MMMM yyyy")}</Typography>
         </View>
-        <View className="space-y-2">
+        <View className="gap-2">
           <View className="justify-between items-center flex-row">
             <Typography variant="h2">Stats</Typography>
             {/* <Typography dimmed>+2 undiscovered</Typography> */}
@@ -110,7 +110,7 @@ const Badge = ({ badge, score, isLoading }: { badge: BADGE, isLoading: boolean, 
         onPress={() => setSelected(true)}
         underlayColor={theme['100'] + '40'}
       >
-        <View className="items-center border rounded-md w-36 p-3 space-y-2" style={{
+        <View className="items-center border rounded-md w-36 p-3 gap-2" style={{
           borderColor: theme['100'] + '40',
         }}>
           <Typography centered dimmed>{BADGE_NAMES[badge].name}</Typography>

@@ -32,7 +32,7 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
 
   return (
     <View
-      className="flex-row items-center justify-between space-x-2 px-6 pb-2 shadow-md"
+      className="flex-row items-center justify-between gap-2 px-6 pb-2 shadow-md"
       style={{
         backgroundColor: theme["900"],
         paddingTop: safeArea.top + 8,

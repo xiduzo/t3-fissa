@@ -102,7 +102,7 @@ const CreatePlaylistAction: FC<ActionProps> = ({ pin, onRequestClose }) => {
 const PauseFissaAction = () => {
   const { pin } = useGlobalSearchParams();
   const isOwner = useIsOwner(String(pin));
-  const { mutateAsync, isLoading } = api.fissa.pause.useMutation({
+  const { mutateAsync, isPending } = api.fissa.pause.useMutation({
     onSuccess: () => {
       toast.success({ message: "Fissa paused", icon: "🦥" });
     },
@@ -122,7 +122,7 @@ const PauseFissaAction = () => {
       title="Pause Fissa"
       subtitle="Nothing lasts forever"
       inverted
-      disabled={isLoading}
+      disabled={isPending}
       onPress={pauseSpotify}
       icon="pause"
     />

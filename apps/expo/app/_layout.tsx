@@ -4,6 +4,14 @@ import { StatusBar } from "expo-status-bar";
 import * as Updates from "expo-updates";
 import React, { useEffect } from "react";
 import 'react-native-reanimated'; // https://github.com/expo/expo/issues/28618
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
+
+// Suppress Reanimated strict-mode warnings triggered by NativeWind's internal
+// use of shared values during render — not an issue in our own code.
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import "../global.css";

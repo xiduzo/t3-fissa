@@ -56,7 +56,7 @@
       "error_message": "Incorrect value in code",
       "file": "apps/expo/app/profile/index.tsx",
       "root_cause": "Had \"items-center border rounded-md w-36 lg:w-56 p-3 s",
-      "fix": "Changed to \"items-center border rounded-md w-36 p-3 space-y-2",
+      "fix": "Changed to \"items-center border rounded-md w-36 p-3 gap-2",
       "tags": [
         "auto-detected",
         "wrong-value",

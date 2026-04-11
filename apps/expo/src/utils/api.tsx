@@ -5,7 +5,7 @@ import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@fissa/api";
-import { transformer } from "@fissa/api/transformer";
+import superjson from "superjson";
 
 // relative path import to prevent circular dependency
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
@@ -32,11 +32,6 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
  * setting the SERVER_URL to your production API URL.
  */
 const getBaseUrl = () => {
-  /**
-   * Gets the IP address of your host-machine. If it cannot automatically find it,
-   * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
-   * you don't have anything else running on it, or you'd have to change it.
-   */
   const config = Constants.expoConfig as { hostUri?: string; extra?: { serverUrl?: string } };
 
   const localhost = config.hostUri?.split(":")[0];
@@ -58,10 +53,10 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [trpcClient] = useState(() =>
     api.createClient({
-      transformer,
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
+          transformer: superjson,
           headers: async () => {
             return {
               authorization: `Bearer ${(await getValueFor()) ?? ""}`,

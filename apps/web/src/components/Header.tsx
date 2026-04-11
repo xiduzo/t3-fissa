@@ -33,7 +33,7 @@ export function Header() {
       <nav>
         <Container className="relative z-50 flex justify-between py-8">
           <div className="relative z-10 flex items-center gap-16">
-            <Link to="/" aria-label="Home" className="flex items-center space-x-4">
+            <Link to="/" aria-label="Home" className="flex items-center gap4">
               <Logo className="h-10 w-auto rounded-md" />
               <div className="font-bold text-4xl">Fissa</div>
             </Link>
@@ -76,7 +76,7 @@ export function Header() {
                           style={{ backgroundColor: theme[900] }}
                           className="absolute inset-x-0 top-0 z-0 origin-top rounded-b-2xl px-6 pb-6 pt-32 shadow-2xl shadow-gray-900/20"
                         >
-                          <div className="space-y-4">
+                          <div className="gap-4">
                             <MobileNavLink href="/#features">Features</MobileNavLink>
                             <MobileNavLink href="/#join-a-fissa">Join a Fissa</MobileNavLink>
                             <MobileNavLink href="/#faqs">FAQs</MobileNavLink>

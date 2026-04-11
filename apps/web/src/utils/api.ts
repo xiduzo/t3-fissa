@@ -2,15 +2,14 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@fissa/api";
-import { transformer } from "@fissa/api/transformer";
 import { env } from "@fissa/env/client";
+import superjson from "superjson";
 
 export const api = createTRPCReact<AppRouter>();
 
 const getBaseUrl = () => env.VITE_API_URL;
 
 export const trpcClient = api.createClient({
-  transformer,
   links: [
     loggerLink({
       enabled: (opts) =>
@@ -19,6 +18,7 @@ export const trpcClient = api.createClient({
     }),
     httpBatchLink({
       url: `${getBaseUrl()}/api/trpc`,
+      transformer: superjson,
       fetch: (url, options) => fetch(url, { ...options, credentials: "include" }),
     }),
   ],

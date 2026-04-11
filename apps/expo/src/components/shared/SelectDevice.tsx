@@ -31,7 +31,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
 
   return (
     <>
-      <View className="space-y-2">
+      <View className="gap-2">
         {!devices.length && <EmptyState title="No devices found" icon="🦀" />}
         {devices
           .filter(({ id }) => !!id)
@@ -60,8 +60,8 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
         <Typography centered variant="h2" inverted>
           Follow the steps below
         </Typography>
-        <View className="mx-4 my-6 space-y-3">
-          <View className="flex-row space-x-2">
+        <View className="mx-4 my-6 gap-3">
+          <View className="flex-row gap-2">
             <View className="overflow-hidden rounded-full">
               <Typography className="px-1.5" style={{ backgroundColor: theme["900"] }}>
                 1
@@ -74,7 +74,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
               via the button below
             </Typography>
           </View>
-          <View className="flex-row space-x-2">
+          <View className="flex-row gap-2">
             <View className="overflow-hidden rounded-full">
               <Typography className="px-1.5" style={{ backgroundColor: theme["900"] }}>
                 2
@@ -87,7 +87,7 @@ export const SelectDevice: FC<Props> = ({ onSelectDevice, inverted }) => {
               via the Spotify player
             </Typography>
           </View>
-          <View className="flex-row space-x-2">
+          <View className="flex-row gap-2">
             <View className="overflow-hidden rounded-full">
               <Typography className="px-1.5" style={{ backgroundColor: theme["900"] }}>
                 3

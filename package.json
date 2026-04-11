@@ -2,7 +2,7 @@
   "name": "fissa-house-party",
   "private": true,
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "packageManager": "pnpm@9.0.4",
   "scripts": {
@@ -30,7 +30,7 @@
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.2.8",
     "turbo": "1.13.3",
-    "typescript": "5.4.5",
+    "typescript": "~5.8.3",
     "vitest": "1.6.0"
   }
 }
