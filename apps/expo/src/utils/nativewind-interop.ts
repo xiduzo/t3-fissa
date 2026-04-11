@@ -1,10 +1,10 @@
 import { Animated } from "react-native";
  
-import { cssInterop } from "nativewind";
+import { styled } from "nativewind";
 import { LinearGradient } from "expo-linear-gradient";
 
-// Register third-party components with NativeWind v4
+// Register third-party components with NativeWind v5
 // so they can accept the className prop
-cssInterop(LinearGradient, { className: "style" });
-cssInterop(Animated.View, { className: "style" });
-cssInterop(Animated.Text, { className: "style" });
+styled(LinearGradient, { className: "style" });
+styled(Animated.View, { className: "style" });
+styled(Animated.Text, { className: "style" });

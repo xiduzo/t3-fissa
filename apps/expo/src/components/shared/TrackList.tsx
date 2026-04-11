@@ -1,13 +1,13 @@
 import { forwardRef, useCallback } from "react";
 import { Animated, View, type GestureResponderEvent } from "react-native";
-import { FlashList, type FlashListProps } from "@shopify/flash-list";
+import { FlashList, type FlashListProps, type FlashListRef } from "@shopify/flash-list";
 import { theme } from "@fissa/tailwind-config";
 import { cva } from "@fissa/utils";
 
 import { Badge } from "./Badge";
 import { TrackListItem } from "./TrackListItem";
 
-export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props>(
+export const TrackList = forwardRef<FlashListRef<SpotifyApi.TrackObjectFull>, Props>(
   function TrackList(
     {
       onTrackPress,
@@ -40,7 +40,6 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
         <FlashList
           {...props}
           ref={ref}
-          estimatedItemSize={80}
           keyExtractor={(item) => item?.id}
           extraData={(extraData as unknown) ?? selectedTracks}
           renderItem={({ item, index }) => {

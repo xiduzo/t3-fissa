@@ -9,7 +9,7 @@ import {
     type TextInputChangeEventData,
 } from "react-native";
 
-import { type FlashList } from "@shopify/flash-list";
+import { type FlashListRef } from "@shopify/flash-list";
 import { usePlaylistTracks } from "../../hooks";
 import { PageTemplate } from "../PageTemplate";
 import { BottomDrawer } from "./BottomDrawer";
@@ -29,7 +29,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
   const inputRef = useRef<TextInput>(null);
   const [search, setSearch] = useState("");
   const [debounced] = useDebounceValue(search, 150);
-  const ref = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
+  const ref = useRef<FlashListRef<SpotifyApi.TrackObjectFull>>(null);
 
   const [searchedTracks, setSearchedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
   const [selectedTracks, setSelectedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);

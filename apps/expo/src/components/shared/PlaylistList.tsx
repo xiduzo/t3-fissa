@@ -25,7 +25,6 @@ export const PlaylistList: FC<Props> = ({
           (playlist) => !onlyUserPlaylists || playlist.owner.id === user?.id,
         )}
         keyExtractor={({ id }) => id}
-        estimatedItemSize={80}
         ItemSeparatorComponent={ItemSeparatorComponent}
         renderItem={({ item }) => (
           <PlaylistListItem

@@ -7,9 +7,9 @@
 // https://github.com/expo/expo/issues/18129
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { withProjectBuildGradle } = require("@expo/config-plugins");
+const { withProjectBuildGradle } = require("expo/config-plugins");
 
-/** @type {import("@expo/config-plugins").ConfigPlugin} */
+/** @type {import("expo/config-plugins").ConfigPlugin} */
 module.exports = (config) => {
   return withProjectBuildGradle(config, (config) => {
     if (!config.modResults.contents.includes("ext.getPackageJsonVersion =")) {

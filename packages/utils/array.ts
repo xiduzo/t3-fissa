@@ -9,8 +9,8 @@ export const splitInChunks = <T>(array: T[], chunkSize = 50): T[][] => {
 };
 
 const sortTrack = (date: keyof Dates) => (a: SortableTrack, b: SortableTrack) => {
-  const aTime = a[date].getTime();
-  const bTime = b[date].getTime();
+  const aTime = new Date(a[date]).getTime();
+  const bTime = new Date(b[date]).getTime();
 
   if (a.score !== b.score) return b.score - a.score;
   if (aTime === bTime) return a.trackId.localeCompare(b.trackId);

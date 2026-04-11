@@ -4,7 +4,7 @@ import {
   differenceInMilliseconds,
   sortFissaTracksOrder,
 } from "@fissa/utils";
-import { type FlashList } from "@shopify/flash-list";
+import { type FlashListRef } from "@shopify/flash-list";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
 import { type JSX, useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
@@ -40,7 +40,7 @@ const SCROLL_DISTANCE = 150;
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const context = api.useUtils();
 
-  const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
+  const listRef = useRef<FlashListRef<SpotifyApi.TrackObjectFull>>(null);
 
   const { data, isLoading: isInitialLoading } = api.fissa.byId.useQuery(pin, {
     refetchInterval: 15_000,

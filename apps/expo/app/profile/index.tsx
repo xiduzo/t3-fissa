@@ -38,7 +38,7 @@ const Index = () => {
             {/* <Typography dimmed>+2 undiscovered</Typography> */}
           </View>
           <View className="flex-grow h-80 -mx-2">
-            <FlashList estimatedItemSize={24} horizontal renderItem={({ item }) => {
+            <FlashList horizontal renderItem={({ item }) => {
               return <Badge isLoading={isInitialLoading} badge={item} score={data?.badges.find(badge => badge.name === item)?.score} />
             }} data={Object.values(BADGE)} />
           </View>
