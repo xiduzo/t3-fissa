@@ -57,6 +57,8 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     "./expo-plugins/with-modify-gradle.js",
     "@sentry/react-native",
     "expo-secure-store",
+    "expo-router",
+    "expo-sqlite",
     [
       "expo-updates",
       {

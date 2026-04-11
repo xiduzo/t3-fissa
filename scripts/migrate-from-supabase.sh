@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Migrate data from Supabase to Dokploy Postgres
+#
+# Usage:
+#   ./scripts/migrate-from-supabase.sh
+#
+# Required env vars (or pass inline):
+#   SUPABASE_DB_URL  — your Supabase connection string
+#   TARGET_DB_URL    — your Dokploy Postgres connection string
+# ─────────────────────────────────────────────────────────────────────────────
+
+SUPABASE_DB_URL="${SUPABASE_DB_URL:?Set SUPABASE_DB_URL (e.g. postgresql://postgres:pass@db.xxx.supabase.co:5432/postgres)}"
+TARGET_DB_URL="${TARGET_DB_URL:?Set TARGET_DB_URL (e.g. postgresql://fissa:pass@your-dokploy-host:5432/fissa)}"
+
+DUMP_FILE="supabase_dump_$(date +%Y%m%d_%H%M%S).sql"
+
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║  Supabase → Dokploy Postgres Migration                     ║"
+echo "╚══════════════════════════════════════════════════════════════╝"
+
+# Step 1: Apply Drizzle schema to target (creates tables if they don't exist)
+echo ""
+echo "→ Step 1: Applying Drizzle migrations to target database..."
+DATABASE_URL="$TARGET_DB_URL" pnpm --filter @fissa/db db:migrate
+echo "  ✓ Schema applied"
+
+# Step 2: Dump DATA ONLY from Supabase (no schema, no ownership)
+echo ""
+echo "→ Step 2: Dumping data from Supabase..."
+pg_dump "$SUPABASE_DB_URL" \
+  --data-only \
+  --no-owner \
+  --no-privileges \
+  --disable-triggers \
+  --exclude-schema='auth' \
+  --exclude-schema='storage' \
+  --exclude-schema='realtime' \
+  --exclude-schema='supabase_*' \
+  --exclude-schema='extensions' \
+  --exclude-schema='_realtime' \
+  --exclude-schema='pgsodium*' \
+  --exclude-schema='vault' \
+  --exclude-schema='graphql*' \
+  -f "$DUMP_FILE"
+echo "  ✓ Dump saved to $DUMP_FILE"
+
+# Step 3: Restore data into target
+echo ""
+echo "→ Step 3: Restoring data to target database..."
+psql "$TARGET_DB_URL" -f "$DUMP_FILE"
+echo "  ✓ Data restored"
+
+echo ""
+echo "════════════════════════════════════════════════════════════════"
+echo "  Migration complete! Verify with:"
+echo "    psql \"$TARGET_DB_URL\" -c 'SELECT count(*) FROM users;'"
+echo "════════════════════════════════════════════════════════════════"

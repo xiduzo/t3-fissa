@@ -16,4 +16,5 @@ export const env = createEnv({
       .default("development"),
   },
   runtimeEnv: process.env,
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
