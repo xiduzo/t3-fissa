@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Constants from "expo-constants";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
@@ -60,20 +60,26 @@ const queryPersister = createAsyncStoragePersister({
 export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { getValueFor } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.sessionToken);
 
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            gcTime: CACHE_TIME_MS,
-            // Show cached data instantly; background-refetch after 30s staleness.
-            // Queries that need fresher data (e.g. fissa.byId) override this per-call.
-            staleTime: 30_000,
-            refetchOnReconnect: "always",
-          },
+  const [queryClient] = useState(() => {
+    const client = new QueryClient({
+      defaultOptions: {
+        queries: {
+          gcTime: CACHE_TIME_MS,
+          staleTime: 30_000,
+          refetchOnReconnect: "always",
         },
-      }),
-  );
+      },
+    });
+
+    // Restore cache from SQLite in the background — does NOT block rendering
+    void persistQueryClient({
+      queryClient: client,
+      persister: queryPersister,
+      maxAge: CACHE_TIME_MS,
+    });
+
+    return client;
+  });
 
   const [trpcClient] = useState(() =>
     api.createClient({
@@ -93,12 +99,9 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={{ persister: queryPersister, maxAge: CACHE_TIME_MS }}
-      >
+      <QueryClientProvider client={queryClient}>
         {children}
-      </PersistQueryClientProvider>
+      </QueryClientProvider>
     </api.Provider>
   );
 };

@@ -52,11 +52,11 @@ const Home = () => {
         <Button title="join a fissa" linkTo="/join" />
         <Button
           title="host a fissa"
-          disabled={user?.product !== "premium"}
+          disabled={!user || user.product !== "premium"}
           variant="outlined"
           onPress={handleHostFissa}
         />
-        {user?.product !== "premium" && (
+        {user && user.product !== "premium" && (
           <Typography dimmed centered className="mt-4" variant="bodyM">
             Only spotify premium users can host a fissa
           </Typography>
