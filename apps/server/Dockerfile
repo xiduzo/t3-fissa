@@ -32,6 +32,7 @@ RUN SKIP_ENV_VALIDATION=1 pnpm turbo build --filter=@fissa/server...
 # ── Production ───────────────────────────────────────────────────────────────
 FROM base AS runner
 ENV NODE_ENV=production
+ENV MIGRATIONS_PATH=/app/packages/db/drizzle
 WORKDIR /app
 
 COPY --from=build /app .

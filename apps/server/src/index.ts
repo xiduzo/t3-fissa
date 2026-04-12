@@ -1,3 +1,5 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { Hono } from "hono";
@@ -6,9 +8,23 @@ import { logger } from "hono/logger";
 
 import { auth } from "@fissa/auth";
 import { appRouter, createTRPCContext, FissaSyncOrchestrator } from "@fissa/api";
-import { db } from "@fissa/db";
+import { db, runMigrations } from "@fissa/db";
 import { env } from "@fissa/env";
 
+// ---------------------------------------------------------------------------
+// Run pending migrations before anything else
+// ---------------------------------------------------------------------------
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const migrationsPath = process.env.MIGRATIONS_PATH
+  ?? path.resolve(__dirname, "../../../packages/db/drizzle");
+
+console.info("[server] running migrations…");
+await runMigrations(migrationsPath);
+console.info("[server] migrations complete");
+
+// ---------------------------------------------------------------------------
+// App
+// ---------------------------------------------------------------------------
 const app = new Hono();
 
 app.use("*", logger());
