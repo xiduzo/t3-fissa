@@ -117,7 +117,7 @@ export function FissaCode() {
       <button
         disabled={!pin.includes("")}
         onClick={handleClear}
-        className="w-full rounded-full p-4 font-bold hover:bg-gray-100/10 transition-all duration-150"
+        className="w-full rounded-full p-4 mt-6 font-bold hover:bg-gray-100/10 transition-all duration-150"
       >
         clear code
       </button>
