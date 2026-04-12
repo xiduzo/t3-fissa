@@ -9,7 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 Sentry.init({
   dsn: Constants.expoConfig?.extra?.sentryDsn ?? "",
-  debug: __DEV__,
+  debug: false,
   enabled: !__DEV__,
 });
 

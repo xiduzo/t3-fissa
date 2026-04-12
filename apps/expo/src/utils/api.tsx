@@ -37,12 +37,15 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 const getBaseUrl = () => {
   const config = Constants.expoConfig as { hostUri?: string; extra?: { serverUrl?: string } };
 
-  const localhost = config.hostUri?.split(":")[0];
-  if (!localhost) {
-    return process.env.SERVER_URL ?? config.extra?.serverUrl ?? "http://localhost:3000";
-  }
+  // Prefer the explicitly configured server URL (production or custom)
+  if (config.extra?.serverUrl) return config.extra.serverUrl;
+  if (process.env.SERVER_URL) return process.env.SERVER_URL;
 
-  return `http://${localhost}:3000`;
+  // Fall back to local dev server on the same machine as Expo
+  const localhost = config.hostUri?.split(":")[0];
+  if (localhost) return `http://${localhost}:3000`;
+
+  return "http://localhost:3000";
 };
 
 /** 24 hours — how long persisted query data survives. */
@@ -67,6 +70,17 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
           gcTime: CACHE_TIME_MS,
           staleTime: 30_000,
           refetchOnReconnect: "always",
+          retry: (failureCount, error) => {
+            // Don't retry on 4xx client errors, do retry network failures up to 3 times
+            if (error instanceof Error && "data" in error) return false;
+            return failureCount < 3;
+          },
+        },
+        mutations: {
+          retry: false,
+          onError: (error) => {
+            console.warn("[tRPC mutation error]", error);
+          },
         },
       },
     });
