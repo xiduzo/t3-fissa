@@ -12,8 +12,9 @@ set -euo pipefail
 #   TARGET_DB_URL    — your Dokploy Postgres connection string
 # ─────────────────────────────────────────────────────────────────────────────
 
-SUPABASE_DB_URL="${SUPABASE_DB_URL:?Set SUPABASE_DB_URL (e.g. postgresql://postgres:pass@db.xxx.supabase.co:5432/postgres)}"
-TARGET_DB_URL="${TARGET_DB_URL:?Set TARGET_DB_URL (e.g. postgresql://fissa:pass@your-dokploy-host:5432/fissa)}"
+# DATABASE_URL=postgresql://glosario:glosario@192.168.68.250:9996/glosario
+SUPABASE_DB_URL="postgres://postgres.kuladhvllcidtwvejooz:7x0GFt%ARSYcD6gK@sk*@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+TARGET_DB_URL="postgresql://postgres:CJKTWtjaRz8*Lmu-Hnkf@87.210.105.141:9995/fissa"
 
 DUMP_FILE="supabase_dump_$(date +%Y%m%d_%H%M%S).sql"
 

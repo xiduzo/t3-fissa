@@ -54,7 +54,7 @@ const limey: Theme = {
   gradient: ["#FFF95F", "#BCFF4E"],
 };
 
-const extrodonary: Theme = {
+export const extrodonary: Theme = {
   name: "extrodonary",
   100: "#E8E8E8",
   500: "#8C8C8C",

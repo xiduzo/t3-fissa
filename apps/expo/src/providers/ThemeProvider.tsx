@@ -1,4 +1,4 @@
-import { themes, getThemeForUser, type Theme } from "@fissa/tailwind-config/themes";
+import { themes, getThemeForUser, extrodonary, type Theme } from "@fissa/tailwind-config/themes";
 import { createContext, useContext, useEffect, useState, type FC, type PropsWithChildren } from "react";
 import * as SecureStore from "expo-secure-store";
 
@@ -6,7 +6,7 @@ import { useAuth } from "./SpotifyProvider";
 
 const THEME_CACHE_KEY = "fissa_theme";
 
-const defaultTheme = themes[0]!;
+const defaultTheme = extrodonary;
 
 const ThemeContext = createContext<Theme>(defaultTheme);
 

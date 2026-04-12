@@ -23,5 +23,6 @@ declare module "@fissa/tailwind-config/themes" {
     };
 
     export const themes: Theme[];
+    export const extrodonary: Theme;
     export function getThemeForUser(userId: string): Theme;
 }
