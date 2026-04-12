@@ -1,3 +1,4 @@
+import "./instrument";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";

@@ -19,6 +19,7 @@
     "@fissa/env": "*",
     "@fissa/utils": "*",
     "@hono/node-server": "^1.13.7",
+    "@sentry/node": "^10.48.0",
     "@trpc/server": "11.16.0",
     "hono": "^4.6.14"
   },

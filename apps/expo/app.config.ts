@@ -3,7 +3,7 @@ import { ConfigContext, ExpoConfig } from "@expo/config";
 
 const version = "4.0.0"; // EAS VERSION
 // Should be bumped every time a new build is made
-const buildNumber = "2"; // EAS VERSION
+const buildNumber = "3"; // EAS VERSION
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
@@ -49,6 +49,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   extra: {
     serverUrl: process.env.SERVER_URL ?? "https://api.fissa.online",
     spotifyClientId: "a2a88c4618324942859ce3e1f888b938",
+    sentryDsn: process.env.SENTRY_DSN_MOBILE ?? "https://b107ae36171541b58896d22738c2a6bc@o4504055699996672.ingest.us.sentry.io/4504055702880256",
     eas: {
       projectId: "89f5d2ef-e72d-4e2c-a88c-3fe56e30e601",
     },
@@ -58,8 +59,8 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     [
       "@sentry/react-native",
       {
-        organization: process.env.SENTRY_ORG ?? "",
-        project: process.env.SENTRY_PROJECT ?? "",
+        organization: process.env.SENTRY_ORG ?? "fissa",
+        project: process.env.SENTRY_PROJECT ?? "fissa-expo",
       },
     ],
     "expo-secure-store",

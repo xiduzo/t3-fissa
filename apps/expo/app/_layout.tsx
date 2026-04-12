@@ -1,10 +1,17 @@
 import * as Sentry from "@sentry/react-native";
 import { Stack } from "expo-router";
 import { isRunningInExpoGo } from "expo";
+import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import * as Updates from "expo-updates";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+Sentry.init({
+  dsn: Constants.expoConfig?.extra?.sentryDsn ?? "",
+  debug: __DEV__,
+  enabled: !__DEV__,
+});
 
 import "../global.css";
 import "../src/utils/nativewind-interop";
