@@ -10,8 +10,8 @@ COPY apps/web/package.json apps/web/package.json
 COPY packages/api/package.json packages/api/package.json
 COPY packages/env/package.json packages/env/package.json
 COPY packages/utils/package.json packages/utils/package.json
-COPY packages/config/package.json packages/config/package.json
-COPY packages/tailwind-config/package.json packages/tailwind-config/package.json
+COPY packages/config/tailwind/package.json packages/config/tailwind/package.json
+COPY packages/config/eslint/package.json packages/config/eslint/package.json
 RUN pnpm install --frozen-lockfile
 
 # ── Build ────────────────────────────────────────────────────────────────────
