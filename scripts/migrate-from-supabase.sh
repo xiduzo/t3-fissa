@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Add libpq (pg_dump, psql) to PATH if installed via Homebrew
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Migrate data from Supabase to Dokploy Postgres
 #
@@ -14,7 +17,7 @@ set -euo pipefail
 
 # DATABASE_URL=postgresql://glosario:glosario@192.168.68.250:9996/glosario
 SUPABASE_DB_URL="postgres://postgres.kuladhvllcidtwvejooz:7x0GFt%ARSYcD6gK@sk*@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
-TARGET_DB_URL="postgresql://postgres:CJKTWtjaRz8*Lmu-Hnkf@87.210.105.141:9995/fissa"
+TARGET_DB_URL="postgresql://postgres:CJKTWtjaRz8*Lmu-Hnkf@192.168.68.250:9995/fissa"
 
 DUMP_FILE="supabase_dump_$(date +%Y%m%d_%H%M%S).sql"
 
@@ -25,7 +28,9 @@ echo "╚═══════════════════════�
 # Step 1: Apply Drizzle schema to target (creates tables if they don't exist)
 echo ""
 echo "→ Step 1: Applying Drizzle migrations to target database..."
-DATABASE_URL="$TARGET_DB_URL" pnpm --filter @fissa/db db:migrate
+# Run drizzle-kit directly from packages/db — the pnpm `db:migrate` script
+# uses dotenv-cli which overrides DATABASE_URL with the .env value.
+(cd packages/db && DATABASE_URL="$TARGET_DB_URL" npx drizzle-kit migrate)
 echo "  ✓ Schema applied"
 
 # Step 2: Dump DATA ONLY from Supabase (no schema, no ownership)

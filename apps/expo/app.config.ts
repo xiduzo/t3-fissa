@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ConfigContext, ExpoConfig } from "@expo/config";
 
-const version = "3.4.0"; // EAS VERSION
+const version = "4.0.0"; // EAS VERSION
 // Should be bumped every time a new build is made
 const buildNumber = "2"; // EAS VERSION
 
@@ -47,7 +47,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
   },
   extra: {
-    vercelUrl: "https://fissa-houseparty.vercel.app",
+    serverUrl: process.env.SERVER_URL ?? "https://api.fissa.online",
     spotifyClientId: "a2a88c4618324942859ce3e1f888b938",
     eas: {
       projectId: "89f5d2ef-e72d-4e2c-a88c-3fe56e30e601",
@@ -55,7 +55,13 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "./expo-plugins/with-modify-gradle.js",
-    "@sentry/react-native",
+    [
+      "@sentry/react-native",
+      {
+        organization: process.env.SENTRY_ORG ?? "",
+        project: process.env.SENTRY_PROJECT ?? "",
+      },
+    ],
     "expo-secure-store",
     "expo-router",
     "expo-sqlite",

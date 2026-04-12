@@ -50,3 +50,10 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# Sentry auth token
+sentry.properties
+
+# Vim swap files
+*.swp
+._*
