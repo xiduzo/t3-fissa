@@ -18,6 +18,7 @@
     "@fissa/env": "*",
     "@fissa/tailwind-config": "*",
     "@fissa/utils": "*",
+    "clsx": "^2.1.1",
     "@headlessui/react": "^2.1.8",
     "@tanstack/react-query": "^5.97.0",
     "@tanstack/react-router": "^1.114.23",
@@ -29,6 +30,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-toastify": "10.0.5",
+    "superjson": "^2.2.1",
     "zod": "3.23.8",
     "use-debounce": "^10.0.0"
   },

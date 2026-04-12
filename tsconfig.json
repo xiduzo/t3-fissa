@@ -27,6 +27,5 @@
   "include": [
     ".eslintrc.js",
     "prettier.config.cjs"
-  ],
-  "extends": "expo/tsconfig.base"
+  ]
 }
