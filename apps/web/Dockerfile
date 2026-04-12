@@ -5,7 +5,7 @@ WORKDIR /app
 
 # ── Dependencies ─────────────────────────────────────────────────────────────
 FROM base AS deps
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.json ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages/api/package.json packages/api/package.json
 COPY packages/env/package.json packages/env/package.json
@@ -21,9 +21,12 @@ ENV VITE_API_URL=${VITE_API_URL}
 COPY . .
 RUN SKIP_ENV_VALIDATION=1 pnpm turbo build --filter=@fissa/web...
 
-# ── Serve with nginx ─────────────────────────────────────────────────────────
-FROM nginx:alpine AS runner
-COPY --from=build /app/apps/web/dist /usr/share/nginx/html
-COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# ── Serve ────────────────────────────────────────────────────────────────────
+FROM node:20-alpine AS runner
+RUN npm install -g sirv-cli@3
+COPY --from=build /app/apps/web/dist /app
+
+ENV NODE_ENV=production
+EXPOSE 3001
+
+CMD ["sirv", "/app", "--single", "--host", "0.0.0.0", "--port", "3001"]
