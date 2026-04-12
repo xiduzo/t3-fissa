@@ -33,7 +33,7 @@ export function Header() {
       <nav>
         <Container className="relative z-50 flex justify-between py-8">
           <div className="relative z-10 flex items-center gap-16">
-            <Link to="/" aria-label="Home" className="flex items-center gap4">
+            <Link to="/" aria-label="Home" className="flex items-center gap-4">
               <Logo className="h-10 w-auto rounded-md" />
               <div className="font-bold text-4xl">Fissa</div>
             </Link>
