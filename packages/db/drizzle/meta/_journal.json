@@ -6,28 +6,7 @@
       "idx": 0,
       "version": "7",
       "when": 1775835089654,
-      "tag": "0000_goofy_umar",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1775835239715,
-      "tag": "0001_known_dark_phoenix",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1775837463412,
-      "tag": "0002_blue_cyclops",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1775902177260,
-      "tag": "0003_wise_excalibur",
+      "tag": "0000_initial",
       "breakpoints": true
     }
   ]
