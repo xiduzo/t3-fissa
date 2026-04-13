@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T22:08:32.691Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T22:20:21.643Z
 > Files: 508 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -317,7 +317,7 @@
 
 - `AuthService.ts` — Exports AuthService (~815 tok)
 - `BadgeService.ts` — Exports BadgeService (~904 tok)
-- `FissaService.ts` — Exports TRACKS_BEFORE_ADDING_RECOMMENDATIONS, FissaService (~2695 tok)
+- `FissaService.ts` — Exports TRACKS_BEFORE_ADDING_RECOMMENDATIONS, FissaService (~2765 tok)
 - `TrackService.ts` — Exports TrackService (~304 tok)
 - `VoteService.ts` — Exports VoteService (~938 tok)
 

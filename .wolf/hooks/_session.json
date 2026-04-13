@@ -76,15 +76,21 @@
       "action": "create",
       "tokens": 1102,
       "at": "2026-04-13T22:08:32.699Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+      "action": "edit",
+      "tokens": 284,
+      "at": "2026-04-13T22:20:21.650Z"
     }
   ],
   "edit_counts": {
     "packages/api/src/orchestration/FissaSyncOrchestrator.ts": 6,
-    "packages/api/src/service/FissaService.ts": 2
+    "packages/api/src/service/FissaService.ts": 3
   },
   "anatomy_hits": 5,
   "anatomy_misses": 0,
   "repeated_reads_warned": 1,
   "cerebrum_warnings": 0,
-  "stop_count": 5
+  "stop_count": 7
 }

@@ -164,7 +164,7 @@ export class FissaService {
     });
   };
 
-  playNextTrack = async (pin: string, forceToPlay = false): Promise<Date | null> => {
+  playNextTrack = async (pin: string, forceToPlay = false, retriedRecommendations = false): Promise<Date | null> => {
     const fissaDetails = await this.fissaRepo.findDetailedForSync(pin);
     const { by, trackList: fissaTracks, currentlyPlaying, expectedEndTime } = fissaDetails;
 
@@ -180,7 +180,14 @@ export class FissaService {
       }
 
       const [nextTrack, ...nextTracks] = this.getNextTracks(fissaTracks, currentlyPlaying?.trackId);
-      if (!nextTrack) throw new NoNextTrack();
+
+      if (!nextTrack) {
+        if (!retriedRecommendations) {
+          await this.addRecommendedTracks(pin, biasSort(fissaTracks), accessToken);
+          return this.playNextTrack(pin, forceToPlay, true);
+        }
+        throw new NoNextTrack();
+      }
 
       if (nextTracks?.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
         await this.addRecommendedTracks(pin, biasSort(fissaTracks), accessToken);
