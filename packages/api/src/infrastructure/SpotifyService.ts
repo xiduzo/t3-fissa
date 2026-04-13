@@ -4,7 +4,25 @@ import { UnableToPlayTrack, sleep } from "@fissa/utils";
 
 import type { ISpotifyService } from "../interfaces";
 
-const TRIES_TO_PLAY = 3;
+const MAX_RETRIES = 3;
+
+type SpotifyErrorShape = {
+  body: { error: { reason: string; status: number } };
+  statusCode?: number;
+};
+
+function parseSpotifyError(e: unknown) {
+  const err = e as SpotifyErrorShape;
+  return {
+    reason: err?.body?.error?.reason ?? "",
+    status: err?.statusCode ?? err?.body?.error?.status ?? 0,
+  };
+}
+
+function isHardFailure(e: unknown): boolean {
+  const { reason, status } = parseSpotifyError(e);
+  return status === 403 || reason === "NO_ACTIVE_DEVICE" || reason === "RESTRICTION_VIOLATED";
+}
 
 export class SpotifyService implements ISpotifyService {
   private createClient(accessToken?: string) {
@@ -15,6 +33,16 @@ export class SpotifyService implements ISpotifyService {
     if (accessToken) client.setAccessToken(accessToken);
     return client;
   }
+
+  private withRetry = async <T>(fn: () => Promise<T>, trial = 0): Promise<T> => {
+    try {
+      return await fn();
+    } catch (e: unknown) {
+      if (isHardFailure(e) || trial >= MAX_RETRIES) throw e;
+      await sleep(1500 * (trial + 1));
+      return this.withRetry(fn, trial + 1);
+    }
+  };
 
   codeGrant = async (code: string, redirectUri: string) => {
     const client = this.createClient();
@@ -29,11 +57,13 @@ export class SpotifyService implements ISpotifyService {
   };
 
   me = async (accessToken: string) => {
-    return this.createClient(accessToken).getMe();
+    return this.withRetry(() => this.createClient(accessToken).getMe());
   };
 
   isStillPlaying = async (accessToken: string) => {
-    const { body } = await this.createClient(accessToken).getMyCurrentPlaybackState();
+    const { body } = await this.withRetry(() =>
+      this.createClient(accessToken).getMyCurrentPlaybackState(),
+    );
     return body.is_playing;
   };
 
@@ -41,47 +71,48 @@ export class SpotifyService implements ISpotifyService {
     const client = this.createClient(accessToken);
 
     try {
-      await client.play({ uris: [`spotify:track:${trackId}`] });
+      await this.withRetry(() => client.play({ uris: [`spotify:track:${trackId}`] }));
       await sleep(1500);
       const { body } = await client.getMyCurrentPlaybackState();
-      return Promise.resolve(body.is_playing);
+      return body.is_playing;
     } catch (e: unknown) {
-      if (trial > TRIES_TO_PLAY) throw new UnableToPlayTrack("Could not play track");
+      if (trial > MAX_RETRIES) throw new UnableToPlayTrack("Could not play track");
 
-      const error = e as { body: { error: { reason: string } } };
-      const reason = error?.body?.error?.reason ?? "";
+      const { reason } = parseSpotifyError(e);
       if (reason === "NO_ACTIVE_DEVICE") {
         console.warn("No active device found, trying to transfer playback");
         const { body } = await client.getMyDevices();
-
         const firstDevice = body.devices[0];
-
         if (!firstDevice?.id) throw new UnableToPlayTrack("No playback device(s) found");
-
         await client.transferMyPlayback([firstDevice.id]);
         await sleep(1500);
         return this.playTrack(accessToken, trackId, trial + 1);
       }
 
-      return Promise.resolve(false);
+      return false;
     }
   };
 
   getRecommendedTracks = async (accessToken: string, seedTrackIds: string[]) => {
     const client = this.createClient(accessToken);
-
-    const me = await client.getMe();
-
-    const { body } = await client.getRecommendations({
-      seed_tracks: seedTrackIds.slice(0, Math.min(5, seedTrackIds.length)),
-      market: me.body.country,
-      limit: 5,
-    });
-
+    const me = await this.withRetry(() => client.getMe());
+    const { body } = await this.withRetry(() =>
+      client.getRecommendations({
+        seed_tracks: seedTrackIds.slice(0, Math.min(5, seedTrackIds.length)),
+        market: me.body.country,
+        limit: 5,
+      }),
+    );
     return body.tracks;
   };
 
   pause = async (accessToken: string): Promise<void> => {
-    await this.createClient(accessToken).pause();
+    try {
+      await this.withRetry(() => this.createClient(accessToken).pause());
+    } catch (e: unknown) {
+      if (!isHardFailure(e)) {
+        console.warn("Failed to pause after retries", parseSpotifyError(e));
+      }
+    }
   };
 }

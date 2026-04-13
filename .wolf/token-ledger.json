@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-10T17:27:26.117Z",
   "lifetime": {
-    "total_tokens_estimated": 41579,
-    "total_reads": 98,
-    "total_writes": 13,
-    "total_sessions": 12,
-    "anatomy_hits": 95,
+    "total_tokens_estimated": 54351,
+    "total_reads": 106,
+    "total_writes": 19,
+    "total_sessions": 13,
+    "anatomy_hits": 103,
     "anatomy_misses": 3,
-    "repeated_reads_blocked": 3,
-    "estimated_savings_vs_bare_cli": 22110
+    "repeated_reads_blocked": 4,
+    "estimated_savings_vs_bare_cli": 24693
   },
   "sessions": [
     {
@@ -813,6 +813,135 @@
         "writes_count": 1,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-04-13-2235",
+      "started": "2026-04-13T20:35:03.045Z",
+      "ended": "2026-04-13T20:36:38.488Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2667,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+          "tokens_estimated": 790,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 78,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3457,
+        "output_tokens_estimated": 78,
+        "reads_count": 2,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-04-13-2235",
+      "started": "2026-04-13T20:35:03.045Z",
+      "ended": "2026-04-13T20:37:26.292Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2667,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+          "tokens_estimated": 790,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/ISpotifyService.ts",
+          "tokens_estimated": 224,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+          "tokens_estimated": 221,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3681,
+        "output_tokens_estimated": 299,
+        "reads_count": 3,
+        "writes_count": 2,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-04-13-2235",
+      "started": "2026-04-13T20:35:03.045Z",
+      "ended": "2026-04-13T20:38:46.755Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2667,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+          "tokens_estimated": 983,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/ISpotifyService.ts",
+          "tokens_estimated": 224,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+          "tokens_estimated": 221,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+          "tokens_estimated": 1084,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3874,
+        "output_tokens_estimated": 1383,
+        "reads_count": 3,
+        "writes_count": 3,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 3
       }
     }
   ],

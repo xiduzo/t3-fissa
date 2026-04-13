@@ -81,6 +81,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-10T18:58:35.045Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-04-13T20:37:21.171Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "packages/api/src/infrastructure/SpotifyService.ts",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-13T20:37:21.171Z"
     }
   ],
   "bugs_session_2026_04_10": [
@@ -101,6 +117,27 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-10T20:46:00.000Z"
+    }
+  ],
+  "bugs_session_2026_04_13": [
+    {
+      "id": "bug-006",
+      "timestamp": "2026-04-13T00:00:00.000Z",
+      "error_message": "WebapiPlayerError: Player command failed: Restriction violated UNKNOWN (403) from Spotify pause() call",
+      "file": "packages/api/src/service/FissaService.ts",
+      "root_cause": "stopFissa returned (not awaited) the spotifyService.pause() promise, so the try/catch block never caught the 403 error from Spotify — it propagated up as an unhandled rejection",
+      "fix": "Changed `return this.spotifyService.pause(accessToken)` to `await this.spotifyService.pause(accessToken)` so the catch block handles Spotify errors",
+      "tags": [
+        "spotify",
+        "pause",
+        "async",
+        "unhandled-rejection",
+        "403",
+        "stopFissa"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-13T00:00:00.000Z"
     }
   ]
 }

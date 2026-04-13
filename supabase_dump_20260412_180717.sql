@@ -1,0 +1,2480 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict eETnWPdbOgUfzN0rJFmHq11O8A7EZIplDqHXLMPsFtd8ZcyYwM4exRNDqwcGBhg
+
+-- Dumped from database version 15.1 (Ubuntu 15.1-1.pgdg20.04+1)
+-- Dumped by pg_dump version 18.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+SET SESSION AUTHORIZATION DEFAULT;
+
+ALTER TABLE public.users DISABLE TRIGGER ALL;
+
+COPY public.users (id, name, email, "emailVerified", image, "createdAt") FROM stdin;
+clp0t439g0001jz086e4b3v0i	Daniele	daniele.ventriglia@icloud.com	\N	\N	2024-06-21 14:32:18.704
+clp4okwmu0001l408nmcd40zp	Adriannefraser@ icloud.com	fraseradrianne@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clph8okbq0001js08l3u8510i	lutsens	lutsen@lutsen.net	\N	\N	2024-06-21 14:32:18.704
+clps8o9zu0001l608ldf0rpe7	Lucia Cibulková	cibulkova.lucia@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clptq4c4m0001l508k90zsybx	Swedishgirl	angelajmesita@yahoo.com	\N	\N	2024-06-21 14:32:18.704
+clpx9kzll0001ii085zye8csq	woop_digital	uragarage@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clqrovl7i0001l808tq6yym10	florencia lozano	flozanozu@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clqutbzq50001jy08qtv9uajj	윤혜경	hk23404354@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clr5qqi1z0001jo08kiyrqg1s	Claybob722	claybob722@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clrcvpv0g0001lf097dn7zedo	Gustav Vallin	gustav.vallin@icloud.com	\N	\N	2024-06-21 14:32:18.704
+clrqixzlu0001l30818e13awc	Thomas Langeberg	aa6wb8mdt9@privaterelay.appleid.com	\N	\N	2024-06-21 14:32:18.704
+clsj9j90i0009l408f52qg4p4	Sophiejplumley	sophiejplumley97@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clsp79z830001l608w8y2flew	Florian	florian.roget59@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltdir2y40001jp0803q0qapu	🎧🫀	lexiedingsdale@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltey3t580002lb08emzm8d6d	BarretjeBW	bweerdenburg@caiway.nl	\N	\N	2024-06-21 14:32:18.704
+cltkcnrqd0001ld08n8lhvwhr	melekyagmur	melekunalprolab@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltkcridj0001l708d7228tsz	Azar	azars7621@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltkfs03b0004jx08dyimcr7c	Bryan Delnoije	bryan2.delnoye@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltkfx9ef000cjx08lnq72klz	beapol7	beatrizpola.lobo@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltqoq1p40001jy08myvd65ey	beratgashi	beratz.gashi@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltw0ujho0001ld08vol4w5gk	Karim	karim-awad@outlook.com	\N	\N	2024-06-21 14:32:18.704
+cltxdkgtg0001l508jyw9bkqj	samira	samirasafi89@gmail.com	\N	\N	2024-06-21 14:32:18.704
+cltysp3kc001gjq08xjk8d2xu	Stijjn Frberg	stijnfroberg@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clu8vaowz0001l608olpe0pt6	Bobby	bobby@forewordco.com	\N	\N	2024-06-21 14:32:18.704
+clufnqtl50001jn086c0q549b	LeoCucurachi	cucurachileo01@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clus6ku6f0001l108uq5wjwcl	MAiS0N	t8379034@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clvcxpj720001js08lhgqttaq	linavaron1	lina.varon1@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clvs9f2ge0001mk08m2snei66	Louis Gallet	louis.gallet@epita.fr	\N	\N	2024-06-21 14:32:18.704
+clvs9i8h00009mk080pmvc10z	Louis	spam@louisgallet.fr	\N	\N	2024-06-21 14:32:18.704
+clwduijog0008jx08h4r5edwr	Cristiana Gouvide	cristianagouvide22@gmail.com	\N	\N	2024-06-21 14:32:18.704
+clx12i3170001l508p84t0vow	tibo	eloded@ik.me	\N	\N	2024-06-21 14:32:18.704
+cm05nlyhs0001sqq5dx5ydp7n	mr-jonas	jonas.stoll@posteo.de	\N	\N	2024-08-22 19:06:36.64
+cm05fyy580001ru005b6bspcg	Kenny	pmstyt27sv@privaterelay.appleid.com	\N	https://i.scdn.co/image/ab67757000003b826e1f17406d05e4929e7b451d	2024-08-22 15:32:45.788
+clzyj1raa0001zqmdoh1m1fb3	Mike Sweeren	mikesweeren@hotmail.com	\N	https://scontent-ams2-1.xx.fbcdn.net/v/t1.30497-1/453178253_471506465671661_2781666950760530985_n.png?stp=cp0_dst-png_p50x50&_nc_cat=1&ccb=1-7&_nc_sid=22ec41&_nc_ohc=r2tL2d_l2n8Q7kNvgH4thfh&_nc_ht=scontent-ams2-1.xx&edm=AP4hL3IEAAAA&oh=00_AYAJrWGBv3xwBUsOLmFSfEY3AqV3UlifmFVKIVtS6SwmOg&oe=66E7B9FA	2024-08-17 19:24:32.482
+cly14gecy00ih10q9k5t8mlu9	青島鼓志朗	aokoji@au.com	\N	\N	2024-06-30 05:39:55.186
+clxql3v1r00016we0leuan1ac	Mahmoud	108538477lmamza@gmail.com	\N	https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=463560825428386&height=50&width=50&ext=1721680832&hash=AbZ9bmgMXJe-BeXJV5AaBAVi	2024-06-22 20:40:35.824
+clxqzm5wj0001375j9cs31nok	James	qvqpdwyt9p@privaterelay.appleid.com	\N	\N	2024-06-23 03:26:44.323
+cly14p3av00im10q9qfujp1lb	Chrissy Sanchez	cms11478@yahoo.com	\N	https://i.scdn.co/image/ab67757000003b821499f11895b2b600bda18108	2024-06-30 05:46:40.76
+cm1lfdn8x00041330o570s32b	ALEXTHESTANDUSER	richardvaldez9000@gmail.com	\N	\N	2024-09-28 00:40:13.041
+clxu75qzg000a55znb1f06owk	osanago	ittan@momen.nl	\N	\N	2024-06-25 09:21:13.949
+clytagmy7000111jmtrdr9jmg	Muhammad Ashiq		\N	https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=988537558249881&height=50&width=50&ext=1724021136&hash=AbZrP-AUxCwv4Ej4OtsBFD4v	2024-07-19 22:45:36.943
+cm1seco1p0001bzhmfgwsozkl	Fábio Phillip Rocha Marques	haru_glory6@hotmail.com	\N	https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10219015565641497&height=50&width=50&ext=1730497550&hash=AbZ3PopscmOWRamGj3mCWRoH	2024-10-02 21:45:51.037
+cm0sdyzzm0001og3hmkjnpxmx	Lucas	lumitac05@icloud.com	\N	\N	2024-09-07 16:55:30.994
+cltyqrn0m0004jq084r2iwxcn	Giel	gielv.erhoef@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee851072d8e7cc69ee8ad353836a	2024-06-21 14:32:18.704
+clxmg9dg80001l50807ymgqer	Henrik Mattsson-Mårn	h@archkive.org	\N	https://scontent-bru2-1.xx.fbcdn.net/v/t1.18169-1/10731039_10155620993020157_3702718038150286322_n.jpg?stp=cp0_dst-jpg_s50x50&_nc_cat=109&ccb=1-7&_nc_sid=312bcd&_nc_ohc=XaaHefpDpJIQ7kNvgEg1drF&_nc_ht=scontent-bru2-1.xx&edm=AP4hL3IEAAAA&oh=00_AYB4TDFVoHP9ThjKGswobKwTRKmiyqusa30hiFkX21alHA&oe=66FEDFFB	2024-06-21 14:32:18.704
+cm5f0ovg500016td6gusuvxak	Music Wolf	darcylps@yahoo.com	\N	https://i.scdn.co/image/ab6775700000ee859a15008176a8fe93d68f4609	2025-01-02 07:41:14.933
+clqwmywel001fjv08mbvg0uer	Milan van der Maaten	milanvandermaaten@gmail.com	\N	https://i.scdn.co/image/ab67757000003b82da0ca6cfb9b5a6359ff17dbb	2024-06-21 14:32:18.704
+cm1dnr7c0000114lvok7xnk55	emma 🪩	rtcwpts6mr@privaterelay.appleid.com	\N	https://i.scdn.co/image/ab67757000003b82b47575630f910f43356c6422	2024-09-22 14:12:33.121
+cm7gf6p0f0001qusyzrif5joz	Paul Armitage	armitagep316@gmail.com	\N	\N	2025-02-22 16:34:11.871
+cm4ukhz0o0001tvc4z6tkh3yr	James H.	2xtjnpzmb8@privaterelay.appleid.com	\N	https://i.scdn.co/image/ab6775700000ee8549cf359d371e8a7e27c76efc	2024-12-19 00:12:35.592
+cm1zhb2nk00aeyh9sqk5ay6qj	LE RORO	romain.clerin@gmail.com	\N	\N	2024-10-07 20:42:58.736
+cm3s2whjl0001ep0y36j2bl6f	Fer Lemes	lemesferrr@gmail.com	\N	\N	2024-11-22 01:44:45.009
+cm09oqzpg0009w9ureubo8a21	sander	mail@sanderboer.nl	\N	\N	2024-08-25 14:49:35.813
+cm5zkt8jp00017ogxs01dmeji	Sarah	sarahbitota09@icloud.com	\N	\N	2025-01-16 16:59:54.373
+clpuwqgco0001if08r20h71hb	Val Oceguera	valeriaocegueracastillo@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee859595e0e656e5e26d69fe0788	2024-06-21 14:32:18.704
+clp0emue20001le09pebg876d	Xiduzo	sanderboer_feyenoord@hotmail.com	\N	https://i.scdn.co/image/ab6775700000ee85f894967e43f5db83d83f65c0	2024-06-21 14:32:18.704
+cm8rcedhq0001qe7utz99eb2h	aqilaaa	aqila.adhikari@gmail.com	\N	\N	2025-03-27 12:41:21.614
+clro3j1yb0001jt08e8ewtwqq	Line Edvardsen	edvardsenline@gmail.com	\N	https://scontent-tpe1-1.xx.fbcdn.net/v/t1.6435-1/202593464_1681181582074619_1366612722415669455_n.jpg?stp=dst-jpg_s320x320_tt6&_nc_cat=102&ccb=1-7&_nc_sid=08baa4&_nc_ohc=hKqyoBRIbVsQ7kNvwHH2wOh&_nc_oc=AdqUvFAoaX-aTPqotU3yzqFvdXNuti6Nkv1Grg95TZKBeBa-4nl3QTkE8qCOIVp3f6f1v2uv8jJGtscaDUmsqU8i&_nc_zt=24&_nc_ht=scontent-tpe1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=yuF51QL3fiRcVRkU3xSe2g&_nc_tpa=Q5bMBQHiHJr72qjgO-u8pPJzSk5Ul_VaP27kIruh-50o4fDUCiu2_IMFEMNs8L534W46-U-glvL-&oh=00_Af1jNqEIhO0j0vlhkLXBvRbQYdsfWoSTugaoXEDppESNTA&oe=69F59999	2024-06-21 14:32:18.704
+cm8i82r3f0001bl4xkjzjh5tf	Torchaneoualid	torchaneoualid213@gmail.com	\N	https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=120111837621988&height=300&width=300&ext=1745109716&hash=AbZQE__TFneRhSup-SQCMmN8	2025-03-21 03:30:25.323
+cm9fs51eu0001goxqqc1x6tzo	Rasmus	rasmusralle24@gmail.com	\N	\N	2025-04-13 15:08:28.135
+cmjbhsdko0001cqmpy8a7mhxm	Jamie	pinkocean1722@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee85d4fdd074e4dc6653c370bf92	2025-12-18 13:44:39.864
+cmahtc53w00017fwarpw7mxc9	Jessica McDonald	mcdonald0474@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee854dbd956783b7795b0db9758b	2025-05-10 05:57:13.82
+cmajeuo060001149hwf3bikzp	Forid	ceamzt@outlook.com	\N	\N	2025-05-11 08:47:16.23
+cmen283bm0001xgz0ok3xmw2g	Gab :/	gby.rosso7@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee8577a27946a2becedfff3ed660	2025-08-22 16:43:41.65
+cmc3a8dwp0001lrildmngocp2	Denay	5xnfs9tcxn@privaterelay.appleid.com	\N	\N	2025-06-19 11:13:04.105
+cma0w5hyr001vc91ob1bvn1yd	Louan	louan.mobe@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee85f96d19edd3b3d86b4000a9f0	2025-04-28 09:43:57.747
+cmf01ob9d000110v6v6yfa6pm	kiasha.haviland	kiasha.haviland@horizonspost.com	\N	\N	2025-08-31 18:49:19.105
+cmf5gpi590001ikir9b46jeq6	Essa	alkhuroosialkhuroosi@gmail.com	\N	\N	2025-09-04 13:48:59.805
+cmgwaafni000swattya3y3man	Rishi Reddy	privaterish@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee85c8245c4baaf87c256b501861	2025-10-18 12:58:48.127
+cmgwfsjv70002quvupeltt1y5	Rahul Dhanturi	vzthcdnkvx@privaterelay.appleid.com	\N	\N	2025-10-18 15:32:51.475
+cmfk63t260001efscwq3j53l6	HSD	mail@hamacher-servicedienste.de	\N	\N	2025-09-14 20:48:43.998
+cmfqlnqk30001ppweoewlk5o8	Zinjihanramadani	zinjihanramadanijihan@gmail.com	\N	\N	2025-09-19 08:50:45.172
+cmfsbs4n10001e1g1bpg0635u	emilikay	emilia.pietrusiow@jelcznet.pl	\N	\N	2025-09-20 13:49:46.237
+cmgyskgyl0002muvxvm19pg0h	I’m Marco (I Promise)	vdacruzmartins.vdm@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee858087c72b77186406212dc0b4	2025-10-20 07:06:01.822
+cmigc1u31000155ryqeaiehfy	Sidd	siddhant.atrish01@gmail.com	\N	\N	2025-11-26 18:23:12.013
+cmihe08ti0001k681w8guj22w	宏六	hiro1110b@icloud.com	\N	\N	2025-11-27 12:05:43.206
+cmn71vtzu0006c19m9x586bvn	MoHaNnEd Maged	mohannedmaged22@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee851227e54232e33d5b663fbdc9	2026-03-26 05:47:11.898
+cmgw0ipzy000113mffohgz27r	Akash Dhanturi	akdhanturi@gmail.com	\N	https://i.scdn.co/image/ab6775700000ee8548f4faf87ee707d0e30271e8	2025-10-18 08:25:18.622
+\.
+
+
+ALTER TABLE public.users ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: accounts; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.accounts DISABLE TRIGGER ALL;
+
+COPY public.accounts (id, "userId", type, provider, "providerAccountId", refresh_token, access_token, expires_at, token_type, scope, id_token, session_state) FROM stdin;
+cltysp3kc001fjq08elakpsc2	cltysp3kc001gjq08xjk8d2xu	oauth	spotify	1160881969	AQCARHb1biPPPOMxtx6CxRkRgqFa-FUirCdyX3EcTV3qVPiW6WizDYUuwyuSpU8vpArRStEt2sRBFyKN5oSfxWEDImQCo1iTJVDP6cakokkoiOtqDTll9hgx7D11Kf_KOFQ	BQCR3vglZ5ZTXECXqyUX2XtIkry2rytZ-260vcNo7UpanTlbYiEZ_Kxk4vEjSBj-0hZPOePo2kgIU2HQxhvBWS-d8Ba25uGbO4BvW9D4QX3IbJ9PMnBhMpfiDwfKyNiIfnu_moR5HVdJxYnkLAMfJVhGO7GhEuGrN8wj4ctDRVmoLndVczg8FnxpbryOp9ytHxEkPDjOUyVBIx3-8Tu4-_CjqaRQTv6waDg1JALpavZO9FoGtNsboAqZ3QoDI4JV2PVV1QnDnEbHlg	1712327493	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clp4okwmu0000l40896wuth7i	clp4okwmu0001l408nmcd40zp	oauth	spotify	316nzrkrqx5kgxts7xi7skppx6li	AQAI9TfQ4Z6dXxMwfCg2CGSic3t5ct3Q5wcmhM_1fdLbKFKz3B9GEI6n_JJ-0KMIWun98wxGxbb_ScBJjkLLyn-MhbgNUXUQzcvtR9ReBR8FgLhENAVBPula728kjPmh81U	BQCSaiY4E4p6fDIN-TwhLI6jqYOuMQwUiSeCy2XHq9VXHZIUNgmdISyMdfkWyP4DFgngSHFYZYulFYNfC9QOCYa0a08OFyFEYfIgT5XTjChB9-IazK3I41Sle1wPqhDvbaQ_8xf3nkrXAyO-Kyh4RHBiZfI1dBzAgmiXat6c2_k66LM3OhgS8HyNtdFoboeaBZhXOrgMHogisbbkb3axEtjXBZnkQ0BmTRuDmEzwBUwxqS1etdMTKWxdWG3E4yn8DyN9rC6RVnPjY4aPxJ0a3xOuO3Qb41F0Qg	1700353755	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clps8o9zu0000l608k4rkahd6	clps8o9zu0001l608ldf0rpe7	oauth	spotify	11124198621	AQCTJILrg3MEU2eUuVGxnU1cE_2ANZNL4k33bo3DMW-nEIHaFcL3fRWndZYtvHkHi0KXtIhsN7C-kFpT6BUYf0vFopnYMs1Cbu_S79b2rj6dtS_qlKyVABOUh31yLAf1aa8	BQDzArJm5duzUNz_gUfi79W900GIIdF-PAuscXrR512RioL62MJoPHNiBZwb1OB4hQOHJK_xBl7AWSgyi0LqZjjtjrxOCt3h2KpslUFUUuxnqFY014PoyPHiMd6ESLzx6N_7BOsN5U0x4lQxzxdQF9oTNqN0aR4uOQod6gYa4HrHiAzUUZcE3fnol6zbvP24sjE2rosWoUnq-KTHC8fR6mwMJoDpnm7JuaQlhniHf8rC4rE4DdH7UjI4Ug_vg8PNnaN_ywAiuJ84RbQ	1704411605	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clpx9kzlk0000ii08x3cvredf	clpx9kzll0001ii085zye8csq	oauth	spotify	31yqidp2p3rd6od6yyvprnyfd564	AQC8uijoFaBtee2f8FnbwHjz-NCH2HK7hS4YdaET7D-GNsZ6ohd1XhGcUlNiGTPOzNLzHb0DAig9PKzQvrVYPJinGAO07oRYPJXL6GrKDYoZ_s_5arUV-NyFr_sx9tOT15U	BQADtujzOyx6J8PqgSn3Nzm9nG1FDD5HWc77XhYogorajb-DNEpEsCDLWp_DPUjJ2X1d27fgd9sGtKyfXLpwadms2wzku1r-knTypXlCfzcj_RqEtkSVL-KyHLCSPb6tkkhMOMPyPH45eYt8JQOPmps57aZHvVl7Gn1uo15yBdhKaJcxUJHV9Zi71nM3KLpiBozzbUzQuvnNy92HF9j4N3ezJh9_OFq_39wwrlHiGBKSeRZ7W1EGPWmQfofLQrPYJ15xXD9NkY-RmmaxGQmx-gJ_qudXdGFifc4xfQ	1705806577	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clph8okbq0000js08efjl08oi	clph8okbq0001js08l3u8510i	oauth	spotify	lutsens	AQBsW8OoHTLAo_dCtjf88Qvo6df2_lutoAJDSfBuztcfhEtxhiEo5BUEQkt_fsmv16tXBtoJ6aln6grARX3_u5M8rbTFD-nM9Kyf0mDEVsRlvpvdOWn8bukjxV6NCMJOMjM	BQDKwnpPaXL4btOz9dmdgeqCwL58ANNHui2mu1GqIXFypnMPk2vkB3LZ5hckxVNzc6YiTHXtUgr9kGYSaeEtolyA5kU2h7Iv5N5xnxv5T-ph1h_laUCQh9V2U2lXMhU7FqEtU3cg4tvjSFTvzE-crKZOraRmPjfmZQXXsvPGKsF5pClHFhqPtX4eWKoKkLCgapyLJqujYo5-BhUEzh1gMbtpM05XpwTlH1LHDPA4VxHBX_y7w4od2Z-B6a7RI8vza_o3Nj227w	1704021313	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clptq4c4l0000l508a7tlxps0	clptq4c4m0001l508k90zsybx	oauth	spotify	uzo04unx2m2wse9azv2x9tm6a	AQAuZRhwvls_iqCZVFMUx5EV_Prn_CeOCzQbDQ24DqVH5avPkIhqn0f_ttUZPG6rpfx08OCbbtFKWOTvR8lblajs3JA8xA_amm89FLMqiApvZwfRMccH7y2PztH9xHpWk6M	BQDMABMD1kpfot0s3qmd4BmmBrf4sSOVZuFa4jKAm__wB-_tDEZ5q8JArGL9NSBnLlVa1ESbh1h6orsT9749xmt_9m-1Pz5c5Phk1knCsIPyc-cPv47JwBXBjuZS96pFsOyQBjvZavMTZ6NmAzxvP4wyGnU0AVlImnfSkERcGfa-XpU3R22-dteobzWBwIOS9fmzUJr3kV2gd2esMN8QZwdyx9WDnmDRXCvmfHhEy8DT6dQZG6Tdff2a0Z1Y4yGtitmSJBVP7qu1L68UezNjXF-2kWU-Rw	1706483195	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clp0t439f0000jz08hoz0sfg7	clp0t439g0001jz086e4b3v0i	oauth	spotify	31iiklzwycgnvbkiazl3inyy6dfu	AQA2Q50FZps4MX8IkcakfRaObdV4EoUYzLCPDZT11PR-4Jrfnrbhs8ONSGh6XzdvnD_Cal0ZkJlo5U3R5-p6AlYQkwN8A3sY2Akgz8RzcehiyE9SrRms5NjUFoUlSBeTu-A	BQDnTKwLnLpIoGBEBF1O5Bxo2-wbldSQI4KsA1MQDPoJOf2OxHVKHzbHguL88CfkRBK53IL7UdJaxSWxoyqRAvWerN6ZUXeBJMn3qWf55OlA4LRniRnS8Be7G1D2VcOK9e4_YJwP0ClBWL2lCqQoop5KnaRgwwFIjcnsUTRTlwEyggx5RPYqrqWg-ASwAgcxAT7LZEvu8Ee_H_fLOQOl6WOiIsIWWi3XWZnaqVDtXT3o4yPe2PAK5yDUId6jtGko_AZdG0I6Z04i6TkFFIQQvCo6GFrsPD7D7Q	1713916545	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cly14p3av00il10q97qipj6ft	cly14p3av00im10q9qfujp1lb	oauth	spotify	cms1478	AQAHPgvi_efEUUgX4QJQNkYUOWnO_Pj2ebONlkZyXAS3k8jhm75MH4Feilta8_9yRgeE57r1f1ipgMlS6IoSS4GmtO57a4We5Yiy1IOneGpGTAANm_C3WGtO6VUQ3na5JSo	BQCk9yJ1DNMBp7NdDogRimo-iaeLYswaseGFFAwUU9QWOIn0TODnnxekg14j8QIPeRUX6XkDcGeV3XzTfEnKlz0cYuOU5Xjc7fdRwTb0JRohRXa2TqZhg7CytuP1WBJUoc17N9aSrTzPaJNjCGhftSXIbdS_R-8f9S6CXYTS8fbidpSpP4VtLoGphWm_d0lSwH8WHPA8i9_17GwK8Jm9ogF9iGasOxoBSmdalG6F0s-PnSeni3GWiqug-kwKI1zFsVja8NU7cg	1719730001	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltkfs03b0003jx084govsslv	cltkfs03b0004jx08dyimcr7c	oauth	spotify	bryan2.delnoye	AQDO7u8V8nsVTAj9lAcyNPoQjVsHqKsbqT7bXbVc5WXwpHMK1dDiS3gsfVR2-nXg9KOYPuFexVokKI44xBL7xFH8LIjHNsznhl3cQMgmxBHPqMcxLo_gIxeSLqeQ_eI2Mpw	BQAN2-oNcRxqbx27a6PK7Ux4MFql8Fsl5usqeqYYrkuNbEtPBPo_-FRWDoH0NASJc7UBS80TeF2nlifJ6exKZ7S93jVION3vx5FgCPBIDEDhf_Y1ereoXnLkYYPG2y3yXu5DIDvA69Nae27N6QKItF3XdpDPJUQbvs4bljft3VbTgUjhZjLpdhSWff_W-w4OwXSavG8Ls-DjZLyLmtHzSZhZYEHnu5dyHov6ypa7Lm9yQI1n7PNcLTfdPc8SZXG17caunsURGaesM4K2tm0GRXmH	1722113459	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clqrovl7i0000l8089mj3r0a2	clqrovl7i0001l808tq6yym10	oauth	spotify	florence_lo	AQDKSoTZAROdJXv1Fzyfp76YPds_eQvjPQO2mFs_Q-IBsbjE304a45H1bsAeWPaqKLFh2CrFgDqsVukXLn7tiTXjxMaIwYeG0lW8UMM1FtCuFT2DA2LA3nF-WpAdh9LFDeM	BQBXxlPfMKdCSCq4O0dZrW6mxPfBvyq9D1I_EUpHVa_lqRCY1DXWDz-r_ff0GHIFg3Ko5h5v5lJDTPhjUIcr0EFJx0OFAz_DVci0zyeAMqDAnz2hhZxFC0wm5xmgPTPgZ4uU2ShC0YP3O-4n9LAoqDdrCPx3xmSz3mem5NuObLVPEPBB9do8HYPLqr6wAYWvNr1BGeDP3wToqYwGgS7IZ5bmMSnAWISLQztxe8CrsTJK8zU6qVophknfS2ab3t1PObt7NwlQm9p1HRA	1704682948	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clqutbzq40000jy08ivlmj744	clqutbzq50001jy08qtv9uajj	oauth	spotify	31gfyuf36qugtczn5keiykjjxd7m	AQBGzs4bQaEossf0MomATEBut2e9HbCP9CT91CHMLhifAlw4ojVfYku8ShWrxDlS73P3PmW6ZChd2VgauU6eB3kz8HXoI43V26PjNZItUZBZeLKl8pfv-yaH3BNN02yT8rA	BQDQZnx5DXMRJWHoZq3alTHAQUwsbj4Rw5qFnKxm_flMoLI0bgQymGBIXSyrBdDEMTYBSY_yXq_igJXOWytwXzQkENu_WyYsrqpKrnDE806P_c_UqdcmnFz-nqqSHsJJ4D1ULE1sRd5lRtSTQYkdKg8oBcLkofWI5I2zZ1fqgXjF8H5QROmpxDoHk3XlG6NYGfm9abrZE0SknJJQPpkDlkXqQoIKsr7jEeBfGtFC_ZHEnKvw8-wCJ0B1g8DvHoLD1N_JyZVappRIeMu2uicrTdokP_A2vepypA	1704110640	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cly14gecx00ig10q9un9v962v	cly14gecy00ih10q9k5t8mlu9	oauth	spotify	3164sjlii76v4auhqvftmejlnj2e	AQCom6dGEbZ2YGcKGvikwvfgzpOSoH_S6EV7BWCBuGdUZOh9fLumxgT9sJG8H2zzQpQKxwTnXTC3ZCEcpvJMjZRoWUkktfShU5xuqxWVsrPw4jgJqihgaD-1VdLzIbx3IWM	BQCpaCt4B7vCf5z6hb_yLQaqGD6tRSThtiaNCPliYCwir477B_5CF-aOhXzB9-CFdOQ5JrbecAqU9pXKgdP_M6Nwfskuj7YMCJjffd9S9ZNw4tcR24y6CjFWz_HfM_6TrRNvCNM4oSUu-FSnAWEk2ncZtMNlTgOOCufq8pO7qtnQAoQtHeuvevo8GCQBbZGoySOi-zN0_2tw7j4De4OCoZBm5I7iJ7pPgwYSdXUPbWOAEkve1v36C2M3BfGA4C_0el-CFoc1i7U20CJE9vAYOhYggo6n8AilpA	1719832816	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clqwmywel001ejv08v8fuzrcq	clqwmywel001fjv08mbvg0uer	oauth	spotify	1112978801	AQDteVWAG66eEYjripXjJFOenw2BYgPQwUPqzHE0WEOXe-HQP1eGNPTGhwaNm69WDQd4CHn_57l4T_a24kk5F_nUypoPhj7pLlrkZ5bQKEnNNlLCYZHIJHG6aehsBelFq94	BQCfajVy4ViDhLVLHXTd34YBBIirZFzvC3Yb2G0i9Z8D9U5D8VxFDH9LUKMruyCGD1hg1nA1ZG7ypqsZnIZ6hEl7NZrkjD7UMVoF9GHKjR6KiriDsFvBZz4POPodWbd52Eg2LxJbBx6WyaXpF9tkl-RJCjVNCRGiO76hEcT0IhAb6D-83HLYpth5qBqW1_tptu4SZZ6mfq86PEMg2DLmDqFjJf94h8B5LT17KWP92_JX_UZ4gSsZKgaFZrpIdWvFicYCQf3ZA7eax-OGhPXojsBlaSaQNj9MlFu9-v-GAlJxuGg69zZp6g	1727354602	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltyqrn0m0003jq08lkikq51a	cltyqrn0m0004jq084r2iwxcn	oauth	spotify	gv93	AQBPXkyTnoAcPUU_E___90K_Bwt242wqeh1xRByddneCWrXEK1_9yDX0Lhu2weWJbmsoeXLrjJC0tHw6PDQHcVQ21mSqbRUDXUbKPtZ0Hkd39-6j9xzNCKKdvgoPJGy6VH0	BQCT6iRVaxjXtYLzDFSOVHyyRMCKoNZWUJNdsRJHIn5Qp-nUzYerRtjkLk2dZwBejmAvGSwSx8mK1qY8S4atSWH-9uOd0dH44OrMrsrCSu7Vk946dmvmaeteRj3YlDQiyZfoPUDOxNZ0abhOBdpbDEfj-RHqCb73acKKvycFaCJMTVfbRyGMEOidgbZudrLVI9bJdPP5g2eiHbL_UJDVslahslZLDgNSk2h76OVrc57FHM4z5YrLf2w2IUyyW7MrKfSPV2MVXTU4dGEdO_In0O0M8iGG4D9ZjIoFtxUN1X-Rmw	1759079207	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clrqixzlu0000l308fotem5ny	clrqixzlu0001l30818e13awc	oauth	spotify	31d5onr4w7r64ifmozgw772nunr4	AQA0EkBOo20uUzvY9c13YPY4rgHKCosgsqeRKpLmr1uX52nwsjjt9cG7uwUQ-aqLGv-HBMmQDf-daZrxR0FNBatodfOIG36S382CaZYNErV8gbx97_q6jI2oWUux83edMqg	BQDhgOt4Cp4n0gH4sDIDVEjB1AyMVRumYESglJ-XJD6_hpy2SbSq8y_ynM4wrAnyO1T4j_U_rIIMz8oZ85xaV54CCDaVg3LYn_2k22-svV4wLg88_dfoyrwMM7MZbqzpTBeX0iZvxOiGLsmRzv_TODG-tQgSvuMEROtYHa7M8M-k4QEeXcr8vn1ssbXzwSVUOKeOe_43ydVE0NmgPUZqrXKET11nqSMJOJaWTUdQ8trboXq0tyHWih8X8cEH9I1f5S1QXSbLRJpeP4cx3t4xg4QQbH2XYW8qNA	1706028109	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clsj9j90i0008l40897l8oq99	clsj9j90i0009l408f52qg4p4	oauth	spotify	zury98x6hz4svgeqbcdewtw4i	AQD300CvEZbpUrv2ssaJ6nvfsSC96jQTbZ53EYkInhxMI2eFNvJBUR3G90i047VPTVTyDeBdVJ2n0B9UeXAXZezQJ2KOZ7MfMWmbZK9RwGRXz90Vg4RjWpeWSx1mEE4YvDU	BQCxV_yU1zI_k7XQD8vQ2RSM0WCYxaFYjrKGXdW7lzm6KDFoOsoL5BGvgbW6AStifaWLbvRMsg2llc527Q9yX8zCAFMSrKm3dixzd-DGYv9pUZcEoufxSx2z665q2lVL-b6AlONLYNMnirv-NqMhn5buebLqdHVxhEKhPYvN5O89CywpbIIdOu4LJYWW_vU9i20ABs13_JEXUpn8lY8QntM8mi9lZYLzSqaKYa-PbRsRdxJkF3MUwtie4YnDW1RIC9YFwrE4mnrNzxUNbOxYTnIb2i_LSw	1707765823	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltey3t580001lb08n4u18sil	cltey3t580002lb08emzm8d6d	oauth	spotify	bobbyw64	AQBfpZxQYHcZODnE4J5AbTBTMP-p24zU8Y21aQhiuCNaEPJ_e1LIU6bnUsYs-N07UnO03yy9-Y2HNG5bH3krFoTDKV_kyUZG8hofCkQJV_Z2pv3Iosiwborv3rqAhQZEQ9w	BQDndE-PecE9EWhzxLogCkkqxuZPzHfQG_HB0Svqztd_tGfkbsaov2hvPf-mm7fMt1jdzlvKS_sd187CiqLYqgFPPntYpbpHTAML2DQU_m1DcNYa5ZEEG0iV0Re1vNw0QuqgVIEkak99_Eisgz2_7JaAFGIhltheTZhv8_tqpj-MGAt-3CPtEdJco41JKQjfL0gYQ69-45Yk3rDFr7z-M_75rcFpaZYoYpERW_JTz7_5hJHsUmZ0IWH1JUc8M8bbXmVR81-6W70	1709681545	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clrcvpv0g0000lf09tbi4a93s	clrcvpv0g0001lf097dn7zedo	oauth	spotify	gustav.vallin	AQAvMPRam-P4l6QFAstJuzyBiN5AntuN8K5fu-W9KEF67gvvjW6QtEY6BPm170aCI-YQzd9NqC_VIGPqDvHXlkdiyCwTF9t5XlxdQW4HY-WT0B_UYJmc8luZJ-JPoqWmd40	BQCu6QG7Rj-c1QEw7zsHEp8YDM32Ip8_7tbv_CAfm-Dy5BdUIKQkUCEJedpUgHTwUatGBzlw4GFtbhjboqdRkZxoEXZL6Otq9Y0bwaNDr_TrLnFKHUmUADG1GsoQzlqc7x9WHidsXTbvowiik9i32pvxeWwMhh4q-_vj5mcVmrqca6lSroVF2wPpwmx7LszM7QLgLUOoPT_Dyqnre06Y7ln0exWbV0RHlvlgnGnj1krZfeIW-iSjhkOgE4nHLgNdjay2N_eVoSwJzIiJPw	1705203038	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clsp79z830000l608ysfbma8y	clsp79z830001l608w8y2flew	oauth	spotify	tu3sm5zh2dgqj8c90mfzrnk3n	AQCkXQlOoH_DbQ-TPenB9A-r9SFubQ-VZuDmJDlEFzjs1GGy67xQzOpgpj5msy4DZBSacinYP1970RgQwWUeps44WXm69NTQ2SHfPTABfTMcsBIiVkAnvm7rlXpZMLCGa5U	BQA7YlDEoYWbFwjQa3vSEZBYyg2cqNcK7FITyBdyplOF8tayd62yeq_F1HD1M5mvSHEG0Xw6eqf5Q7eUlnndh40HEdsZjdAR1jbwt8D7oAjBeIAm77m7o2Hh-7_sKQhPH_qd9qivROPSGTJoP64R6A6-1NS-bz8PSePSyEtXInMBFAaFsCxgjW1nCBgzAqWwZfJsHV2fE7pfOFZ3i4kV5bGHwnt7Z49EcGFQ4InHzXra8AHrlVn2fC9h_XBMKFOApEy9gTXZKjcwLu71bZ775XK076AK4A	1708124829	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltdir2y40000jp08uzv9skib	cltdir2y40001jp0803q0qapu	oauth	spotify	312qz7bbg6k4ukizpaa5uagjejwu	AQB3Racse3MBW1kHv6fw0IE_j601aQsSImL92nlVQWDUr_MyyuOLXvbwDWqUNOTTe1WjqRlnTtx0DY2ejGr0ESeBjoVlZSE3XQBOrkJ7m09bGWS13prIi9KYfCZWYd4HWxk	BQDeYqTDrtBhEIdEloSHe3ysvxRfEMMYAiGFeb_sQyfvi577BAXcM8mcY3GRIG_uQmuPA_ETtwOpSV6fBvbTPxx49ZHrXWwSH_ycPu-lL5x-aTn9T9mXy8DZYj27DutVlQ4-IbRBoqBfEvfxuKJdkXsaTREJ5gqrFK8Qya5irUvMnJwrU2khdZu5pcNt7ZZ-5lk1ar9O99Pr-2xLEIxyA-atjB5ah5QILvgUQRUwRhwOIfIIVojd94T-oTjIVFiErIsk-lpl0jYtSnAbz37XOU9U2iE_qewEQg	1709595291	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clr5qqi1z0000jo08402jyfnp	clr5qqi1z0001jo08kiyrqg1s	oauth	spotify	claybob722	AQCO_eCjkky9meBOl37a1nXih7T-vALfy4eXKuaorcfyMIMoybsQh1t2CJjzT6e2Cpl4kXcJ4O3L6sr91Ol3VtYs9XsUgETzpZ7XN57OoREHRzjk_rZEqk-Qn56gyfB9X10	BQC-c6Cl1dxd28zInWXiSKxXFBGpxwW3R8b485Mgcvr_DxTNlgqe6R_bXF5DxZi6orO-_jynoepBb3KAmHiLYunwHeUTbGKA4csPhADZO-ZmDkE_d0brIZghOZ015fwLKyPknULatCoFG8tz4fYjUFotKmrRVKbzEWJlDDsUGeEl_Plx2gaHigHyFIZ-Ufs7wyMpW8pZG3Z4-AWlAsBK3pP4vuJi3AOiQ9zmffCWsyrGvYs24kL7YzfiTs0rxCf6Kb5c6OvKHc-DYw	1715041660	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltkcnrqd0000ld088nwcoh2x	cltkcnrqd0001ld08n8lhvwhr	oauth	spotify	mönal555	AQBlRTIPMXN38x7q3W6JAYE0gyE5PaPP_98FQ_lTNvNzS8X-m5IzRPdj9RcCpK9KVvs12RCRaM7bwAzc0MLgedrmWwTeKlYAcZYivF3d-GLdSFU4qVMVXKrkY3yYDs8luEI	BQBS5N83c_5yMBJRgiJwAAuY7hCwQiA1_DJhWXxy7DSBlHtAQY-CAUgXnXggw3gn09rL1sXvUyFQTQY__iSd87Grbv28V05ujdhKG9lXzPkiZbwbhvw3CDzXPDEk76xkyoR9piN4ULrwziZvm2RfBUIq5NmbCWYFL1Ej2u34mNh_glDs5tVlGdRQZnLt05ZCzGQWJNmIUsEz9jEd5STbxbTUUNOZdAlt11c4UW_IlnZqwOARASTPJTQzEarNS_t8HYTxxZ1DvYPT	1713861633	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clus6ku6f0000l1086b2chcpq	clus6ku6f0001l108uq5wjwcl	oauth	spotify	31nc4yjzrv5m6ouuq2pdxjymmcwq	AQCRC1K_rrMP9YKVeO3fobhGxeXDn37cdJeV3syfFmTLtMB8y3GEb_hvSfh1FJ1bdzbOxQ9mrOUWpOzVzss0mt4j4hE5D-RQjggEauasKF0xv8MUOh1-3wQK0N8n8ci4YSc	BQBEd6g8guEwJmpO284hF4pYq_utrkcDx6OcG0dbv6QJnlpgpM-kbcQ5px8OIK7jebGhHxfxBHy2DpFWNyN3rhPmMEsmjAs6kofkFvsYRMP3d9DdxkSgZHIM0Si1gqz4iApnfqzCi_o1BVn0QgBVpcO_Pue48VQx4YfPXkSBjeJM4-hyROdu9mvF_HB_Ed4BGaw9dcLVN850PQ3t-W3SC5fRTuQnIMef5Az3pVDQpIBdkImT5zzlI8g8Wr4csE__XC1iQBDPegF7qlOwYb74dz5X9VtWN8P71g	1712658619	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltkcridj0000l708gcq0790t	cltkcridj0001l708d7228tsz	oauth	spotify	dv69ye79aj5wry4mw4mfevndl	AQBa2uQxfOTQxIruAEXwYRlpREQgDKDppY_JCMj5VA25N9qf32_k9MCxCy0IzNZbcfQO-NWuBiDv2qcj7pAhJbHFGe68Pqbg834_6QTheSZqn9MBadpAEk4ClJxznlbLsvc	BQD2-euxQeY7bZvDO6-5PmA1Lk8hF0Nj0-DcsSuoUmSmY-ICd90gMzs77a3CnOqnDxvfpdu9jDdyfu62Q77MCeH0uTS_KV2prQdAiy1zNCnSI1qoIELhDgeC4vOXnfwBgKvJztg3mmNzkVOu9np8ITxC5py-m8voZoq4iS8z0hXI15nhqf-Jjnrx8kSDJwSKPwSPjK5fbTWKMQQijUyfUufy00LUKOTs4soRvVw5sqBRdjGrI8AuNWnvGM2ffKWqWLwL9WZNDsujJKL4tVfud23GgePEfemIbA	1710868949	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clvcxpj720000js08jmwb044n	clvcxpj720001js08lhgqttaq	oauth	spotify	linavaron1	AQBdXVhhm4BBDqzRd_oI88jwSfIBEh4q-_l8wy4xXn-EC0yIby35uVgIpUXX1YDOIJU51Zbe0KiPIiuhS8tAd5mYFpelPQyKtPDKfKv7kRO81E0KKeFQmEbbLSZyaiOTPgs	BQDpoakILS3xehdkcuErjYBactx2eAqre1JxkO1eXykfk9KlAO4pXj8rxXaNToFxqzH83qH-EvqDzigzNybI4tmSQrmzwpfcg2FXTFB94_zzUYTsBp83T86G1fxV3XOj8jQIyseEx_U6ACq-AfFvJM5RstV1KIWBzmvusmoVWm-npDVW20zxGSxNWuQmJCWGlusDUakFBt-1DwWSlrOFZct0L86f31U8Rc3TMLTIDPVnes7NzK_wAn9uB03p7K452VUlJuqy7Q	1713913511	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clufnqtl50000jn08y5bcctrh	clufnqtl50001jn086c0q549b	oauth	spotify	3dx6eqadu4w0n5mwtwro5y8gn	AQArC8WZuzswGT79024eqiL4WsqibZR_p_h5Ms6rcV_KKqR6zzuxT6IT315j3-ahgCMrpJMlqpqnkjLqeSKy88mXai4H6-0hILe51SSOH0tj6klTTYFIpR14bX6UYIeMZVc	BQCdQQETvZmz2Onz3YjO1s8bwTkRa38nQD26YvLDs1wGvAcIAA3fRxex-XV_SmzEsM-N2i2D636sKcIlHg1ABO2nFQuCwfy6S-2pi4ssO7klEmOyoKLq66r_TYdrjbulJUiumEUjpIBLrCf_oCSE99n9iOMhvDUjvTkFPAT2i3tbuEjQwttcNa-n2naLB13hX-ntYYNnN6pl63Pt1AOPQ3URgQTFtPiSCmJhtLD-0gGziNtb3YXtSBMucBrZBcPuJZNMc9va7a6ARsUPl4gHAtm1Q_xhpw	1711901391	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltqoq1p40000jy08unm3tmst	cltqoq1p40001jy08myvd65ey	oauth	spotify	beratzgashi	AQARZmfGuX3tx77IWM_7jWuD7rDqgfE7KZknRW8kkYAA7hgHwsoiz1WIZiDSdfDtPm1-QK6-ECNsX_xA8wiNEzeRh617oG_Hs22y-hAxhQONdvr35ZRPkuV7wBUbUL8da5I	BQAcrnG12X83nrwgUDXOMZg-U-bbU16JIPNf1Hs1sfcxP4aZUzlBQgkWKtMfUzPWyNZ-417dT9cnZKmaY39Krh0a6EX6D1yNuKOTtRNevrQbSk3HOFRcvjMczJ2kel18zKm1F6qlR-q2LptqDbgfuDkSfLpO1pUP9fSfsTT4jR9U0PaL8jZQMinUBifU6S7B5ekQ_vkzmf8wAGDhYHcar5nreOoB0hGzDdMs1JU30jps3IDaDX0alE9yotzJiYCmgMJDkhBQdApynQc	1710391380	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltkfx9ef000bjx08lb3ebetu	cltkfx9ef000cjx08lnq72klz	oauth	spotify	beapol7	AQAx4kb5boMKuStOr_JlD45j4Yd9TThCSOCX0jpzy6YE-nL_lHN2HkvgwJL7yGhE-T84buHXvI73F7O05O4aA0u1FlPrk-zbSco-M9ZKklqlLR8mR7E3ZE0BCRWPa5O-KeA	BQDaniHuCyPhuI25mvH72acJWrClyq37ZNsJe98V159wRIEWwdtbapm_Ij5F84MuJDcnMNDWEYjgg_spAUkvDWOC2l1QAsRFEZWm9crBP5eCLKj8tfAMzTmm5PAF4fJ12vgSyG7jfR9kGYWLnjaXg2e_awX4uFgE90nnQGqU40MYuwl3KM4jGfataOG80tmrZXDim-Q7l1ikWb1hH4TZlRh6pVQSWSxm3bPkQ_1j7VCZa0Z1WVtvUvgtWVk3QcivpEM4OkziNA	1710013803	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltxdkgtg0000l508ujpyjd15	cltxdkgtg0001l508jyw9bkqj	oauth	spotify	31qcbtm7djiycnfgscvx6fi566hq	AQAzTrMDw6o42BKM-hw4az-_mODGXOktpSkEx_dPxa4HGNfMDowbDVJ-ZvzyHvbq_AGyZL8p8idJcjAkLN7O5f8DWBc9TniQrj7EUX2aBRSqWWrjTaMrK5fQicrrvWxC2iY	BQBdYiCoZE_iXBb4Ib3EcjBTpW4HljY8vghZItrhLQXgAOLOah_3A_ZF_YtjzjlLzLYBtClVmzwwT3IeTUPRitNE2NBHfDvnqhnjAmlhaBFfVTCWkjvJmRTrTOE3JHlj6tNXg1A8ex3PX9L6zqir5kowKUUVd9eXAJAEc1lE1QZDJdcaEepySSe3EtTqCLiGy0wRo8Bds7E5fSFGdE9SrJTTAbz-6aLKfHeM-JfJVAEuiU3HGfLEnkeongVJkWZeB9kZ9WTLP2_S1A5iYnxENwkzZGlYBjTTcA	1710868919	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clu8vaowz0000l6080mt9w7xy	clu8vaowz0001l608olpe0pt6	oauth	spotify	l7yxecvvgsuxi9a3fspe3jq28	AQDQQNGAiS3r4H_2qa4E9DWc1qMR43L4XiolUK6-x4IrjIP1C4cFEjh9GrfPPY_nsiSOXs6BcGx77byVHt4_jfCHZ6mwUsb8DdNjBsNFzZwfE_nxTzoSTKeOxIDFtfE2-1g	BQC4kH2zy8dNCtDg_LYEi3FGIc8RsjBnVc0I5qL6NUi_WvJRUuA3byo_PLDTuJqGLmh4S-LjNB0wSl4YXfGs_0hjJDArY-UE9UeFf-bWS9PVPQVdnHq7M8iFRKpjOjH8r6P-e9gSOFiqGhPg4WjFiVGEHs_Ou4xQNSlElREu3rwLw1TSV2lsW-Afo466BQXQBVwlwB-twSAH8MkFPVzkZTh9Sjp358CfntZIAEClkDhocYkmo-sSAGFaHbmzkMZQ1yL-T8LxpQwcMU7YqR4S76Ts6KrvHXrwaw	1711490812	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cltw0ujho0000ld08rpafwe9p	cltw0ujho0001ld08vol4w5gk	oauth	spotify	1140473084	AQDKzEzNeWO1P8z9PpgZWW-yHmmFwbELGoGHf6Wvvz_FxV49X4XkbdaK4aGRlySHlZ1ru2vScWauEKaAgsTs8fD9ABYyiYFWpYghX5CH1ZXqvw75SBVppede4MnYfAPRLHo	BQBdI-7GOKRz8f92MCMIpqcJdoQ4K9QdGLZAr6hfytm98ojCyhcc_vJ_MANWQWVlqhDVKgPOp7vJHJhMJNxBZWalYYWnG8z_xKHqJ6gm5zayigmrlp2mLnBTlaxReGC6WUfdbSG2RXy1PzsMWtppSmfwKwWr27I1mSm57wsud_xK2-algIQLnG3Fr0YOZTXY0PvKfgIGdi_h1RFEuX1ESmrM4KrTh_q7lJFXomc4jGMHjBSL4sciRrzxqCwxjNiK3YiatBEhRaQmLg	1711110934	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clvs9f2ge0000mk08exvm6ftp	clvs9f2ge0001mk08m2snei66	oauth	spotify	314ck4lydjf44ysiskey2j7imqfu	AQDKj5YLhoIeptwUHlzC9ZK8W7xbr2DpaSMa8tlkqYQBo7VuG10Z1mPWSYZxUZhy6-xucY7jcQ2shRFd8V_KlAJZWYWVOqHk2Hvli0yDo779Hcxam5ND1TV-UpBI_JbxnV4	BQAtbEihEDJQ9cqlSnqp15490ptHi3D9Y3jvGw2Nxx5Xl3El5HCwKehJH99_Bngaud6yroz_-8aGFB0dIw6lo9H1Rp23asLcHSRGFu0dER2T11nqb-49Xog1ATq4cMBa5cfK9PnYf-kWuNAb_ByO9aDFsSAPTJAbjwzfC7biEmf2OV8lhNOLZ6pSZ_AnPTVb2k9pmCEMrxuCla2kIMYEJ4FSg-RbOJCmY0uNyhP4Cwc0z3UT41fBqPRvyhhiS5pcug1SQhM6Mf30Y0OqmWrhUEeFpCvyH5xGRA	1714840243	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clwduijog0007jx088480pa37	clwduijog0008jx08h4r5edwr	oauth	spotify	1135617082	AQDBS4ieGrDYmynt2pd5InoKxrddLo2fyjEL-2Ll_gsOerY_ZDvibvnlyemJ4Hxu9V55W31lj1IdGqZ-BYx98ehvassAKPrV25EXtgNtd7HZwn1-o6MdvQpdUxwruHY9Lik	BQA9Yyp52gRt-9i435uRP4wLDnEv7UPhFqgWQCmb7IC07XTpG0JX_4XotEo_g4XVAG4TORryzuv9H4scb3QweH1RYwGgo4j1k55ftizk2gZi7EBa7iV3_E43yaQOqAXjHYSdRpq4wcWxJQpdqAkKkjj8LdlqU7woqaTsrvpdcrWolTq5aYWfaG6AnyNFU1kiMFKpPF6eSmtc8s9-ZDY3QweaU3k64pstjCkw1G3ezHggs0sMXlLf-EjvJGPxuVk6DT4XHdqtTywxUw	1716145432	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clvs9i8h00008mk08f2m2vil9	clvs9i8h00009mk080pmvc10z	oauth	spotify	31ey3nflki3uh4tmqr2sqkdfq73a	AQCsjLcNprHCNpRULGC1wZCohuITdUWeKmJMeADm_EP1pOEPwvCkXjXpW8AdJPJ15Dn8b1oO_LmBDmR37ojICnY4RbNtkPASRIvJzpfRpb51aKDO_008rDSA9jW6hYYLpQU	BQARROxcVGHFxrATHM7pJNyQIqnzLp00EB4qYuDEA_cjWpftI6SAz6qfueYH1kcEqlTxfdhaAVHbGd3tgBBxIciK0QvOZgRRhFexWkgu1OPHMfOfwth4SDs4DV7X_lPwL6EqAwHdN2QTtssJcaC-MqHXx2_20kVMV-rPpRODn8m2dFPOa3es3jbkX_khJ1uTx58dLmuCkzgHeJ5c04q4ZaCfIhaiMZBF6wL3YsxatvBxAJu13qlvV5gT-ZZwXQMc62Qi_iLW4N51ggT10SQFf81zRLY02pxnQ3bVNg	1714873523	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clytagmy7000011jmdwmyal1t	clytagmy7000111jmtrdr9jmg	oauth	spotify	31grt4m6ydvcr5kqzxgqyopkg4oy	AQC08Q7zCmp8YeqpXZVV-gUgJEQV2D9A6jfamfhxOn98wjnvEldwwfqsFnZYkmDoDKkoGMHHM2hNxxZxDb6Lpf8qQujTBa7yR4DkuhfWO-iSTTS8Ej8LawoOntwEz-pTHqA	BQCn2GiZJNQAUl7eVv2MM9HYIqB1dLQOZXpu6M6UD4ukyT0S0HbblvHDsXLB9VF3M5idR37SxK1eB_GiYgZFB5XurOKe98WyhKDoFKjQnMWtwR6UyeYu555Yl-RudKEEmkeO-TDAcf3bJs5NTpCbnAVO7iE4lltPga_U3h6_lR_we-XDfpXVg7CQfBo5EC5g_7QZcURwqds3ZIap7MfWu7JV5cAz7xsxAdkKC1cJKQkULwOhsEpwPtiXtXSzZcgS1rsj8nEGoIDzQFfUPVm4Ogp_Ht6PSuJoDw	1721432737	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clxql3v1r00006we0mwbu7l33	clxql3v1r00016we0leuan1ac	oauth	spotify	313kkpsx5awg3ri4i4xu3qud4t7m	AQA2woMedd1VN26MaB1bQZDuliIEppSIgoX55iK0aHuOzZiyFjucUmONMtbSKm8Nuj_uY7AnSw3HFXL-HXv7wiMGzRTg_myTBbZJ78U79uSmDD8lGCfxznvw5C2o-k4uU8M	BQD3Nse9LsB9-IpjJWW4AnDr9kQVs7qEELqHOR6w8RBnPxs4npH6pSh1X8T3OlXBBceHzRjS-4JAh9uk7zNGXa1d7qZVCeADZeaD4Xrj0vRt2ChkF19QgerxZ2tX3KFiz_IGJb4GPR1S7H1WB89vM-NLA_5R0ONYD-fnfR-D4cPyQ_bqWC30XLncxDZOgIEy0Er7kyC6ccCVggr1c3em7mAhoKx6cXSYzzb3cb6dMigK9q7g08eeReLH1DvmQgHglRyIidMagQhzlniB2EPOg5X33OAe8gGwkQ	1719092640	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clx12i3170000l508z6jwwg2e	clx12i3170001l508p84t0vow	oauth	spotify	11172255712	AQBaxQR-nvsRsowkaBjW-E8E9SPYTc98uS71m4t1IiOPyxwy9hPKu0OPRvTopzOW_Z60WYa2AH6l5Sv4pBdxyQaAj-SFyw8iYepZsSg1t2HHNmEeawCX1eEd1v4WEdgumKI	BQCovQp25vOjAqgUhFEkDmVyy8csFnxrwAcJX2Vx9SB9YdjyhGP1m-QTR9D8NUjWU5QYbo4AUYI6fBLzVFEAMCupqs5bll532ge7frJX_y_vGTXG1Zk_UIHj2WaWGWNrCH54gecj4CfogvyAfj2kAF2I80xBOm7clSaWKGkJTEsxsD1gWmNrUdFW7o70uyMkE1s1hM6_Qs_F33QylOv09dOqBX2ynoJEQjFhLMx4XiSikIfScWwJw0zmh_TN_kJJoO52Otvi0hkc_I8	1717549586	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clxqzm5wj0000375j4wed49uq	clxqzm5wj0001375j9cs31nok	oauth	spotify	31ni435khptsilbewm2sbnid4seu	AQBDLto_eer9HcpNiey-mkFdGFVbt3eMYKRTGPvPmdqSDsHADH73S6t-s-JKs2eN6iLojdQVtp1ROYiLsVP2VbQPgrN20rhX_r6kMQvZt2SLyEV-RYjmvnjdMip7_rDichg	BQDsUvkdjc5HNWxrXNfsbXZePcpUssdnlJrzBSnlYj9lhH4bqBbwcpkwX9k181G-V2MLuNR_nK6_t5b026KRFecQkR33YX9chGs4KBXYodhbfJ--bJPBb6cMD88B4dbyLrE-5VO8F9tHDFmtIT26mPWlPOX9cny1HOWghkgwT_0PbjxTLFsFCmU9Ar3eCv-OaH67hTRqFCOG9WNX8skDG7pY3xYCUwMQFQLt3UfBPrqKghkZV-yfNrl6FYSAApU9gEz5BleNT9NpvbRfEGhKfpaSxcphRbgJDQ	1719344482	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clxu75qzg000955zntikw9lp7	clxu75qzg000a55znb1f06owk	oauth	spotify	osanago	AQCmL1a7xNzjU7SSSmAaXOzx5VkNC-1GJhR5pTiLCoHIWjc1vBpKQ1mPa5kpci5YCkwRkCye_t42sRXEnIAtdt_5GVbfLD2N1dzqVgodSjsJAJh3g5DU8ck_Dvv9nx92TBE	BQBkYlnNmLNBDT9Gf0kKRKBOSCGVAYqMNqoCTbxBmnYPziB2komwou_Iqse_N2FSDNrgdVy2HlzTQLm5ZzbNSo_F1Ma2bOAsUlJrTQ8Y3s1yVim6vsJ81EFBqMb8IMp5f88soo052gfxI53lJkCxVTGOFk-qpZn1Mp8Gm-fjzo2MnAbQzhcVt4aBNb32HBjdfylRc4ykuBUDhT19vYbIcmbdKOgA4Ug6q6_2S9QgCv-UnDzH5OzfHYEQBsID3kzLTUiFhRSHMw	1719311095	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clxmg9dg80000l508frh2m5rr	clxmg9dg80001l50807ymgqer	oauth	spotify	rchk	AQD2pg3xwbZGEIHcqR3eat-ajrrdWZIn477yhV5UigD3S9sp5RiMdfrHVFCZVBWIzmgu1Gs7wKJQJoomZtjNeaMZfEhtEbGZyMxzvhEdDk-EItBwCBC3MSqo6SUvT9Ca3fA	BQC3od_iCDGlrSVw92AIPb1ZujaepaxmujmuaWzrQJ6JybqoTe9wHyK4w94h_3MTVU1nCQBNWkQZVC5aEGfPOOJG5ayCLF2T2J8SvOSIAPfCZLrxg4B2nQ7zfbBflwvrPIwfGWv83h5AHNP8zzFySlTC5DSI2mB-UkT2RvXccvTVWYwLnjCFTc9UtwhdAdOEs6IXvAPA7UEGDy5ZngL02MaBFUZk7uvFCmcXtNkrNIKtlrJCZ6z2mNY_UehlSkpcjpI8N40rVY8w_w	1725437134	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm05fyy580000ru00g8rxml0q	cm05fyy580001ru005b6bspcg	oauth	spotify	31opjyzy7qdwj4aktbiz2bvuq3ja	AQAzn5B60MVKw1Xz0UpfL5upKJFACfyir7x4NN0JzcyyDOu6JxbP6KJNf1GvvEJGK3ZhtrfHxbqlWC2rU8wqg1EUXXIRl14n95tGRircIbyZaU3GTb1ybIPk6mXqR8eMNRI	BQC1nTZcMPIeRalPe9YZke-16UJCVPrIdXpRUAo8t60oqWTx7s8-q3bgK6T-E3v4siqbq40kF972ktkAdydrD7hyjPw0zDo0hp-c0EhREuAF0wpDVb9vw6BQtXUKnNx8Mz4WuWXBhVf4lf-5npSXQCypuFbMaFxf6mCnMPTS0PnnjIThuf-XdhnsNWmPWqPctJecUm-ooebMPvTvh7WbzwDcAN0YqUCkIE1QdP9Bwod5cQAMqTt_jEwe44XFCHc5nNTk229h5VhFB0u9aZJprB8P8E_uAb2QsYUp3CEPmw	1724420762	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm0sdyzzl0000og3hwcuavzem	cm0sdyzzm0001og3hmkjnpxmx	oauth	spotify	31e47t23pjhlqa5m2jcugxxhsguq	AQCdzePPw1DEwPy7qemfPGqVVX1sYFxOZbP6RZE_Si_mqBD349tMoml5-H4i5xPzcElTMIv5Mo5Sco9T9Do49GxiU-QhDGcewY4UoSsGdU3F71vcClOzfJJSXr6fXVZVb2o	BQAdnxbplylUbiXzN4fURdbqIrAll7TZnCStFfQukkaA1gq7YTN0i3p-HPGoh_IEUAhYvyI81bUZp8-G0iT8EjKRMJwiOai94lKuQpa7kZV0N9qngvj4__3uoOz__9qKD8KCAkLzmYadX4sT1icoJuKj7J3QxRa3iFwHVpVAXf0GeFjcSlh-lQbkzrdk-TfGd2WADpYfkE7yiDx-fIGrqPZy4yjpI2HAQRwTF_g35p5r54BxKykj95aAGWSgQlUEw01jk8hunKft3TDJuCQZiLwxbhT0pyH00xnbNCk2mQ	1725731731	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clzyj1ra90000zqmdakgedudp	clzyj1raa0001zqmdoh1m1fb3	oauth	spotify	1185401985	AQD3lHFku4uqQSdbGOuNPl1B6I671t0qndoV5qrG3qWycFzYBs9YY5-8HtI8OSnlOXwQJT83ceDhtSBNk0yGCcUw-EGEvKAcSkLZNtIHD5ZqIsJD08MmmLostZpGNE9zpzM	BQDkDk75sPP-pRMKGawl1a0-eWTJKeNqCC3xC-bAUyzXuF9QhUidgaX_ZO9D7PPYQHdRN20dehQ1iqS8t7HQ7GpMFPmmIIHwVJnxUMxkGOBCNQKKDiygnAMfT6TtzQ8FuDSHUq4PTyzzgDpHwM45vswJv-Tpef46LKA53MMUGkIrgaL0_uaNkYvW7VdY6yfxNEquhn49_up6mMyyVmH4mJ7RLMXSHuzqXeSbWjpOLtaVwnBpC8d-EFpCMJcIfs8sJL7ilMSm9xGfpG2ppOptBA	1723926272	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm05nlyhs0000sqq5qee0l2p4	cm05nlyhs0001sqq5dx5ydp7n	oauth	spotify	mr-jonas	AQBCaxc8oYKInSVutiD-FcySCU03X84fRkH8mVCs5vPjGKspCFH8xICYEx8JOaD-LssHe6G4miT2JEAygJ-Ty1qdEKwhivJ5Jc2wx2a0tLmW_TDCtgYAGHi_TBTW64oJNNk	BQD818AN080ux9W_AUeaA1SDLJ8RthGdnhR_JRoEU-3VffGtCFZwQ1L03Fhf5TupTWRR9fOiguvx1l7tGGhPvAxSouzNXDJ1MVZHb8yPsr_JQWI5Z2WipB_vgXijATNmhy-TDFLSxvn8Lmk8dKsELnYSuWi5XUxOQFKT_wPCezstLx2DhRO0cqNbyCFVHImWyzeMdBnIu7xxphrrAoITrnS6wEp1-Rvaq-449Nl02HGTX5ZWBC9-sEz6FRlvZ31BKTJkwlRCmiBgt7jqlNg	1724357254	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm09oqzpg0008w9urjt94h5l6	cm09oqzpg0009w9ureubo8a21	oauth	spotify	31gtcsnrtaw7wgkf77kjsx5xmxie	AQBkhiC1uEi51bfbqhn_l5gM4Aboi6biSCGPqDCPEDJWbgJ08jZTTXnCsWzJLeKM1WF14MXJcA8F0ssLMK86uSrncDIFPv8t3vxxzfWoVodQkPsa6RGfRRUzaSNiiRWU6hU	BQDhU88yURimhuFstSDPLRsk04BSSO1eUqQ3-K9_AhSHhdvorG2Q9rqrCG6qB1b8dBv-eGyba1EJwk6kVbUWifh5edmPsJPskZEFppVRIOZCOu5w4gB5YWLUYipyr0ST7xA1Pms_NngBmCTSMjMEl9vY126XNJfv_o8neTxf8tv74aGYDos9n_mG0NPafbezuWZ-qgmhyoz3x6pKESfbYDNg0p_TXsq0EWse-RTvQEBSajBpgHFuOVsVSBGZi6Sle4v3M8JqkB8jzLrbpMAWfyMwLwE5fBqhiuW-fZC3-ygKLXzuSA1KkkyVAYeNRYHq6wT32JR4QQ	1737984574	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm4ukhz0o0000tvc4327oocfi	cm4ukhz0o0001tvc4z6tkh3yr	oauth	spotify	31t6cj23226qknz5j4der6xre35e	AQCamMSdvR6bH9P-toxq3la_jApxdceGYF0PCTNDNCn9mxxGW1dicZGTX9vqdrj7-Q4RacxJkIb1NhQJvLehGrOmxFqxJBFfae4gjsrfEg-UHcy2OGeX1tA-ICS_rMclJC8	BQAoL6vOXZvWP5tIR_Ti1MrGnxhP6PhipRE02rk6DSfxuBAlUQYtnAPP8cBEfsVKFqIgqrNun6U0QJfcLkEuiaPFpfQQfLjBcEzSvKs2OgQsFfgdB9OuZb3SGR6gvOLkf9NSBfzses1Q5z-AIl66LwFEaLHjKvibIQLf0g3KUXzc9pUN0K23BUeyH5EvLsX8bhv3hF0KWXiVz-FZ_mCc_ShkmOHR114IUwAKLWEm67rkyqklWCvFwKz6CKtZcvlMmz4NPrKI88AqbNnUsxw3wovviPMBmG-RfOk6TaQ-mQ	1734570756	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clpuwqgco0000if08h1d0bi9v	clpuwqgco0001if08r20h71hb	oauth	spotify	e6fhm3teiz06251bwy9ttzy44	AQBP6h0j7TI2G8sZ8w10CXwV6zfwqGwEoWgjl6ddyw_4Z89Gdlyc4U3AU7V0TX2skoiqKLtoxO2bBgJVB8MiIMInF65hew7TEFZdGw_S7JxWRZf9a97d_lCIbu75IXPNpYc	BQD_3NcBx_RLdcIh2vpKTW9Qk5NITWjXcCM55F6ZgyE1UD0CtVOSTgEUv2uOh3zmadssz0yuaH288rx45z7sCKgiakMpttfP5EstmQARrgeptT8NrP7IsMYNCSpNKclOazQ6VTPEz8Ris6tKpsXsWdVfv7TSKPJ-CSO2imboevlZtsyG8KvZqg0bjB3s1V6cmsTluTW8eyNId_pce_Q5l9DJqI9gA14ZqETBt0NWjqkWc9izKfuvsKNGdo9a8fisxe1sas3IkCmZNmuiM0dpZbEhGJny7tXn_Is2MsARcqKu5sSqOxCyVii13V8unshkoleDpfevkxj75dC5yDFxHpW-znPSODF41LMRT-d_-xDScwd6q9Z9Im0Sww	1774804826	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm1dnr7c0000014lv2ji2x85d	cm1dnr7c0000114lvok7xnk55	oauth	spotify	31eb6crjtuejqe3zld4yj6rmhs6m	AQD1szOgyxY0aUpYK2dDktuuIGUw5bR2uZHkacCFFA0R7WQ4yYstyLQo2NOwSoFgn7EeX471N50b8Xvs6ZPw5edih_y0A_kfCttXstP3E2AvpCFnA2Qu2wJtkSgsnUEv2hY	BQBwlWCZ7fU6zZtLaM66RjV3Z-eXJQcPwpOa--KaoCunh9kKLwdsTJL3uKDLH79U7U4WMCydqHHi_z9OxOPSZo7VIstFGiIT7T4O4OmnplQgmPRLCZapJcMN_RbApNaIB4FctZWbNyVKsoDwDhIRFztD4110qKLl2UWJw1s9VdaSpZ4TyeUU32jv3RfNhPws7jXa_IwbkEVXCdpEdoRuR6neLLNf65Zpkyr1U0nWG9pvGDOxQNw0AqS8efB5PJdgr89SwddrPFDxyPKw9g6ktvz_3jjkNTRm1oX_p0vBsA	1727017953	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm1lfdn8x00031330vc1ptmjb	cm1lfdn8x00041330o570s32b	oauth	spotify	31xkhky5pp4qrtl4blyawopmb6b4	AQBRzkHGedHv53Wdy8Os8vyPkqIssWhmli7J2WcL4TOuCW9WCDa2AhvSxfaMu2ek8ZHGl50k-EpgOthdZAm3oRK0oVnW1eLOBvqCwa6o5nvJGHYanVT1dKZgg_TEiDSJdLk	BQCFW6k1Pa97mAsqg5MQ-FGWa6EzviLMAMQrxnv1AEoWKrNeGZgSmfWjdoEWFxTcodtU7ecFao35pjxpp8GUrqbmfx-BSaiJIvBGS3SwGdQNxTXsbu1pl71vNIyxECkmAq78vkM8-ICWFpPBfF2gr54HvPw7nLizWUiQ3I9MJ_XjnXMVipTW1n4GTmLuf97dCGkXDLRydn0dAx8Kz30NA-oTNyIda6iex-RpQF4s4RjYhO-K6mKUg-1Hycd69IUYBTXcxZQXGuVSd44O6CyefJvrghBK3Ppp3QlsmEdhrw	1727487613	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm1seco1p0000bzhm0qwulg43	cm1seco1p0001bzhmfgwsozkl	oauth	spotify	31ttmjfarfn22rvl6ksg4filgbtq	AQAavbwzRu0B6sJEn9fzx3_k0V8Yecc_HnuJdMD-RRyF3c0upUNzqIt7_uR8GWF1CtBp3ziHje8wanCNcztgHIk2mjr0pUVRcEVMGED-w6rI6JLUMTDuvGQ3jTBMb09Ezkg	BQAUitSaDrDDeHZ_MSgKEZxMb35SD_o92waMM54k1LfEiaNBJKwrZ9IXIr1bnGpbFgsy-N-jMBp9RslkAv1XivG2odqKDJe9sVpegYKki1UWvipuEYgSQx6h7fz7gqzg_iLja3YnhMkZuVSvdtJ8NvwFCI9GkWGLU7Xj47GP2bTorNjiccqqrE0vbicX1TECL0Ccf0o2bvs0ZOfWxYEJ2ZZWksT79kiKlD4656uk1zzsoCPiZWza7k5LB6_wU4c8M8KIYcanMKR4yqKn5pOdlSpCGjHX657PpJQl8dTE_CkJKA	1727909220	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm1zhb2nk00adyh9s6t70c1gd	cm1zhb2nk00aeyh9sqk5ay6qj	oauth	spotify	romain-2014	AQCimt-MU_Fk5rZxt_RTw7UdRZJy0NyjKyerKIZaa2swH58kgaQk21rLmc0WFb2RCjzwQkBfuefR4NJh-VcFx-qBwOkWw7ukRFhuICV_3mwNyAibpUj1PBZnGplYpzJ8iqs	BQCQ5T9QrP5Mc9F6cKTNoGxunOEDoRzkwQWPY2Z6JoVsBRR1k9bhvGO6PyBQqQkfTZTVRy6MCtqqhuFJNExQ352iEJsPE9PdduZxejb4B3M8Lzhi47UuK7tQsg-nNwtQQ4Vs40pNsFBV0jo5eSqQkpDA43t8NoYvYObbLD6E6K4_5b7lvturSpuYU4oML8ZMiBrqVIURHM2K6L5osX05KrjYbgBiCuu4xM6z4uJN5EH_9RvyIajWMNjDQl5_LoO3h5AjN3hvzMdHtEBPz20	1728337379	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm3s2whjl0000ep0yu6nywy35	cm3s2whjl0001ep0y36j2bl6f	oauth	spotify	31aeootoqmzfo32vizt3px4yut3m	AQAXOsC6L32q_71v4tNvLCYsKkE7hx6G1RsfJnrixOhqCDwyXtiFT7IFzj4bu8kcPN93PNiSd2bfkNi4GcR7be8fyPqcedGkLfV-5FTiVDz5-8LSLzHSnilZpQBaA1cfqag	BQDKxRVYmWgpvAt4ZT0HTxiBh7PM7W3wbXHGFiTYcp_034SWygxMiCj4ayjBx7yxIpYidz1yPL2iQDy3_Osix-X4t5flbxGLAJHDe1bZi9tTaC0e-DACXkHi3-InmD3wh3ud-cefCsYyDO46_YeHEQP_Rl94w5PD27dOLqzw2du8EsagDVqRdrf0-Go0b-2jQbfVB7J7iiBx7XgUx3Jl_9eg6U7at9JX5bzU2CbDvU_KhdRNHideZDtGjEH1ekLgn83NF40sRbPxZViEXvqS074q_ZyqyL6pxI7Kq6iIifJqww	1732243485	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm5f0ovg400006td6fvfockgv	cm5f0ovg500016td6gusuvxak	oauth	spotify	l90aj79cbbr5qxqur37wjr77q	AQDqaOjOQ9zAF5h9ybCtRJgw3juOuT1s-t0zr7Kivi0q-QuM6IHXmZncjOUzknieGwi8X1mGMx2fG_ZUlt1mDmXQH33qmZDOBLrjk2oftglab6zXQxU0_zDIrZyLgRicHKk	BQBDwR9mGe338kr9w6g6gtvJAeOPQzszV7oeO8utZp1kO66K54gzghtBcKW70QOcmmQhSi6khBKdVv2qp5-ML3RhsPKsfZZTZYZgb4gNQGURLnqdPUJKXtwub6akYbF7k04OmS7XAIs-KynbDdWY-XyQnw4xe-5Zo6DBaT71b8ZRt1ohO8bRwH1zBIZtDnMLznjxFX9XTUjU1FfFxcIYlJJE4wlQbRdTp5bJoKPEdrYPUVoCp9ozJfLjmdIN-3l_71htZP6Xz_KnKCXWsb-etHEKheqaGq0I2v3xNA	1735807275	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm5zkt8jp00007ogxkw9v124j	cm5zkt8jp00017ogxs01dmeji	oauth	spotify	31dtk6eahqjwdf3642kzmjn43rva	AQD2jsn3r0YCXoBGFoW8tSWL1ZM0LPWaPO0BYrveP8Lfg3jDctwVYvJ0VcQU7EabuT_z8dwWSi7gniBTe0B1E4fZfbtle5cNKJHyhyZ8OlUQL9d-IXxq9ftBzVa_ec6uWrY	BQBUn8ImjZVLPAgJ6kdniyOISAxInqjljP1tNbf0va_KylkZoXxemAxsERdt7YcU6cWDdWUoPY4e0vydQo3aim2pqNOGFz02varDEeHBekRDaUGgyM2MFoNo3fhjyq5kv66HxRrsdofvm-FsaEdOrppksf2W5kj2AKUQtijUo31ZqYgygTfuIyWu5FfLXdEwS1TKP63_goOaTUCopFGHTzMqWRSbPvEKskGCX0o9o55QTh2VidSbs_i1L3_lXIcVkhNOfQx6atT7TVRCPxZMRX9YLyN77U9kRDs5gMMr0Np_YHGJzdfuIYQCkyy2GAVJfQ	1737056417	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm7gf6p0e0000qusysax9uh03	cm7gf6p0f0001qusyzrif5joz	oauth	spotify	31rymx2j5wflzueao5wqwnrak4hi	AQCI0O6GrxalZzy0iQwXRv25TNz1l8IQiJ_RJd1ZTHDz2jAg5pnP2GCqR_7iG2wcsWIAHkCMzsN4FK4Kpar0e2toLCPtH7YCYQ2mBa5hFS8YI9aMoopwcB9nwoPlDV8LtL8	BQAeCkJ6XbaZj7j7nc1tZdLqZESv3sBMEQybLd5Hq6GXppxagpBXMPwfCNLJqOVUv9IZ27NRDmPp2zMXrH0nn-i0DqgP0xBj8oH7Xhql1HMqRCN3I2Oyu1tDhDBlrmA4VAxfRqzHRGYyw_8UiTj15GcEnPriy2AWHBNp3fzyGJodAOUvLjtwookZ5qKYtLnsw5tY8IUl8YtVXN60Kor_N9sMlCINUvQP4XQjf4qUnYrfkYHzzHI2jOhJaAnvxCP89wGlx1KEFl5-s9PQ6rAzVB3n6VDe7Fyz8i71cuNEntPM3d2YN-AancQYtP0dQDK2833X	1740245763	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm8i82r3f0000bl4x5b49l515	cm8i82r3f0001bl4xkjzjh5tf	oauth	spotify	31vga2poemnuxqho2szyvmuqckvy	AQC-Prvub5kOTD-NB7lBwWmgKTW_w75PY2G6L3dWBj7twNZRSbB9FYMv07hpcbtd8rzrkB4eS-bphizubWNS0FTIX-pceVriK7OcargL4YwkWcMhcb5a5drBQYTXHp1HHqA	BQCRbo_VPfw9yCcu1nZcx-hmbp4v9eczG1WMTw8QScsH7kXd9wnL3f18nU-1r_bF5FwcvB09t4DwFkpVWVL0xRCvCFAvDK8Ge7wx766LGsiFwo2IPGv0a5u1QZ11XR8pnmhHFhFURhSNhblhwG8PCifuhOFbXEqQ3ZxaWJaYPQZMd6XlOimPjMSyfQsxM7umjdUcgiZeEEGsKNkG70gZM9X0vBud0jS7DcL329NnrC9t2WpQpOV4yas_pJVfPwee4GPeSXa2A4SntdL9oi_TKQhAZBTBhWpNMTp9EzBfcRSYV4JV_LiIuQBtg3ZbZoTVoQ	1742531425	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmahtc53v00007fwa7dkhyv9o	cmahtc53w00017fwarpw7mxc9	oauth	spotify	jessicsmcdonald	AQAZ_Ms5o669BHB8JUU1y6LtDiCvzS8rz8nlL1rcKonjs3A88vIEvjYwgQ449c8ZCqlQPi2KrytgCunEc6TBTThlWzTlGMOiRSLvtiUw6qc41N3bRRJZKmFkT3lyoCveCyk	BQA0UpCsMaWgyzMg6Z-Odb4tw4ZK8E8cxqPm0ycwGZ0asibzj7-OoR0f_gJxCTL17gtR2LgerDKvCNqgby4vdgrvCMZqy-NcXTbR2ioJrWsZvfkEMuE3HSHJKV77FnAHLkxgT2U6rcDzatD7aSaEzO-mtxC15fDAabxPdoJrsYxQ0AfwYJfwhyzNtNVnyyIv0KAQ73_HlkoA6of-jwhUeuc6qWKMl9NzbVxRVJmocKAeigfig82qT8_yPnyV16rJSqlo9Zk5k28ZNtJU4rN7M0YVjqRgEDn5hZs_73tAphQuj9G852QvjaZdPw-d	1746860406	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmajeuo060000149hv6zoifp3	cmajeuo060001149hwf3bikzp	oauth	spotify	31wivwleacualwe22kith5mtvcm4	AQA984FJpQHctDKz4cYXv6XG5CPhepbv1D14YQL4kNV4sYqThCjO47f6F2nmZPUkr9Dp8QLDXe0MRaDqDWsYGzuSYUym-z5j9iQeP2WBBlH5zeMLeoIwTwcoViRa_VtnIAo	BQAIejIocDItQMNqr1VLPj8pvRCNhpav7uyt7g0ieLwiYu3oCDlxVdIpgdam6JEzuvCwWDz6-RTOMPjPzSNqQ9jIQlTqPs4bFDOmDnBoPbJg_RXZvRpZocX2I2qvLu3fBVWP5RwAVFDQodx8b2B8RY9LReh6CfjZMTC06NI3VP-LRdPXpmVDNGh6R-0oO7WC6gCp70YyWmotIwoASXCACGM2mE07aEsFrw-tFoCDXsZfX6V3DygkkfUzft1CUBtZQRctTZnHWOPV7vkLM7byfzOIVxlLskKjqBGbf2VygtSCkZBVPElZWns9Q3hY_2Hjx-z7TFzdz95E1Q	1746956989	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm8rcedhq0000qe7ufw8sj4sp	cm8rcedhq0001qe7utz99eb2h	oauth	spotify	m0o2m0yh36oog6s5wctmxs6qt	AQB70QhorvDAV-Nf7hVnkEAXM8zmi1IXeCdZ9Ba3TDIQbGA0fzSg1aM8nAzK4DhJhVqyvtWZnIw0jVuyvawKH6ADGR1ERUh4cDypMk3EQESWlDJkvrl1OJVnIfPxREKNP-w	BQBXXYmmuLrD0gP0pu6IpWRueuNk9LUm_z5tuEdzNg45aK4-KeXNUQzHkJokp6vrNpjvVzIAYRFm6g7ap4k6BC6t1eZ0r5yNGp_NWy901p_bmaH3cnOTS3f8iS6Q4eia9zjvr0uG9n7MoQ4gDwgd-m0LPUnWgbNzUbJJxpfWjZ6dwXvw7BMAsmdsNmczN70DUlnPXuZ9DZ6H33fa2DtfIM8QM3s6-qRF17oupo92jOUZL5oL-qa73QIa4qvhWzvapfA6s-miBBNCzL-auTve8wFBRie3Vsv5TBIWC73t21reTUD11si1i5fvdQjHkIYPRQ	1743111606	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cma0w5hyr001uc91okbrd7rxx	cma0w5hyr001vc91ob1bvn1yd	oauth	spotify	o0by412y1iczrfu2kg1uetpsu	AQDuWEoZBJBkVEJufk4clO8UZOknriCT1_6AEL3uTckfJsfBeY-howBthjsZCojn-c2xaBgsHHu7JJ-aMutjXzZ4SAaFwuJb9_R-MW5_otnkTUWNct86pBy7vgWG1i5DRoU	BQC7oPNaVntWFl1lGJpgwA0X3JzcMCx2KzrYKQkZRlHVVQg7gSxpCCvFqp3F1zB8NgfetMQ-66UieFLYz24kB2_M8-CL-EGLKSk2IjoZ90KFlJxfbXXBHHzqWHdwl6S3LB4zcDs5Swdxf5NidVODty-rcWe27xV_9y-h_dyRIPNJvoXndaNzt3os_uyXi5G8-3wTNr3RJbfcOXnyULksdiE_GUafRyM4LjFyUAAJwIaF5hm_lvPB1Z_asxvyTqCYSd74qWt_HBVHHqJ7J1lY924yeDqVPYGN7Vga-GBF7dEGWQ8XpBA64lHFFsVKd-1iyOuFUA	1745837038	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmc3a8dwp0000lrilbgni8ehf	cmc3a8dwp0001lrildmngocp2	oauth	spotify	31w27z3o5zzug4ae46zbvi2s3doq	AQCgTMk1J47eIx8y39KeFF0vXgW8xbI5FKMB12jfIxqzghM-bRWPmdyjvy0ykZwTitp6Fsv5a1s-uwLE5sAB7MVR4TLaJfBs9PGmXdwhIbbKB1oH0djiYZrwdGk7Ygo34vg	BQAw8JkHsOgMSwYHJmR7GdUZoMTYlugY9Yrbj-xcXVJIMHFdAlzBxpm84mcSD_PClgyIg46XLxz7EBlb8gAA1jxddYEP4i5SyWDkRA29XlUISgeWffq__kHPNJtBWPKiIHS7rpm14jBmEjG5VYlkBJoFdbDTXZwZjHArBcUu-R-Sd_yubvij2PencHjE7XXmjz0rHFqUOa0811kalCQUvhm8-LztnjwflA7REGtczQaCeyyOz-_SYLxAaGFGN1iaTvrTAvwfD5d9QZ-MC8L7f5VogJAyo-rHM4P9lTN-jnarNmfV6SwpiFxK19OnGui3wRfnOj3o8g	1750335184	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cm9fs51eu0000goxqu4a8wubd	cm9fs51eu0001goxqqc1x6tzo	oauth	spotify	q2cx9nu2t46dnr8zlln2gp5b9	AQCDRW-fpB8ycQgJp1_4rWv5CBPF85JfOd_2KCElm-EQyNnxQWbwjo54dgHIRL-dwYxWfwsLSrT-EuuKf8ujb_hRRgYarJacI4QUoGTH_ut-obTDFR6YTU8TPacA4Dg_3bc	BQB2EMRdkh_KlFWGHAV0ZVCH1wWb6MGUYffFB8JDhZGHrM-uMGbx76rHkiCm0GgvLXnlF4vR9rNvqAAlJjw0OLXAWI2w8X9V6CiF_Yv_Kpq6RkGAtvCixrAwSMVcctCQSOUorEvFZ_GBBhI4JAZbjSpfklNreR_gxVEImTv5gAEQBCPuXajf3y0rFHbKneeqZ6UosBfKc8yqT4ZgxUSAxgPpZzr9fRR7e3BJzokZUA0m3ZfsEXICwJUgzcOcIrOYj0_Ah1VvYFmwGeHb0UgQFUDD3GaM60eTZCtos70sK5zNn_GjEWfCga5J9RJoXRt_GjEbgMJyA647PcUiefBhqFd_	1773768222	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmen283bl0000xgz0w16x7yz6	cmen283bm0001xgz0ok3xmw2g	oauth	spotify	i27mf70ugn3lf4udshal4jog3	AQAetZSTyRYdxJhLRlo6UtRlsRUUfLSZIQj0CVA5vA6HaSoP41hMv_OSLKs2hX0NO3iji8m-H5CaI6VtZRAyNpSHNwwRYmNXo3O_j0aujvXcsjPiV5vqXjiI6enUBbtl6KY	BQAOwYBnKraZeeabCqb4irpQwYRrQGJpSgH9lInz-KEdhQqBxRglPqq49aZCehkMS-TMkalGN5PALVCaqAvrwWs8cegah5tZl16O9l8mCtwBWebMk8N2G_-BBZLMzUz9qKvJ74Dm8B6CWNvpFGgf7B4gUN3Z2BXLktnXYy71e5t-YEr-l2gUC5kpOPtpKZbqz1RX8rHS-HwD-QpegzfR5ynLarZr-36uBBI0cRP2sOTJFt3EV2oijmoOi0m12TNR4py8CiEeIX9IBooyOhiwnFzC49r79gCacNwFTflrtyvYzDnpJzNCARm0EMnEFBiBsVFyVZg5UQ	1755884701	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmf01ob9c000010v6r2r9pnpd	cmf01ob9d000110v6v6yfa6pm	oauth	spotify	31hmljbm2vbxtckmlljsvv4j6j2a	AQAhWy0uoruTkBmH3xKtR-TSHoTREJLEOmaxZnNfhaMD5nBT--kozjGvjeudPhHqXxTXkOw0WoYe2b6-RcTG9HhW84zq7b2MxEuz7gvIZerjUlnc3f4UT1WlaDCIZr0zkQ8	BQDUF3mOiHHw3gcM7JW0zFRrc50_id2Jm5ztiDDXE8etnF2HTPCQOpXI2coOiwGC_dF8_8NPAD8MOBZR_W6lidODU_3Fb-L7dIhggS9Pb5AL50GSj2M3xXHz2I74GB7kH1jwAy6Zn9jLuxGlxF5L9XUOovgYuWQzsEChtpHsF1WVV_BFdERDpO6zq1FN_cWJry7hp3paHOg6nw7sw-xYnblHKKgGTjEvXxAw9gHvX8S-SLPO6MkRKDT_3UR0BHUyJYA3HU1RmEnNiFMzDfgM8NEL7V8aAhvBVsrEI8GdnuGfOXg4CgYeQ8kFMYI7wJXJPIaNn2ka-ajW3w	1756669998	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmfk63t250000efscdx7042mg	cmfk63t260001efscwq3j53l6	oauth	spotify	31pffm5j2okt3am5zmvs6yrwpnai	AQDtWcXfcu9cj9qc3bDrysV1ZxKV591zjS4GhG2eJQrM1EikJ8gN32rgObhIlocKdtnwW8QYGFvrRRqyHMPhrPKnc62NXQJwALZdEqjU4d5yy9tKnHbZE24GjQmPg2y5P7U	BQAjPEZbOFcMKfaYsNGaZECLzfobmNDQdSFlRs2JdbAx42QvfUqhScsNx-sUHqh_ScZTK8bJvch9I2WMMdumJCsowxnfHhNgKBAYj6YhBy32DBN3Qo-u51oFb81T8erKdM0yBWUtRvi1pnOGK1v4JwS4bJjCIqSkXxVOI2Dx3xp2fKg27KA3a2HE71DSxagtQLYvk0PqPsheeZ7hWk0L_Tz8kGa9ki5aHFbEyXd8TBQ_f92OGAdzVIZztihgEDXJEVjDKE4bujeP0VfAif37vEkF7p2B2ullvY1ed57OSR_UvJEnyttFeuS97qFGJsm1IN_oFWDr7EC4EQ	1757886584	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmf5gpi590000ikirxk9iv9yh	cmf5gpi590001ikir9b46jeq6	oauth	spotify	312bd2qubuu25tkveljufbnfcagi	AQD_fM8n_YQh4JH_dEAmz2xz3GmAXaiKf0tbIuhP6sLed0XPa0g8cef68gF4kNe06wv9HGMBx3cRD8UJyqCWVq9kXHHjWanPNcpgdBW-a07mjWz3yVj4fuWn7KFOoYGARSY	BQDPblx_HQiswGJGb4zArCCDPHv7sl9RQeOzq4she9P9Mz7jlkK7uf_A9-wKVLjFdpkFAG2gjfmdRsD7lMjRkAll_lCefEyuMKFENTY6OYgBrRREXdEenu9qgA3zKnzgwvwo8TE0u-BX264FbssSE2-NXeCm0bN1UqjgU1py6cWiJGDQa4lwPwI2bK5_exc6zCQXF-798YX0tVZS4eVFQ76RQxDz-jlQ9nEbD7FHtXeqI0U8Az0jF6O3CQxHBKmV0dHteBx-yrJB0JPWjFkk09c3HGEVzER6p3UfIVtvOcY7etvygMnGqZFbjq-sCt_9TD0v_sQB3A	1757008714	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmfsbs4n10000e1g1132ij9nd	cmfsbs4n10001e1g1bpg0635u	oauth	spotify	31y2lgu6lvnada3hdwigta5kgkpi	AQBYr0Rk3SSmzskaOW97pR5BeoLkyedhl-uy0zSfjcv1saXw9IXsOe3CApTIvNgP9ViwNeHebAI1QXf6hg1LzydWXhZy8mosNukRFAkUtmgKK0UjOgJsnryytw50qyi7C5c	BQBEiQM-rKX1xxZp5R9M2BvB62TJLiZBvVj_OCfTfCCYn-NMuTNAoblPzjAF4p60hQC0PMeAUqlrexnAElCwopkFb9VnjjUzzBBmsJXnAnWcoUEwFZDdPHiTKlCVK7np10NGdGCE6bgg49VpeKrALPJSoYprGRGwvYGiknWH1iYv2LhsgnGaxIeMIW0tb8C1JgrDHlVT7icQDoWwaYTb13nxPhhxbItlmvXFauNQj4qbuCsJrunteuhhzIq7Db1ReA5nvck_nG9_mSMCK0-450gA9lYQdrSv0wtbDQBZ5sdmr4-u7vPf3WGdvka8lDRfFtFIfNrtrA	1758379786	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmgwaafni000rwattycllu4w1	cmgwaafni000swattya3y3man	oauth	spotify	1238561021	AQCTXNiff4HFv6q3XvQPqOfFMCJyDJrmhQGtlN3dzaUCVWxdRlQ-IUdbsYBQ-hZv0lG1VbOG_2ZTL08L7LtjWdC_fCfhRc5E__w2R1Yl4Mfo9sOe8-g3j9WM-FHvXlJuCC4	BQDK6DjpwminQS4YCOgM5VIYFO3aSdrQ_O1PoHnDwkDJeiiFsIGoyZTa3zkpd2mo1pLMk4G4cEx1MA7RLG-p2kfzVl4crMKb4hR7udI3gNF0fUs1iCq29cUlZ1_cMTI1ZSHD4eBFLTPp5oOSblrnRIZdEb6IQN13dSFMk49_OIHIRoj5D7M4ryDbIqpZSu2M-ZoRsMSBhmhY5HlDigGbuKj0QY6njJuBozr-494zL5RbSty6ZFnQLHvkYDwbQ-Xgx269wKWAvgRYCtGXHfdakwHIvUyFIaFDoNcHuv27n4xm4SDJaM86nBXKjg	1760804860	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmfqlnqk30000ppweks59jwpl	cmfqlnqk30001ppweoewlk5o8	oauth	spotify	31nhonjp4wcpih3dzwzlnx322tqq	AQDnKytO0VmmwsuqI9nZ_A5dpHbzSBcmggcTh2jB0eJKR9nJCuFbgTAYiNzhPlAu6F0dqbTfKR1lrrswfbMDho7z3RwTDAAcqu8pPseYP9lRxbfdMzepQMAZn0Eok8opA8E	BQBRBNWPuGccXP0LnzkOs_9azDdJxY8c95uW2jqrqrD871tPXxTTXUxLoLw00EVfedQmE_lElZpoLhsgvJni_mAByv2Fqu4DFKu_EG0NF5Fm57UvWOB64nMV2eNVGPsLf5zleuNFJ1jo8jAYjGPNYvSr0enrXPaOrnTsUvAp8PpLp0JZV2HHAQRi_XjJMxMWAwA0xoOZQc9eLa1dbcBMcsOKnwfVu9HJU7A6BSHrzZ9o-cdF7SzRNoOFDVRYlIhzqrVKBoPNYKqeKwO2WVw55NxEtzJ6Nw6WCF7UhLNxMsWE6iIaGkuDuR6ZR4Wp9SQub0FGhVIkXbFH2w	1762001083	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmihe08ti0000k681azf6pkzg	cmihe08ti0001k681w8guj22w	oauth	spotify	31qa46ahuzrz77tdzdujyvl2lg2q	AQCoBTHbAdugTQ5sxQtxTDggRJ5UydFRM0gQEyo1E_8hwZtMxjBTzl46s_jnLQiPFtzK6etef4ef_MXWvb2VOb0keBwJlmYs2d6nfpzP0an7eapvVtODhrd8Gy542wjYFLY	BQDudi0OwgxKZxJ_0rVL9RRr3cEf8f9AraEhO-IpDuqh20D12UtFb8HMndmZBbVdTnBPi_cyW6vL4HKrI4vqMAz_DussMoknUzMO7fZT05NzjjJyTHhclVzJgZR2sWSE068n9VJrcc5CLOMKwFC0RaR6YETIgfYLnESovmJa3IqhMcT4x0ANZ4G-8MPQaysS3-bS1gOlQWOuLc5HiqxzeZB6OaGfjRhM6Yj-EQQgm4mW8VIWCKXWQET4g3TQqtXjBE6pHU7L9vWlpS5y3f6KuuYEhyrEeaQMuwDVGsOq_bSn4EwU4wIOW4yWHQcBRTWFbHwTcKlzxvfdnaANOpLZjusD	1764248743	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmgwfsjv70001quvu46pmhutz	cmgwfsjv70002quvupeltt1y5	oauth	spotify	31wna4ziaasoegbtf6uhthvpbb6m	AQAxjKThD7qpMLm7kOjj4XEzpGUSt9Ul1-WvqJkZvtz6hVXhxCzvU_83xw27QUHXBi2w0RdgOtTmSaBgomHotM3vY-Tqb2ze3S5kInSZ34zMyrJ4gidf4GR4LkLWJAG1Cno	BQAyVeaL0v8TvYzx0GftuV2uB3JyoinezhYrWU4W2bo6--t5vNPuc7TPsuIKMePssZGoK1lywuVoH4jkm2qM8VbZIUi-AslYL7aVCoJ7WMiQg6DojMcmatXP-7CxBGTTJ7s-SdPIxW8BGxVlmvSBOKV0ZkJR0OI1w_5OL-DwkvDG3nl3RedPZppcsIJccDehTFCT9OSA5jrshQ0y2fUAdjt0X_dxFZg5TP3qh2IBk2dglK91BKAV9wf9_zIYefz7FBa08hhJ4EPnV0eEa1Nv3I4Pk27nvS6eORjN5j1HCefojTuowBYawdVT_rYdEG41be5R8CVQPHOtBA	1760805171	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmgw0ipzx000013mf22lqvbs1	cmgw0ipzy000113mffohgz27r	oauth	spotify	313bvqbrtgiqrmjpcrqkm5vyb7dm	AQBiCRddAOW5tr6-BdPSBgk3CM8Xq9Rd3XmsKmjTQeqZvYqBHgb2Mtly3K9ZZAyDb0yQdV1WB5P5BoLzPq_5aeedoameN_W6J4iXrlyaDrbSVPerhow013tBZTEwRA7CEk4	BQD89wCTzBC9JRnB5A_3b8e8nntjizGz6bOc1oGbc1VxDY7MXMywH7KVr3vWGBXNBUR4RLgfE-auwOQkKCNVaDjQ5FBAPvjpVucKi8W2e4rvkOZ_vHl2xOuFncta9Tg679UVthSJ-NnccrAu9LC-tk20-BRnnhRLfQPpin0-5JFRxk_GqLJIpTiSI05ZBHAwIpeJSWOp3c-qYRjksJGd-HJ3f5HyP7Z4mZXpe0rZR6ZyALNkZRhvvSHZn-YBaCkzeKIpX8DT2QRIIq2yI0cM1HQG4Nj7pW4GMXC0yyoDRMV-PgipaegWhZ1566B_Lb0vyWjEB5_gBWL7lvH8fw	1760881485	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmgyskgyl0001muvxeeadz873	cmgyskgyl0002muvxvm19pg0h	oauth	spotify	31elk2mizhenygvnvcwzdy6xlglu	AQAC9lJt26qOqPzC99nI7lXJYEqGPvqnEOAF7uw09-Ut89W0ko68Bvh4QKLaVY5x88VZB6FamKrUjbkBqxo9EenzcPTyVZ2eAavrkT9urLtIplNY8IK1D7Acek3jabaF21Y	BQDJHFkJDJH7ccwjguTLNnfmDVxyTk1FrfYhqIkiuv4SoqYv1-v5Rb-ketfm5h3yLm5JJFqUILncFAuF1Dzgbdjy5onciN8HPy74T0J30R7aZ0hE9rf5Hu-mnMhWIiXX6s1Lp0FZsKtwG8uGmSzcMXjfGe8eXqvdcO4RE2Q-pHFywyt1w8B6o8CRyeNx_TeiGtaQ2G2mUWQr3ahWQrGtOBGqeNghpl3lhmMRd6UsL3YoadXQrY-RhchqkAItWgIcf-Qc6x8AXNyfF13sQ0mHQGQ8PLvIukmZ9-B173r4JNMf3injhUp9UG-ObehlKlKES9850941DJRu8Q	1761141378	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmjbhsdkn0000cqmp4zpvukxe	cmjbhsdko0001cqmpy8a7mhxm	oauth	spotify	31vg4kwmyiwburjzcubmodq7syaq	AQACFRAOnMjLPeLUkM7-6rsIWkPIYVh0TQdIrBnoeIoZn2dWdz-gXBJAi4Wq-cFIr7WxegzGSJtBRs4yM0xAzoFgCT_Q1PEm95qc5jyex7rehRfiwrZkz1F25QLT9ZbZ27I	BQCGaMRLVgvYEyksgqwbZHac1LgrbPHl67heSPfpHQLlFlmLRp1ZwlK03k10Vzr3hGChZncb-yyjnSBzbm9eohRXzy77rfXl7jhW-ZeKTeUndhvr5rNUflVCsKy1qYWqry4xflqt-KqPXBQHNrnX6xI7cgGLnwMmrxz3_notiHuw5K2Dw7DF8cCoD4IrZiEKyplg1lfZ9W3kiBOI0psEPUgeeCsdgavjCOtdgzNjTwHsEATslseAXCTgGyFtJpMtvaQgF_g6_pTMmRFVE553W09yv7XRDyD-lLuGsjBWe2nzSe5qmqp7rcciEfsH-gR-yUJMaq9alrJJ0tKjBRnx2jXQ	1766069080	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmigc1u31000055ryr5vunq29	cmigc1u31000155ryqeaiehfy	oauth	spotify	31akktdsnyahhlt7ez2uvk64zp7u	AQAXQnbXmovYy2BMLPLRQMlfOAxr_Xv-zcMaAcuAz4ctqLvV7KBhpGrSJBE1M_Mp2Ou1YzQLNHgLvFMqw0JzgC3DoXyNexd6js_f7TX3srQGbzuwbL-6wrkgc-EiAB9uxd0	BQBkOkmmHk9Sv9mBWG9DnOpEpDuX_wnnM8zQaN5pG2qfz_Swnbm-8ohjyialR7aLVdm6bQg280Pfy3Nq_bghahwAY4dydkP-x1qXtWXJ9ka49N2ZV2Z2xBlDlQza4_wXhOSE_ivZ5XDJqChb4JtjJ7XGfS1naCtZJ4iYhGerJYAATOd98UV9bxw0UxjQ_hSfwuRAq4i0inobtedPn2NEBjQHGBFFTHu0kPFYRGWgqvgkDoHTXrPY5QKdKWiL9v64Rt55Wu4I8O4vx1XWOZ15O1_EmPArLAzNhfsF7zJ-Kc3pWHk9t621kpGrOo3RyLeMo9NO37zIZJff_Q-j9iITGrM_	1764185915	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clro3j1yb0000jt08vk4yi9dj	clro3j1yb0001jt08e8ewtwqq	oauth	spotify	1171390508	AQBODBO1XimSJaGrRvWs0IYGfhR5YB6AB-0esmNKOF-jqLrOl_qKLBRU7E9NLMhtgYvAGec8RJgvgRDfbkdgFFLbxdxcHZJbBqVParFrfMqRpL00NwO_cdn8Sf2flrT3RZ0	BQD2jZS05qA1RMA5r4WTY0D-mxSovOjIe5zNEY5Yc4rrZfLUpfBWyUntxXlmAqwzhcE-VsSxNYkco8JcFfMihEvDa8wWyOHL8uvNYzhiMl_zlDdMbBz3yFfzp2BMa9bx_ZEV7KJgjoKHSTHGc-glVgvn7HSfKhpHQjr9Qqy_rZjDizVnnSZXlIrRfpuUMVq4flVjheWp5YxdCij-c11AMdJHc3TW-8HIJfd6J0IVGwF1RpoX6GfMm40bXsFqNSBNnrWkxGBvvILe4g_pL1uK0UjCzbLPbKqxM3Xoxvfi6MtnTjoq9tM9bihvCHh3tYjaDYEDKA	1775130934	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+clp0emue20000le09fxbphjj5	clp0emue20001le09pebg876d	oauth	spotify	11102251084	AQC800cDS_xoMMXpwnNw2tgRfc_hjsw7zEZf3HP7DF8tPECultBZwkYLG8t7WdGuW8JSwHGENLvO21Y3blWyoTDSE1B2x_13XlZ6K889asRG6IdMbV26FrEEVmvczsfVO_4	BQCOKTZ8EqH__iVcY4gTRt3zoxyMxZRaoonerL2Bwp-A0yN6ebuv2Jwf3oNLywUfsRJBkMrCERP3c9DiBaOkY8ChFxH2EWAMqG_K9Hl0pPPGvn_n4xK5EpuHaGBZE4ebDnQfAJ8I_UwecndHu8RcoaUIGJdXK200BPIAZpnrUVckyQ8DjMxfuTCcMXtVZhkhqd0SvNXBDfdJGiOOsf4P5P5KVSSy1PdY2P-oLuDM4C6kDzdkw_gSgnlMGJvwrRSiPXbNQO2NlHCE0VXhfr164-nh7at5HW1wzErb2ZwErXj94sBJ1Pmoid9aNITjPwDDo6jtwCRCbUYaHmhDdItagARd7pZjjeRI7ILM6jUYsjd5	1775904210	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+cmn71vtzu0005c19mx1x5nla9	cmn71vtzu0006c19m9x586bvn	oauth	spotify	31dsnd72lvgjdkx5yoh73aqe3n2e	AQA7wzLJW6mxwMbDVule2WgvQfW4OkUPa2v1iv8BxGoindmPqODRt8skgqEo5tAnvndYfSX8XdJXBsiHoSgpmvfpz0MvgbVxDHDC6K3FM3q145Lorl4BExSqMtFjN3pUSZs	BQAamv2QMZzfnxGh1_3XNTwYUh_UKGrRdhNJTIIODqj5TA2Ig1ZcxfdFxS32RO6LhGQm8hoZvO31WfFF_2TslZ62L0yqbVw7zVOkBNW-ilmZkO3QPvfSq_XCARgMOD5g9-U9Dsco4G_WV3S7-F8i0b8muC1K8Tc1NXgFIPVV7XW5TiidD5Wys8E1ro8RU8Zs2x29tq9tyYbEarQ0wPO4nFE0-FpJIHzZ45p3gHDxXWSNMnuTmtpgdUHBcoCeDx6px9Ot18xvWXy-Uuy90x4RE-18rKTemiDxnfeF157Sz9AP7TJudleKpknDTMRt3angGgMWRcaW_IRjG50aTwn72dOt1A	1774507632	Bearer	playlist-read-private playlist-read-collaborative user-modify-playback-state user-library-read user-library-modify playlist-modify-public user-read-playback-state user-read-currently-playing user-read-email user-read-private user-top-read	\N	\N
+\.
+
+
+ALTER TABLE public.accounts ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: badges; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.badges DISABLE TRIGGER ALL;
+
+COPY public.badges (user_id, score, name, "lastUpdated") FROM stdin;
+clro3j1yb0001jt08e8ewtwqq	3823	TRACKS_ADDED	2026-03-25 10:30:41.964
+clp0emue20001le09pebg876d	4	FISSAS_CREATED	2024-06-21 18:25:53.995
+clp0emue20001le09pebg876d	1	FISSAS_JOINED	2024-06-21 19:05:21.507
+clro3j1yb0001jt08e8ewtwqq	1	FISSAS_CREATED	2024-06-22 08:48:06.775
+clro3j1yb0001jt08e8ewtwqq	1	FISSAS_JOINED	2024-06-22 08:48:07.123
+cmahtc53w00017fwarpw7mxc9	1	FISSAS_CREATED	2025-05-10 05:57:43.875
+clpuwqgco0001if08r20h71hb	1	FISSAS_JOINED	2024-08-04 09:59:21.548
+cmgwaafni000swattya3y3man	25	POINTS_EARNED	2025-10-18 14:58:16.876
+cmahtc53w00017fwarpw7mxc9	9	POINTS_EARNED	2025-05-10 06:14:05.185
+clpuwqgco0001if08r20h71hb	148	TRACKS_ADDED	2026-03-29 15:35:02.909
+clp0emue20001le09pebg876d	127	TRACKS_ADDED	2026-04-11 09:43:53.053
+clp0emue20001le09pebg876d	573	POINTS_EARNED	2026-04-11 09:52:20.947
+clpuwqgco0001if08r20h71hb	420	POINTS_EARNED	2026-03-29 16:20:50.497
+clp0emue20001le09pebg876d	4	UP_VOTES_CAST	2024-12-31 19:49:55.651
+clpuwqgco0001if08r20h71hb	4	UP_VOTES_RECEIVED	2024-12-31 19:49:55.651
+cmgwaafni000swattya3y3man	16	TRACKS_ADDED	2025-10-18 15:28:53.703
+cltkfs03b0004jx08dyimcr7c	1	FISSAS_JOINED	2024-07-27 19:47:48.234
+cm09oqzpg0009w9ureubo8a21	1	FISSAS_JOINED	2024-09-25 19:29:08.023
+cm09oqzpg0009w9ureubo8a21	4	TRACKS_ADDED	2024-09-25 19:29:42.32
+cm05nlyhs0001sqq5dx5ydp7n	2	TRACKS_ADDED	2024-08-22 19:08:18.667
+cm09oqzpg0009w9ureubo8a21	6	POINTS_EARNED	2024-09-25 19:38:26.266
+clpuwqgco0001if08r20h71hb	1	FISSAS_CREATED	2024-07-06 09:37:05.146
+clqwmywel001fjv08mbvg0uer	1	FISSAS_CREATED	2024-09-25 20:44:48.79
+cm9fs51eu0001goxqqc1x6tzo	5	TRACKS_ADDED	2026-03-17 16:24:29.801
+cltkfs03b0004jx08dyimcr7c	5	DOWN_VOTES_CAST	2024-07-27 19:48:35.668
+clpuwqgco0001if08r20h71hb	5	DOWN_VOTES_RECEIVED	2024-07-27 19:48:35.668
+cltkfs03b0004jx08dyimcr7c	1	TRACKS_ADDED	2024-07-27 19:51:33.311
+cm8rcedhq0001qe7utz99eb2h	1	FISSAS_CREATED	2025-03-27 12:41:36.173
+cltkfs03b0004jx08dyimcr7c	3	POINTS_EARNED	2024-07-27 19:55:39.216
+cmgwfsjv70002quvupeltt1y5	1	FISSAS_JOINED	2025-10-18 15:33:20.387
+clqwmywel001fjv08mbvg0uer	1	POINTS_EARNED	2024-09-25 21:28:59.604
+cm8rcedhq0001qe7utz99eb2h	1	TRACKS_ADDED	2025-03-27 12:44:37.954
+cm8rcedhq0001qe7utz99eb2h	-2	POINTS_EARNED	2025-03-27 20:53:36.16
+cmgw0ipzy000113mffohgz27r	1	FISSAS_CREATED	2025-10-18 12:54:05.497
+cmgwaafni000swattya3y3man	1	FISSAS_JOINED	2025-10-18 12:59:14.249
+cmen283bm0001xgz0ok3xmw2g	1	FISSAS_CREATED	2025-08-22 16:46:22.476
+cmen283bm0001xgz0ok3xmw2g	3	POINTS_EARNED	2025-08-22 16:48:59.719
+cmgw0ipzy000113mffohgz27r	113	TRACKS_ADDED	2025-10-18 16:10:03.965
+cmgw0ipzy000113mffohgz27r	21	POINTS_EARNED	2025-10-18 16:24:22.787
+clro3j1yb0001jt08e8ewtwqq	-32726	POINTS_EARNED	2026-04-02 10:53:33.146
+\.
+
+
+ALTER TABLE public.badges ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: fissas; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.fissas DISABLE TRIGGER ALL;
+
+COPY public.fissas (pin, currently_playing_id, currently_playing_pin, expected_end_time, user_id, created_at, last_update_at) FROM stdin;
+9977	\N	\N	2025-07-05 08:41:12.359	cltyqrn0m0004jq084r2iwxcn	2025-07-05 08:37:09.957	2025-07-05 08:41:07.446
+6252	\N	\N	2025-05-10 06:16:39.169	cmahtc53w00017fwarpw7mxc9	2025-05-10 06:10:01.216	2025-05-10 06:16:34.55
+5864	\N	\N	2024-08-22 19:10:01.703	cm05nlyhs0001sqq5dx5ydp7n	2024-08-22 19:07:29.33	2024-08-22 19:09:56.805
+9935	\N	\N	2024-08-17 19:27:46.56	clzyj1raa0001zqmdoh1m1fb3	2024-08-17 19:25:25.35	2024-08-17 19:27:41.664
+8925	\N	\N	2026-04-02 10:56:33.635	clro3j1yb0001jt08e8ewtwqq	2026-04-02 09:26:10.724	2026-04-02 10:55:09.135
+0409	\N	\N	2025-05-11 08:51:18.119	cmajeuo060001149hwf3bikzp	2025-05-11 08:48:02.865	2025-05-11 08:51:13.345
+3901	\N	\N	2024-07-27 19:51:03.5	cltkfs03b0004jx08dyimcr7c	2024-07-27 19:47:18.237	2024-07-27 19:50:58.643
+7813	\N	\N	2024-06-25 09:28:24.106	clxu75qzg000a55znb1f06owk	2024-06-25 09:24:35.55	2024-06-25 09:28:19.238
+6122	\N	\N	2025-04-28 09:48:37.881	cma0w5hyr001vc91ob1bvn1yd	2025-04-28 09:46:14.839	2025-04-28 09:48:32.971
+7022	\N	\N	2025-03-27 20:57:16.289	cm8rcedhq0001qe7utz99eb2h	2025-03-27 20:36:07.627	2025-03-27 20:57:11.366
+7722	\N	\N	2025-10-18 16:31:18.412	cmgw0ipzy000113mffohgz27r	2025-10-18 12:54:58.489	2025-10-18 16:31:13.812
+0511	\N	\N	2024-06-05 00:08:58.151	clx12i3170001l508p84t0vow	2024-06-05 00:06:06.033	2024-06-05 00:08:53.24
+6231	\N	\N	2024-05-19 18:06:29.664	clwduijog0008jx08h4r5edwr	2024-05-19 18:03:30.367	2024-05-19 18:06:24.786
+3972	\N	\N	2024-06-30 05:51:45.178	cly14p3av00im10q9qfujp1lb	2024-06-30 05:48:16.073	2024-06-30 05:51:40.366
+6027	\N	\N	2025-08-22 16:55:28.894	cmen283bm0001xgz0ok3xmw2g	2025-08-22 16:52:49.872	2025-08-22 16:55:24.003
+5419	\N	\N	2024-09-26 11:46:21.506	clqwmywel001fjv08mbvg0uer	2024-09-25 20:44:44.704	2024-09-26 11:46:16.651
+5113	\N	\N	2026-03-29 16:26:14.206	clpuwqgco0001if08r20h71hb	2026-03-29 12:12:18.356	2026-03-29 16:26:09.277
+7641	\N	\N	2024-10-02 21:52:11.698	cm1seco1p0001bzhmfgwsozkl	2024-10-02 21:47:39.727	2024-10-02 21:52:06.927
+5224	\N	\N	2024-11-22 01:48:20.472	cm3s2whjl0001ep0y36j2bl6f	2024-11-22 01:45:31.603	2024-11-22 01:48:15.581
+8178	\N	\N	2026-04-11 09:55:43.034	clp0emue20001le09pebg876d	2026-04-11 09:02:26.667	2026-04-11 09:55:38.109
+3823	\N	\N	2025-08-31 18:55:02.635	cmf01ob9d000110v6v6yfa6pm	2025-08-31 18:50:21.833	2025-08-31 18:54:58.071
+1611	\N	\N	2026-01-03 21:08:16.21	cm9fs51eu0001goxqqc1x6tzo	2026-01-03 21:05:47.43	2026-01-03 21:08:11.327
+\.
+
+
+ALTER TABLE public.fissas ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.sessions DISABLE TRIGGER ALL;
+
+COPY public.sessions (id, "sessionToken", "userId", expires) FROM stdin;
+clp4okwmu0002l408x4gn66p8	aa9b7389-bbaf-4c49-b28f-2de149c5b83b	clp4okwmu0001l408nmcd40zp	2023-12-18 23:29:15.317
+clps8o9zu0002l608sen5gfwk	9c8d1ed0-3437-449a-b24b-f3014ed84ab1	clps8o9zu0001l608ldf0rpe7	2024-01-05 11:10:26.96
+clx12i3170002l508ru993g5h	c891a77a-d8c4-48ec-a452-5824045157a8	clx12i3170001l508p84t0vow	2024-07-05 00:05:32.245
+clqrovl7i0002l808lzik2rh9	45b59fba-7509-4fdc-b88f-d004d881f743	clqrovl7i0001l808tq6yym10	2024-01-30 06:35:58.109
+clph8okbq0002js088274zihe	8b2dd330-798c-4883-ae37-3d6bf1adde90	clph8okbq0001js08l3u8510i	2024-01-31 10:15:12.838
+clqutbzq50002jy08wz4il9bo	bdf0213b-adfd-4cc6-b752-7121fe5a4052	clqutbzq50001jy08qtv9uajj	2024-02-01 11:04:00.402
+clrcvpv0g0002lf09nf33dos4	0aa27b89-e257-4606-a055-f767883be74d	clrcvpv0g0001lf097dn7zedo	2024-02-14 02:30:37.887
+clpx9kzll0002ii08lfsa0p75	e7493e7d-dbba-4b9f-8ffe-4a2abed207c9	clpx9kzll0001ii085zye8csq	2024-02-21 02:09:36.769
+clrqixzlu0002l308b1o2w2px	86a6f420-4a95-483c-a0cc-d2227cd1ca59	clrqixzlu0001l30818e13awc	2024-02-23 15:41:48.545
+clptq4c4m0002l508nb5uv4em	651d6f67-6b27-46d0-b341-c66ede436c45	clptq4c4m0001l508k90zsybx	2024-02-28 22:06:35.194
+clsj9j90i000al408rjnq9bv9	e5ecc6d2-7675-424f-b6a2-1d871dbd9fa1	clsj9j90i0009l408f52qg4p4	2024-03-12 18:23:43.457
+clxql3v1r00026we0lg9m8x8q	4c680be7-ea1f-4bd9-899e-44a4c464d773	clxql3v1r00016we0leuan1ac	2024-07-22 20:40:35.822
+clsp79z830002l608sm0fj9fw	7d33eb08-fa09-4529-a72c-6d72532a1b92	clsp79z830001l608w8y2flew	2024-03-16 22:07:08.69
+clxqzm5wj0002375jslzq5k78	3ebe20ad-2f8d-490a-b1bd-b1e334e091ad	clxqzm5wj0001375j9cs31nok	2024-07-23 03:26:44.322
+cm1zhb2nk00afyh9sggufg2je	f761a7a7-a19e-4f75-8361-b29155e1fba0	cm1zhb2nk00aeyh9sqk5ay6qj	2024-11-07 20:42:58.735
+cltdir2y40002jp0858u01i02	10f674e8-1335-4ea1-9992-aff8c72c1f39	cltdir2y40001jp0803q0qapu	2024-04-04 22:34:50.667
+cltey3t580003lb08pkm782z6	f804d9be-ef56-4d59-aa72-0c2287cc95c6	cltey3t580002lb08emzm8d6d	2024-04-05 22:32:24.907
+cltkcridj0002l708rf4txno7	acbd62f1-2bff-4552-b1e0-1aadad29e40c	cltkcridj0001l708d7228tsz	2024-04-09 17:21:36.198
+cltkfx9ef000djx08k3asi9be	3e261db8-c9e2-4df5-90f1-62ba536580f8	cltkfx9ef000cjx08lnq72klz	2024-04-09 18:50:03.35
+cltqoq1p40002jy081xo1xzoc	d62be483-c4e7-4d86-927f-9a45ab1c9278	cltqoq1p40001jy08myvd65ey	2024-04-14 03:43:00.374
+cltw0ujho0002ld08az0u781i	57e5e53c-128b-426d-afa1-fedbd0d2f3fe	cltw0ujho0001ld08vol4w5gk	2024-04-17 21:21:16.331
+cltxdkgtg0002l508zr0drsvg	58b7b024-1a8f-476d-9601-83b55aece762	cltxdkgtg0001l508jyw9bkqj	2024-04-18 20:05:07.491
+clxu75qzg000b55znqt5n8y4h	b7390a5f-2393-42a6-8950-03a3b5796f98	clxu75qzg000a55znb1f06owk	2024-07-25 09:21:13.947
+cltysp3kc001hjq08176ianhb	003c7c38-4ccd-437f-b033-8345dfa9f3ae	cltysp3kc001gjq08xjk8d2xu	2024-04-19 19:56:24.011
+clu8vaowz0002l608481xmvjv	fcaf9e92-78ac-4c19-a786-b88d7a3f9239	clu8vaowz0001l608olpe0pt6	2024-04-26 21:06:52.442
+cm0sdyzzm0002og3hwto2owwr	1fce8da6-ee83-4589-b70a-efe2bf477548	cm0sdyzzm0001og3hmkjnpxmx	2024-10-07 16:55:30.992
+clufnqtl50002jn080xe0b5xu	29fb5acf-109d-4d1a-b17a-1f33aefed81b	clufnqtl50001jn086c0q549b	2024-04-30 15:09:51.303
+cly14gecy00ii10q9skt4gelf	e36c3863-fc7f-44e3-a127-a1ba6355d078	cly14gecy00ih10q9k5t8mlu9	2024-07-30 05:39:55.185
+clus6ku6f0002l10839953f68	56a188f6-7c22-4097-9117-d5f04b826cbd	clus6ku6f0001l108uq5wjwcl	2024-05-09 09:30:18.949
+clr5qqi1z0002jo083h8ft7io	450bd8f8-6985-49be-a9c6-f97de6d233a5	clr5qqi1z0001jo08kiyrqg1s	2024-05-15 16:02:08.571
+cly14p3av00in10q9ee72zmdc	594a2e6b-c49e-448a-80ee-848b0fbe7ac8	cly14p3av00im10q9qfujp1lb	2024-07-30 05:46:40.758
+cm4ukhz0o0002tvc4ifbgku7c	4458fc23-20b5-4fbe-b2f5-37020dd27b0b	cm4ukhz0o0001tvc4z6tkh3yr	2025-01-19 00:12:35.591
+cltkcnrqd0002ld08wd6kskii	451def72-ab57-4fd9-87dd-209706e386cb	cltkcnrqd0001ld08n8lhvwhr	2024-05-23 07:40:33.094
+clvcxpj720002js08iftsy7l0	af369a89-3aec-4739-aec3-95caced978db	clvcxpj720001js08lhgqttaq	2024-05-23 22:05:11.149
+clp0t439g0002jz084i15op3x	6848f8df-2a07-4f0c-8cf8-d0590c6158c8	clp0t439g0001jz086e4b3v0i	2024-05-23 22:55:44.601
+cm1dnr7c0000214lvhhugx1ms	9da8a160-a198-4ea3-ade8-793e074744ad	cm1dnr7c0000114lvok7xnk55	2024-10-22 14:12:33.119
+clvs9f2ge0002mk08dj88npwl	39f5a1c2-af69-4943-b75f-c1cdac2c9bdd	clvs9f2ge0001mk08m2snei66	2024-06-04 15:29:30.924
+clvs9i8h0000amk08gmy0c1s6	6ce4436a-c5c8-4955-8eef-d2a4befdbb14	clvs9i8h00009mk080pmvc10z	2024-06-04 15:31:58.691
+clpuwqgco0002if08ochycabf	05c0a2bb-1ad6-4df8-909e-687c5eafc6cc	clpuwqgco0001if08r20h71hb	2026-04-21 14:18:16.157
+clwduijog0009jx08fev60rwt	7aeaddc1-8066-40b8-b811-82e9467da30b	clwduijog0008jx08h4r5edwr	2024-06-19 18:03:14.846
+clqwmywel001gjv089mnyzb1o	67fa7c81-4a49-4a39-9862-583774c46f77	clqwmywel001fjv08mbvg0uer	2024-10-25 20:44:20.627
+cm1lfdn8x00051330qgmdg358	2ddf97ac-5ac7-47fe-8b2c-26ec9e2fa971	cm1lfdn8x00041330o570s32b	2024-10-28 00:40:13.04
+cm1seco1p0002bzhm8ab9hki5	e89bf22d-3ccd-4c23-b1a7-3d0d8aba413d	cm1seco1p0001bzhmfgwsozkl	2024-11-02 21:45:51.036
+clytagmy7000211jmy2d240xd	ab44ba80-1d0d-47e8-9653-4e3dcb09c0f0	clytagmy7000111jmtrdr9jmg	2024-08-19 22:45:36.942
+cltkfs03b0005jx084nrigdk4	67dcb880-16b5-44f5-a2e7-dc182ad9dde9	cltkfs03b0004jx08dyimcr7c	2024-08-27 19:45:52.946
+cm3s2whjl0002ep0yw3ci8j63	c11e78b8-79e7-45eb-949f-eb3483166491	cm3s2whjl0001ep0y36j2bl6f	2024-12-22 01:44:45.008
+cm5f0ovg500026td681skzvxx	539aab65-e624-482a-bc7d-a46382309a34	cm5f0ovg500016td6gusuvxak	2025-02-02 07:41:14.931
+clzyj1raa0002zqmdftx6vjrj	1f57c992-8bb5-418b-93b4-b45fe2591291	clzyj1raa0001zqmdoh1m1fb3	2024-09-17 19:24:32.481
+cm05fyy580002ru00pg1zlef4	f82b4cfe-cb73-4d74-b3e1-7791f957364e	cm05fyy580001ru005b6bspcg	2024-09-22 15:32:45.787
+cm05nlyhs0002sqq568axzx7b	eb9eb067-479f-4fff-9420-54dd3faff543	cm05nlyhs0001sqq5dx5ydp7n	2024-09-22 19:06:36.639
+cm7gf6p0f0002qusyzmvi6s7z	8253280f-f619-423b-9ea3-d5818e0f793e	cm7gf6p0f0001qusyzrif5joz	2025-03-22 16:34:11.87
+clxmg9dg80002l508f9i85yzb	fd029afa-d641-45f1-b22f-d5c7f6b7dae2	clxmg9dg80001l50807ymgqer	2024-10-04 07:05:33.96
+clp0emue20002le09dun0z49j	83a88cc9-c569-4fac-874e-5a3cc2854307	clp0emue20001le09pebg876d	2026-04-17 21:37:27.041
+cm5zkt8jp00027ogxh4te77ig	1ee16943-1cad-49a5-85e7-76759927b520	cm5zkt8jp00017ogxs01dmeji	2025-02-16 16:59:54.372
+cm09oqzpg000aw9urd9uvfmmc	5bf202cf-863d-4174-8454-307b5c17a2d7	cm09oqzpg0009w9ureubo8a21	2025-02-27 12:29:33.915
+cltyqrn0m0005jq08elhk91lr	b423a83d-512e-4ce9-ac9f-13a4cb15284a	cltyqrn0m0004jq084r2iwxcn	2025-10-28 16:06:46.725
+cm8i82r3f0002bl4xjx5bdu03	4cb7131a-d1b3-4588-9bfd-c0c772f54cf2	cm8i82r3f0001bl4xkjzjh5tf	2025-04-21 03:30:25.322
+cm8rcedhq0002qe7ul9xiweyr	d3ec8a94-74f1-42fb-b8e4-8472c533f89c	cm8rcedhq0001qe7utz99eb2h	2025-04-27 12:41:21.613
+cma0w5hyr001wc91o3qwwwdak	c19ac65d-ed5b-497b-81ff-52cc72710e64	cma0w5hyr001vc91ob1bvn1yd	2025-05-28 09:43:57.746
+cmahtc53w00027fwa78kkfvut	01904f74-d99c-4f3b-bbd6-4b3c20556edc	cmahtc53w00017fwarpw7mxc9	2025-06-10 05:57:13.818
+cmajeuo060002149hazapo82s	a42f831a-7b53-4dd3-b9ee-79bb33a203a6	cmajeuo060001149hwf3bikzp	2025-06-11 08:47:16.229
+cmc3a8dwp0002lrilgsc1zd7y	e5465b00-ca2b-4249-815e-98f4cddbd958	cmc3a8dwp0001lrildmngocp2	2025-07-19 11:13:04.104
+cmen283bm0002xgz0g24i2apm	677c6496-9f24-4743-b02e-ddd1c0e19483	cmen283bm0001xgz0ok3xmw2g	2025-09-22 16:43:41.648
+cmf01ob9d000210v6cyi9jxgx	ffe50e82-3139-4ce2-928d-9831dbd2dc3c	cmf01ob9d000110v6v6yfa6pm	2025-09-30 18:49:19.104
+cmf5gpi590002ikiroy5copzc	9944998a-9d42-4085-b478-cfa5e7b2c2b5	cmf5gpi590001ikir9b46jeq6	2025-10-04 13:48:59.804
+cmfk63t260002efsclbi9805a	934af92d-09d1-44ac-8f51-83d700a73cb2	cmfk63t260001efscwq3j53l6	2025-10-14 20:48:43.996
+cmfsbs4n10002e1g1dv5xh63c	4aba56b8-eafe-4bad-9584-35770fcf0ee9	cmfsbs4n10001e1g1bpg0635u	2025-10-20 13:49:46.236
+cmgw0ipzy000213mfisacrnff	660a1291-a433-4b24-a7a2-edb2a01af038	cmgw0ipzy000113mffohgz27r	2025-11-18 08:25:18.62
+cmgwaafni000twattt6x4h6bn	0d6f75be-0de6-4005-9998-92c30587b760	cmgwaafni000swattya3y3man	2025-11-18 12:58:48.126
+cmgwfsjv70003quvu64v1z5zu	a2bb6564-4776-4eec-85f7-91d437d272c1	cmgwfsjv70002quvupeltt1y5	2025-11-18 15:32:51.474
+cmgyskgyl0003muvx17kj2fj2	c888b8e7-93d0-4cc4-af98-e3ed11e1986f	cmgyskgyl0002muvxvm19pg0h	2025-11-20 07:06:01.821
+cmfqlnqk40002ppweayza5aw1	60050759-1b0b-44eb-a75a-d2e267147f3d	cmfqlnqk30001ppweoewlk5o8	2025-12-01 11:44:42.567
+cmigc1u31000255ry6njhzdlt	563cb769-23c1-4c04-8288-09d6113d0e13	cmigc1u31000155ryqeaiehfy	2025-12-26 18:23:12.012
+cmihe08ti0002k681y0c80ocv	fe354482-a109-43a3-ae1f-d407b4d8108a	cmihe08ti0001k681w8guj22w	2025-12-27 12:05:43.205
+cmjbhsdko0002cqmpxwxgs5a8	723e10f0-adf0-483b-aa68-1079d6ac22c3	cmjbhsdko0001cqmpy8a7mhxm	2026-01-18 13:44:39.863
+clro3j1yb0002jt08lqptirst	3473edff-613c-4660-a2df-932ce1718ffd	clro3j1yb0001jt08e8ewtwqq	2026-04-17 10:57:50.293
+cm9fs51eu0002goxquebtz640	b5530da3-91f1-4e5b-ac70-2a61903ad2bf	cm9fs51eu0001goxqqc1x6tzo	2026-04-17 16:23:42.291
+cmn71vtzu0007c19mwt2rauo3	eaaf4cb2-ac1f-467c-80a6-e8a9333f032a	cmn71vtzu0006c19m9x586bvn	2026-04-26 05:47:11.897
+\.
+
+
+ALTER TABLE public.sessions ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: tracks; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.tracks DISABLE TRIGGER ALL;
+
+COPY public.tracks (track_id, duration_ms, created_at, last_update_at, has_been_played, pin, user_id, score, total_score) FROM stdin;
+1Hm6pJmCJg7h5Vqcystsfw	141187	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+2iMoSKRmCWSY7LeYIJnWRP	150555	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+4ttW2SvnujCsbWYPQ3zmdW	197176	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+5Y7L2ZOJyyKf4Kj0n4jPcC	167767	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+1RLwLXSYdMEd3XU7e4N5Nt	144000	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+0NE02xCqrE2iC1VQe5s2OP	135800	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+29bA7c7TZmcFsTK9vUleyI	153031	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+1gg3kuxM7hhM6goDx0pEzk	110450	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+7qWqwmUAqkZociAXq4wZ8I	159259	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+5z5t2KLpYFTTMkj2QEMb1x	215744	2024-08-17 19:25:25.35	2024-08-17 19:25:25.35	f	9935	clzyj1raa0001zqmdoh1m1fb3	0	0
+1JFP27S327rhv92cqca98W	152350	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+4zDYxH1zcZMM1ywRcd1IwY	292545	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+2Ur9ianheHtBR4wIWqxEBK	108125	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+5u71KoTFrhKZTZ8g4Xw8ue	129433	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+1vBNWqt5Fw978ZboGr0rYA	260523	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+7wRw52AawUpo2ldC8ageVA	126171	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+7bsqWpPKINRRoaoA69PcM8	181548	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+4vpxUWemLaCxnxRMazgNYM	145586	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+19o4JbXieni9n0w1imKE5d	512979	2024-09-25 20:56:31.066	2024-09-25 21:37:32.687	t	5419	\N	0	3
+1qHqAHEiX1QjiunncclP4I	225044	2024-09-25 20:56:31.066	2024-09-25 21:41:17.742	t	5419	\N	0	3
+2OkNypyv6c02Vfj9De2BrN	367641	2024-09-25 20:56:31.066	2024-09-25 21:47:25.399	t	5419	\N	0	3
+3Afm5HlEFE7zgKPnpgohUX	351422	2024-09-25 20:56:31.066	2024-09-25 21:53:16.834	t	5419	\N	0	3
+6Ycf7Ch2VlEKlORbz7yfpJ	266200	2024-09-25 20:56:31.066	2024-09-25 21:57:43.049	t	5419	\N	0	3
+0ppmdu5esmkzxlFqGl0YSe	147466	2024-09-25 21:37:28.144	2024-09-25 22:00:10.53	t	5419	\N	0	3
+1NDXJID9ufnpk6INx9Z6ph	418309	2024-09-25 21:37:28.144	2024-09-25 22:07:08.855	t	5419	\N	0	3
+3szY1zqqTPGdf7314z1AvA	422077	2024-09-25 21:37:28.144	2024-09-25 22:14:10.951	t	5419	\N	0	3
+71JkyCi11ETSz58jhgg2YE	307640	2024-09-25 21:37:28.144	2024-09-25 22:19:18.603	t	5419	\N	0	3
+7Bis9qvIXjPLLTsPVPyrSt	553029	2024-09-25 21:37:28.144	2024-09-25 22:28:31.648	t	5419	\N	0	3
+0fdkaRFpKlMvuVW9jXO8wv	367807	2024-09-25 22:00:06.038	2024-09-25 22:34:39.469	t	5419	\N	0	3
+0Ia2odZAF1Rd6pSxkYnLwe	402166	2024-09-25 22:00:06.038	2024-09-25 22:41:21.653	t	5419	\N	0	3
+0rz14UMtF1duq0JDpkGbxK	305234	2024-09-25 22:00:06.038	2024-09-25 22:46:26.9	t	5419	\N	0	3
+20MsdbrKGToHIqCtpTYLnR	445999	2024-09-25 22:00:06.038	2024-09-25 22:53:52.928	t	5419	\N	0	3
+3fmlNzB27d8Y5GW9lum3aT	407893	2024-09-25 22:00:06.038	2024-09-25 23:00:40.84	t	5419	\N	0	3
+5jrr4qdmd6jmstVgHxCXMO	225200	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2c4s8OFu1IkIDdNA953M03	274285	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6LW3Z1GqbL78TIjfDyg4zp	225172	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3VPBqHUd17ZvEgabW9ZOUU	221624	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0l4ZvPu0rOuzSga9N1851S	152093	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+6SvlfrQYzUsW5UQUpUpy26	177995	2026-04-02 09:26:10.724	2026-04-02 09:26:10.724	f	8925	clro3j1yb0001jt08e8ewtwqq	0	0
+3f2P9jLVhCN5kQgwEms0j8	191664	2024-08-22 19:07:29.33	2024-08-22 19:07:29.33	f	5864	cm05nlyhs0001sqq5dx5ydp7n	0	0
+6KnX2pkecFELGtegM26ezf	174374	2026-04-02 09:26:10.724	2026-04-02 09:26:10.724	f	8925	clro3j1yb0001jt08e8ewtwqq	0	0
+6nzgKaMuOwI7ZnnNbKRjuE	115519	2024-08-22 19:08:18.638	2024-08-22 19:08:18.673	f	5864	cm05nlyhs0001sqq5dx5ydp7n	1	1
+2c1lZ3KdyPhDVW0wOLXyj4	277006	2024-09-25 20:44:44.704	2024-09-25 20:49:49.611	t	5419	clqwmywel001fjv08mbvg0uer	0	3
+5iogmW1dzfmnFUdPXaCSe9	405884	2024-09-25 20:44:44.704	2024-09-25 20:56:35.603	t	5419	clqwmywel001fjv08mbvg0uer	0	4
+0oq8ULA53PDfm9fMAwCgdY	209080	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+0C9nUL3uUj8kjUIVcgjcSJ	458051	2024-09-25 20:44:45.133	2024-09-25 21:04:13.769	t	5419	clqwmywel001fjv08mbvg0uer	0	4
+6iV7QmMUPadq6osYqSM2wF	264133	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+3oDRri7iJCeKKNstpzbZqx	207587	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+02fkJ4Y3oLO0VOKjM3w7yW	267977	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+5SG6A1K5WvDbBcypKlCISz	128360	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+5PJH1U5Iie893v48Fl9yaC	180000	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+2wtJbMAEeCICHkszAggSw4	229459	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+49MZwJ661sybI2DufaYtJQ	189534	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+1d6sisPRhkmyqqZydPUIwy	183528	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+0hNq8IuMk0hfdXBqGpUIWx	281913	2024-06-30 05:48:16.073	2024-06-30 05:48:16.073	f	3972	cly14p3av00im10q9qfujp1lb	0	0
+2hGtLQ5hCVlj49LyGvCOCy	413640	2024-09-25 20:44:45.133	2024-09-25 21:11:07.515	t	5419	clqwmywel001fjv08mbvg0uer	0	4
+3tezdnJbne2kRjLfCSkkOr	470952	2024-09-25 20:44:45.133	2024-09-25 21:18:58.573	t	5419	clqwmywel001fjv08mbvg0uer	0	4
+77u4D7eaO0T6zVby7kybyP	413315	2024-09-25 20:44:44.704	2024-09-25 20:45:12.572	t	5419	clqwmywel001fjv08mbvg0uer	0	-17
+42L6zk2OgpFBKlPRXE0zif	600913	2024-09-25 20:44:45.133	2024-09-25 21:28:59.591	t	5419	clqwmywel001fjv08mbvg0uer	0	4
+6P4wvzxJJZR7cVs1kFXL3q	162548	2026-04-02 09:26:10.724	2026-04-02 09:26:10.724	f	8925	clro3j1yb0001jt08e8ewtwqq	0	0
+2GsK5jCNjbjJfqals2QJ8d	179259	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+1s8V2V6pEa5T1LXcuOdrLI	207335	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+2Adxpr1j5lSihOCsmIfflJ	215240	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+2ewjMyCbNv2X1dB2qIDCwD	206840	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+08mU4zr52hOJR7ZyqS6Jmr	156500	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+47CDhaY1rg0DS1d0MZXfRZ	150703	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+3Ba9EGhbj9IY4qVPGJjWRn	208626	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+5Ryu0SlsYjKh78RkJUONFr	170858	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+70pkwEEG7nDTXBFqoGQkH0	220666	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+6a3WblrDK54b4Mgf2YEdCs	226733	2024-05-19 18:03:30.367	2024-05-19 18:03:30.367	f	6231	clwduijog0008jx08h4r5edwr	0	0
+0IDrsyaNRDhv88v8ocQOgz	358750	2024-09-25 22:34:34.873	2024-09-25 23:06:39.608	t	5419	\N	0	3
+3HcnFkiamkSRzJRMEWArDT	565655	2024-09-25 22:34:34.873	2024-09-25 23:16:05.285	t	5419	\N	0	3
+4D9xwfQUkiRBX5mbUTN90s	645955	2024-09-25 22:34:34.873	2024-09-25 23:26:51.259	t	5419	\N	0	3
+5waIwrUIx30fUIlGQNnddp	368000	2024-09-25 22:34:34.873	2024-09-25 23:32:59.289	t	5419	\N	0	3
+7978uI976SnK4TelmVotSC	267500	2024-09-25 22:34:34.873	2024-09-25 23:37:26.806	t	5419	\N	0	3
+4SbMcQYjfmirlObF27nXtf	180480	2026-04-02 09:26:10.724	2026-04-02 09:26:10.724	f	8925	clro3j1yb0001jt08e8ewtwqq	0	0
+6xMZVKtQ76THTiJBntzmwz	177849	2026-04-02 09:26:10.724	2026-04-02 09:26:10.724	f	8925	clro3j1yb0001jt08e8ewtwqq	0	0
+5jrN6fnBH38Bh0IQJnjiUJ	173000	2026-04-02 09:26:10.724	2026-04-02 09:26:10.724	f	8925	clro3j1yb0001jt08e8ewtwqq	0	0
+0LStLUCQgbv6WIEO2fFAO5	180000	2026-04-02 09:26:10.724	2026-04-02 09:38:12.238	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+1av4wp2KoCwn9P151n45WV	182000	2026-04-02 09:26:10.724	2026-04-02 09:41:14.348	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+03Oz6PWplRogAQJgnFuoJ7	179991	2026-04-02 09:26:10.724	2026-04-02 09:32:11.354	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+0BDJRKqx8Qj6EmM5o9P5Vr	169247	2026-04-02 09:26:10.724	2026-04-02 09:44:03.62	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+0itI8ykSUDp4dfwiHY6fnw	180725	2026-04-02 09:26:10.724	2026-04-02 09:35:12.111	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+2j5D20BxsN7xl11KcnLyHP	177692	2026-04-02 09:26:10.724	2026-04-02 09:52:58.012	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+2pJ0Ji9nkohwuKMuyNhiwo	180686	2026-04-02 09:26:10.724	2026-04-02 09:55:58.834	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+1aco3k5pWdUjruX6vKgovf	174222	2026-04-02 09:26:10.724	2026-04-02 09:46:57.907	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+1h2xmg6pH7r5pr2prKmWGc	179999	2026-04-02 09:26:10.724	2026-04-02 09:58:58.863	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+1XmLPHkuv95o5NUodggzfv	182160	2026-04-02 09:26:10.724	2026-04-02 09:50:00.205	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+1u0WYHtNFrAyzgybCDK861	180000	2026-04-02 09:26:10.724	2026-04-02 10:01:58.978	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+22g4vKHFze17AV7vnequhG	180517	2026-04-02 09:26:10.724	2026-04-02 10:04:59.529	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+26xlJAlQoCMbnAWd0sGCQf	190780	2026-04-02 09:26:10.724	2026-04-02 10:08:10.446	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+3bTsAnErZrtBoUfORcTDTo	179999	2026-04-02 09:26:10.724	2026-04-02 10:11:10.467	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+7vsJ0bqsjhVnZxV2W2wRiD	174782	2026-04-02 09:26:10.724	2026-04-02 10:41:23.759	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+3X6cfvG2xgtx47V03hKxjG	180000	2026-04-02 09:26:10.724	2026-04-02 10:20:03.716	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+4ybdkbEdZ2JwXFbNaRbBIY	187480	2026-04-02 09:26:10.724	2026-04-02 10:29:36.637	t	8925	clro3j1yb0001jt08e8ewtwqq	0	-12
+3cnVAUGWZcXNqojO8PfYOu	181500	2026-04-02 09:26:10.724	2026-04-02 10:14:11.987	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+4GdU371yp4pDPleTAXoq4g	158070	2026-04-02 09:26:10.724	2026-04-02 10:26:11.771	t	8925	clro3j1yb0001jt08e8ewtwqq	0	-16
+5W1mx7Oeg2HxmASrth1nTt	175121	2026-04-02 09:26:10.724	2026-04-02 10:32:31.882	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+44DemLB8ChS8AaN9haWsgU	178824	2026-04-02 09:26:10.724	2026-04-02 10:26:29.142	t	8925	clro3j1yb0001jt08e8ewtwqq	0	-12
+3MdXycj2PnW7KBiYSzLVxD	180653	2026-04-02 09:26:10.724	2026-04-02 10:44:24.442	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+3Js1kS52KXZsmRU6qFLH60	179908	2026-04-02 09:26:10.724	2026-04-02 10:35:31.815	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+6cjjQg0SAlX7ahvYWuRPXz	177008	2026-04-02 09:26:10.724	2026-04-02 10:38:28.948	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+40vsOMljwhHCibpToRULGo	189700	2026-04-02 09:26:10.724	2026-04-02 10:47:34.164	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+4kYfZeuXXmCWLvhnPIjyr1	178893	2026-04-02 09:26:10.724	2026-04-02 10:50:33.083	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+4n1hRQ4uhTLhc1XaJFFofK	180024	2026-04-02 09:26:10.724	2026-04-02 10:53:33.132	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+0k2NxIVax5tnGSCeruFyEL	180479	2026-04-02 09:26:10.724	2026-04-02 09:29:11.244	t	8925	clro3j1yb0001jt08e8ewtwqq	0	3
+2E7a96qey4AzSOdK6H21vS	153911	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+3NlAkVIhq67sFHkBkc0qZc	267563	2024-06-25 09:24:35.55	2024-06-25 09:27:20.468	f	7813	clxu75qzg000a55znb1f06owk	1	1
+1tz0fxahl3Elne3r0sVwzu	132748	2024-08-22 19:08:03.351	2024-08-22 19:08:03.402	f	5864	cm05nlyhs0001sqq5dx5ydp7n	1	1
+0aUtDDfbI5EKUJDaUKRM9B	272200	2024-06-25 09:24:36.017	2024-06-25 09:27:26.261	f	7813	clxu75qzg000a55znb1f06owk	-1	-1
+3NqW1FtYalkdAr7gz7Btwh	122053	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+6RiiSy9GzSwiyDEJDiMuKe	153312	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+5BN121xq4XIwWnZSUCQpxg	205520	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+6n05BgVkxxz2k5ICZYa2PH	174539	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+3i058E8uxTsYqJ5NWZzqSj	202183	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+0aWhxzFrP2Yyz3CetJe0xE	228066	2024-06-25 09:24:35.55	2024-06-25 09:24:35.55	f	7813	clxu75qzg000a55znb1f06owk	0	0
+4zUob9iYFS9TgAR0hgo5pR	164398	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+7di4QTqNCZjX4JUFKhWQsr	309173	2024-06-25 09:24:35.55	2024-06-25 09:24:35.55	f	7813	clxu75qzg000a55znb1f06owk	0	0
+6WDAtzaXY7d31CkuoxYFcb	293786	2024-06-25 09:24:36.017	2024-06-25 09:24:36.017	f	7813	clxu75qzg000a55znb1f06owk	0	0
+7ykvo3giKXJt77oMSPjyLf	232253	2024-06-25 09:24:36.017	2024-06-25 09:24:36.017	f	7813	clxu75qzg000a55znb1f06owk	0	0
+4qGK21F2n8zYRNsllinNaS	280286	2024-06-25 09:24:36.017	2024-06-25 09:24:36.017	f	7813	clxu75qzg000a55znb1f06owk	0	0
+7IOKQjsWByM0Nly6ZklOfM	259946	2024-06-25 09:24:36.017	2024-06-25 09:24:36.017	f	7813	clxu75qzg000a55znb1f06owk	0	0
+5Gp1fkuPV7CPtzKHfMH0kd	172086	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+10uiYeqDHJ1NHdcRcXRXPp	115291	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0qiTkOaMMQMv09X56eFshg	259038	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2tUfesk6jwISYkygWV9481	150053	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2RcYNDrGfBMFEEISyUDP70	146521	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5Eo83DA2k0r0gy2bfqsGIf	175573	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+7ksS1hGFEZf6pXk9Sf3RXL	158629	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5Tz1CAs5xbrIotmIE3Rdt6	138200	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+1VHeiv1ow426LairSsXGra	143053	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+1CdP3vItBzWbXWzVeIYEXV	141517	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2nF9Ee0iJbnCpYNBwgTjDh	127545	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2mpQPyXSd28s0IpkjiyyGo	162666	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+3SGejwm31NZ7bZpPcFXhKz	135413	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+1ZdYmdSlMWiHACEJIXBmJc	156626	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+7wZnwgGkwpJ8EYJ6VEJD2A	144866	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2Bj1aOo1mosWTWHAx0qBgL	177146	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5yHokC9BJnyukQB7q0ldCe	133510	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+3MdbKq8mWOW0TB76PbcjnD	115067	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+08Ghj2or94vAtHPcAcRU2M	173375	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+1izrpWPuLd0MLxPJbbIYvR	177493	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+4R2fXpBOd5c9CuVGfF1C4G	123500	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2cwEmxinVKmmbKj83rcyNO	124800	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+6KGdJRCliq8tfU9s3eyQBa	168168	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5bUuSBiSE9cLuFCDu5l2XI	144000	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+1iJRSsTH0ZHRihrkZ8Mvkc	135221	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+6L5nbF4jFxDbJCiVxGUMEU	221379	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2ZdIx6fp8X0WtKuDJX6mPL	135950	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+4ujcRRxpInxbERBvS5B8Ym	137631	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2jOA9PddYLoUC9KGK4BI2L	121454	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+7CKw0jNq4hfq71NgoIyfP7	157147	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+6oCRoarftDzPVjpmsdyy8d	152474	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0tIf3fp1N5zFL240ZVDClb	153720	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+6He9DL7xadJlyKYdSDNrFy	122697	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0sCWY9sdO8fLtJ8C3EEETO	128643	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+7lvuzBgUjkXZp5HkTFcqC5	104270	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0zfzIohrOX1hwL3BI6iY9W	75810	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+4syQg22oYPIEKlYy8ua9Ry	137866	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0vp7emr29M1AwOVh9Bu23A	100821	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0m0PuaKzcq8GFfQAvuq8KR	163914	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5IVoo9nzOxOB8pwSegCHh5	93531	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+48qeBCIRWr3i9c7zpfspQ4	112079	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5nikpahfP4xCbJt1T65fCI	114613	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5PAZsmJyk11PTEwZo0t26Q	167423	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0ZxDnajmxKVuOa5IrU82G9	426885	2024-09-25 23:06:35.043	2024-09-25 23:44:33.708	t	5419	\N	0	3
+3GVyzDR0G8V1Xxko549R7N	347893	2024-09-25 23:06:35.043	2024-09-25 23:50:21.619	t	5419	\N	0	3
+3zZG2Q9FC0yCbYHdvqoo39	381740	2024-09-25 23:06:35.043	2024-09-25 23:56:43.378	t	5419	\N	0	3
+4UKgwHcyWjHOeUIjixdyTj	347461	2024-09-25 23:06:35.043	2024-09-26 00:02:30.855	t	5419	\N	0	3
+4yhjiuGmZyUDPTRujA3yJ4	299560	2024-09-25 23:06:35.043	2024-09-26 00:07:30.433	t	5419	\N	0	3
+3vGGMIrxmSLJznkmtvqvzP	313209	2024-09-25 23:44:29.139	2024-09-26 00:19:39.527	t	5419	\N	0	3
+64TDMpYLNeoYTowKIUpmd7	421186	2024-09-25 23:44:29.139	2024-09-26 00:26:40.732	t	5419	\N	0	3
+6czsNLOv5Imh7COC7W6FEJ	370000	2024-09-25 23:44:29.139	2024-09-26 00:32:50.749	t	5419	\N	0	3
+7iEloE8mkYLPbRdVRaEuy4	380866	2024-09-25 23:44:29.139	2024-09-26 00:39:11.634	t	5419	\N	0	3
+62NalXHmXpo5YXz7alZruz	293016	2024-09-26 00:14:21.663	2024-09-26 00:57:18.885	t	5419	\N	0	3
+7LcnptzgZvixtNhM8z75nD	366910	2024-09-26 00:14:21.663	2024-09-26 01:03:25.823	t	5419	\N	0	3
+2NtsqaW90abn9pJmukgVNy	186352	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+53UwJel3VBhcFRfiLaTNPX	213333	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+79ADKLHc8Dip2m6LXvlw0X	153540	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+3NNwbVY1BzovtL6ziwFdoV	155903	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0Mxvdu8ljKu4IXF10WnEaR	182954	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+1uc1kinCdTMEjeOyjJ8iN7	169471	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+4UZj1v5tGYaNJ2ojYi7YnG	157222	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+6NERMXxQYbHMYc3swzlOKb	144291	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2hR9P85riWHVgkJh5bQqTg	63327	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+2nOMbdIHOYGy9MPt3RH0nU	137293	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+1q6h8774QPx3DNA52e9KIl	134533	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+5PjdapbpuHbj0wzH0yLBD3	145106	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+0OaSdq27brRjHAFDFILYZP	153191	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+3X76gyDwpb0bEy7es5eyVa	118285	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+3NWyqHYVP5QVHbCeFk8E3P	191093	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+3AZSQW7qMPSVSftcCMS9i0	150053	2024-06-05 00:06:06.033	2024-06-05 00:06:06.033	f	0511	clx12i3170001l508p84t0vow	0	0
+3PGOiXT00ISVuUgr14m079	171562	2026-04-02 09:26:10.724	2026-04-02 10:17:03.576	t	8925	clro3j1yb0001jt08e8ewtwqq	0	4
+3oBNQdDbNrs8wQbcZ3BXwP	155938	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+4cV9zzKtPtW4i0FhnEwazU	290160	2025-05-10 06:10:01.216	2025-05-10 06:10:01.216	f	6252	cmahtc53w00017fwarpw7mxc9	0	0
+3iUUnWsFKiCuXRtfRJsaHG	415848	2024-09-25 23:44:29.139	2024-09-26 00:14:26.299	t	5419	\N	0	3
+0CVzG2EV1HgtXevLMaGQjA	178978	2024-09-26 00:14:21.663	2024-09-26 00:42:10.627	t	5419	\N	0	3
+0wID3DevwVoFcl7HPCJvTy	319680	2024-09-26 00:14:21.663	2024-09-26 00:47:30.327	t	5419	\N	0	3
+2rXDR43icZQhnn3MbhOwnB	295500	2024-09-26 00:14:21.663	2024-09-26 00:52:25.852	t	5419	\N	0	3
+1LSMENqSPwcH3uxCY39d7H	194520	2024-09-26 00:42:06.018	2024-09-26 01:06:40.359	t	5419	\N	0	3
+4jktWufGaen0TytRGDjbjK	183457	2024-09-26 00:42:06.018	2024-09-26 01:09:43.833	t	5419	\N	0	3
+64hw1sK5eUvHQRt5Jne0nR	318553	2024-09-26 00:42:06.018	2024-09-26 01:15:02.405	t	5419	\N	0	3
+6kfHe6gkqrCoukeuVTl2d4	74146	2024-09-26 00:42:06.018	2024-09-26 01:16:16.566	t	5419	\N	0	3
+78apmLywlctnbzJrO7gkmh	211060	2024-09-26 00:42:06.018	2024-09-26 01:19:47.638	t	5419	\N	0	3
+2JN3ugW1cEahbYw0I5mw5U	243907	2025-05-10 06:10:01.216	2025-05-10 06:14:05.16	t	6252	cmahtc53w00017fwarpw7mxc9	0	3
+0IdQg3n1Wu1cQE0c8PUWZ3	238773	2024-09-26 01:06:35.711	2024-09-26 01:23:46.606	t	5419	\N	0	3
+1DNWwj8wwfoxaR7626e34S	159421	2024-09-26 01:06:35.711	2024-09-26 01:26:26.043	t	5419	\N	0	3
+1E8Uv1OYq9n61EPqzrhxRj	179413	2024-09-26 01:06:35.711	2024-09-26 01:29:25.472	t	5419	\N	0	3
+2fXU8741X1bnFxDPt8GguS	187093	2024-09-26 01:06:35.711	2024-09-26 01:32:32.581	t	5419	\N	0	3
+5uqsvnK0p6BN6YjObsyEkZ	256156	2024-09-26 01:06:35.711	2024-09-26 01:36:48.752	t	5419	\N	0	3
+0Lp0lLkSD015vJVpayAcow	200053	2024-09-26 01:23:46.585	2024-09-26 01:40:08.823	t	5419	\N	0	3
+2kWDGMo0YNSXcAg2QiB0pN	210052	2024-09-26 01:23:46.585	2024-09-26 01:43:38.897	t	5419	\N	0	3
+2rjbYxIvtcoDKlsIVAUcPM	211146	2024-09-26 01:23:46.585	2024-09-26 01:47:10.062	t	5419	\N	0	3
+5qljcLi8cRzDZ3fdd1E4OO	224148	2024-09-26 01:23:46.585	2024-09-26 01:50:54.226	t	5419	\N	0	3
+5SWUwPI32ZMs5JXFQW9uib	197625	2024-09-26 01:23:46.585	2024-09-26 01:54:11.864	t	5419	\N	0	3
+3pxZIXknez7Ukj0KawmE47	192539	2024-09-26 01:40:04.271	2024-09-26 01:57:24.42	t	5419	\N	0	3
+5iXJ7gBDbcDOHLdoxuRt77	236737	2024-09-26 01:40:04.271	2024-09-26 02:01:21.175	t	5419	\N	0	3
+5J1l8XZwCzR6bl2L6OSxKF	134600	2024-09-26 01:40:04.271	2024-09-26 02:03:35.789	t	5419	\N	0	3
+7lgJgGpv4jEX70NjgJsCVk	189037	2024-09-26 01:40:04.271	2024-09-26 02:06:44.84	t	5419	\N	0	3
+7yy9Ptr3wDixeyPsIgR6jd	223426	2024-09-26 01:40:04.271	2024-09-26 02:10:28.283	t	5419	\N	0	3
+7yi7Pek2ChHY0y5FgHjG1b	202080	2026-04-11 09:02:26.667	2026-04-11 09:02:26.667	f	8178	clp0emue20001le09pebg876d	0	0
+57XhRFGBpu0dKohfPeGelW	215752	2026-04-11 09:02:26.667	2026-04-11 09:06:02.574	t	8178	clp0emue20001le09pebg876d	0	3
+0eeX8L0DWvGth1F6xVkvv7	278644	2026-04-11 09:02:26.667	2026-04-11 09:10:41.343	t	8178	clp0emue20001le09pebg876d	0	3
+2MaZaJCVZVngkrnpIWU7oD	185422	2026-04-11 09:02:26.667	2026-04-11 09:13:46.791	t	8178	clp0emue20001le09pebg876d	0	3
+4EprCUJCCMXk6MbncUj10a	268333	2026-04-11 09:02:26.667	2026-04-11 09:28:40.262	t	8178	clp0emue20001le09pebg876d	0	3
+4RLa2NW3AjzhxzNm5YLRHN	242666	2026-04-11 09:02:26.667	2026-04-11 09:32:42.952	t	8178	clp0emue20001le09pebg876d	0	3
+4yZI69ElgxddAUGNJjzc0j	266091	2026-04-11 09:02:26.667	2026-04-11 09:37:09.066	t	8178	clp0emue20001le09pebg876d	0	3
+588fZDQv1c7F3iP68Pp3My	344626	2026-04-11 09:02:26.667	2026-04-11 09:42:53.718	t	8178	clp0emue20001le09pebg876d	0	3
+7FG5Uy73c0E7P4OM5TVqGI	120052	2026-04-11 09:02:26.667	2026-04-11 09:44:53.911	t	8178	clp0emue20001le09pebg876d	0	3
+7wwE6YTF5ObIKzOstmbhOP	111421	2026-04-11 09:02:26.667	2026-04-11 09:52:20.935	t	8178	clp0emue20001le09pebg876d	0	3
+057CxG3AGJAzr24YikBy7D	208933	2024-09-26 01:57:19.77	2024-09-26 02:13:57.235	t	5419	\N	0	3
+3WoiV34BeNTxicjSlOJ834	309666	2024-09-26 01:57:19.77	2024-09-26 02:19:06.918	t	5419	\N	0	3
+5jM4oDOkKmJ6N8yhhDIBCd	265493	2024-09-26 01:57:19.77	2024-09-26 02:23:32.426	t	5419	\N	0	3
+5mMOE6nPc2MEeT692dgTam	319000	2024-09-26 01:57:19.77	2024-09-26 02:28:51.442	t	5419	\N	0	3
+61lnbgHNHjwmZrsg5JZEjS	255493	2024-09-26 01:57:19.77	2024-09-26 02:33:06.951	t	5419	\N	0	3
+52Z2MDhr07lZuvnR5X47WO	195223	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+0Lahr7sUDdtYnX3n3KobR6	183673	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+6272S5nkbOvQDazRYq6muV	179317	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+5DdLSEyKh8zgCrJq2hFj92	129705	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+16fZpc0Md2q1SGu8FMTo6x	225509	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+6dgWWAs5yhWPOtvE1zuoQ1	268120	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+6onnX1hYWcqP2dXgfvExNG	215920	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+63ZVyUi9weRwuMf1QsbDnY	201307	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+1rIKgCH4H52lrvDcz50hS8	201122	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+2naJy8SKJ27gj6ZhRPDKaz	275478	2025-05-11 08:48:02.865	2025-05-11 08:48:02.865	f	0409	cmajeuo060001149hwf3bikzp	0	0
+3ODy2rO6HcHGNp2YYShnLi	239306	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6AiPXRQVIMmhRtig7bZ7Jk	190387	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7pWK1kMgHy5lNNiIfuRbkP	236764	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4EEET0kYgBqriHEsO57HmG	184678	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+18GWJWO5DaPQS0LGnfNntS	227930	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0WVFcURpqMETldDsPYmp4f	242823	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2a7kFbxMwmmZWDvH0JbZFU	177658	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0V5NZZgQubrm3sKOHKUboS	215862	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5NmENli4oodYuWrI0vSGK4	197485	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2cc8Sw1OnCuA5bV8nqWqpE	233386	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4YEsNhGhXXtefznetrzhMb	188663	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+19glI74ZH7NOF1asfqzu0W	172958	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6PQ88X9TkUIAUIZJHW2upE	231041	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+25q2VoLqjdkTRw5Abg8EJL	284000	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6XwnkMuCSCu46Q4BS5nGNL	220489	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1Cq23W4ZxHTY8QbP40qjEc	194360	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0U9poBgDSkMtA6ypGOD0G6	186899	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1vN2yV1aOQ6uJvEpJ5GYc0	203568	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0S3H0DKAByxn5ojspPSAsw	242400	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4B2kkxg3wKSTZw5JPaUtzQ	207068	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7cu1x3y9gV0BFLYpTOWFaA	268800	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6yFiHg5RM5zGVrXGIokWlL	134404	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2vWWV8jfEZDPJXB6x7VJra	247529	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5bGy2uC2zUDmveSkq6Fnoo	224863	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+10EpXLXKHmNSVKvX7A5hg8	203720	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3Vr6lUX3ni1Z6OLvn3YkU6	241159	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4FEcEwbE2vsqhxbTPtiNTL	180000	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6mASEEU3XhSoEegIkkm0My	195651	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0vWUhCPxpJOJR5urYbZypB	195657	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7MtJ0dU4m3F6JQG9qdyaPk	193568	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5SQPvv5rrkqrJpqjBsPgUk	198974	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4crczEC1PpoD8TsDsmoWNI	144000	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2tnVG71enUj33Ic2nFN6kZ	157605	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+57Zcl7oKKr29qHp38dzzWi	180560	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6ChnGkBwnq2HUJD24YhMhW	122517	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+02shCNmb6IvgB5jLqKjtkK	208561	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+05Ke9LELmOiA5i3L0ybFUy	150250	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1VYHeY9ulPnsMHKvXPyG5H	213164	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0E9ZjEAyAwOXZ7wJC0PD33	184560	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3k60OBdBc3aRbtQppb6ugQ	211612	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6nxlvQtLueWE1nhLSXoPQE	114285	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3RGz1UbLFkDdxgs0JFFsnD	255839	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2IQB5iBapo0Y37Yc0PtIZc	141875	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5BW2QRaic1V9lpITO0TVWk	289390	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7edv4Plv9cHk6SZjynVn3E	214201	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5fnA9mkIfScSqHIpeDyvck	189413	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+44aN5xKL3kGHvQ5bXVk6B8	208330	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6ibayfvVOby1NSKJFohtZp	185390	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1Cnh9OJqRQq37e59nvaxQg	180480	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4PdJSsESm34djLfBde9Pr2	197647	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0xfMlIW8lS40qvpsUw1l0X	169944	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3g0mEQx3NTanacLseoP0Gw	209880	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+15BlympuVSfZFROojEMY2M	218933	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2OEr2lzItRFTQvtzXT0wOm	151626	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3MVrUfY3fYjR1kIK1wvbHN	179068	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4BMifvETojmAwY6RLnVE9q	173354	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0ou367q5bmco9pZNxq80iD	166200	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1cWepLwVVDgyqxso6G4TQU	182185	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3wB3ViZucTbRoHARLYWfoB	176646	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5zZaxeRo4e09KUJ5sbEC7Q	181045	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6Zc5f20q7sOe1IC1c1jQvZ	228816	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2OpEZpU0wW1spa6dBl0nK4	196198	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2jHqz0XXugOGhpaRS4tT62	162500	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7N3KIPb2x4FzKUeonhw9sd	182400	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6l18XHD6F7jD9Ikv643uRC	222000	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1b7DozY0xHWXU1T84Lck1z	193846	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6SJ6CTasOK36srbMBZboev	224060	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+48N2UZSNYlMfZjB6e7RP0C	196821	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4cktbXiXOapiLBMprHFErI	189486	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1HFfMOxCAT4GAwaPfCdmUs	208133	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7mAYdYyUrkUSArOdSrC7rR	205290	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4255amV4enzl28KAn16rUO	138013	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4LbWtBkN82ZRhz9jqzgrb3	188133	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3Hk8b8u7EFdxmrNi9yfQV1	202105	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4RVtBlHFKj51Ipvpfv5ER4	174062	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2snSFuY3Kt6Wwrbw5YR31p	251189	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6siDDghVE7fxel5o7fE4OF	171133	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2M37iQ4sao74y4ISOGPthr	169568	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0XdsnR967tt1wKzdrqk8OW	220689	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5IfSQQzGijWKd7dbkbqHuN	229106	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+13rtgTDK9w1clbgXpGuW3y	202543	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6dzyIO2KpLofsypXbLGOWw	178560	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0OJN2A3Qyvd7pwSF0AIteC	174760	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0ow2JYLP8XmRnp0npEv69m	190776	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+20ZP3Om9DvDazXrNUC7WM2	211760	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1cgy2FSOQMbq7DHCVgMAUA	177156	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2U03D8wbYcGwCC1SPNn1ZN	158663	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7DB54InMrYl04Oap8QTbrw	177349	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0hI1a7BgvSGVoQkBcPbUjv	215172	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4xzFFoWdwCPJPwhPUyNXzr	228000	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+37nGZSaEXsKzOZLINC3VOp	226206	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1fdibtOtq4mDoe0MZiSLT5	193313	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+78zOEZebqXQAPvYhSBUErt	175384	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5sFYjo89wncf6tiGOIpfRP	212014	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+04fUHQffhV0d4VeeOkXfMN	202758	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+225lMWq2wtUmUeETswWKu8	251511	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+19m23w2ANVhtB7rApM6pbN	214400	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5XGuUQlWenKLtvTeQY3dvE	192586	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6RCnQiN2cIFio77YAxObWB	169357	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7y3c1oJMY1CwwtOZ84Qovu	174794	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4D0AFLieBjqaJnFOBAPA56	157619	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3JwaOKoVVv3uTfNBf1RHKK	306306	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+45vPjSJ5NyIfBWIjilEhcy	212093	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4LGhw3y6MrZZRMNn68uVEW	178647	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1uWTlK72KKpzsCHhu62OV5	292586	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7gI2dtfVDV2IdFMbI3QVTZ	153800	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5QYKmxfPsl69GgeZKDAVSx	216441	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0ZE5BVCy5xVNsI4MaQRzUn	223255	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6t6gGwitUMEfDiKnbKA3sT	202352	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0tYvtz8jKAyC12by9Lmp6L	253793	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6tTPc9BEDYExwIEg8QGxvL	174811	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3y1fEFFHFv79OYeCbzc774	202691	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1Gx6oQEiS4h5e7ltUDN1jc	149200	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0bqJDrb7zRLOiCnUm7MXZW	217931	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7KoUk2BFyV8HkocdHMUNTw	155097	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1OO7bKqN3XRDb0W6B3wM6i	231724	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6UNESFieJ7rXvEKO1V2Fw8	251034	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4pfu1lEKJhRGTQf64cQPXd	205253	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1ppN7k65ucUsefTN30k1io	260172	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3AXmSZIHOho1ylePzcTBto	235000	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0nwMSPiZ8xQS26yaKu9IpX	268444	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1QgebV92VO4Z7VxbQ1tSKo	226206	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+24qOlCdUSSU6ungmY6fZmi	174280	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+14DPno1i8i7GEYRTHvNXZt	167276	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3rb0tMq42WfggucPm0HHkA	148629	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1MDEvpaFk2Ins7N8hGfFlA	152990	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4XOc8gjhKl7FvdD4CHBYIy	226610	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+79m1I109FyZMx3VwQZAEQM	171943	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3ng7epefERNazaZkkbwLdq	162954	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0o8PAzsSLDa4MVQJixGVty	160008	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6jRq8gaZhMUyy5RclRPcAf	188343	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5wWAwzGp2OaaoIkwcz6wZs	202193	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3m0I7Jkvq6NqRmoBWKMskT	252342	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1MjeCJXRMSaUMZ0KLdsQDn	313562	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0p6SIH0s6DhceEupb5spos	291767	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+21jGcNKet2qwijlDFuPiPb	215280	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0kTIH2zbc1jvIHoCOCoNnr	192338	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4p1QpM8dtPMXHwCQotLAW7	171813	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1XFHbzTikXks9CsMq4v8Q3	153696	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+60MrbB29Krgyy4io1KHfEA	233698	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0OtWeiVlCKVvkTi66pLqrc	165127	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5f4eJd680Vy3ojJEgoX89g	163318	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6vhOyWiOnO7EzxnXBllmkQ	192893	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7bHMcsrFiTOil2Kk1Iu9tg	153142	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+59orINRme5lLjeK2oREPuV	204787	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4raMIjIjMc8JohHth7l9lG	212280	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0o6NlHNV7Tet6yh9BC6BGd	186594	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6BePGk3eCan4FqaW2X8Qy3	172252	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2kwt2rsc4VbZc7cHEpblIs	195093	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3x63A5hq4vldKE8hWIi1tE	169105	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7FGq80cy8juXBCD2nrqdWU	170769	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3ewVFL7XKR0kxpqFNy3aC8	181607	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7q28RX9xSNRJ5yqWneEFRi	152727	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7bCQA4jNsMewYrumV75Jkk	156375	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3o1CUVeHIid49sabk6A6Nf	193846	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7HQeCW54UBRJkcxirriRCR	163049	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+51Msclnf6boUX26DmZvViX	177345	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4EdlKtTxltiqGEdiOd2AUE	148460	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3bMdX1I029EdLPqYFf2QN7	178823	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3f4gO9JitymttJkJSLXKFy	157252	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6ft4hAq6yde8jPZY2i5zLr	167903	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5Jo1DvQ6auXLFx6QD3SC5I	124957	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+2oejEp50ZzPuQTQ6v54Evp	217640	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4oe1guqHjDMCYoQguWlNDg	235215	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+05RvWAATIXRL5x1Dy7GHh8	157175	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+14d79QOV2pvJHH9vlUfZwJ	169353	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3yFCJkW7zppeyvjBppLQGJ	177600	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0NtQhbV0mVf48wYXVWPnuQ	194208	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3nby3iEhRz3EhgW6YQXKO5	161142	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1R5kWYtRTJTBB9LGDgNtW1	135132	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1Z2PovRUJeT4GuugSuIBoH	159201	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5ti2FMX2pt15pw3w1AMAts	200000	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5V7qLbZJNTwaEVbZADqofc	159012	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4OsmQDJAbfJvZszTqkVJjR	143632	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+74Sk5cVfVNhfKY9S7hDqrp	154209	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7JD624kzfc6wCWRpJ8ndTL	195079	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+10xV5l9nhLvFpR8mqzs0bL	155588	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0lsrtWc4kEYkLs9Nr0xu3s	225154	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5bzDWaYC3FPQ4qjWh4GQOv	230213	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7wrDrz4jvQIX8LYpIt7nVS	239990	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+64fwanXDvwmsQrLsDSVHMv	153391	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5x5jtuR4qWJzC6cDTgysez	150106	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1YWr18dWRmuvPgAsPBsOow	147986	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7dEFrrQfssrOCbxQfk49yg	158709	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5YsVpfiYl2GNvGzGo9jbqX	142857	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6W9qtw3ddhkYznaOxB50p8	153449	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7mBIV4RLul35ZcBwfa8wK9	127868	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6xTU6B6nFwKKTSZ9ySXS80	217293	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+3TKpJrY9q49Mj1JOsM9zGL	194826	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6MOlQCGgXvpLdUnucYv3Lz	160085	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1Mys1gf9SkMBAVGGxpkJ7d	159480	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7MkD6Cxy7KxLNnBI6mqibM	157500	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+326yOKaTPs91elL1KW794F	211010	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6Ndz6v9hUupSKbuonYbtM1	147512	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+5w40ZYhbBMAlHYNDaVJIUu	184013	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+1c9F5RlagP8Jdn9vpFc31H	140307	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+6u7jPi22kF8CTQ3rb9DHE7	157066	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7v4lL0VxQV8yTv29Tpf2sH	173888	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7uBZSQP9x6kbaRgpK1Q2aw	302117	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+31sSFHIe4NaxltVFOEIcTa	210219	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+4JbD7yuBd6WltB8eAszwPD	141047	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+7JyQN2bRjJnyJdVyB2evUA	184589	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+0h3Xy4V4apMraB5NuM8U7Z	213363	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+561pBFcFL2Pwb9HPO9tU8J	226677	2024-07-27 19:47:18.237	2024-07-27 19:47:18.237	f	3901	cltkfs03b0004jx08dyimcr7c	0	0
+15teZoKHnJEeUl58ImFpxf	175290	2024-09-26 02:13:52.597	2024-09-26 02:38:43.022	t	5419	\N	0	3
+1jJVM0flMV61xjYXRizrmf	64391	2024-09-26 02:13:52.597	2024-09-26 02:39:47.425	t	5419	\N	0	3
+24KcWWc6kkyitXN0VHLZ6N	345866	2024-09-26 02:13:52.597	2024-09-26 02:45:33.307	t	5419	\N	0	3
+1Hg0e997pObvZ91w1FCPFk	229381	2026-04-11 09:12:45.015	2026-04-11 09:17:36.201	t	8178	clp0emue20001le09pebg876d	0	4
+1Jfl8NMQKN9TbLTE8uJyPR	136959	2026-04-11 09:12:45.015	2026-04-11 09:19:53.185	t	8178	clp0emue20001le09pebg876d	0	4
+3bxZhauuIU4ubctdRZwPYW	258693	2026-04-11 09:12:45.015	2026-04-11 09:24:11.902	t	8178	clp0emue20001le09pebg876d	0	4
+0nhdvA2ioxGIikzEj81rR9	187107	2024-09-26 02:33:02.361	2024-09-26 02:48:40.433	t	5419	\N	0	3
+1XjPuVVMPtyZks3ZCgWYpO	107106	2024-09-26 02:33:02.361	2024-09-26 02:50:27.56	t	5419	\N	0	3
+3lYf4mGKYjMK706DnldaIa	187053	2024-09-26 02:33:02.361	2024-09-26 02:53:34.629	t	5419	\N	0	3
+5yf926Kfq9Wv2vGJ11hCn1	162373	2024-09-26 02:33:02.361	2024-09-26 02:56:17.015	t	5419	\N	0	3
+6sbLiNxYWk5WaAuN8BZ80O	215104	2024-09-26 02:33:02.361	2024-09-26 02:59:52.134	t	5419	\N	0	3
+0ga3JEPvSWi6aSgMfPVJow	160754	2024-09-26 02:13:52.597	2024-09-26 02:35:47.716	t	5419	\N	0	3
+6bdxePInwLwyySrlIYOcsN	138000	2026-04-11 09:37:06.062	2026-04-11 09:37:06.062	f	8178	\N	0	0
+06PTPGI5i9hWowf6HkIQi1	162360	2024-09-26 02:48:35.834	2024-09-26 03:02:34.508	t	5419	\N	0	3
+0w7QEL546X9mPAZPlTnqrn	200120	2024-09-26 02:48:35.834	2024-09-26 03:05:54.642	t	5419	\N	0	3
+3Veqbiz7pMTDrnpqXcCBJb	199400	2026-03-17 16:24:11.533	2026-03-17 16:24:11.558	f	1611	cm9fs51eu0001goxqqc1x6tzo	1	1
+1xvoRMwEtSBrIVZlB7TEuz	215120	2024-09-26 02:48:35.834	2024-09-26 03:09:29.773	t	5419	\N	0	3
+2jgzrWppDxkH98ibOAVuMG	161773	2024-09-26 02:48:35.834	2024-09-26 03:12:11.562	t	5419	\N	0	3
+7DAnH9sSh4Si5exViVqRP6	230773	2024-09-26 02:48:35.834	2024-09-26 03:16:02.351	t	5419	\N	0	3
+4o9FXLyDxILghCSs0b75uG	254466	2026-03-17 16:24:11.533	2026-03-17 16:24:11.558	f	1611	cm9fs51eu0001goxqqc1x6tzo	1	1
+4s7tmS4FS4vzkg8Ieyuzp8	179306	2026-03-17 16:24:02.059	2026-03-17 16:24:11.558	f	1611	cm9fs51eu0001goxqqc1x6tzo	2	2
+5E1GwtFMK99b4mwewxXb5r	177305	2026-04-11 09:37:06.062	2026-04-11 09:37:06.062	f	8178	\N	0	0
+226lOE0355w0RBUXsn3XWV	173321	2024-09-26 03:02:30.011	2024-09-26 03:18:58.277	t	5419	\N	0	3
+2ScjCKOWuMqWDu8FWGwgRS	235146	2024-09-26 03:02:30.011	2024-09-26 03:22:53.44	t	5419	\N	0	3
+5aGbMA00wvLQAosD3Td1CO	187586	2024-09-26 03:02:30.011	2024-09-26 03:26:01.04	t	5419	\N	0	3
+3vyMcI2MqTBne2LusIL36e	147457	2026-04-11 09:37:06.062	2026-04-11 09:37:06.062	f	8178	\N	0	0
+0STW8nw4lNN4TEQ8KmNer6	205264	2026-04-11 09:37:06.062	2026-04-11 09:37:06.062	f	8178	\N	0	0
+025d0GFgVZ65YuSLbpCQvK	302693	2026-04-11 09:37:06.062	2026-04-11 09:37:06.062	f	8178	\N	0	0
+7AZ7qNtU3zGSKxy6ysa9QL	148746	2024-09-26 03:02:30.011	2024-09-26 03:28:29.802	t	5419	\N	0	3
+3uxG06gDBW1An1QO5tIlQ1	145125	2024-09-26 03:16:04.931	2024-09-26 03:30:54.941	t	5419	\N	0	3
+5HDsb5sSV1sLmqoGzz4ljZ	223053	2024-09-26 03:16:04.931	2024-09-26 03:34:38.008	t	5419	\N	0	3
+6Gx42nTFBlN2ja6ZtEmiws	177506	2024-09-26 03:16:04.931	2024-09-26 03:37:35.529	t	5419	\N	0	3
+6PmMSyQ6Jvl0VMobdWFezD	250240	2024-09-26 03:16:04.931	2024-09-26 03:41:45.785	t	5419	\N	0	3
+2ELLvcm0ygosQHVQwfBTKa	173844	2024-09-26 03:28:25.06	2024-09-26 03:44:39.645	t	5419	\N	0	3
+2iocEnZSW59fyFTDffyms1	229029	2024-09-26 03:28:25.06	2024-09-26 03:48:28.695	t	5419	\N	0	3
+2ySzWZuLBMMfgrjuGBLZ9D	176586	2024-09-26 03:28:25.06	2024-09-26 03:51:25.299	t	5419	\N	0	3
+4l6y3dhGfu2GRLqzmUa6Ma	235546	2024-09-26 03:28:25.06	2024-09-26 03:55:20.867	t	5419	\N	0	3
+5imHkq0cFJcHw6YaAXpnzK	214626	2024-09-26 03:28:25.06	2024-09-26 03:58:55.51	t	5419	\N	0	3
+4hAMDnMSepM9kIagdHnJjn	231312	2026-03-17 16:24:29.775	2026-03-17 16:24:29.809	f	1611	cm9fs51eu0001goxqqc1x6tzo	1	1
+63d68gEzFUoLo86eIbQOfL	149866	2026-04-11 09:43:53.027	2026-04-11 09:47:23.814	t	8178	clp0emue20001le09pebg876d	0	4
+7xEJp6iI9yqhrdAA3low42	185640	2026-04-11 09:43:53.027	2026-04-11 09:50:29.48	t	8178	clp0emue20001le09pebg876d	0	4
+0OwxyvInLhYoTOkSEQb0w6	218546	2024-09-26 03:44:35.022	2024-09-26 04:02:34.073	t	5419	\N	0	3
+2q1uHOYTQBe20HWYDK8S29	190000	2024-09-26 03:44:35.022	2024-09-26 04:05:44.091	t	5419	\N	0	3
+3e546YbEfi7UhhYmtzMHCd	193078	2024-09-26 03:44:35.022	2024-09-26 04:08:57.188	t	5419	\N	0	3
+5dKuPemlJAFd59uTU0AyU3	200426	2024-09-26 03:44:35.022	2024-09-26 04:12:17.629	t	5419	\N	0	3
+7hOTLlCDok7rRXvC7OmsYx	171165	2024-09-26 03:44:35.022	2024-09-26 04:15:08.811	t	5419	\N	0	3
+24JkpbxUvVbAgvk4oyvp0k	168000	2024-09-26 04:18:04.346	2024-09-26 04:18:04.346	f	5419	\N	0	0
+6N6PR09gYFzvk4tmZoiVbf	218656	2024-09-26 04:18:04.346	2024-09-26 04:18:04.346	f	5419	\N	0	0
+16FHBvz7wEYzkjFMLHGaPX	180186	2024-09-26 04:02:29.484	2024-09-26 04:18:09.014	t	5419	\N	0	3
+1cNWnVHVnvB3z01cAFAdMl	169093	2024-09-26 04:02:29.484	2024-09-26 04:20:58.126	t	5419	\N	0	3
+1dKor1DBBgRre34MhhzR2d	252533	2024-09-26 04:02:29.484	2024-09-26 04:25:10.675	t	5419	\N	0	3
+3KgcNf7LoSOGWDRbsjSAE9	262967	2024-09-26 04:02:29.484	2024-09-26 04:29:33.658	t	5419	\N	0	3
+590XpxbU46gtP55ZHGsjjq	234154	2024-09-26 04:29:36.99	2024-09-26 04:29:36.99	f	5419	\N	0	0
+6AJhVzurxnsRctngcSw4bH	203244	2024-09-26 04:29:36.99	2024-09-26 04:29:36.99	f	5419	\N	0	0
+4NYKrjdmkJ4OeVGviaroYs	179640	2024-09-26 04:29:36.99	2024-09-26 04:29:36.99	f	5419	\N	0	0
+0v40rqCVLI1KxsjHV0hgo8	190200	2024-09-26 04:29:36.99	2024-09-26 04:29:36.99	f	5419	\N	0	0
+0nF1qPp2sCgdWWc6eTvVgW	238666	2024-09-26 04:18:04.346	2024-09-26 09:59:08.206	t	5419	\N	0	-17
+3CmEeNWeRSjGImTGzEiWCQ	154813	2024-09-26 04:18:04.346	2024-09-26 09:59:22.546	f	5419	\N	-1	-1
+04tpKv1GqwDXC4d7C8mukM	224235	2024-09-26 04:29:36.99	2024-09-26 11:43:43.259	f	5419	\N	1	1
+2bT6QX29M7GLSuTDSirwaS	159000	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4ySxBjhmdnkeFUqhKxW3cY	187573	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+5Z0Mx6SeUAFA2rgZB9t1Nu	194173	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+08AN0HMXNr3DGGDCOWsTAw	211518	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+5zVQoMHyELfcHYviXDao3I	198145	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+1u9C89v58yfZkMgFe7rBS1	129795	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+5EeDZPNPIjEtEZsHMkX1m7	179072	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+2zYzOaECWTf16Hdp4bc8Zu	278802	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+3ck23O4wJjSdl1q7WpFWmk	148250	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+222kRSYCfdphYMjGWBPa1h	119973	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4wqyR8fuoF6OqdOzEbrzeu	162560	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4oDWWBXXTRoE0Qsx8rwYPn	170520	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+0jkAr7eZsvWDLYiQCfaxak	226906	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+1BIXs6CdkPRLytuqoXs6XN	201500	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4lTFQjsjvuxTTq4L9qe82c	164237	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+0iRKVjfQzpr41T3WsU7shl	162362	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+3EBldocOhHQoa9NRT739as	145483	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+2p9DR1nbxY7QsZro8bPpNx	235373	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+7GvCDhqL17l7IrjIcYhRQ9	200693	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+3pDhN3qB33AOPhQEkUCaWt	224693	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+1qpbJ8GiPc706AfGqZAIei	324440	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+2C2TGgFzrTRIOdQS1vUN5h	171093	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+3RgpMcg7uRz9b4Sbn1iXec	157118	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+3cGuiySfwJPXqvE15OiEEg	219733	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+5BqUbKq9rCMrCkRtAiz8XA	160476	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+19LRRuiMQ8a9jhqSf8jVip	211417	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+0AbDjrdgKTXzGzvQ1drgQl	171702	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+5PsnJqZWXfBqcXYCVTIZhZ	198516	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+1w91YxaRwTShkKe4apYf3r	206805	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+0YI32qkEhhUjoGVMGXDm8b	189015	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+0KoBFeJ2R330pyRn1DuXde	219047	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+1A443YVhU6t2VLwtgVAd1b	157975	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4IQpT8aOGChYX4ORMOW0YY	153680	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+2TOwRQ8fN69NDxXe3s602O	184848	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+0KfRQaB9KSbSzUkwqsEYx2	157930	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+6GMyR5UghG6k4MpsXsaim8	155526	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+2pGbOFiWVwZaTq3iKi5sGb	176000	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+11WjARz3hZxb08ru2M9RbN	154545	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+7w3M35YQ9VD91c4Lpos8Zz	220255	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+5WssaPhjCCUFBMk9PpnHYj	217500	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+1cMDBByv1GGsJslvJR1Oo3	141459	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4PMKj9iU8aMPT7WzhUenet	194759	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+0Jnatpmn5qwvwUC4FSUXMq	167900	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+1XpmMe95dk9jh3zuOMpeU2	199680	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+60NC3OqjiISKBYbscb8vW3	217443	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4jrroLcBiR5ZCT5C7Itd28	161739	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+31DP3jxK6B6hS10rKI2w73	203906	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+2fgOUiGsgelBOjH8ZTSJHs	130560	2025-08-22 16:52:49.872	2025-08-22 16:52:49.872	f	6027	cmen283bm0001xgz0ok3xmw2g	0	0
+4LJhJ6DQS7NwE7UKtvcM52	148360	2026-01-03 21:05:47.43	2026-01-03 21:05:47.43	f	1611	cm9fs51eu0001goxqqc1x6tzo	0	0
+6TclVCUxDQm9s3Bey6Ao8H	206160	2026-01-03 21:05:47.826	2026-01-03 21:05:47.826	f	1611	cm9fs51eu0001goxqqc1x6tzo	0	0
+3nviljxwgZPAb3VLgDPM3F	195720	2026-01-03 21:05:47.826	2026-01-03 21:05:47.826	f	1611	cm9fs51eu0001goxqqc1x6tzo	0	0
+2WhDg8UWljoAl8oNh8uZbJ	181306	2026-01-03 21:05:47.826	2026-01-03 21:05:47.826	f	1611	cm9fs51eu0001goxqqc1x6tzo	0	0
+18Gb1gqRi5A50PYh0MDukc	176866	2026-01-03 21:05:47.826	2026-01-03 21:05:47.826	f	1611	cm9fs51eu0001goxqqc1x6tzo	0	0
+7j31rVgGX9Q2blT92VBEA0	161920	2026-01-03 21:05:47.826	2026-01-03 21:05:47.826	f	1611	cm9fs51eu0001goxqqc1x6tzo	0	0
+2tijyzOePBIthixgc96Qi9	168841	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+7yyRTcZmCiyzzJlNzGC9Ol	225205	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+38kjFXYgPvtuXCPbHPMGte	282640	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+5FsUKOjDDeQ0vEc5dn77AY	147158	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+21qg0IBZf8R12qHd9A3AA4	281093	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+4AXRSO7Fkff9KAIhUX13PF	201430	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+0mO6oS60RST2sWmN2FKknP	432560	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+5FkoSXiJPKTNyYgALRJFhD	129882	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+3lXq1YajbXv1UI1MoXW8JB	171720	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+4Pwjz3DfvfQWV0rO2V8jyh	310720	2024-11-22 01:45:31.603	2024-11-22 01:45:31.603	f	5224	cm3s2whjl0001ep0y36j2bl6f	0	0
+04VeEeLtxCrhuUrVuLnTxF	280760	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+2Oidi4pAbR9X81PBaV71N8	276066	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+3wPPWcVuinAU7dXcJXtCID	222200	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+0qKX14YZHptDWiEN0CgxGz	281106	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+5rPNVwYjVEgkq6YNPki4Zc	196235	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+7j6PWLaubVavCLE4peea8S	383400	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+6x7FVExkT8Cm1SCtw1jfV4	411506	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+4S4DVFQkLbfhZbGQxoRtPR	304493	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+69VdcXLuucrnMMkyw4UMwT	430751	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+4at0npP4QkdIUulFZIsYft	310573	2025-08-31 18:50:21.833	2025-08-31 18:50:21.833	f	3823	cmf01ob9d000110v6v6yfa6pm	0	0
+35lxFAny9XDBkvE6r9j4uG	303903	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+5Qv2Nby1xTr9pQyjkrc94J	228746	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+49clMzwHdKb5f0awEH99pg	283840	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+3M2bD9SMYnJIPdrTKUnBd3	349186	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+7LbUv7w2z7rEbNqp1uIL9U	240670	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+1zx6GSqLYI2ynzAHnPRKBR	265798	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+6SrvijeageGUiFu9iCDdmM	207223	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+5bsnLiT00hG37qd8p2jdVl	197973	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+3Smx621pPslSi49Ff4bVPo	238695	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+6C88rHxXBlpcgtBY3HAF0E	293076	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+3TgMcrV32NUKjEG2ujn9eh	248335	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+7x8pIrhMu9FCmqqHNyuH0P	204066	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+6HguG9HRb1Ke1bhihfE4m8	225955	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+1nW1YIdctpRVk9hpkTcYIo	220122	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+1Xex5Fnp0MMyg7yjbfFyyK	226986	2025-03-27 20:36:07.627	2025-03-27 20:36:07.627	f	7022	cm8rcedhq0001qe7utz99eb2h	0	0
+1fDFHXcykq4iw8Gg7s5hG9	326490	2025-03-27 20:36:07.627	2025-03-27 20:41:34.171	t	7022	cm8rcedhq0001qe7utz99eb2h	0	3
+12g9IeQzX7xECLNxz8dpb5	262623	2025-03-27 20:36:07.627	2025-03-27 20:45:58.84	t	7022	cm8rcedhq0001qe7utz99eb2h	0	3
+14dJexYlvd3t3XAtD1pYW1	212568	2025-03-27 20:36:07.627	2025-03-27 20:49:31.437	t	7022	cm8rcedhq0001qe7utz99eb2h	0	3
+1gJCEcK3erq2fKGEFc2j7B	244653	2025-03-27 20:36:07.627	2025-03-27 20:53:36.122	t	7022	cm8rcedhq0001qe7utz99eb2h	0	3
+0BF1Roystu6pZOfA4W8aUZ	376372	2026-03-29 12:12:18.356	2026-03-29 12:18:34.766	t	5113	clpuwqgco0001if08r20h71hb	0	3
+16c6awlmGfeusU7zoVu5yc	231410	2026-03-29 12:12:18.356	2026-03-29 14:14:12.669	t	5113	clpuwqgco0001if08r20h71hb	0	3
+17Sfr3T1chYPGcmM4VlhCh	325642	2026-03-29 12:12:18.356	2026-03-29 14:19:38.352	t	5113	clpuwqgco0001if08r20h71hb	0	3
+1TMxv8sfUhU55AC6Ul1PU5	308040	2026-03-29 12:12:18.356	2026-03-29 14:24:46.567	t	5113	clpuwqgco0001if08r20h71hb	0	3
+2HbmLkHkkI15eES8kpWRuI	311400	2026-03-29 12:12:18.356	2026-03-29 14:33:56.883	t	5113	clpuwqgco0001if08r20h71hb	0	3
+2naqSVQHgiaoEpxtkVOhmK	228554	2026-03-29 12:12:18.356	2026-03-29 14:37:45.552	t	5113	clpuwqgco0001if08r20h71hb	0	3
+2ozSogNm6z9G2Uv6a9iji4	292920	2026-03-29 12:12:18.356	2026-03-29 14:42:38.495	t	5113	clpuwqgco0001if08r20h71hb	0	3
+3QHMxEOAGD51PDlbFPHLyJ	252359	2026-03-29 12:12:18.356	2026-03-29 14:46:50.877	t	5113	clpuwqgco0001if08r20h71hb	0	3
+3SzJ4qlIjYkSO7bh0oKTXA	297053	2026-03-29 12:12:18.356	2026-03-29 14:51:47.966	t	5113	clpuwqgco0001if08r20h71hb	0	3
+6gp2bYLAhqiLxO54Wmt195	309813	2026-03-29 12:12:18.356	2026-03-29 14:56:57.8	t	5113	clpuwqgco0001if08r20h71hb	0	3
+7JIjUx3GsL0upxmNJacmtz	267160	2026-03-29 12:12:18.356	2026-03-29 15:01:26.683	t	5113	clpuwqgco0001if08r20h71hb	0	3
+217bRMES4HVbPdUe8l8ECN	238720	2026-03-29 12:12:18.356	2026-03-29 14:28:45.46	t	5113	clpuwqgco0001if08r20h71hb	0	3
+1Hg0e997pObvZ91w1FCPFk	229381	2026-03-29 12:14:02.068	2026-03-29 12:22:24.274	t	5113	clp0emue20001le09pebg876d	0	4
+4tooWnUUxJ3vJQsR54obQT	165910	2026-03-29 12:14:02.068	2026-03-29 12:29:28.928	t	5113	clp0emue20001le09pebg876d	0	4
+60UIZY7QzHpf27JaF7Gcj0	190048	2026-03-29 12:14:02.068	2026-03-29 12:36:14.284	t	5113	clp0emue20001le09pebg876d	0	4
+3bxZhauuIU4ubctdRZwPYW	258693	2026-03-29 12:14:02.068	2026-03-29 15:41:59.282	t	5113	clp0emue20001le09pebg876d	0	8
+4uulymZhmebsjKedRaJ1gQ	215250	2026-03-29 12:14:02.068	2026-03-29 15:45:34.704	t	5113	clp0emue20001le09pebg876d	0	8
+07nH4ifBxUB4lZcsf44Brn	212960	2026-03-29 12:42:19.199	2026-03-29 12:46:10.556	t	5113	clpuwqgco0001if08r20h71hb	0	4
+0vbtURX4qv1l7besfwmnD8	197933	2026-03-29 12:42:19.199	2026-03-29 12:49:28.653	t	5113	clpuwqgco0001if08r20h71hb	0	4
+1lhpyjqKywDlNjw4nii2ZO	269146	2026-03-29 12:42:19.199	2026-03-29 12:53:57.825	t	5113	clpuwqgco0001if08r20h71hb	0	4
+24LS4lQShWyixJ0ZrJXfJ5	212560	2026-03-29 12:42:19.199	2026-03-29 12:57:30.419	t	5113	clpuwqgco0001if08r20h71hb	0	4
+2prnn41CblB8B4yWACDljP	158095	2026-03-29 12:42:19.199	2026-03-29 13:00:08.538	t	5113	clpuwqgco0001if08r20h71hb	0	4
+2rgtCOVK2tpfao2VjURn84	203520	2026-03-29 12:42:19.199	2026-03-29 13:03:32.093	t	5113	clpuwqgco0001if08r20h71hb	0	4
+39cmB3ZoTOLwOTq7tMNqKa	194840	2026-03-29 12:42:19.199	2026-03-29 13:06:47.049	t	5113	clpuwqgco0001if08r20h71hb	0	4
+3AzjcOeAmA57TIOr9zF1ZW	193829	2026-03-29 12:42:19.199	2026-03-29 13:10:00.951	t	5113	clpuwqgco0001if08r20h71hb	0	4
+3JA9Jsuxr4xgHXEawAdCp4	219426	2026-03-29 12:42:19.199	2026-03-29 13:13:40.429	t	5113	clpuwqgco0001if08r20h71hb	0	4
+3zNNXjjjeLrzIXSJZKalDi	279635	2026-03-29 12:42:19.199	2026-03-29 13:18:20.102	t	5113	clpuwqgco0001if08r20h71hb	0	4
+40FUdLENDY3sZmHEM25lpE	167903	2026-03-29 12:42:19.199	2026-03-29 13:21:08.127	t	5113	clpuwqgco0001if08r20h71hb	0	4
+48QmG1dfvMuYLxMPt7KSRA	221176	2026-03-29 12:42:19.199	2026-03-29 13:24:49.355	t	5113	clpuwqgco0001if08r20h71hb	0	4
+4dSoDnmR9opAQ8KxUc9SbC	199944	2026-03-29 12:42:19.199	2026-03-29 13:28:04.568	t	5113	clpuwqgco0001if08r20h71hb	0	-16
+4rPkN1FMzQyFNP9cLUGIIB	258004	2026-03-29 12:42:19.199	2026-03-29 13:32:22.614	t	5113	clpuwqgco0001if08r20h71hb	0	4
+4WuAr5SE1ZfXxu6OWtykkG	196003	2026-03-29 12:42:19.199	2026-03-29 13:35:38.761	t	5113	clpuwqgco0001if08r20h71hb	0	4
+4ZH03VC3uJk7uKk7CwsBqH	203204	2026-03-29 12:42:19.199	2026-03-29 13:39:01.992	t	5113	clpuwqgco0001if08r20h71hb	0	4
+5masKPHeAOVNgxdLebIcK7	223182	2026-03-29 12:42:19.199	2026-03-29 13:42:45.203	t	5113	clpuwqgco0001if08r20h71hb	0	4
+5mlMPToYlPHYT5uccaG6cc	148386	2026-03-29 12:42:19.199	2026-03-29 13:45:13.613	t	5113	clpuwqgco0001if08r20h71hb	0	4
+5RDUCbvwPZdmjFbhZ5EY4N	152913	2026-03-29 12:42:19.199	2026-03-29 13:47:46.559	t	5113	clpuwqgco0001if08r20h71hb	0	4
+5Z3zRrMIJk7CVpfcLsM9wD	215360	2026-03-29 12:42:19.199	2026-03-29 13:51:21.944	t	5113	clpuwqgco0001if08r20h71hb	0	4
+62pSYErgGri97X9aIyBzHm	204626	2026-03-29 12:42:19.199	2026-03-29 13:54:46.594	t	5113	clpuwqgco0001if08r20h71hb	0	4
+6wOYnPq1hPihRepcDClPUw	284373	2026-03-29 12:42:19.199	2026-03-29 13:59:31	t	5113	clpuwqgco0001if08r20h71hb	0	4
+7FCfMXYTIiQ9b4hDYs4Iol	202914	2026-03-29 12:42:19.199	2026-03-29 14:02:53.938	t	5113	clpuwqgco0001if08r20h71hb	0	4
+7pqgMEKsDMOHUdFQ7n0N9K	203641	2026-03-29 12:42:19.199	2026-03-29 14:06:17.601	t	5113	clpuwqgco0001if08r20h71hb	0	4
+7ySUcLPVX7KudhnmNcgY2D	243600	2026-03-29 12:42:19.199	2026-03-29 14:10:21.234	t	5113	clpuwqgco0001if08r20h71hb	0	4
+3X04Syd70Ia2UCKGMtakGW	328803	2026-03-29 14:46:46.606	2026-03-29 15:06:55.601	t	5113	\N	0	3
+48NXpYRuvv9izul4oXhqS9	315293	2026-03-29 14:46:46.606	2026-03-29 15:12:10.916	t	5113	\N	0	3
+5f7UQhgTcyLf2snlqjFyP4	297358	2026-03-29 14:46:46.606	2026-03-29 15:17:08.295	t	5113	\N	0	3
+5YoITs1m0q8UOQ4AW7N5ga	192600	2026-03-29 14:46:46.606	2026-03-29 15:20:20.911	t	5113	\N	0	3
+6xYFemXYzYPbaA2PtnhNpT	235706	2026-03-29 14:46:46.606	2026-03-29 15:24:16.629	t	5113	\N	0	3
+6yaWysQH9ipF9Pv350z7qk	276648	2026-03-29 15:06:51.508	2026-03-29 15:06:51.508	f	5113	\N	0	0
+4tU8YSzSnz57md7qlbcYhO	264312	2026-03-29 15:06:51.508	2026-03-29 15:06:51.508	f	5113	\N	0	0
+6h8FQFE2iYBthxceGNJzAf	312666	2026-03-29 15:06:51.508	2026-03-29 15:06:51.508	f	5113	\N	0	0
+4EgyjLAvfbsw9XTt9cat6L	284573	2026-03-29 15:06:51.508	2026-03-29 15:06:51.508	f	5113	\N	0	0
+41mW3afagMuz7pn3IkpWdm	199049	2026-03-29 15:06:51.508	2026-03-29 15:37:40.571	t	5113	\N	0	3
+43rScHWHs8tKnKa46vFRDG	143013	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+6EaACReSmaWA3QaHxtFomR	260573	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+0SNWCRUjAOVx8DRjhnVXPN	231409	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+4rY0SaKtPLfzvXTbbjVXkb	155173	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+1MYCkIQth8xnIONyfSB2Mi	163009	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+5vB8RbdC4OPgxVKOw6cmrt	110040	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+2guKCNloXXVmk4NZsZY5Cb	147000	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+6I3sgbFpcRkTqeiPvHh18i	217408	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+2EYeAce4AeWtkAVlkf1qaY	185493	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+7r9QNHBzbXXcG9ImM9V5dP	130973	2025-04-28 09:46:14.839	2025-04-28 09:46:14.839	f	6122	cma0w5hyr001vc91ob1bvn1yd	0	0
+1rOQocblOsHSzOCZHbNVrQ	323683	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+2I3mB6MArFfznFT4pyY0ie	234837	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+2O3V4meZv0bEc1LPITGvcC	175532	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+2dl5K2ScW7jYhAhuem06cm	184506	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+2g4FmxUiMLF4glwodK3l2W	250213	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+39L3LdlHS3gqB62HPWaJRg	225654	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+4SJHHpKhcuXwDsCsPqshXj	217142	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+4cyYC67XY3weSVmSLdKLP8	292160	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+4jRxEVNituPZObHbCSBZL3	205333	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+56y1jOTK0XSvJzVv9vHQBK	230466	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+5LZge9AQz2EbJP6w8vrftT	216786	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+5WEF0icHWmAZBBMglBd599	187507	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+5ao2Yb1Ec7YbY1gHqtZAV5	189000	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+6IfMD01z39P15HKezjdaMP	191106	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+6ZNf63s84LCpLmURqkIaNO	179256	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+6iOndD4OFo7GkaDypWQIou	150001	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+7FbaWIOO2WojXWw2DUyEVv	226805	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+7HXBG0W8gFJwHUh5mVF9tf	193018	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+7Kmfjms3yyhg2y56mN7EfZ	328786	2026-03-29 15:35:02.858	2026-03-29 15:35:02.936	f	5113	clpuwqgco0001if08r20h71hb	1	1
+0DVYHRf9QSS0MwMXR7fEcZ	220743	2026-03-29 15:35:02.858	2026-03-29 15:49:15.478	t	5113	clpuwqgco0001if08r20h71hb	0	4
+0ooXt1AXI84i1j7jK7y9HE	229288	2025-10-18 12:54:58.489	2025-10-18 14:16:10.262	t	7722	cmgw0ipzy000113mffohgz27r	0	7
+0HlMshB5JmZjPNbOuOgFHN	266015	2026-03-29 15:35:02.858	2026-03-29 15:53:41.518	t	5113	clpuwqgco0001if08r20h71hb	0	4
+0OMRAvrtLWE2TvcXorRiB9	203049	2026-03-29 15:35:02.858	2026-03-29 15:57:04.596	t	5113	clpuwqgco0001if08r20h71hb	0	4
+0QCIpQV3twfqo9kh0t8Zza	178775	2026-03-29 15:35:02.858	2026-03-29 16:00:03.405	t	5113	clpuwqgco0001if08r20h71hb	0	4
+0sMIqkhsrKaIU3G1WwlY2X	285600	2026-03-29 15:35:02.858	2026-03-29 16:04:49.142	t	5113	clpuwqgco0001if08r20h71hb	0	4
+0zDO5avDZSXRwWzfuguIRb	228554	2026-03-29 15:35:02.858	2026-03-29 16:08:37.786	t	5113	clpuwqgco0001if08r20h71hb	0	4
+1BIXs6CdkPRLytuqoXs6XN	201500	2026-03-29 15:35:02.858	2026-03-29 16:11:59.312	t	5113	clpuwqgco0001if08r20h71hb	0	4
+1haJsMtoBhHfvuM7XWuT3W	187225	2026-03-29 15:35:02.858	2026-03-29 16:15:06.569	t	5113	clpuwqgco0001if08r20h71hb	0	4
+1MlAkYV0nbRKWhhfvTt3zc	213168	2026-03-29 15:35:02.858	2026-03-29 16:18:39.784	t	5113	clpuwqgco0001if08r20h71hb	0	4
+1q0PYXTbDsirp2l74ng6pn	130666	2026-03-29 15:35:02.858	2026-03-29 16:20:50.475	t	5113	clpuwqgco0001if08r20h71hb	0	4
+2cGxRwrMyEAp8dEbuZaVv6	337560	2025-10-18 12:54:58.489	2025-10-18 14:25:27.821	t	7722	cmgw0ipzy000113mffohgz27r	0	-13
+4tYxGORIOZSPLnZmrSpva7	230000	2025-10-18 13:00:39.967	2025-10-18 13:08:23.172	t	7722	cmgwaafni000swattya3y3man	0	4
+2LD2gT7gwAurzdQDQtILds	345186	2025-10-18 12:54:58.489	2025-10-18 14:31:13.028	t	7722	cmgw0ipzy000113mffohgz27r	0	7
+3xgcNkLwNfYxbK8w9MlLlk	235909	2025-10-18 13:17:06.672	2025-10-18 13:21:25.553	t	7722	cmgwaafni000swattya3y3man	0	4
+7KGYSXZ3gvQEhaBAxnorAZ	208408	2025-10-18 13:17:06.672	2025-10-18 13:24:53.989	t	7722	cmgwaafni000swattya3y3man	0	4
+6RpunyUP44SDweJPDScLSF	266812	2025-10-18 13:24:50.417	2025-10-18 13:24:50.417	f	7722	\N	0	0
+77eJSMNYSqeZdhiOHDPaK6	410623	2025-10-18 13:24:50.417	2025-10-18 13:24:50.417	f	7722	\N	0	0
+4yMXKeuRDOIzrh3fBiJYds	176898	2025-10-18 13:24:50.417	2025-10-18 13:24:50.417	f	7722	\N	0	0
+1A8j067qyiNwQnZT0bzUpZ	195546	2025-10-18 13:24:50.417	2025-10-18 13:53:23.152	t	7722	\N	0	3
+4jF5PoufACZkFgqeZDcZgh	140704	2025-10-18 13:24:50.417	2025-10-18 13:55:43.869	t	7722	\N	0	3
+1Y2eoRAhwsjCKcdNnrZOzV	145454	2025-10-18 13:28:01.885	2025-10-18 13:32:57.253	t	7722	cmgwaafni000swattya3y3man	0	4
+6KOtheMY0KN4s9TrQHr9It	253720	2025-10-18 13:28:01.885	2025-10-18 13:37:10.998	t	7722	cmgwaafni000swattya3y3man	0	4
+4M2t7bP4Mq87mGMn0PObUX	208013	2025-10-18 13:53:19.368	2025-10-18 13:53:19.368	f	7722	\N	0	0
+5rX3uFAOOkURYJYcfdXHt4	95044	2025-10-18 13:53:19.368	2025-10-18 13:53:19.368	f	7722	\N	0	0
+5GXAXm5YOmYT0kL5jHvYBt	269186	2025-10-18 13:53:19.368	2025-10-18 13:53:19.368	f	7722	\N	0	0
+5yyFYdTJO3ewpMzMf8EPGH	138946	2025-10-18 13:53:19.368	2025-10-18 13:53:19.368	f	7722	\N	0	0
+3STU7mLMjgeqnRDk2yDpCQ	218400	2025-10-18 13:53:19.368	2025-10-18 13:53:19.368	f	7722	\N	0	0
+1KTMZ2DeqT4oqIJ7Co5F6R	150546	2025-10-18 13:54:15.21	2025-10-18 13:58:14.424	t	7722	cmgwaafni000swattya3y3man	0	4
+37Oojxm0tKyUFiyfn52LHU	244397	2025-10-18 13:54:15.21	2025-10-18 14:02:18.928	t	7722	cmgwaafni000swattya3y3man	0	4
+3e2E4a5wFphHS1ZlhuIKXx	185142	2025-10-18 13:54:15.21	2025-10-18 14:05:24.106	t	7722	cmgwaafni000swattya3y3man	0	4
+3M2UGK6F3Wa0mDIUlFkfWq	205514	2025-10-18 13:54:15.21	2025-10-18 14:08:49.644	t	7722	cmgwaafni000swattya3y3man	0	4
+3vvWkQ20y5bkMfiK2hcHjI	211086	2025-10-18 13:54:15.21	2025-10-18 14:12:20.853	t	7722	cmgwaafni000swattya3y3man	0	4
+44wv6CyZg5u62szDx4KnO6	188389	2025-10-18 13:54:15.21	2025-10-18 14:47:18.136	t	7722	cmgwaafni000swattya3y3man	0	4
+5aqI3CBgaQZlu9mvo6wKDh	191984	2025-10-18 13:54:15.21	2025-10-18 14:50:30.143	t	7722	cmgwaafni000swattya3y3man	0	4
+6uZStsUS4t5H8td6DZqft9	245585	2025-10-18 13:54:15.21	2025-10-18 14:54:35.832	t	7722	cmgwaafni000swattya3y3man	0	4
+71X0rQKfFw7DX6wNc1DOtU	242022	2025-10-18 13:54:15.21	2025-10-18 14:55:12.834	t	7722	cmgwaafni000swattya3y3man	0	-16
+7CotyU8EcChJlqOFnxPPmI	184000	2025-10-18 13:54:15.21	2025-10-18 14:58:16.857	t	7722	cmgwaafni000swattya3y3man	0	4
+5vZ46Y2lI7dfF1a3dV3HZ0	242343	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+1TLZ7DcAj1iqM6UcvsLZYq	220630	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+711WfDztCZpnmJg7Uvwod3	314680	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+1NCF4UUsuT6Xzw2Zxd43PJ	218933	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+1XIprkrN2brZXkILMkUtsz	231152	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+5QK2qYLoYyE0v45cbtBWEe	316071	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+5hKjEpYrJIJs6uPl7zw6Y6	233250	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+2kOon6aSImfSVFB3UzQVVv	183591	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+46YjJXVXWHlQ21odKktg5e	232131	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+0kVoPKhBJF6owtu8pdh7uq	208800	2025-07-05 08:37:09.957	2025-07-05 08:37:09.957	f	9977	cltyqrn0m0004jq084r2iwxcn	0	0
+0HBs3NUUS4qDOX6MAuNuG2	202076	2025-10-18 14:09:19.822	2025-10-18 15:15:33.192	t	7722	cmgw0ipzy000113mffohgz27r	0	-16
+11ktAtbN1lp3aTvvbhDWi3	173812	2025-10-18 14:09:19.822	2025-10-18 15:32:55.882	t	7722	cmgw0ipzy000113mffohgz27r	0	-16
+12s6FjStmOwWJrh0yalbKC	155960	2025-10-18 14:09:19.822	2025-10-18 15:35:31.869	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+2fQo9apVAYggTBzaFPUh9B	141374	2025-10-18 14:09:19.822	2025-10-18 16:01:24.305	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+2rd4FH1cSaWGc0ZiUaMbX9	236727	2025-10-18 14:09:19.822	2025-10-18 16:10:06.296	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+2TktkzfozZifbQhXjT6I33	216680	2025-10-18 14:09:19.822	2025-10-18 16:10:07.614	t	7722	cmgw0ipzy000113mffohgz27r	0	5
+2PcgMmmhIZA83kwIYEjR8f	251813	2025-10-18 14:09:19.822	2025-10-18 16:08:16.118	t	7722	cmgw0ipzy000113mffohgz27r	0	-16
+2vkNA9I029dTwX0y6d59Sc	209032	2025-10-18 14:09:19.822	2025-10-18 16:13:36.759	t	7722	cmgw0ipzy000113mffohgz27r	0	5
+2Xr1dTzJee307rmrkt8c0g	145800	2025-10-18 14:09:19.822	2025-10-18 16:16:02.685	t	7722	cmgw0ipzy000113mffohgz27r	0	5
+3aUviSdBVbsdmH406j5GZC	135013	2025-10-18 14:09:19.822	2025-10-18 16:18:17.721	t	7722	cmgw0ipzy000113mffohgz27r	0	5
+3DK6m7It6Pw857FcQftMds	547733	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+3Fc7k96EGOGiJBMZUxbpq7	230920	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+3LtpKP5abr2qqjunvjlX5i	97392	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+3hxIUxnT27p5WcmjGUXNwx	164571	2025-10-18 14:09:19.822	2025-10-18 16:21:02.404	t	7722	cmgw0ipzy000113mffohgz27r	0	5
+3hGgNSkBGcbdYTIcCa12pt	158360	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+3vQ4T78TTMOjQXGfXVKQJo	326933	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+42Z8moYh30XOVffltDDUgK	183293	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+42aM8sPZlJyQS2VaD2RSuh	189333	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+48w7HvN7eiCX2vrc82M2KU	249853	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+4QYnQub6ZhcXCT0ZP6gNan	165255	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+4WaCnPpbycUQQiXBDxH7zx	209342	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+4bWdEggTeY1184KQOYUeFS	301603	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+4nMx6c0j2vEhofjeJLmSZV	149278	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+1c5CllrZr45UBhWpIqM332	116630	2025-10-18 12:54:58.489	2025-10-18 14:18:06.923	t	7722	cmgw0ipzy000113mffohgz27r	0	7
+1pKYYY0dkg23sQQXi0Q5zN	429533	2025-10-18 12:54:58.489	2025-10-18 14:25:16.481	t	7722	cmgw0ipzy000113mffohgz27r	0	7
+303ccTay2FiDTZ9fZ2AdBt	403293	2025-10-18 12:54:58.489	2025-10-18 14:37:56.44	t	7722	cmgw0ipzy000113mffohgz27r	0	7
+086THPnabbu1zfDjRsxpoN	116465	2025-10-18 14:09:19.822	2025-10-18 15:00:13.433	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+3Nu0fJTengky63bpIRXWuo	200352	2025-10-18 14:09:19.822	2025-10-18 16:24:22.779	t	7722	cmgw0ipzy000113mffohgz27r	0	5
+0aXnTU90v6G1QVlimy0Kw8	246000	2025-10-18 14:09:19.822	2025-10-18 15:06:57.598	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+0d28khcov6AiegSCpG5TuT	222640	2025-10-18 14:09:19.822	2025-10-18 15:14:28.913	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+1aL9518P5G72N92b48tuKw	177391	2025-10-18 14:09:19.822	2025-10-18 15:38:31.818	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+0ibpvxLcFccvQJd0SjdUvW	260732	2025-10-18 14:09:19.822	2025-10-18 15:15:40.704	t	7722	cmgw0ipzy000113mffohgz27r	0	-16
+0SpYacZCZbIS05XTj1v0au	272775	2025-10-18 14:09:19.822	2025-10-18 15:20:13.507	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+0XwRlvv3KlOu4HWlOH34XG	190000	2025-10-18 14:09:19.822	2025-10-18 15:30:28.038	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+0YUqBFAH5myAV0An8Gjqf3	136005	2025-10-18 14:09:19.822	2025-10-18 15:32:44.068	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+0A8ubu9Rgt5aXucA5wl8kY	158112	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	5
+1f4azUUkHGvH43cbnp1Mca	230842	2025-10-18 14:09:19.822	2025-10-18 15:42:22.687	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+1fOkmYW3ZFkkjIdOZSf596	268813	2025-10-18 14:09:19.822	2025-10-18 15:46:51.631	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+1kFNFsAZ4iZy4vjBEtT12I	212525	2025-10-18 14:09:19.822	2025-10-18 15:50:29.468	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+1mv4lh1rW1K6xhxhJmEezy	260906	2025-10-18 14:09:19.822	2025-10-18 15:54:50.403	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+0X5yARwJLSCTFhuJTSXvFU	159813	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	5
+28luqgS4NCuFKP6YSOtia5	173784	2025-10-18 14:09:19.822	2025-10-18 15:56:06.536	t	7722	cmgw0ipzy000113mffohgz27r	0	-16
+29m79w9xPMH4YCD6r8JSmV	176232	2025-10-18 14:09:19.822	2025-10-18 15:59:02.808	t	7722	cmgw0ipzy000113mffohgz27r	0	4
+0bkTdkWwGk3OGFX0afD3Wj	228453	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	5
+0vMctOnb4YNIvbqgkbWNDy	261881	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	5
+2fvdQ1Uq04qE4RLN5zKBXS	280878	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	5
+3PFaFVWq5wucLu6s4baj9D	415613	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+3Y4rUyw7XBCK6hGHCOt6rp	204773	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+44ZKnfWEkp7wPs035j4Tua	234369	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+4yYJUgayu4jKB258dukWaF	277960	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+5DezAsjtSLUxW9j00eh0Ia	168750	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+5JVbvCHX10U2pLa5DEqGav	192789	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+5TRPicyLGbAF2LGBFbHGvO	237506	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+64NPSUK9QT49jEDKl3FK1a	212857	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+69uxyAqqPIsUyTO8txoP2M	263786	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+6Ee9j3KfgdNTlXcK2XSpH6	218208	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+6EidGY4S6hkU6fwNdSSabg	227086	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+6hA8stAJBcUFivvkhEEBeq	130018	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+6tlUm9EuYRInZ17qzJkbDv	148875	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+7KA4W4McWYRpgf0fWsJZWB	180386	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+7jaYiqwCFQDdtxfQaSzZuM	258784	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+7p4vHnYXkxlzvfePJVpcTr	297404	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+7yvdp8dqmxExSJwT2fn6Xq	111226	2025-10-18 14:09:19.822	2025-10-18 14:09:19.878	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+5RHFgozacy0EfW6DqWN5aL	184652	2025-10-18 12:54:58.489	2025-10-18 14:41:01.217	t	7722	cmgw0ipzy000113mffohgz27r	0	7
+7CH99b2i1TXS5P8UUyWtnM	188453	2025-10-18 12:54:58.489	2025-10-18 14:44:09.724	t	7722	cmgw0ipzy000113mffohgz27r	0	7
+4osgfFTICMkcGbbigdsa53	302346	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+4rf0IVQDFjr27T4sgah5Pf	240880	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+4y794Xfz4IEjKEdpXyMTOq	230632	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+58f4twRnbZOOVUhMUpplJ4	254400	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+5DuGzBwnu4inmMA4PQ8Hwm	195714	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+5FFUDCkMjxuK6XQZNumN55	164746	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+5tkR9JkBj3Ueeo8W4k8IZD	188053	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+6ZBFJwlj6uJ1Th4m80KlSU	276760	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+70kdJnm1X6eEM8DbWa8Mnc	227706	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+73C8W2PBSEbfoNIi1J93MN	322400	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+7AsG1F1eMWd17RYan8M3Wm	233666	2025-10-18 14:09:19.822	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	2	2
+2t1pEpxPz91KldW7C0FyZv	217627	2025-10-18 15:04:30.792	2025-10-18 15:04:30.831	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+6pZAfsbTV6bOYYUzcmCARn	385628	2025-10-18 15:28:53.671	2025-10-18 15:28:53.711	f	7722	cmgwaafni000swattya3y3man	1	1
+0VEJDwMO26qNitqyDb47I0	188626	2025-10-18 16:10:03.929	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+1hjSN26LvLcBrhObrNSQK1	304833	2025-10-18 16:10:03.929	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+1nMULe4EavfF8SZHQ3Pag9	141920	2025-10-18 16:10:03.929	2025-10-18 16:10:03.975	f	7722	cmgw0ipzy000113mffohgz27r	1	1
+0zyuiNDixprOtMU41xMaf0	271800	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4FXPzFHEJpC8gyKO9VuGYy	134769	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2Ch3hsnO4cvE4gIHYTAmoG	129438	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+25ImHPNiBZHcpBVLynfwP8	273281	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2bPgye0QFlfiszcfboBDXc	197343	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+49cOIzhf5DKE9PgCSaImYV	221132	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+317vF5JOlI4du9P7inKgH6	128181	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0hUVBI84mRhSD6tToWMJQF	227234	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4TB1mvXX6goJ1B3Sc192Ga	177425	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Gaj9FodyMfYGGTGfm3P78	168633	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7LG1vjUo1LwbyasOUXKMjj	212929	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2wjkLPxmaB6BNcP9EAq78I	208945	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3DLcp6rIvV0VXDckQwpO4I	132385	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7inpHmOmjY77h7bygsYXeX	194157	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+70h7x1g1Ea8ARlC3fgmlpq	193000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5oZFEUvGWiA6fuiimgkuK2	188212	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+18Y5FsvJHq7rdObEuoJPkr	195219	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5sFefhrDjlL8xK9uloGJjW	261485	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5BdpNQUTvff6uAtKqbZrGo	189421	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5GZWUXcS0RXU6z2bMugz4v	73875	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1HZMOEqrcOrklnVjRn2T5t	147716	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+325S3FzTRw7jWAWup9n2vF	122960	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1KGjO8rHK7LaJ2QSrpZlPF	178314	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1NbzIGwEVbYhIaDZ8cX1XZ	153750	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0pbzZQuSi4imxUtGHwXN2x	198458	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+43ve8kfrtIR5VfOemMUd0U	200000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2vrdK0n7v0522FDrArl7a4	230400	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0mW98DPNNWOfqbNneY5kh3	185105	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+79YgOmyAQVne7xIZ1Z8nKD	247912	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7dD3itmgglphuRhEdWp39Y	157265	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4eJ4AkI6vBibN7faOlnjzt	218482	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0Clh8LYRi43eSqU6HOBEMr	180800	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4o8noAFJh0PEnoWBtp5LZE	171333	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+00RMprHa04RyRN5an2g9qT	131825	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+12tyad678XQTbSzX9Csf6X	136035	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+08XuZBveiDyYk6Y9W4H4H5	203076	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ZLBpimNrRJdhrRXY62IK5	216966	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6laQP56aCTR4OHpnd6A5Wl	150571	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+72IE3p7k3CmRwpDBEUiZOz	170217	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5MwegvwWgpUIHaNFdYNv7a	153259	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4btSI6msjjNw39QiqnjDXE	175712	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2hSVkVxwuCZsjaQgISKnnV	53324	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+52AIRhJPnUSY5Xstv8jdYe	55412	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1H3qqDZyrk1zNzJrWclkNm	201421	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+605uNWM6PYZyaX0UG4IWFy	155285	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2Z3M5nSDwKtP8xchnf4kO2	221610	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5JCKkIgZDqFXwrAiXWUjIl	242000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6HcjnZRvtfOqNNU452dCxH	302000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4rphKtXPCE1MLu6dnWwcD5	236259	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2ZkU3DTSolbJnb3fOtp2Ru	204000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5izFS4la7aIeWsgOjztHVw	212343	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+49uHD52UmB7XU40a7K9LwD	173000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6HPtkEiqRXh1lQwFMCVB1q	204000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7bAC70yRPwEXS8frYLABn9	176697	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5627QHe4zrA6ZV93p4Gik2	226406	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0tBeoDXNG0WOVaGcWovDER	223648	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0GxPDOt2CBXeUreaL87Q1D	183750	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1LPcrKgDFsg0JF5TmI4cKj	228000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5mwNbwk0cOv2GyvfFWGwmI	209361	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+34IqA6sQkhnTtWEsHiKusm	183692	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7l73VyWjtvSZEfS01zgIyu	208281	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5cGkL0fKWXkV54VrlssY8h	156404	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6Yd5aX0qIlkRadxyoZ6S85	160145	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6QfNaPnjTJD20gFEDfOT3e	156154	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4y7L3helqntWAP2DntI5pw	185316	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4huZGA95nylp4IoF0iCS7E	134225	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1mbYhqgjodf1Pe9CCarsQf	121100	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5sfM5cAsBLku2bZEYmTw5V	141905	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0cKYQuhcjGe7vStpoM2Bvq	174154	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6i8eiBOzHWUMyvdHtWY5xq	145384	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4yaLVExoe4p2bIyCoYrA6t	161082	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5a1grZlubgvLKjHSYvTmGS	152092	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+64giJ7gmKycqTHYyiDFjQi	202874	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+24yVb6WZkrObvrjwiYzEMp	148314	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Jrrc6pxdST5ibsVFLmCvJ	205664	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2vvnMjiYVeTxvw5fA9Fr5h	179979	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5b54rODLdP259c6wOFt1E2	174813	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6efnYPYZnA9HzOkTetTIrP	168484	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4rUhDVwWKuJgGpW0ViN2kA	184645	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3cIan3GVhn7Sq3AFQaMoo6	95034	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6DleafRiihgS4IHlJ5bFw4	178768	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4qDGoJ8c0FKwIFGmdT6V5r	104020	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3cg27KsPOIriSZhcnA1L2P	148606	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5AY4vqPjgw0hypvy0JaPoU	212120	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3jgYBwnpYgow5aVsN4tqoO	168237	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2BWxwjduhHCp7OCVqjhzMO	170988	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4qz0lWZUpRqByFXXYpp0dQ	150287	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3D6gEbmyiHs2nga4SXp1CC	214978	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1YZbLuBbFVuZczecaWV3ax	150105	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4ZL9rxZtrSO4ukVAHK8RLS	191761	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6rxFZo2YjuMtpSnHjCyhvB	126957	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4TizaURUTWE3uACZMBupqg	171253	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+57LHNQ18TYyfL3atS0sFtB	154533	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4YZcfIJkQXlDZh1IkNAjOD	159022	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6LyGbkKgRbHdjn6CKh0Tvw	189888	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1DZsgtIEqZSQhHovr7qzP6	160164	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0xK4skwI5FsHhmUefCiCHZ	181536	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0ge7jy4zvYTxW04AF0lK0C	176335	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+00bkFk7EPziy2X9s6zZPL5	152850	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5ChMReaxNZbmTGb3Z11wqA	219791	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3uKEt7GImknltjq1fycqOw	158330	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0WrO9SMV0Gzag5lf0kNUUp	157080	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7uz3hRBPhsU4iEjw2cZ6lt	153259	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4fzWLMoCBjSUf2eVSGpbP7	154943	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6b0hu5X59bYTGhSxP8es2F	171143	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1uLnR9wOSM0IPr7nK0rg14	189287	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+02CbHRYsMb2KM0UHBMdNGP	159206	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4GjvIxFZC9hDBFi7gQ93iz	151835	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0SbWbLcmQACs7dSHufeCuN	172044	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4cZLKcFmxVOiXke86X56OQ	168507	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2Xv4UUeEkIvKdOZ4PVFa0Q	152757	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0uw7t13ORA2N8ODpnI9fVB	167269	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5dBtrShfAsUKtSJ5sAWBvq	153927	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6eAEcqQst9H4ETZk2ujAsp	150329	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7391Y816hObISxCMMZVuXw	286385	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5D4vDB1aESgo2UTvmFhPl8	284062	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0Czc3LlZbP07uhlu31VORC	172968	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6sGMGt9kzwlWCGLJqZwU6T	228990	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3rLtGdCV8Ynwmxf9D9ouD9	171000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1J3BDLjQHHwcS48Vi9Vh3a	219374	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4g46sRHTIvZPPPYOvv5P2z	265745	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+75G9P5g2hImI8lGWFVG6v2	204374	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5wrKB0iJVPYpxFXGRBFlqi	252697	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1bkK4qOSOfpUjnm3w3HkTB	305105	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2nE7L8loBkqKkv3cginwds	137614	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0HqzlXRL0SZYsahN6CTMpf	208899	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+06eq9MmtEEgmwJnyozyVz2	124778	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+70cgnmqKh432DoMHCKt9sw	164062	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+484T66tQ1M3bzfecc9VoDG	99082	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+29Kij3CIzH0iLfTB8SqDdR	137105	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1LR9EECoPQgFb6T7D5Xr9q	134225	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0BepoGzHViXdSojsaxfbMy	145090	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2IE17aDyHTrW4OUcCHOm0Z	132110	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1fVZO4rmahBqDuJ4fokbiC	189090	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+69gQJTTouYbOK1RFvpamC5	125504	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Pf0GWZWAuWmLDAPqAI55K	264742	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+65r2k4m0p6SVX22vPEQHft	149585	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5cCq8Opfgw8wrya3EeeYXI	146705	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3LeM5kwlMxjGo9aptVBG5d	177425	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3D6XDIHoYzgPXgcEnibrMf	156305	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7tv7SAC3MRAWZxEkw0dUEz	143669	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6YqmC8y43lAr2D4epSjPJH	120465	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6KXcBneCoywcEYv0PBBQk6	196216	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0AvRIwileCYY296DmU5iXS	167889	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4zA5bV1f0wNz2eNLZkPntG	173624	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6aYliSfwf9YAm0B5iM9ykk	212631	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+56jyoIRdDHSyqlyu7aCdrJ	396330	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2SxMdXqhdzbbJpSLxUGNwQ	137614	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4pebP92dRd1gWaNo4EmqCC	28788	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4lJr1MJwv9xbG5tmocnxhR	136572	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+07mo6wsdZErHiBsbXYuFlo	229384	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2Xsqdbb721IlV9ZAK4GVsF	72557	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7qWQME2Yd2MAnLc06V994n	98704	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+292p5McKlJLQiZXqr47FxT	148546	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2IiPgeHPIiJUKdVRRamhuz	72493	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7AfAUovtrpqMjwv0Pz51Mm	72557	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5EhuSBcdTZwagMlRZ7kepA	190844	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6ZJQmnCXgP2PfYMYuVDexU	84365	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0M9HzmbsLrsE0tlKspRQgA	111480	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0B2QwIjqDabSFeyp86tsWO	138192	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1tX2sQs2eXa0mkI95bglLg	183238	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2KAUSRSwhdYefXPzK6BTkQ	64408	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+51QEgFhyYA1g018oVBaBif	153354	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4hDmP4yPUtAt1VGVJ8kkGg	72781	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6A1rYhWbGxhKhICXB2v3Cf	72563	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4g1JKceE3TL5eDFOBKnCVX	205467	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+68F9MMIWf8DN8lJ75ilLix	140862	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1rAwcs1aV7Pyc95uLTWDi1	156831	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1lDWLHku0h6M1p7ig5egf3	68160	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5nCrXbWP4qvkIHSMd0F4TZ	161377	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7rxONHvXmc4o6kQJnqmjpU	226114	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+51FhPscAlRUMU8RFYYqrnC	149401	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4M2kXDa7O2mUWGYjgR4p0v	140511	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6gkmEc4tXy1hUkypQJ0WqV	35861	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+54GSsRtbBPXUxG551AoyxQ	512559	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6SDnUr8xzxKMlDV0Z6b7fU	115300	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6JWyhiCEoBoshCsXMjI6M7	189528	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+58D1uL9HVRTogmzNvmCYRo	74841	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5iYVutRDGGfvK9ddJOxmH8	99276	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+41MnBvPCqz7f51drnhIIZD	67175	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2EzS8YdjXMZAOQOXmzof9W	113638	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+009VsbhUTKMQwaSlggxwnO	122334	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3n3G8gTYTVgHsWCbjJ9dkg	211777	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2PD0ykdjTgYo6mP8Y6OER5	158686	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+29Ouwpd2X4OErlWwZrfiSF	250140	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2eIJFiPAIesqMDqhVYwBdn	149280	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0iBBBU6wNfTdC2DwAw8HK5	221142	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0twpthRLIHPUDVeQmS7j8S	130560	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6WfKDtHbEnxN4tCTBE7OcP	263606	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7tbigS8rWkTXVDtFqF1Fnw	168019	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4SPEuR6jqeOowifHfaKn3j	244921	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ax90aVjsMPXNqrQeajZdP	140322	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0mTMNRS8mFW1EtqkNcLBf9	223097	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0WaXzn8w78LTd2fGcYNwRy	152458	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+54AbbveMHkE7gzhPf4iAs0	173879	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6gU7ywhqaZyX2fJhDISuWN	259784	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5eUYMBsQ89qcQu9shMJp3X	131367	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4w1I1ZjI64jYSef5u5t1Yi	127523	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6vAvX7pib7kMcStfCw6mqi	404000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+480bWlFuhtv0myGeAo1fgK	203499	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2HqopxvzC612UZG69dqKBf	145185	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4J7qbjo8hnjvQ2E2XkiPvg	334714	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+32GaH4Un37rzWhH4dyITtk	214666	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+62i3zTtnuICvKk8dHkp4jB	251034	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+77pSueILV0oKxJsPvkUeVL	205717	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+60sA8GFyFtbitTGWx7eomK	79200	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+23j1tDgky4YjpWQeQKzxyY	180000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0HIgYr1wDLrG6DjfwzYtEI	182571	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1X82RVdGTjqtY604eG7idZ	264000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3b6x6oE39BRJBDlaFFK4Nd	330945	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5UW0FdygTrimOQ2hJ1jibO	120000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1SPallMph8kSFw5JXKG4MY	232320	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4TsVIhl1IHod4U6J20BjhF	146842	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2LDFCVnpWZXifq7TeJbkd3	210002	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+64mAZLEyDzXvpEKg4pRWpp	123930	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0rmLzx2uvBPT5pba9ZqnbW	194095	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6PAkGCnsb0cTdkUgmyUy5a	99323	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7lmlXhtkbrB9ROp1vszvLJ	77101	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6wkjd1nCusDivrJigNtfPs	51606	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1DGF9mjA1QjFnapDnEKo4n	79156	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1p5MIglxaQXkGmvKwJG61n	52476	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5Cnfh2DnuDrzDnmW2ppnd3	192656	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2LHVvZorjWcHemQyJNImCf	21299	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1RPE1uw3mCqW7IfYoikeeS	106718	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+48C3deRVZsHTBQ2j6j6O3t	127775	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2thNefMthUPTfNfA8UVjzp	251231	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+03fzM92WZWL6eS9jdO2Wc6	255551	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+12t2L8LsG7VjEnSfns4KQc	366623	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3lxX9C1LsRV2dBs5OLwCek	182783	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3xaer7DzRH08O7JintzFXP	79103	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7t4cC8oBX03e1FUH4VNnWr	88128	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6VdVu5vu0FNHN6gyWrjfWj	117215	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0qFTByJxiAKc46ON0uslzd	142368	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+16rFp3JMNr50kZtQjX8lcd	219935	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4xWyTxfcZOlorZI7AUW6dN	104543	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5qKGeC383TO1x6v82oMBEs	199583	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+21s6pwLwD7pQNxcfrJY2pH	142655	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+34OtC1sUvcyxpa5EHtnEt1	134688	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0n8IjTCEPGpTIhCnbtksF3	162143	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+63o5AhksGwbNlDHYTVBqNd	283775	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7DZJ2LEriLM2JuoDI1muNJ	85823	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6yxohti3zH3K5kARxYVcC4	269568	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5sCOcLfZflAWkoE6r4cK0S	293760	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4FQAvgCfPU6GhWqqLQ5w7y	147455	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6XwLcesuTUWdprZkh2aBBM	166271	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0VblbAgJMock5H0fbuVqT6	219455	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4r8BpLtrLP0Ur49hvG1zcs	152063	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5fRwZu1PkNo3W2f1jWBq1I	157857	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1U99mFy5kjwoWN7tRfvlTy	156786	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2mskT0dUfEjZcbzJ5D2UZY	186618	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5Sd3giHTk5MqdW6dkwtmrK	140355	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3aaz8JCQWQ9X0YgqemMQfA	91689	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3cLWQJgMK8EhR5deY2n2qz	64888	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2K4sJnmCLHlWgRkdRd9uzx	200829	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6B7K55EhWrCKX0PSeRxkK5	238915	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2GVqJhxprwFghQKI5PNxBb	228257	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3nDH5XEbZRxdDLRfkO14Xh	288914	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0fBoSFSmHM2tSSgUGIa9cC	257384	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5pPjDdGdYo7q9p6lKyJGsd	174994	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4RIbFN8zw6Jq902OgrBFPa	251898	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2VAuKXA4gnVn5YhE7wENe1	391497	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2BkBDObc3XNt61UvnZIm7x	75023	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3ofX2VsDZOEf1zyyylYfkS	271360	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+60FbEVCy0CyTFrshAdAN2K	240483	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5ZhL6dbNqIVcbHDQYCV4QH	241684	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2zGpdC0tzysgcpJPRUtKm7	208953	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6wmkJ55izI3PaaTTugZjz3	203937	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0Vx0ug0lvgPSxc4hB8Fx9I	57103	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0rel3LzpS3Cej33TjuGToB	194507	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6kOp0BqHc7Lix6j0QmmNAM	107990	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4n6rLr9J1KVkpPugvLKzDU	254458	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5P7PfozFliXsNg70jq4n8N	256052	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0QcrmjMiVVKRLjKqQ3AJak	136228	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6ElZNbZ0hMzsNBwjbuikqe	157126	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2IcKfleosBlYynXzCElGYU	169743	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2QwH1IQ9m5saZJBpMwDFp2	67970	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6P6gqlehkKJOBHzSLnC1ch	56581	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2BSPsUkTVDOCYjJcaA4Oli	37720	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3anlVg6uwYkiy17k3tzp4v	192731	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+45QBOjGzu4ZXR6wJUAW3zI	121260	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6pVQTE64YduWlMdOwfuDrj	246402	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2JgxwTkUY73KJahTK5RG5D	100056	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+176Log7hi8eUpmY7OEx7BG	348724	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+677emOQgVxZAMZcLFEAr1z	413501	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0JnilHi51eQIF4m35jUdTK	351277	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6w76stOvs1fiBZ4xWhuqdC	386749	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1IpLgwZo618evO8ckQxz3o	304000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0hBUik7RITAPmSlnOGiWdm	322929	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1Rnk8KSANW0A0AJG5aN8x7	285049	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5bWx3xyijv2bKgyi6yhXAs	312747	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6dWGGyrlMXhvEdbgAkrxa0	556129	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1uXNd0zqX9gbq8Kbp950u3	178455	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2eMt14ufxu0zL4TR5KxkkO	271443	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3TfRRxG56lHDrunbXrNRwX	224466	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7lGTG2huGnoYwlIF4t9BPP	237897	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+464G52VnyseB8DYv1AFRFC	233404	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7af2Sm58vYefDV4iYeixfN	201184	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6hLEwm4amJDpf1xHNAomGB	184393	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1KOQOWoZRfVLpByUjqB6sv	236320	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6ZAQSKJlndszTIeW5hXtXd	195857	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5K3Hvhmy8kAuJdToY3mnTl	294290	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1TOaTAA8sWmhHgFn23gNrB	94364	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4oa0R00XOeaClv9nWLit3h	131065	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6in6L6uRZVBQpbwJIzd6hw	111107	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4bHDGBV5dfX5uKeI3l3RaU	187721	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2SSPYxGzfK6UQZqBYTxt9K	181065	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2krs3sGVqxywE3yFC8P8cH	130986	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5PI8gsuXzJqDOIIYMwhzsd	151013	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2nJIQGzs9Y8hKj8zqBkAGZ	38449	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2kt6MS8Vjiv0OkKQ6vx70I	529862	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0OGQf5r0TeE6ERhrhrqi4p	436000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7dRmZO0PTEVfEW5KjXeUKo	435378	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2xw1MVoBnTNRHo1XyLQk0a	490909	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5Dd7Cj1NTPFiGkRXBBlv5e	401437	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4xTf9el2ODIPlGoZ6VHjc6	361801	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1gN2Ar7MRJ7EHCk3Fcj7Aa	450000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3B7TH5WHp2hQic9tt5GVIv	221637	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6DxxPVwj34vRCtV2gw3JTN	535833	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+34BWNrNy6vmfQXb2XSVA7x	77887	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6afwSyIUGJUFvmjk9CRQzd	54137	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+608gKnmgPlsg7IYME94wUx	128615	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+47xJBhcNCBqItUNmRtzjNG	314922	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+10pSdBzI1FyUuP5WWUxJel	111969	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4aDp3vS1fKatakVjJCkHbv	139819	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0pJKPk94CdlVMOv7W90iKG	132244	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4dB3WPXLbAlizqM15A5rUk	98380	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4yLmvMPOLl5EjZAUzVqHbp	118401	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2y7tRJiSRuid7wAkTcEjEB	116845	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3vnanDoP8Crw7l7rjDxpws	152913	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7uUbH5EbSIrXcpfuuTUeVG	106122	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7u6boqQkV0fO1rQpk751P2	124606	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2ArW8gLKS6iYP5VoLn9uf3	174793	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0qlGt7EMcPfSrXeElLxYCb	171408	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2wdzumqMlDd7bIBrPFcuTs	388224	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7malBozjQdsUkQePj8VIiy	67885	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7zhjmhVPcgyLAaQHBfs0oy	188341	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+28nexeKpcZhqwpOCc3KSXw	76426	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+06PZ9SjKjdGH5fAACxXuGF	199741	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5uLN7hNgFr5NMyzWU3i9LX	127500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6yIOeMif4bGzKtbbz8X50x	319149	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+33jaxLAvXt8BVYnWPXToVJ	312750	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6a4SjEHEA2eCVaaz5CJ3bx	265500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7hv3Y5DiXFIIimmKMJq46R	325894	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0xxYsOg6JT60y3e9wbi9kp	268333	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2cE3kbnoI4mSZ1BLH0Balb	343636	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+15Nt8jvw0E7Y6OViIm1kjD	288000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2iGfzr1DsZqK9RCSAxbzHQ	299518	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+66mx3tFBCbHOViSRsVbZmK	284608	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5I2n4j3FefeB0Nue2J0s4K	115070	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0xv3PqPp3lla7vDpwTpr6Z	87500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6jISVUyiZakK1zuSNTe7e0	100000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4KnFejUymglPxJ7yZlYRbV	70500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5L9CYrzQsutbofTeniu4W6	160195	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6VWMCxM0wdexwUIYzDBMyh	227822	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4M90b1jkRPVC15qhD5VKah	137579	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7BDdvIcZKSuZ3AoYOXVOJp	150101	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5F6oUiWojvv5qpNzZFPC3q	320111	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1EWfAHZrKc2SuKqbp06muw	163500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+70ORnAr0pYDBKvkxnoolsm	186500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3EOxcl1eadjtwg1n58TrEH	82000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0lOStzEk1BXFn6o1SCr7wY	381068	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7cdmELYEknyXkoZq8mgdty	126464	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2UDAtv1fwerK95b3CQqHA9	164833	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6aYjVWuTtLWjRu1OYK9a6h	158562	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3W1oNTTjETCzptyc5iP5ki	125765	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+65tmpAKsuCYOhpBYLYZHDt	126464	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4I8Y39T32iDDWGhSEWFs6v	294000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4i577jyp1bXg12gAF4Mg30	558080	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3gvqBbEkkk17T97UOebSsx	175749	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3BqoaBliHSIYA4EyRLxa7m	168686	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0znCTHpzFLnXl9Hfp7tVFB	147899	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+04OdIDtRRpXAHkJowsF1Re	69546	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0iQItbK1hUFvgJaSk6uNgU	281845	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+06Tr2VmqhlMJAc6E7libJL	479251	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7GkNub10MVzM1ysLVZf7OR	116946	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0yZtoO8llnDXz2QTedZSsk	227946	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7FlRDE9qhcvesncA4qWsFg	118351	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1Ts1YTZh2HrTmZVbx4qhiv	202670	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0Jppd82sXhrSbydDsRvKSH	138987	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+75S4Q0SnSq6orodCoXE32c	145609	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0vz4brSCPvoWA0b3jWh5xj	270875	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3rtk3SSfAXfOveMPPf5J1M	135089	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1T9F15yizc32YMj7Rd2q0V	136347	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5qErjPja54sF4EZxqvnsrK	228461	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2QakTzwBTry6D6ObKWxVwS	129741	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0QFvkvB52XmRLWe0os70hw	285631	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2X1ogzkABCpeTa2qy3IG0H	163433	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3W0SdSvD8ehOQLEZJkHjh5	147586	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3rvBhLlrJzVKAWqPG5y70a	150395	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+040w7MTCZb7Ud5bo0ZL7XA	54671	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+77YVt4gNgd3oNTLlCw7oGt	45513	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7KsouUldp4qCWOWlFW9HT7	108204	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0NaNQ8r0WuNTK6s5DQGeSD	145303	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2zye5ScgSe491T8E4ZPRcK	138751	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4gx04oMGdFQ41EGM36ly9s	194363	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6yd5yLQ1fKaWb3U6PG1hMU	206414	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+243LgbILkTJoRCJQAHmPWR	146367	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6A3FgF2eEqNBAMFOTKAxkK	213149	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1u758r2sqCQbDNeqQ0Ct91	53218	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2kEzxW2HKPDzkmzTlgktLX	159895	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7beU7PMZKyL8bJfWKrUVlu	105647	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5gzI9WMkHE4jwJI2vZLCH1	148375	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6j6nwIKCl4Jicv73CRwAHO	231617	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2qjYmhYeJAJw3Rx7aqmLuF	255504	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+20u8HFazNSZ5hTjXqMyY32	108189	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2WhtSh0CmKyWTM19npzHB7	23368	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2SXaVxO8J73uHjW57npBsj	213697	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0iJO3jP4K2iwZRtsNY2gh9	66878	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4tOwmw1zKPu9jPW8D1jTss	64506	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4QK6mKBXyzBVqoUmfD2YhH	30813	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5efSm3NAa7np1Gok7oNOIJ	43453	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3nqpkUgha2SIi9mdNeI35w	279733	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0aOulfjkGS5TEBbaCmN944	92744	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4zoKpTOUzYGgt4pEl9MhfS	168880	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6y4tTd25LEJwtI3wfSMDj5	86000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6lnB5DfoquZaDqmPjCAesi	532554	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4FuTyiMYWcMKCKTOkHInsk	79253	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+11qlwfBz6NIzJeTrtIQCqY	168506	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4V5aq4VBc23yGTAaqHkVxo	351586	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2lqE0iXDUCnlbC4bUZynLt	458978	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0TwaRptdSGBLy6wbaawkQR	343357	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1h5OKxxyUK7Web53dWtFd6	113500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7nkIEYZpbLuPOSPTznivLV	231000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Qx9czG76YHA4WmfFZgi47	280841	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4oh18Bfxuyx2NuGbS4FQiC	116500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4diKec4eh8BP64NZENpGRt	318000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7g9HHCrYvn7SCi5UPyZrMC	318000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+52igd5vOcbtHn3aGMK8K7v	364000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+60j3lfEKHA6yG7rFo2y5Zq	160000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0nJCQMEVtNxkohdksjzW9I	197746	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+71L5uGMb8oxh924JzzUG2C	226977	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5dlUVNr9zTdAqeBUS8nSCD	171964	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4IrRGzuhvj1UTNS6wvjtVX	233090	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6NRZhDWN8PLWMYM11LtRN4	180976	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7qJnFC9MydWn4KDRNzCxJ1	210860	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2n8g0YQcefadMgnXfIdO0O	183666	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2kR0GwxPidZzdU8Czc8QNo	134765	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7keyhFB1T3ahpfLcPaIsn0	168124	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1Z3zK15JyZNvRCQyStyvY0	169534	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ukPi6zxzsdkG7A9x6nGUq	149615	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+30A2SBiJwMwpZ8x8c4W4yC	142080	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5l0xaT7PP55vkojzAdY9ly	195429	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3T32Z5UfTQ3ftnhRtQthdR	57836	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0CL6Nf1JvxFhyu70Oh52g2	335377	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+578aqzROKIODEJRESJRZgA	73491	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7JuBnFHdXYxqRCZqKT9TMe	37158	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1v1Zoah8lB8hdPfUzRK8Tz	103728	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+682cQGtCoUettdGEm2vify	184275	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7jp753OfRh450TlyBvWstD	132445	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3cy2u4XyEnCHAtrOM4SNGt	216470	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4bxvBtctUYeftsszMrmfDB	168636	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6PtKKQlgy5YbegDbHnYIcq	123778	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+15jSZmI45r9sKtlLBT7CuS	97018	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7jwfrWcN4PIyzCWtWx2XkN	149086	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7b792mYZlbPbTJvYYikgkO	258777	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4HrDYkdqbQuXdnZiIsgfow	220650	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+10i1EwkKZeCFxSUtuSuhHo	194007	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3EybMEgpICv1V6dp0JMWw9	240082	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5HcdHQV3VHt5HVdNS89j8N	352168	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0UO1X3frFCGvagLjwdorUv	140401	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+54uRme0z9huJCTPbLITLoq	255813	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+086ESPtMNwPfXnoEAMKHc5	295039	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3sHAtMCvXmK6Htiv2zC1Yz	192272	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3rezcFk3cHayyG7nYrUvL2	266763	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6AoxQjmdA3Ztf982qFAylM	216109	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0gEW4vy4NFXbiRocHl5pnv	293267	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+53anW5xXmSGLK06oPdq2yd	261731	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0fvj9nQ3EkK27EzyLOQrbi	172212	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0k6ejzVHkvre0DUZzFXK4l	149416	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7kSUdfKURQLz8xwv41m2l5	231297	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5k3c3ptrjpTRj8Z151ihj4	146967	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2HKVbRXgFsaZgdbKzgvESE	8592	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5qIQsStSQNA1fmyqqVMpEo	72049	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3sgK3pnNOlxqAJ5y7jd8hr	270571	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+46CHde4DPNVpytv0ywDp68	148573	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0RkRDZl99AICbMG645HSZB	152217	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1OEgyEOV1J3AR7bCdAjLU3	134881	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Mm26aL1NAwBFfCrpcYAEA	10776	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2mjrhKVzyR1pfmbpSL860n	166812	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0U8UdI7WvZL9E5sNPqqgfn	263158	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+21dCHXJkvLZaSyjBLd41uc	124975	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1JBMTM7BoF7nIshIjTjznx	254405	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1mLUHeVEeSoDTnVstqAxce	120690	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6MbtWdgSZymlu9FmBuiHJp	252929	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+17IdOpiujZsgZUwVmWzmAu	159729	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+51TZCgAPDWbi8HbmL9Bei6	122425	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1eiswnzU9C5Dv8mfdFCQ3n	64576	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5wrKXGwxB0ndi7N5TecJ3M	122789	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5eLPJob6m6RGdPSClfuWKF	117040	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5LARuBYgqANvTwqHJCmIvV	175565	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0vlYc7zbx4VBl3ewhHczQP	144183	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5ZepYdNQxawZyv6KEVFPwQ	123178	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4AL1UZlBeDJjXXN7640AjV	102466	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7tLxAS4BurDTroKVuNBmL3	162480	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1Ao4emjXQdvZL70ba3D0vz	129470	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2bgQQ1bsWVcYPJ9KqV29Oa	244744	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0rF6R1jbgeE6dYSdP9H9kj	135489	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4kbwFrzTQI0wCdNKsYrT4W	55549	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6BRq37qpsLqVXUKaUu1mwW	139494	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3MLMHjGEaYRp9ZWJHbSGiP	106407	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2rHFsx1jCzNfPeoXNWVZ7V	262172	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3HkDf0p56aFSBShIFgWeXB	3600000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6y8yYAzwAkPVdOz7MOI9hP	3600000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7hMFr4Yhppws2euRg9SrEu	3600000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7uIMJJ4jCI1sMfq0eXsuJm	3600000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ig8szw9VVBznrr9iwsM8C	3600000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4r74Ii07UBE0Jk0mWhmknb	153600	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1sF12TzdlQ3GQuK9EMArwh	207567	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1BhNAvC57fJmmEA9uJgjDm	218961	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7tUQ9hLcx2O1sRBhqcJQEA	181395	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+11qF4myql62OnRHFMsTkvS	133726	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0AxzxN8JMUgD3LnqvFvmpc	282500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+189h2oECMILKo9tbTzENq2	166419	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0054BXtp5iCuLYqPLCSond	137931	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4H2Xy1X4nYSwgbyg5Qa2BG	191052	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6DQeCW1yt2EBZyARfNIHRc	260930	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3yzBW35TIBeZBAuFoh637D	162650	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2V429l7dcv4Jy4TcVHbHFn	164651	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2NIztmIyQ5xzxe6JKzGJlI	106059	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3T3SyoiRBCsZi8mV8oc4No	158989	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1YShk2hXFGIBMGqAWgV0KZ	137142	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3SxFIYx5rR4Y50bJ2BaqOY	174154	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1b2L9hThm2P7soCsb4ttCi	226406	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2dPomDDLaf544AafPhWr0i	183750	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1KmpSFF2xeuMjEgWLH4Qv5	176697	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Em30BLcpMhtg7jT1e1Pzu	223648	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1um3OdvIwKBe1SwBm0ag2r	273281	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4EdGsJ7TPOb5zbwOcrZHf1	228000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3x1XQMjOBa0H5y4scQqrel	209361	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2wv93UzXoVi2P8Mkr359C6	160145	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+24eEMQMG5fFoEgQogaxb0x	134769	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1XYq3ZZi7ROt71IVHnxwJc	221132	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1C9062PR3kZZesFFHD73gO	204000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1WHkLaKmbC3FXwpda2Icmi	168633	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7LaFjqQ0NeA3HOUhF99YMP	145384	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0dPG4mpsugXUFQpfyihHVc	208281	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+60X0B9RFFO8zEoT3D4KU2T	156154	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+30ZPBhP3DsRihd1Atn23Tg	185316	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4scLj0EjyhTnvnjYrvWfpk	134225	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+22gpDC4dxjNRl3EeyZYlUc	121100	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+65KvMzBHM5zd3uFlFo2fvj	141905	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6xpARoXPLnZ57bWIN1Vru7	183692	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0ON725PsBFqhm7n1yGf5hF	137105	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0mpFZRvbbkB1yvcbVQ1WQ4	132110	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0XKbnCeydbaMXL49z0dHcv	145090	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2E4Loq45OtuogIFogzstOB	189090	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5q1RGTZQ1LJYz4fnkfybYK	125504	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+16aAZRtO0NdsAgBJVEkyzK	396330	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3mQRyL7bL5BXeR4qWM314M	149585	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4LXMj1GOkM2yY4Y0dxPFXw	173624	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+12K4zBTLTGTzzMqW9A4JFh	146705	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7yKjljabrZG7RvnOFpEbHm	134225	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5rhMLUxIEftnDuCP7nW2l2	264742	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1VWSou0IGleoxcbLIMcz1u	84581	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6KSRQFwpReEon3hnlav5yV	156305	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+58cNfq1ubccTmmdST691X5	143669	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0yhxVLzPjHkzUmMIkbbCc4	221132	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1LPgnqoMkRhcaaKrPkbYnO	177425	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Vcw1zvTdhFUZCn6QsgJNn	196216	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6GUFy8QS6gL1eLSVhTxZxi	156154	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+36a3fLnFgpMWvnIwQpIzKA	212631	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3xLviDdZpTUQdKSzhV1tIE	120465	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2hClP1ETnLQULdnZlW1gTv	137614	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7M4j2pQzwFD6msquCwBllk	127776	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+368hjOBzNWNmr4ZgEA4VGh	251231	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+21Z3wTQqVhBgkghSPxYxN3	255551	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+41C7LSPisnnuVCql6bAUMi	366623	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3sWb9gPZLcYXsfMQ7o9z74	182783	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1DhZG5U21IMGC6jhSwQcmD	79103	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1QSGVcOkUTrv1pJevP4nAx	88128	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1bsvgr5c9jRv4GqxrIecoH	117216	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5wABEEmDGwqDMwA8JPxpgB	142368	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6iN84jkT9CrTN4cK3s5VYo	219936	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+36x8Qsl5Df0zRYeA9jZ6QX	104543	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+13TZ3dzQO8OLZCkaw4ab8F	199583	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1cRDpCvmflkPD9a58GhoRB	142656	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4fblC994EdEyc6UPd4BU8o	134688	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Yjk2AT44xueN4SXaJMuyu	162143	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1mS4gJTnCnU8LED2gI5DGe	283776	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7sqHbLspnEpWTT6okAVXA9	85823	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1tdcpLttJt0sbuRRVJjVP1	269568	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3HWpOlxRTqAbsCTPjgV4V4	293760	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4tTDMfSZm26t7eiIibfVqO	147456	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1FlD0gwFXup1XJmZStCG1v	166271	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Sjtez8DSUqiaKLQKOcIM5	219456	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3MsIoiCPKAymXckyS7TxHe	152063	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+72XjQ538jg9097oHol5Q1z	186859	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7bUBpQvlSyaMmlDWeP83s8	209458	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3t6LeoOejnQORebZSIR5gC	250250	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1gF7pUZMASW6HJ3SdDvt0i	244500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4NUtGWlnDXM7jhCDWjVF9R	336000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Bj69cF1PZnIsj05vH5F7R	182187	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+43mGzFCHjyIP9bSXDSFr1j	298625	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+75kRMCPGvgo6PBXfo2Wtwj	127698	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2kdhbrAv2O4faJtzJy9kMd	98963	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5DgOWzNuMcWbLBhRPyxKyk	100809	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3xw6f22jliVhB7ZXr5fzJq	45905	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0O7ewl8w9YiaDgMfTvoBf3	164153	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4XJ9Dxum1YLTyHdx0OJo00	41424	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3r6bVZDbTLMMGY10R6PBGL	74222	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6dnK0B8iebd1Iq2MH6GzBb	82918	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1uvWeGWGnMhC1sTcA7hN6t	128882	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ipfMf3kchUEVOMq2OhByr	207296	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5lRFfiqn4dFgddMSfeSXgd	187280	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+34FaVQSei62Vy0Z0YtpfA4	168158	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6JS6nPfAjhA3DFjuEAVKWw	91219	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0xGRcEAtamiYEqJrIfTO8x	78854	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7jGuhs3rGTeABUXmCxfAGU	202779	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0Lfj09c1efh6KLjdGprBkn	132226	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7oEJR1hbXx7Yt3IWO8LQug	154563	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7i2J7uDtqTW7D0LoPmQSne	71041	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6f6OgZUbwkBny4AfoojHWM	137264	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3CD0Uz2t3lgmgrX6LbnSRM	137705	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5fdIabDGULHODTBGUm64Hr	250067	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7usV2ji4OpY1Kq3IDpI2ML	101308	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5OF7Jceb9HRYXYu80WyFGI	143011	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7GhlTfnmwbOmCVNcyNTGvx	171154	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6207SSFxykZsFCsBbzLGK2	163294	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3WZeUFH96PxPP0wsGNTzQ5	180871	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6aJZUjVgXUGAEFat1iHa6c	30988	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2PJCR5cE35Lrmvdnv7hUmS	49272	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3DjRgbSdju4oRcflLblX1w	170701	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0VIwfrxoeZ6Ku3LVZruNnQ	48994	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5I7MipSFIYjC6iL3ulMTPY	65573	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1JgCjS3GFyckOTduqNSxmC	76382	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2p1mQC9KhtVXnOocMXg67Z	110329	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1I5KPUi7S1LafM8aYEF1g1	141305	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2GIMdAzP8mUFxL9n8Vo7lu	128940	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2i61mAfdxgV2moNT9VGXCN	263859	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6dLtcAL69dk14AgIMMQ8CB	30243	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3llushqllZCOa60HgUpsLj	176216	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6VHBOo9ktBvJ0UNLlejhNw	92670	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5qQHRNW6v1jm20My3PC7gw	38301	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Eho8I9jgsA3aT9I0s9DI3	127315	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1xPA1JGvSy5XmSCoHvhDEF	212160	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+56LFgOpt0r3ijXVB1inW5R	274041	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6ZSEgiS2Z1FrjVh4TUAExm	110921	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1OnNQJdTCg82i8NpgkCMBG	55878	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+27Q1olxv0j9QfESwjkpz9q	211777	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3w6je66JBSr2maHRMogiUF	99718	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1vsuVYBiFERTAmRyDvbFwf	87376	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+563q7jfm28zBA03gtiQjEr	207714	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3RSZAOQSDjex05d5hjYUXn	296565	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7hjW2E6nUVTWb7Tq8cj8zd	65747	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1Tz57evNUmSoZMnQlsf8aC	96629	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3icC3bsolbkwKlEtV9GLib	249800	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4i1AVdZep9cd2AA8qzC0pE	52883	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6GGlxaZZkFOax5ig76EIQp	45952	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0c5Fr8DWh5iOjzJBIJFVZ8	39206	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1tKExcvmPnF6TjRewNVkcy	43374	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5wVbIPcNuJpEl82JGL6We1	67047	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+67LpQfYKWpqc1b99f3Jx1A	153832	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4CG17gBi0dZbKukvZCbA03	138576	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7pPPak4GgJkhIDEFF7VlOZ	30569	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+05TgiPu4RvqwlRklnOwVJz	64133	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7aCHR9SD86Xn63s2yHOqso	32275	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7kEj9inN9XoGT2HyOS7LK0	167659	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3n7TzrvqYqeV4YJGPI03KH	95677	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+18eDbWvyCBqzObvqyKsePZ	107450	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0fwvb4caU5h8LRSAQGCWkV	228205	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6mF7Vv75tqou8UDttQNHZA	111850	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+16q98nWjyw7o3vkc37VUaL	87666	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6jdV5KWX6LgqDMPTN3aThl	137624	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ev3yUE7QMeonW9PxZtLI3	182996	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1rKwc5kFwuAgpzGAmebs8w	208747	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1knixLXhaGbMvMw8oMpKtC	37430	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0opbYUjYJV2BPvm05rYd55	81223	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+20na7YUrqSkiESBAgBS9h3	182532	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6G1KAoMZgyOHgAVWgwMoZV	235357	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+041FStCGX4SzWPhX6NmalU	159648	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ZOH3hiTHJzXjLfeK7fUiq	236019	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6J09bqzaY0szagZX35nfEo	180419	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4WHNLVVAvJW45PMmYraUXI	178909	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4KdYbuIuUnh1ZLRwuTpkf6	187570	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5pd84I8xgcL8WRjFME7UuL	160020	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6Zo1CK3LlNicXnu9kZrPqK	111641	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1gDIyYZNWPzrTNOS6Qbz6A	178515	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3MVW3cKeTWJCJdeR20J8Rg	94458	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0almm8FHvCAUnQO3rUUomu	126130	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+19SUAAWBos0yk9NNCrkztv	110109	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4yJ3DwyinesvefgcFXGEQb	81026	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1XUeetP1iGBIfVf9rIBTQk	17380	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2q4a36NJ8qPPwSpc6LVZjz	40216	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+74amlmH4u1LaGnuwoBhEn4	161947	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3YLY18eU0MmZG3Gy2Ttyw4	36850	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5maShES6JsfLe6voc2PVME	69183	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0324EJGDPhDxfgvt5M0y9U	211916	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1kWu856w9bU8TLNvF6s7dq	81362	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1QHEOacI3eHZ9JQpj8yppP	34667	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7Hkrf1UygIqsU1TcUEBIgv	173046	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0hfALj8TJ6CNSDVAwCT85h	122903	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3s1kWexBlPilZXfOMyUMlV	205032	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+37z5o9bOsVLL5rESGvKpkl	158104	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3mcuYft2CSLIhSzEWmhsuw	116540	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6wCTgXb8Oc1et7WXIMmEIu	91138	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+35DvDdoR4BDdjgxGGz8MPk	89896	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ABDDTG9XmvKRBKLoLwnFA	139563	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0x7aPm1a20prWf6cw7dcsN	119756	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5aKVIGGGDeyPQiVJUTopFK	111107	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2RhVHH6nxJvyBBl6aiKvPV	263383	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1S0cet4GyCDINbh1y7jDjb	195558	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2sUFaFACUtMzJbSQg0aH4I	102852	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5vMZxpsCOGQNthF9G5ed35	55042	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1dagfZs3ze5Ff1kuMIcruq	90650	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3JdOHQr1dIxdw4MT6ox8Mt	187686	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2wfpiZSzrTZ4fNbNUFUPRX	185132	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1knhupaBUPfq32BiYAzyoz	27353	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4UZuSZ4rseZ7pHIiGrdV9m	52430	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0osPw6hitz3yMQzjIFMYbT	101819	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0pjXHmPuK8cPpxCscl9Rfi	17264	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4nYdUPS242KlU2A0RmZCkc	115739	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2GgVr6hZOLo1qneiz9Zbvr	180871	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7n1smAMEQ7N6UA1Zvk8u4O	74698	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4XFfvt6acwCyyOILVVFCjv	214761	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6GBkkPBdl0yP3w21iq7g8z	131099	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6i593tmKpCtaCceWSJlXBW	171758	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6LFfrmDhQ4cfKExcDMZ5C8	178015	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1NulL8QwzSnYu8f62xJjZ7	48494	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0dRNo8EZTdjTijQ5Hdp7xC	257660	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7FgswedC046OtKtmisMbw2	254920	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Y323PslGdaGUAofwrjQlE	258484	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6HgyYhLaf5Z54bEpIXlHGj	160310	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0ETFk8G0cKfpqz70P5vCJT	253132	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+25eSTAdnqndwpcrYfNkh8y	131285	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3n0ZLIXhWejaLVsiZTMvwW	91579	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6HuZ39Cac7lRQ1Q9fYGG9Q	117156	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2ASjtCbbRTHFy4l67eAli3	118108	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6LsIvfxhpn9P9B4UIxUUwv	128243	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0HLj7g4ciFf1GbeBo3Omtw	106498	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6sKPyucPli3wUVzGs9U3xl	271568	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+15g58prLgt5LLO2a7NdjYl	282528	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3zt0D3DZ0y6tWWKM4QF6H5	175856	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4SuwziQa7cZLi5p8IoGE4t	123100	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+37K29QTup2sTtgodIeKXgo	147980	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+63rUclCeW4FvNjDpAP6Nwu	169157	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0NQyZmZLl9eopRLdlGw5UR	126258	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2FaqWhV3cJpjTLdbN8X7AS	112163	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6PAROKemgazh6DIzkf2fxj	148944	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2JsAPPUKggcNQMkif6XL1K	160031	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+26Z6iRXTDwajOXxFsYXPGv	142187	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+05N8aw8bZfMTS3WzZ4bixm	181104	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7E2ZK94va2MiGA3dYL8sQn	167857	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5DunxiD9Rto94IeCOUM1Hj	136614	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0RK4moyvJ4l1D5S3BP1IDQ	149037	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+38qD6nITRmrc6NRsfKWvx4	110770	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4B0PTtEQ13NfSqmHl1Vpj8	133050	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0w0HjQZAm5mzxY4WbpPgSE	218790	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6ZEuUNGbyyib6LG7EjWeHY	245945	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6HsJ31LPU5zxVOggxqhAir	55751	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3wqdPu9hEwezf89Gp2WLtg	247965	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7p9XFlgAOsE7YuXlej0OOc	119060	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+703SXlBz9lviNflkvgO08L	114207	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4pjmn2HsqYoGL2j5LJvyBO	162539	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+54G17uUmjx4MhRlCKOtXRc	238875	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6J2Dz1Np64x3UyzckZdxHF	159207	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0ExaW1nY9aYeLHyS9eXx5n	217930	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4TCK43hjp9Ijgkq7OFkKQC	57620	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+36AklaO4VSMmhWQ9KCqJkk	64458	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6vxKR00NLUdKAlCLuJgHqA	118944	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2dm98oTiHoynUe4DMLU8X6	240152	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5AP53gkYtAdjgOj8oH3f0x	238910	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+08r95XHZ0ct3SaVduqz3zb	132516	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3dle9W8CEExmd2lsY6TR5n	240175	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4GLZVONeKNVvnvjEiz0BF6	52070	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1A5hAW62Nj5ZUF0L7IO8Ln	145809	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1TUtiNBBezQf1zXu46s18O	199993	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3v2VKWbR9voREcRt9Fqfox	179083	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3G9uLEFjjbmwO9DbPfejJR	125968	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3ewWMFtPaaPzZma40EOhLq	126061	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7iFO0QFlfrKM3h6kQCnHkT	128058	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4qE6Fu7JjJXGHMFzWJhfIk	149257	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0FDgvgUZXHhKFZiRH1ihtq	246131	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4eMIz3gLo9LtmUpq1RXxJG	322824	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1zsqPBZwLtQjpBKRDreaES	311907	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+34sVl5vSosfZGoB6oxqH0k	18993	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1UDD1EvyURrlUpJ0l0MpC0	175380	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+52XQaO74fhK1n31FwtgSQI	315364	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+653DAxtlrCU1dRyQH9AzEe	294931	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+232ivD2oMy3DOnZovnw3qO	164687	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+78wDurP3Ra7W3V3H1muHzr	148305	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3oDrey9ezPqyMLHMNuUMqc	300280	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0USuq4qrjc1hG8s4MKEdQT	158429	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0Ks0BMUzsxspaa7Hi2MWJm	77717	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4kaRhj4s0cL9QMuWMnr9TF	289378	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3b6tUfOp3HluBNhfGX56Fi	269537	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7AIBHfEfhcJYpUC0Yjghhu	129462	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5vAC9L0UKPCrgLDisBsG0o	289866	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6NkipCKSxvv8jF629YTxqm	42051	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4wM30s3aFRs74HXDPsTrvK	196127	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Z1xAYqW6fLQDJMRiNPMLI	197381	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3m2UeTZ3RdjEXyPsE7Vgef	223515	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6MpKkmSKH6gtjQ9QVpaOHd	63262	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4DW28TSvL1i5aFMTyRTDcC	306164	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5msbbm7C5WDXFMav1g31OW	127256	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1TcoJhAbbcOpkSQ1e02H7L	195860	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6sUywELvx40XgQ2AuhTKs9	87701	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6CIAR8WFfD1u87bCG6tSE4	92740	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3N0GAXalg94mXTb3oBGJJm	179989	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5f6AxgyUXo7JaVXhS0QPWu	57504	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7pOAfsxo6wtrAFWHtKHd99	161065	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6V76dKzBJoLCjS2jsaoyVS	370393	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4tgs0T07el7F67L4LRWZAG	264417	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6T6GnHsguNAR9jlQjlFE0D	117016	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2UOpQTKKKXJ63Hop2FeCOM	154935	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5pgYmhU2FBMOayez7n0uD6	125167	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1NPGJ8CZUiOLqJswYkaFo9	219602	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1lTlumdUl08GEhIfllOWu0	245910	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Jk2av353JbslD7KqKaVbd	10727	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6b4RB4jt0E34lyXW9jasf5	71993	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0oBagSqI2HcxCkQAdxdb8M	112709	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1vvkJbB80t7BxatyZhRYYJ	69323	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3yM9Pn4ykYHXWG32gPnnZu	126815	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3wDZW2fIw7toqPrsAwCQ92	93947	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1WfgqyxQdluytvy8Y7jMxy	125213	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0sHiN5ZLTs2yyqD545rZqt	60000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0a8iIILb77m5tMGThMzkhI	195581	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4OZWb6OoDsQNhD8K2OXM5o	146204	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6wTut3FKjtYmHz3d64k6Xv	22848	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5avHrB71NOXccyTzrh861g	40193	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1TiXHZd3Qp31VtsQRzoJ89	131622	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4qWj5TKo1QnM6Qh8lhp8Sf	143185	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7tdJdiN8fw3eklhlF7RiW7	40553	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4dwnx8gvzYs32qHVzhTGap	139064	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2q9LvgQ2nHVSweCaNEhzHS	130093	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1OzrwLdorY1TQrQy84nowy	95457	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1iMqqD20o5wyGWpWoiEash	122678	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0St7E4iM8H64ekZ6UmChj9	68093	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1CYlYDClzamvmFo6zybOrN	57225	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3ZxPof58GgsIdv2XixhV0b	118130	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0McgZyXshHVx82hz196iyZ	120314	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6fdI6FqHyp2PTGjro3PD3g	138170	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7axhiwcoVe8gI1iLRwvxi3	129985	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0Zq5qzgidyCc8sVC4aaYEy	64261	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0lcEftBk6dm6geqhNXAfkM	91556	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6LIEdjYARpTj5cbN9nOFQB	117504	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4b1HvnbWEfgOflyzGjrSem	84427	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1iHQw8DOGlQgYxtlLubnL5	63889	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5SeYwz2zbY36x0jjiTrvMA	199157	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4nBfaOK1fM5z2UB78zetmG	95991	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4aPOMLl24JwkJfhJxA3Aj1	125898	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2781ynyWx4jUAPyBrLuOxW	142500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6Vudy6GV9iSifhNPhhOgvl	146263	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0ekIdXvgWZnY1KBRTff8Bq	71354	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0VC5hcjzkJ1ReqBg6KPzcd	41923	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5d7bhg5KKkxPT4t8llMxtX	43131	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2HF6AhQwOtNvkvPOZt3gPX	50062	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5yH0s3ORfnOJZrtDhfc52h	129219	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0ims0dIpbSTHYtuoyYGyhd	140202	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6AVt3W425J0vJ8lGMEGXyL	63854	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6lM8WBdZLs4ggbhOToSCMe	59849	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+79o3LwO37fZ3g6K2yB9dcf	130031	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5d4WyeFBbdYlUg7bM7P6kK	63042	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3ooWCsWtUiXBp7tTGqZ3Q3	59385	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Dh0Jl9BlJjVL5f9qMF7Z4	120963	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2LEKzA42lVkDjjpZs7ORh5	53487	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2bcqWiMvAiCXmbAEAm1qb7	113324	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Rlc1f6ZiMK2K6vINXQo0i	151290	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0kJvhSa19cfsFKprRrcim8	67720	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+62fgbY8PSqllvhevwaN8tw	87492	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7rQ5YN7XzQJrUVooiAWsrN	8858	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5OwV3o2mm0nLPoGUSO1KJ3	48634	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1x7V1T1KHAjYWyfypscgGT	58862	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4sgCa4FyIIPaUael8X4i1R	170411	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6gJAkiJfQJqYMT7ORqj6WG	97628	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3neeEFo2LTPMXRIoqgc0pw	63566	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1gPTX0BO4JhHP9wYnVEX00	98075	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2pGTiiNGbjWCavB3HTFhEK	241879	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0UhdPtGwFQsCuD9chZTvLC	172446	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6BNjkih877Lxv41IwewdTJ	61008	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+31NHnaU5U3Q4sVIiPIEQAP	244571	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2lplK7Kx3bD48QNjOmuiJs	120669	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5ZaGNlM0yjYoJm9f8atfHa	234954	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4ot1uGbozTM09eculubfhd	240500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7bjqP2SYVHd6yn3yTsSgBM	133656	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+07F7hNz7H6UakKDXGXP1Sh	234883	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+45B4qFSGKFLrx1ICWouXiE	136973	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3k1aMiTN6wP3r4Sz5a5Kbe	94158	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5DkrrQP0wPtimFrQBF6mlr	235057	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4qixLECml9xoJvLEBtY5tB	234883	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4uTdMLEcpn3Ho55bNTOMAY	235057	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7b0jP83CzBCZB5m0vcjAXE	240004	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3jqBUNAO36Z0zvFsvnylza	235057	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0lgDP3eefZqUqomq6iqrTi	232806	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4eG5ETgSq1qI7VHTQY0NBW	235057	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4k4x9GOshjcrbQRw8pDNMl	142299	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6QLCbo64WdRpXtmxscK6BO	235057	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6BWHCXySgIugP2vuVJxm5Z	254620	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6Yaed4lchBAPur94Mpssc6	140691	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1nuvECVFvp9Itlex0u0Gz2	60772	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3c0CQ75g24yBXDTTfrwyaz	107336	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1qCETTQ8PXZBIzVlykH8U7	136084	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5abFy8EHWbmaLmAwWe3nYK	93340	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3xVpjfn74yl1pJtfDxOZ0p	238406	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3u3YnBu9SRmQjzfyJqwYS5	65209	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6Lzplga5ewOuQGlCYJpAFm	84075	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6Wp5CN6gr8DrWhYPahK8Y2	79526	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4xTkSwQfNmAYpWIYvgC2f8	98406	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1GwvGRQLdkFmKISvCepNuZ	117669	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5zr7qZM2OmRQPq46whiCaV	253444	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3lsgr9MEObZRkzQAiuMD2F	13339	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0WksaOVt1Oj7CbwuKlgnIW	255278	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6CJW4O657YkQW7qg4SGhDT	333075	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2DknZGHffTxXZDVpXB5jRo	113063	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+75Sv5cUOTBhZMRJirD1uLH	171870	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1yOJ2QCncXvrrap2JpI2QS	287299	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6w9NmlZNZ1wtzKM9bBq0K9	142790	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1dA3rcaivSOvmVUaDE0YQQ	125320	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0tHCeyDGd5Z6gEAdEx8vef	44080	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2Uk00gr1Im3Xop1GrKIeoh	141620	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1VdkFZHSzm6qz6PVs79WKz	122133	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+66OUaBy1aEWi4rWGmHOA9l	140446	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0sA0B18O9cQ3gXbzPdDhUb	146005	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2tEXHQ9CEcieLriol5cbcM	263485	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+05WNeKRu8Ir5pa5a2mrD5G	251368	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4qiXdF69Y5DM4XS6W4UQdm	360084	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3RK0NXbnlSY09hPKiyJgBD	238045	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4MzHXKHdBy3ew0IVCdzHOH	130075	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0pmrI8alWHXbqjwqondkIv	59165	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6gyn2lODiu5XZN71mVpDLp	322666	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2vkZ1QDTM38E7AmTlOsKpA	260888	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1Xz0CzorTSq3qi9Cd2V9vG	233684	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6PQ1pUZT2FxCiTek9FrYzA	258461	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5gAKSbw72Ua4Q2Gb8QI9zk	255999	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4zzOy9ZEzF5sMYcI9XGplB	256711	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+78BgcWj4GV5fiJ4vo9SuvN	252342	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4mKZ0JLy9AQT49Z26Re0yh	293503	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5tG1VvvMKWWHSJn5QnnO6R	281263	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3zTHG1p8gE7xtkE79oyqSj	216000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1XILslGSGQ2GUEPkOjpskg	85130	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0BM9qaoVB0oS6rZN31mH1E	163867	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4RWea7piMzEYikwUiU4fJH	172493	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4HURzao7L2SZuTvcIZrMsa	144000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+72l1PynHR2ENnzIMTbH8oe	169484	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6yaWed2W35KQ0X1ArIaLYy	96204	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+45nCzlFln75FGxTohX0cC9	90000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7tCCHHynT3ASRuxXtr3rC2	143566	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7AwZP0BiGHW2lI7UB9FGQn	109189	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1yppcb9HpjUusppXSOd3rY	176791	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5tXiVipttS3wyZvIyI6SC4	88882	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3lxgEk7E8zRlN9EWTwcMCo	137884	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4nNMwl78m530jMILOc0zo0	102245	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1Y0C0w5EhoFe5ZPQCequX2	115213	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2z8tig91wLUJBK5PY5q8bp	130820	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2zSy7u9e7m0HJbYRSEHYzT	108598	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4TT0lF6Jjcw8pSWkEghqCe	97628	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4IDAJVQxg5xIyEoYEnc1Zg	117736	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1m6VQ5fLzALdiunA9dEjiy	163459	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5CYNqn6juNPpTgiSqwoBQL	121900	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0iVbNHkqzLgBmPGIFDbENN	120000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1ATJtLsZeqc3vbqTBplmh2	202821	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5DarQWLx7vWkwyywgCtyr0	102898	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6h7YTHJEiWk10msPnratcM	111057	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3ofiKxGzCagG1iHT35NFgF	116130	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+293tFNjnl7uylo08lDs4Oe	153598	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4NwjInwPWkwI6FV0c7vxzG	134298	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1G9PClf0oqImMlZXcDwxHC	168943	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+324IGXHu6QfeQiDI2G7wGV	294714	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3YIM8TeIARolknmiqHcBRS	382069	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0e9CN8nVGty14WQWf4HeNH	84076	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6XoH8BoQX7Mynrg48Bo6C4	219584	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+13qiG1BgF8CM7LWUw69DGn	130319	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1A58UbGj6SWsVFddqzrXRV	123851	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3iKraOeMlGI3REfNIEGhks	114336	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4tcAkBOE08YVDHHhK53uNu	122884	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4gxAlCYWrDNxsWROBveEAC	144006	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3lmwKQim5iVVgDcwt2VdDB	139369	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3ipA3QkSGXz2roOd0ngnMN	130472	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+767cRwiXc2NrbdWT5oTti7	130979	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1PzSONwVDZ3FvnKJnULAck	127312	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7tnhw5KnHp5EgQVdSIBa91	136005	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4rGAOcuDwLEj3tgeeTGmeb	260122	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Y5Bf7cxrleQ7MNQ6Tfbkn	110614	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+325VZ4SyxU618MvvXceBTI	162466	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0eUsTXXOOiVylMT0eoA0WU	111364	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7JhFYGk2I7nrGlIR20DOsx	144670	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2j6KdOHrJvfVd9MOk2Lllw	186690	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4YOo9X8WjPT4qW8zjsM3c6	105918	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2BD0RiMzBjghBz33j4bKzP	62468	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6GazaFQmj9J5z9KI3KH2F3	169050	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3SJoeZahvoWE1vln3VyCtN	124519	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4oEvGXkOSOjEfeT4jX8Vhh	153836	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+16OH07xhnULo4E5uBDqFBc	237852	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6V2sruks7sEffukVvKG2KA	131283	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0GITQKfGPxuwkY8eHefr3o	128175	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4ezO4hbzzsjLrRv2zNa1MD	126588	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4FehhaZpxAY2Pw38KYovFB	127717	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5knRJt6kSPPxRU7CZ0fKTS	122888	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+07lo08CWOwChTlcBkDCR1q	113435	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7d6wZVzj5hsy97QsaM3NJP	118230	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7niJWCDdeQ7u4oqR8dG0ZA	132749	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+18qaG3no01ll19irSM1Bsv	124176	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3o7Evqca83tQfASPJdX76O	139876	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5aNp7JW1nCP2uthZUBYvi4	73586	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5aH20a1QydxCHCMoRmaAT6	84747	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0PQ3RuioROAncgx2G82Xib	58343	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5YIGWsFskGoLlJAovrmq1C	202200	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2r80R1DF9mTHaWrXwuea66	67819	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5aD91nFs1WzwIZFy8SsyPH	200000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0qkzjdA2Kyz6NmBpscOBDT	91500	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5m71IdnOuNLoLH4KJ31BRG	294290	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5TCAvR7u4l0kaaADvCpBYo	260899	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6golYlijOPYZK6FjO4JVT2	125825	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0A3LgQ48zVQccLxci0VpQw	133000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0mD6uTdPSQZZxuqVeFNLAt	136794	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6n2FNff2yG79vQgOOWljUl	183438	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1iYpjTr40oKkCGNrDJIxvg	216215	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0yM1P7cT9KUDcfx2jCHGOJ	212000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+41QEuNYFT4sJBueXNBSatG	229208	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2ZJwmN5cfttJnp2N8A52Zr	241841	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0VEqzHrLrUO1zpnqdbLya1	190000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0NAOwMbLzhDmNmPfd37pPK	200000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3S9XpZZVJbpT7xgumBM69C	208586	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Kuvdg3NTpfGc3n9HJCRF2	137160	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5X1pPRw0qpDpbOxhehr1Vk	61269	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+22In4i2n0Cpl78pQtYfVcz	98113	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1bio3cASmjodnLKC3Oqqnn	253000	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+71drhNfdFWdlsqmY9ce86K	189506	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0gUekefwAHZTTRJ3xetDPr	101328	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+46lADqxb6Mk9CaqDEafGJv	148490	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2mb3g03ImbLY7I74CGPd2x	136202	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3mLkMjmTJyxSkJ4OUU99SX	129044	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3PXSamiUWzLzPbl0oCF2KV	157110	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+25zkoEClJtyUOy0fGrZJLa	212339	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0MqleEpEiQvNmNc5vyL9Fy	186888	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2M2cBbtr9bzljiPq1qhyB7	172968	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3k17XgvzsnWsXgYm6xKGnP	158562	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+40F55sn5DyoaWtq3rRxzo6	164833	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0AKFiU4b1BOCVwVdMzEWui	88255	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2AQTz7Ok566behWaunl3uL	146523	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5wJhqO2ckhWTeATsyn9nHc	90389	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6RkLjf8miux6hhYyE1b5ON	126463	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2Z4gB9gPcNlj5OlkN6k8jB	125719	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1mP4ffsleV5eqLr4LNKqEC	230374	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4cAFbtXNHkMsQIYk8S0b1J	95674	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+08CedcVhQGUqQOI6YHY7CV	183414	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5qsra2PWuFlqumhBAOm2pA	189765	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4B3HVJFA02DTQRGyRcxr6W	166429	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3skQgz7ELec52sAB2Rn16r	28792	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4NjjlhQ1AAaj9sjZZETTyJ	108611	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2gBghzXLJR4pAAWNpUGQCs	146947	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6NFMvE1dQMfLWeLDwUlIyR	7836	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+79HEd04WhT8D1CjEN4jmng	49388	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4gRhKZIeB1GwInelCSpJ86	173093	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6emHCYP2hxCw6IUGrc7KUS	103781	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2NNVzLVjYLnJH5Df4lueNd	222923	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+62drmjuMMqbjAMwKhqeOIX	148050	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+239QlgTTDTlQpFIwfU1ltZ	329003	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0XnXmLRUmTJ1JyIhdSvZeN	26819	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5IhgoywzS4lyr7tTx9Sw5U	226937	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2JjtC40Q1zMSUnyCcsH8eR	284608	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2tRB63uYSfRbdBgS7Q3jj4	226554	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+27Wfzv118Imp5ztKEJB6Uu	208563	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5qDjU6ivOT99Ad5NMrzW6A	238448	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4EXft3KiwhzjRsuXubBZUE	185785	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7DoOmByYWvaTpeR7VZzoWF	167095	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7MDflWph09nBoacDzD9q7G	283250	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1BJxSCXxGJifN4CbiVZXjL	216051	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5xdQCRPWb2EB9D18jJOC3f	203065	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1PONcD1cpi76bapNEWOq6Y	302692	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5eaPLKkY0032r9fYyp4JfY	189729	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0yDDOPmhp8hx51T1kWRw9j	263771	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0PDP0BsFshGnMuU2YiIlAu	170458	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3LpNEMjtZEmG3vxlslb91i	162957	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5AE0vBly9SdMBneiUMRzak	135337	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3d7sZJznvY1rL8vyiPtiXB	117957	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1h9CRv0fYPQAdBUWMeHkjd	95910	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4c3yMMpqMaUBeQsqGOhh3P	89350	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+759lu0lhxy5VZqEzd9E3Ad	127407	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0U080uBMdSgfNNrCTwxOmO	114764	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+38sjvxoKdWTQS7TVVlkHAR	129845	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3xGBjmEPdDjxQWtvbcZYx3	85333	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1eO0zYVw0zjH966VoSbD4B	139760	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4pJC5enTxkBfMEVPY0bz9P	64504	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0CaRNZAUaQgH1mFaCQodtw	81327	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5wYteo88RzfLwO52k3qd0z	69903	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2y6my5P3IFUl04LyuK4nQD	69601	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5bd6FEOgKInpF5gDJrN5fS	99857	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+47A81BZqxiNSBFOSsV8VF9	218128	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5lNG8gemaUk9mrXGpDyFD2	104153	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6wqJd0Vlm7OzSkKuDOY7eP	163224	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5Rjf2PauEJ9dTo3yAZCIpr	48889	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3PrvXgVqsi8bhH9iW10dwt	206367	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0VYOtyzHfgEaSHId21X5rl	151243	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5Xlj3Bh6Pn2qtTb3qJ3gWj	285257	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4KeJ740D2Xj2hTqCCKm205	112291	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4GGOHmwP9lhldQEr5DimwA	210082	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4DE7d9UDvwD6nonoGI7Zj3	353684	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0a8s43up3xKwBeFqm3cJDh	156015	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6BRxTlhpwYS6u22pgY6wXN	121695	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2g7AxIQLgLysx3QbSthrp0	73108	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6ltYDdnM7YUNDG07SaC2IX	253596	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6X3b7Jnhpv8bPFgEMx1mUv	303368	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0aIQ3aWWb2FHioLjdEkaX3	153797	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2LNESqEXHrdOxuWTKtuzk8	30344	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6YctGsOHPiEkabOaKz4fIS	143986	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4YbqblnfmCb2DVCKk2sNSz	104965	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0kMV2tTDvn0eKinw4udxgx	59547	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6Ng8UShJdkEzhII1pTYNzQ	119965	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3fcSMLHeJUh31B9OB2KJA4	65468	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+72SX25wicwnZ3AkGtQxDDi	160031	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1SqwxHhMx4s3Kw74XfIdRL	139354	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1bondNVC36sVyfuq7uvAvX	110016	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5mcUhHQB3YAcfVFll7jgHD	64330	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5OkvLhjiOg7ieAEPKBeuDs	121637	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1d2bIF0KwztrwdVPmvC3gq	73015	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+1scYQnu0z3EbyWjMT080qa	253167	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7b86sH1mYPldZY5tVblZjP	303333	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0qRdZlOP17c5a4cVl4yJ5U	153797	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5GJ3llitjVokHPNm2cRlRa	30521	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7jiKSQL15DXWInioCDh8d5	143975	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3dvvNMAWMQhuqRmG0k37Io	104826	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7fhPHRTdeWrziHJ4ORU9Hk	59385	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7AutdGSfrQ37azkcsFvKhD	119977	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+47SkcvGw56QnLxDLgkXsNo	65399	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7HR9anAxSbxFkn5F1C1ilz	109876	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+5GVkXUjLlOmuZ0PsjiTk9N	64400	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0yCSmje8iLW9p48WKzdRzN	88967	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2ThQygloa6UpNqEZ8xx5qN	65236	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+70xWRZMscrGqBAUIk6UckQ	184134	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3iv8CNDBQ2OSY0ABQ4oP12	94644	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3YJ418aCklqRpAWeHaEsOj	87051	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+343kH1ZsiKq2gB0TlYNcfz	107728	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+42XrxHbpF2xNhQNTH8ctoE	159799	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+30uUAqlMhzd9dDJfdbHsdv	154052	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3CqFrzIJGfQIPAqi1oAoLC	51954	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2XwALLqfdASwEnu9fjaVsT	129671	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4QsugRxJ2WE37hDvr7AdRZ	38185	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7LfjUVIlT9goFZxl708V2o	130020	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4Xm4yHC49RZw7uXDqUucUk	87992	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0AaMc6mHRzdR3gMd8Vza7v	61834	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+2DkwFVFGqcSi30oLbtz2ee	176460	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7iAHu5vA2VW3TgWHlXoVz2	92554	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+37s50z1LArUugAU3nroyuI	83905	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+7HJbUVZtyS1QNW2ZkvKKuH	99950	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+0WMMM8CE02YzEexQVl9eiM	157849	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Gsn41fyBtiVVoy3R2yUfD	152021	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+07KQUYGE8Oq4oWEOf4zBPB	49365	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+4a2z8ZflXJIKfmwqLHoLHz	127918	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6uoU9xMvoxocW4towb3ZCb	36327	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+6DG4H56cdD1vNDYKJ066MN	128267	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+3Ki0L7inf5coIOy5Fuqh7R	197674	2024-10-02 21:47:39.727	2024-10-02 21:47:39.727	f	7641	cm1seco1p0001bzhmfgwsozkl	0	0
+\.
+
+
+ALTER TABLE public.tracks ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: users_in_fissas; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.users_in_fissas DISABLE TRIGGER ALL;
+
+COPY public.users_in_fissas (created_at, pin, user_id, points) FROM stdin;
+2025-05-10 06:10:07.448	6252	cmahtc53w00017fwarpw7mxc9	53
+2026-03-17 16:23:50.189	1611	cm9fs51eu0001goxqqc1x6tzo	50
+2025-08-31 18:53:34.978	3823	cmf01ob9d000110v6v6yfa6pm	50
+2026-03-29 12:12:53.592	5113	clp0emue20001le09pebg876d	71
+2025-10-18 12:55:01.468	7722	cmgw0ipzy000113mffohgz27r	71
+2025-03-27 20:36:10.291	7022	cm8rcedhq0001qe7utz99eb2h	62
+2024-09-25 20:44:49.179	5419	clqwmywel001fjv08mbvg0uer	51
+2024-08-22 19:07:42.103	5864	cm05nlyhs0001sqq5dx5ydp7n	50
+2026-04-02 09:26:12.746	8925	clro3j1yb0001jt08e8ewtwqq	83
+2026-03-29 12:12:20.641	5113	clpuwqgco0001if08r20h71hb	171
+2024-06-25 09:25:04.249	7813	clxu75qzg000a55znb1f06owk	50
+2025-08-22 16:52:52.397	6027	cmen283bm0001xgz0ok3xmw2g	50
+2024-06-07 10:19:33.441	0511	clx12i3170001l508p84t0vow	50
+2025-10-18 12:59:14.236	7722	cmgwaafni000swattya3y3man	75
+2026-04-11 09:02:30.811	8178	clp0emue20001le09pebg876d	92
+2025-10-18 15:33:20.357	7722	cmgwfsjv70002quvupeltt1y5	50
+\.
+
+
+ALTER TABLE public.users_in_fissas ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: verification_tokens; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.verification_tokens DISABLE TRIGGER ALL;
+
+COPY public.verification_tokens (identifier, token, expires) FROM stdin;
+\.
+
+
+ALTER TABLE public.verification_tokens ENABLE TRIGGER ALL;
+
+--
+-- Data for Name: votes; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+ALTER TABLE public.votes DISABLE TRIGGER ALL;
+
+COPY public.votes (vote, user_id, track_id, pin) FROM stdin;
+1	clpuwqgco0001if08r20h71hb	5WEF0icHWmAZBBMglBd599	5113
+1	clpuwqgco0001if08r20h71hb	6iOndD4OFo7GkaDypWQIou	5113
+1	clpuwqgco0001if08r20h71hb	56y1jOTK0XSvJzVv9vHQBK	5113
+1	clpuwqgco0001if08r20h71hb	2g4FmxUiMLF4glwodK3l2W	5113
+1	cm9fs51eu0001goxqqc1x6tzo	4s7tmS4FS4vzkg8Ieyuzp8	1611
+1	cm9fs51eu0001goxqqc1x6tzo	3Veqbiz7pMTDrnpqXcCBJb	1611
+1	cm9fs51eu0001goxqqc1x6tzo	4o9FXLyDxILghCSs0b75uG	1611
+1	clpuwqgco0001if08r20h71hb	7Kmfjms3yyhg2y56mN7EfZ	5113
+1	clpuwqgco0001if08r20h71hb	4SJHHpKhcuXwDsCsPqshXj	5113
+1	clxu75qzg000a55znb1f06owk	3NlAkVIhq67sFHkBkc0qZc	7813
+-1	clxu75qzg000a55znb1f06owk	0aUtDDfbI5EKUJDaUKRM9B	7813
+1	clpuwqgco0001if08r20h71hb	7HXBG0W8gFJwHUh5mVF9tf	5113
+1	clpuwqgco0001if08r20h71hb	6IfMD01z39P15HKezjdaMP	5113
+1	clpuwqgco0001if08r20h71hb	1rOQocblOsHSzOCZHbNVrQ	5113
+1	clpuwqgco0001if08r20h71hb	7FbaWIOO2WojXWw2DUyEVv	5113
+1	clpuwqgco0001if08r20h71hb	39L3LdlHS3gqB62HPWaJRg	5113
+1	clpuwqgco0001if08r20h71hb	2O3V4meZv0bEc1LPITGvcC	5113
+1	clpuwqgco0001if08r20h71hb	5LZge9AQz2EbJP6w8vrftT	5113
+1	clpuwqgco0001if08r20h71hb	2I3mB6MArFfznFT4pyY0ie	5113
+1	clpuwqgco0001if08r20h71hb	5ao2Yb1Ec7YbY1gHqtZAV5	5113
+1	clpuwqgco0001if08r20h71hb	6ZNf63s84LCpLmURqkIaNO	5113
+1	clpuwqgco0001if08r20h71hb	2dl5K2ScW7jYhAhuem06cm	5113
+1	clpuwqgco0001if08r20h71hb	4jRxEVNituPZObHbCSBZL3	5113
+1	clpuwqgco0001if08r20h71hb	4cyYC67XY3weSVmSLdKLP8	5113
+1	cmgw0ipzy000113mffohgz27r	3vQ4T78TTMOjQXGfXVKQJo	7722
+1	cmgw0ipzy000113mffohgz27r	5TRPicyLGbAF2LGBFbHGvO	7722
+1	cmgw0ipzy000113mffohgz27r	7p4vHnYXkxlzvfePJVpcTr	7722
+1	cm05nlyhs0001sqq5dx5ydp7n	1tz0fxahl3Elne3r0sVwzu	5864
+1	cm05nlyhs0001sqq5dx5ydp7n	6nzgKaMuOwI7ZnnNbKRjuE	5864
+-1	clqwmywel001fjv08mbvg0uer	3CmEeNWeRSjGImTGzEiWCQ	5419
+1	clqwmywel001fjv08mbvg0uer	04tpKv1GqwDXC4d7C8mukM	5419
+1	cmgw0ipzy000113mffohgz27r	5JVbvCHX10U2pLa5DEqGav	7722
+1	cmgw0ipzy000113mffohgz27r	3DK6m7It6Pw857FcQftMds	7722
+1	cmgw0ipzy000113mffohgz27r	69uxyAqqPIsUyTO8txoP2M	7722
+1	cmgw0ipzy000113mffohgz27r	3Fc7k96EGOGiJBMZUxbpq7	7722
+1	cmgw0ipzy000113mffohgz27r	5DezAsjtSLUxW9j00eh0Ia	7722
+1	cmgw0ipzy000113mffohgz27r	4nMx6c0j2vEhofjeJLmSZV	7722
+1	cmgw0ipzy000113mffohgz27r	3hGgNSkBGcbdYTIcCa12pt	7722
+1	cmgw0ipzy000113mffohgz27r	42aM8sPZlJyQS2VaD2RSuh	7722
+1	cmgw0ipzy000113mffohgz27r	7yvdp8dqmxExSJwT2fn6Xq	7722
+1	cmgw0ipzy000113mffohgz27r	48w7HvN7eiCX2vrc82M2KU	7722
+1	cmgw0ipzy000113mffohgz27r	6EidGY4S6hkU6fwNdSSabg	7722
+1	cmgw0ipzy000113mffohgz27r	42Z8moYh30XOVffltDDUgK	7722
+1	cmgw0ipzy000113mffohgz27r	7KA4W4McWYRpgf0fWsJZWB	7722
+1	cmgw0ipzy000113mffohgz27r	6tlUm9EuYRInZ17qzJkbDv	7722
+1	cmgw0ipzy000113mffohgz27r	4WaCnPpbycUQQiXBDxH7zx	7722
+1	cmgw0ipzy000113mffohgz27r	6hA8stAJBcUFivvkhEEBeq	7722
+1	cmgw0ipzy000113mffohgz27r	4yYJUgayu4jKB258dukWaF	7722
+1	cmgw0ipzy000113mffohgz27r	64NPSUK9QT49jEDKl3FK1a	7722
+1	cmgw0ipzy000113mffohgz27r	4bWdEggTeY1184KQOYUeFS	7722
+1	cmgw0ipzy000113mffohgz27r	6Ee9j3KfgdNTlXcK2XSpH6	7722
+1	cmgw0ipzy000113mffohgz27r	7jaYiqwCFQDdtxfQaSzZuM	7722
+1	cmgw0ipzy000113mffohgz27r	4QYnQub6ZhcXCT0ZP6gNan	7722
+1	cmgw0ipzy000113mffohgz27r	3LtpKP5abr2qqjunvjlX5i	7722
+1	cm9fs51eu0001goxqqc1x6tzo	4hAMDnMSepM9kIagdHnJjn	1611
+1	cmgw0ipzy000113mffohgz27r	2t1pEpxPz91KldW7C0FyZv	7722
+1	cmgwaafni000swattya3y3man	6pZAfsbTV6bOYYUzcmCARn	7722
+1	cmgw0ipzy000113mffohgz27r	2fvdQ1Uq04qE4RLN5zKBXS	7722
+1	cmgw0ipzy000113mffohgz27r	5tkR9JkBj3Ueeo8W4k8IZD	7722
+1	cmgw0ipzy000113mffohgz27r	0vMctOnb4YNIvbqgkbWNDy	7722
+1	cmgw0ipzy000113mffohgz27r	3PFaFVWq5wucLu6s4baj9D	7722
+1	cmgw0ipzy000113mffohgz27r	5FFUDCkMjxuK6XQZNumN55	7722
+1	cmgw0ipzy000113mffohgz27r	5DuGzBwnu4inmMA4PQ8Hwm	7722
+1	cmgw0ipzy000113mffohgz27r	0A8ubu9Rgt5aXucA5wl8kY	7722
+1	cmgw0ipzy000113mffohgz27r	0bkTdkWwGk3OGFX0afD3Wj	7722
+1	cmgw0ipzy000113mffohgz27r	1nMULe4EavfF8SZHQ3Pag9	7722
+1	cmgw0ipzy000113mffohgz27r	1hjSN26LvLcBrhObrNSQK1	7722
+1	cmgw0ipzy000113mffohgz27r	6ZBFJwlj6uJ1Th4m80KlSU	7722
+1	cmgw0ipzy000113mffohgz27r	0X5yARwJLSCTFhuJTSXvFU	7722
+1	cmgw0ipzy000113mffohgz27r	44ZKnfWEkp7wPs035j4Tua	7722
+1	cmgw0ipzy000113mffohgz27r	0VEJDwMO26qNitqyDb47I0	7722
+1	cmgw0ipzy000113mffohgz27r	73C8W2PBSEbfoNIi1J93MN	7722
+1	cmgw0ipzy000113mffohgz27r	70kdJnm1X6eEM8DbWa8Mnc	7722
+1	cmgw0ipzy000113mffohgz27r	4rf0IVQDFjr27T4sgah5Pf	7722
+1	cmgw0ipzy000113mffohgz27r	4y794Xfz4IEjKEdpXyMTOq	7722
+1	cmgw0ipzy000113mffohgz27r	4osgfFTICMkcGbbigdsa53	7722
+1	cmgw0ipzy000113mffohgz27r	3Y4rUyw7XBCK6hGHCOt6rp	7722
+1	cmgw0ipzy000113mffohgz27r	58f4twRnbZOOVUhMUpplJ4	7722
+1	cmgw0ipzy000113mffohgz27r	7AsG1F1eMWd17RYan8M3Wm	7722
+\.
+
+
+ALTER TABLE public.votes ENABLE TRIGGER ALL;
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict eETnWPdbOgUfzN0rJFmHq11O8A7EZIplDqHXLMPsFtd8ZcyYwM4exRNDqwcGBhg
+

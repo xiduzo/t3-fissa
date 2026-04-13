@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-10T18:58:35.037Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T20:38:40.302Z
 > Files: 508 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -279,7 +279,7 @@
 
 ## packages/api/src/infrastructure/
 
-- `SpotifyService.ts` — Exports SpotifyService (~790 tok)
+- `SpotifyService.ts` — Exports SpotifyService (~1084 tok)
 
 ## packages/api/src/interfaces/
 
@@ -317,7 +317,7 @@
 
 - `AuthService.ts` — Exports AuthService (~815 tok)
 - `BadgeService.ts` — Exports BadgeService (~904 tok)
-- `FissaService.ts` — Zustand store (~2667 tok)
+- `FissaService.ts` — Exports TRACKS_BEFORE_ADDING_RECOMMENDATIONS, FissaService (~2673 tok)
 - `TrackService.ts` — Exports TrackService (~304 tok)
 - `VoteService.ts` — Exports VoteService (~938 tok)
 

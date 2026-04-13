@@ -1,12 +1,50 @@
 {
-  "session_id": "session-2026-04-11-0828",
-  "started": "2026-04-11T06:28:37.400Z",
-  "files_read": {},
-  "files_written": [],
-  "edit_counts": {},
-  "anatomy_hits": 0,
+  "session_id": "session-2026-04-13-2235",
+  "started": "2026-04-13T20:35:03.045Z",
+  "files_read": {
+    "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts": {
+      "count": 1,
+      "tokens": 2667,
+      "first_read": "2026-04-13T20:35:14.145Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts": {
+      "count": 2,
+      "tokens": 983,
+      "first_read": "2026-04-13T20:35:20.074Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/ISpotifyService.ts": {
+      "count": 1,
+      "tokens": 224,
+      "first_read": "2026-04-13T20:37:04.392Z"
+    }
+  },
+  "files_written": [
+    {
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+      "action": "edit",
+      "tokens": 78,
+      "at": "2026-04-13T20:36:22.475Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+      "action": "edit",
+      "tokens": 221,
+      "at": "2026-04-13T20:37:21.171Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+      "action": "create",
+      "tokens": 1084,
+      "at": "2026-04-13T20:38:40.309Z"
+    }
+  ],
+  "edit_counts": {
+    "packages/api/src/service/FissaService.ts": 1,
+    "packages/api/src/infrastructure/SpotifyService.ts": 2
+  },
+  "anatomy_hits": 3,
   "anatomy_misses": 0,
-  "repeated_reads_warned": 0,
+  "repeated_reads_warned": 1,
   "cerebrum_warnings": 0,
-  "stop_count": 0
+  "stop_count": 3
 }

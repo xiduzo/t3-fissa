@@ -198,7 +198,7 @@ export class FissaService {
   private stopFissa = async (pin: string, accessToken: string) => {
     try {
       await this.fissaRepo.clearCurrentlyPlaying(pin);
-      return this.spotifyService.pause(accessToken);
+      await this.spotifyService.pause(accessToken);
     } catch (e) {
       console.error(`${pin}, failed stopping fissa`, e);
     }
