@@ -6,13 +6,14 @@ import {
   type ButtonProps as NativeButtonProps,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
 
+import { useTheme } from "../../../providers";
 import { Icon, type IconName } from "../Icon";
 import { Typography } from "../Typography";
 
 export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...props }) => {
+  const theme = useTheme();
   const { onPress, linkTo } = props;
   const { push } = useRouter();
 
@@ -30,7 +31,7 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
     }
 
     return "transparent";
-  }, [inverted, variant]);
+  }, [inverted, variant, theme]);
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
@@ -58,13 +59,13 @@ export const Button: FC<Props> = ({ title, inverted, variant, icon, dimmed, ...p
           dimmed,
         })}
         style={{
-          borderColor: theme[inverted ? "900" : "500"],
+          borderColor: variant === "text" ? "transparent" : theme[inverted ? "900" : "500"],
           backgroundColor,
         }}
       >
         {icon && (
           <Typography inverted={textInverted} variant="h3" className="w-6 text-center">
-            <Icon name={icon} />
+            <Icon name={icon} size={20} />
           </Typography>
         )}
         <Typography
@@ -91,7 +92,7 @@ interface Props extends NativeButtonProps, VariantProps<typeof button> {
 export type ButtonProps = Props;
 
 const button = cva(
-  `flex flex-row items-center justify-center space-x-4 border-2 p-5 rounded-full`,
+  `flex flex-row items-center justify-center gap-4 border-2 p-5 rounded-full`,
   {
     variants: {
       variant: {

@@ -7,11 +7,11 @@ import { api, toast } from "../../../src/utils";
 
 const AddTracks = () => {
   const { pin } = useGlobalSearchParams();
-  const queryClient = api.useContext();
+  const queryClient = api.useUtils();
 
   const { back } = useRouter();
 
-  const { mutateAsync, isLoading } = api.track.addTracks.useMutation({
+  const { mutateAsync, isPending } = api.track.addTracks.useMutation({
     onError: () => {
       toast.error({ message: "Failed to add songs" });
     },
@@ -52,6 +52,20 @@ const AddTracks = () => {
         }));
       });
 
+      // Optimistically update the batched user votes so the track end icons reflect the new votes
+      queryClient.vote.byFissaFromUser.setData(pin, (prev) => {
+        const updated = prev ? [...prev] : [];
+        for (const { trackId } of tracks) {
+          const existing = updated.find((v) => v.trackId === trackId);
+          if (existing) {
+            existing.vote = 1;
+          } else {
+            updated.push({ pin, trackId, vote: 1, userId: "" });
+          }
+        }
+        return updated;
+      });
+
       toast.success({ message: `Added ${tracks.length} songs` });
       back();
     },
@@ -59,6 +73,7 @@ const AddTracks = () => {
       for (const { trackId } of tracks) {
         await queryClient.vote.byTrackFromUser.invalidate({ trackId, pin });
       }
+      await queryClient.vote.byFissaFromUser.invalidate(pin);
       await queryClient.fissa.byId.invalidate(pin);
     },
   });
@@ -80,7 +95,7 @@ const AddTracks = () => {
   return (
     <PickTracks
       onAddTracks={handleAddTracks}
-      disabledAction={isLoading || !pin}
+      disabledAction={isPending || !pin}
       actionTitle="Add songs"
     />
   );

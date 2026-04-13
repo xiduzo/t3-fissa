@@ -1,8 +1,8 @@
 import { useEffect, useRef, type FC } from "react";
 import { AccessibilityInfo, findNodeHandle, Platform, View } from "react-native";
 import Toast, { type ToastConfig, type ToastConfigParams } from "react-native-toast-message";
-import { theme } from "@fissa/tailwind-config";
 
+import { useTheme } from "../../providers";
 import { Typography } from "./Typography";
 
 const toastConfig: ToastConfig = {
@@ -18,6 +18,7 @@ export const ToastContainer: FC = () => {
 };
 
 const Toaster: FC<Props> = ({ text1, text2, isVisible, type }) => {
+  const theme = useTheme();
   const ref = useRef<View>(null);
 
   useEffect(() => {

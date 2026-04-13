@@ -1,16 +1,23 @@
 import { type FC } from "react";
 import { View } from "react-native";
 import { Image as ExpoImage, type ImageProps } from "expo-image";
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
 
+import { useTheme } from "../../providers";
+
 export const Image: FC<Props> = ({ className, hasBorder, ...props }) => {
+  const theme = useTheme();
   return (
     <View
       style={{ backgroundColor: theme["100"] }}
       className={image({ hasBorder: !!hasBorder, className })}
     >
-      <ExpoImage contentFit="cover" {...props} />
+      <ExpoImage
+        cachePolicy="memory-disk"
+        contentFit="cover"
+        style={{ width: "100%", height: "100%" }}
+        {...props}
+      />
     </View>
   );
 };

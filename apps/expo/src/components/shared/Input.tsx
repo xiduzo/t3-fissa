@@ -1,7 +1,8 @@
 import { forwardRef } from "react";
 import { TextInput, View, type TextInputProps } from "react-native";
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
+
+import { useTheme } from "../../providers";
 
 import { Icon, type IconName } from "./Icon";
 
@@ -9,6 +10,7 @@ export const Input = forwardRef<TextInput, Props>(function Input(
   { variant, className, startIcon, ...props },
   ref,
 ) {
+  const theme = useTheme();
   return (
     <View
       className={view({ className })}
@@ -22,7 +24,7 @@ export const Input = forwardRef<TextInput, Props>(function Input(
       <TextInput
         ref={ref}
         {...props}
-        className={input({ disabled: !props.editable })}
+        className={input({ disabled: props.editable === false })}
         clearButtonMode="always"
         blurOnSubmit
         placeholderTextColor={theme["100"] + "70"}
@@ -38,9 +40,9 @@ interface Props extends VariantProps<typeof input>, TextInputProps {
   startIcon?: IconName;
 }
 
-const view = cva("flex-row items-center space-x-2 rounded-md px-4 py-3");
+const view = cva("flex-row items-center gap-2 rounded-md px-4 py-3 overflow-hidden");
 
-const input = cva("flex-grow", {
+const input = cva("shrink grow", {
   variants: {
     variant: {
       contained: "",

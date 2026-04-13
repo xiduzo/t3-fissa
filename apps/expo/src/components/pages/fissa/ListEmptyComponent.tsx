@@ -1,9 +1,9 @@
-import { useDevices, useSpotify } from "@fissa/utils";
+import { useSpotify } from "@fissa/utils";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useGlobalSearchParams } from "expo-router";
 import { useCallback, type FC } from "react";
 
-import { useIsOwner } from "../../../hooks";
+import { useIsOwner, useSpotifyDevices } from "../../../hooks";
 import { api, toast } from "../../../utils";
 import { Button, EmptyState, SelectDevice } from "../../shared";
 
@@ -12,8 +12,8 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
   const isOwner = useIsOwner(String(pin));
 
   const spotify = useSpotify();
-  const { activeDevice, fetchDevices } = useDevices(false); // only used in `Tracks.tsx` which already fetches devices
-  const queryClient = api.useContext();
+  const { activeDevice, refetch: fetchDevices } = useSpotifyDevices(false);
+  const queryClient = api.useUtils();
 
   const { mutateAsync } = api.fissa.restart.useMutation({
     onMutate: async () => {
@@ -43,7 +43,7 @@ export const ListEmptyComponent: FC<Props> = ({ isLoading }) => {
           message: `Failed to connect to ${device.name}`,
         });
       } finally {
-        fetchDevices();
+        void fetchDevices();
       }
     },
     [spotify, fetchDevices, handleRestartFissa],

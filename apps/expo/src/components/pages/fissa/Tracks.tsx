@@ -1,25 +1,20 @@
-import { theme } from "@fissa/tailwind-config";
 import {
-  AnimationSpeed,
   differenceInMilliseconds,
   sortFissaTracksOrder,
-  useDevices,
-  useTracks,
 } from "@fissa/utils";
-import { type FlashList } from "@shopify/flash-list";
+import { type FlashListRef } from "@shopify/flash-list";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { useGlobalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState, type FC } from "react";
+import { type JSX, useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
 import {
   Animated,
+  InteractionManager,
   TouchableHighlight,
   View,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
 } from "react-native";
 
-import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack } from "../../../hooks";
-import { useAuth } from "../../../providers";
+import { useCreateVote, useIsOwner, useOnActiveApp, useSkipTrack, useSpotifyTracks, useSpotifyDevices } from "../../../hooks";
+import { useAuth, useTheme } from "../../../providers";
 import { api } from "../../../utils";
 import { QuickVoteModal, useQuickVote } from "../../quickVote";
 import {
@@ -39,20 +34,42 @@ import { ListFooterComponent } from "./ListFooterComponent";
 
 const SCROLL_DISTANCE = 150;
 
+const REFETCH_NORMAL = 5_000;
+const REFETCH_FAST = 1_000;
+const SONG_END_THRESHOLD = 10_000; // start fast-polling 10s before track ends
+
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
-  const context = api.useContext();
+  const theme = useTheme();
+  const context = api.useUtils();
 
-  const listRef = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
+  const listRef = useRef<FlashListRef<SpotifyApi.TrackObjectFull>>(null);
 
-  const { data, isInitialLoading } = api.fissa.byId.useQuery(pin, {
-    refetchInterval: 6000, // TODO: signal (push notification) from the server instead of polling?
+  const [refetchInterval, setRefetchInterval] = useState(REFETCH_NORMAL);
+
+  const { data, isLoading: isInitialLoading } = api.fissa.byId.useQuery(pin, {
+    refetchInterval,
   });
+
+  // Single query for all of the current user's votes in this fissa
+  const { data: userVotes } = api.vote.byFissaFromUser.useQuery(pin);
+  const userVoteMap = useMemo(() => {
+    const map = new Map<string, number>();
+    if (userVotes && Array.isArray(userVotes)) {
+      for (const v of userVotes) {
+        map.set(v.trackId as string, v.vote as number);
+      }
+    }
+    return map;
+  }, [userVotes]);
 
   const isOwner = useIsOwner(pin);
 
   const buttonOffsetAnimation = useRef(new Animated.Value(0)).current;
-  const lastScrolledTo = useRef<string>();
-  const currentIndexOffset = useRef(0);
+  const scrollState = useRef({
+    lastScrolledTo: "",
+    currentOffset: 0,
+    isProgrammaticScroll: false,
+  });
   const [scrollDirection, setScrollDirection] = useState<"up" | "down" | undefined>();
 
   const marginBottom = buttonOffsetAnimation.interpolate({
@@ -65,17 +82,30 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const [selectedTrack, setSelectedTrack] = useState<SpotifyApi.TrackObjectFull>();
 
 
-  const localTracks = useTracks(
-    sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
+  const trackIds = useMemo(
+    () => sortFissaTracksOrder(data?.tracks, data?.currentlyPlayingId).map(({ trackId }) => trackId),
+    [data?.tracks, data?.currentlyPlayingId],
   );
+  const { data: localTracks = [] } = useSpotifyTracks(trackIds);
 
   const isPlaying = !!data?.currentlyPlayingId;
 
-  const { activeDevice } = useDevices(isOwner && !isPlaying);
+  const { activeDevice } = useSpotifyDevices(isOwner && !isPlaying);
 
   const showTracks = isOwner ? isPlaying && !!activeDevice : isPlaying;
   const queue = showTracks ? localTracks : [];
-  const currentTrackIndex = localTracks.findIndex(({ id }) => id === data?.currentlyPlayingId) ?? 0;
+
+  // Derive the active index from trackIds (always in sync with the tRPC data)
+  // rather than from localTracks which depends on the Spotify cache and may
+  // lag behind when the currently-playing track changes.
+  const currentTrackIndex = useMemo(() => {
+    if (!data?.currentlyPlayingId) return 0;
+    const idx = trackIds.indexOf(data.currentlyPlayingId);
+    if (idx === -1) return 0;
+    // localTracks may be shorter than trackIds when Spotify hasn't fetched
+    // every track yet — clamp so we never scroll past the end.
+    return Math.min(idx, Math.max(0, localTracks.length - 1));
+  }, [data?.currentlyPlayingId, trackIds, localTracks.length]);
 
   const showBackButton = useCallback(
     (offSet = 0) => {
@@ -113,12 +143,12 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       const localTrack = data?.tracks.find(({ trackId }) => trackId === track.id);
 
       if (!localTrack) return;
-      if (localTrack.hasBeenPlayed) return;
       if (data?.currentlyPlayingId === track.id && isOwner) return <SkipTrackButton />;
+      if (localTrack.hasBeenPlayed) return <TrackEnd />;
 
-      return <TrackEnd trackId={track.id} pin={pin} />;
+      return <TrackEnd vote={userVoteMap.get(track.id)} />;
     },
-    [data?.tracks, data?.currentlyPlayingId, isOwner, pin],
+    [data?.tracks, data?.currentlyPlayingId, isOwner, userVoteMap],
   );
 
   const trackExtra = useCallback(
@@ -130,75 +160,110 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [data?.currentlyPlayingId, data?.expectedEndTime],
   );
 
+  // Track the previous currentlyPlayingId so we can detect track changes
+  const prevTrackIdRef = useRef(data?.currentlyPlayingId);
+
+  // When the active track changes, drop back to normal polling
+  useEffect(() => {
+    if (
+      prevTrackIdRef.current &&
+      data?.currentlyPlayingId &&
+      prevTrackIdRef.current !== data.currentlyPlayingId
+    ) {
+      setRefetchInterval(REFETCH_NORMAL);
+    }
+    prevTrackIdRef.current = data?.currentlyPlayingId;
+  }, [data?.currentlyPlayingId]);
+
   useEffect(() => {
     if (!data?.expectedEndTime) return;
 
-    const ms = differenceInMilliseconds(data?.expectedEndTime, new Date());
+    const msUntilEnd = differenceInMilliseconds(data.expectedEndTime, new Date());
 
-    const timeout = setTimeout(() => {
-      // Invalidate the fissa to force fetch the new state
-      // When we know the track has ended
+    // Schedule fast-polling ~10s before the track ends
+    const msUntilFastPoll = Math.max(0, msUntilEnd - SONG_END_THRESHOLD);
+
+    const fastPollTimeout = setTimeout(() => {
+      setRefetchInterval(REFETCH_FAST);
+    }, msUntilFastPoll);
+
+    // Also keep the existing invalidation for when the track actually ends
+    const endTimeout = setTimeout(() => {
       void context.fissa.byId.invalidate();
-    }, ms);
+    }, msUntilEnd);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(fastPollTimeout);
+      clearTimeout(endTimeout);
+    };
   }, [data?.expectedEndTime, context]);
 
-  const scrollToCurrentIndex = useCallback(
-    (viewOffset = 20) => {
+  const scrollToCurrentIndex = useCallback(() => {
+      scrollState.current.isProgrammaticScroll = true;
       listRef?.current?.scrollToIndex({
         index: currentTrackIndex,
         animated: true,
-        viewOffset: currentTrackIndex === 0 ? 0 : viewOffset,
       });
       showBackButton(0);
+
+      // Safety net: if the programmatic scroll doesn't produce a momentum-end
+      // event (e.g. the list was already at the right position), we still need
+      // to clear the flag so manual scrolls aren't silently swallowed.
+      setTimeout(() => {
+        scrollState.current.isProgrammaticScroll = false;
+      }, 600);
     },
     [currentTrackIndex, showBackButton],
   );
 
-  const lockOnActiveTrack = useCallback(
-    ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const scrollPos = nativeEvent.contentOffset.y;
-
-      if (Math.abs(scrollPos - currentIndexOffset.current) >= SCROLL_DISTANCE) return;
-
-      scrollToCurrentIndex();
-    },
-    [scrollToCurrentIndex],
-  );
+  // Stable ref so useOnActiveApp doesn't re-subscribe on every render
+  const scrollToCurrentIndexRef = useRef(scrollToCurrentIndex);
+  scrollToCurrentIndexRef.current = scrollToCurrentIndex;
 
   useEffect(() => {
-    if (lastScrolledTo.current === data?.currentlyPlayingId) return;
+    if (scrollState.current.lastScrolledTo === data?.currentlyPlayingId) return;
     if (!data?.currentlyPlayingId) return;
-    if (scrollDirection) return;
 
-    setTimeout(
-      () => {
-        setTimeout(scrollToCurrentIndex, AnimationSpeed.VeryFast);
-      },
-      currentIndexOffset.current ? 0 : 500, // give TrackList time to render
-    );
-  }, [data?.currentlyPlayingId, scrollToCurrentIndex, scrollDirection]);
+    // Reset scroll direction so the button hides after a track change
+    setScrollDirection(undefined);
 
-  useOnActiveApp(scrollToCurrentIndex);
+    const task = InteractionManager.runAfterInteractions(() => {
+      scrollToCurrentIndex();
+      scrollState.current.lastScrolledTo = data.currentlyPlayingId!;
+    });
+
+    return () => task.cancel();
+  }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
+
+  useOnActiveApp(useCallback(() => scrollToCurrentIndexRef.current(), []));
 
   return (
     <>
       <TrackList
         ref={listRef}
+        onScrollBeginDrag={() => {
+          // User started dragging — any programmatic scroll is effectively done
+          scrollState.current.isProgrammaticScroll = false;
+        }}
         onScroll={({ nativeEvent }) => {
-          showBackButton(nativeEvent.contentOffset.y - currentIndexOffset.current);
+          // Don't show/hide the button while a programmatic scroll is animating
+          if (scrollState.current.isProgrammaticScroll) return;
+          showBackButton(nativeEvent.contentOffset.y - scrollState.current.currentOffset);
         }}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        onScrollEndDrag={lockOnActiveTrack}
         onMomentumScrollEnd={(e) => {
           if (!data?.currentlyPlayingId) return;
-          if (lastScrolledTo.current === data?.currentlyPlayingId) return;
 
-          lastScrolledTo.current = data?.currentlyPlayingId;
-          currentIndexOffset.current = e.nativeEvent.contentOffset.y;
-          lockOnActiveTrack(e);
+          const offset = e.nativeEvent.contentOffset.y;
+
+          // After a programmatic scroll (button press / track change),
+          // record the new baseline offset.
+          if (scrollState.current.isProgrammaticScroll) {
+            scrollState.current.isProgrammaticScroll = false;
+            scrollState.current.currentOffset = offset;
+            return;
+          }
         }}
         stickyHeaderIndices={[currentTrackIndex]}
         invertStickyHeaders
@@ -211,6 +276,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onTrackLongPress={toggleTrackFocus}
         trackEnd={trackEnd}
         trackExtra={trackExtra}
+        extraData={`${data?.currentlyPlayingId}-${data?.expectedEndTime ? new Date(data.expectedEndTime).getTime() : ""}`}
         ListEmptyComponent={
           <View className="mx-6 h-[80vh]">
             <ListEmptyComponent isLoading={isInitialLoading} />
@@ -220,6 +286,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       />
       <Animated.View
         className="absolute bottom-7 z-50 w-full items-center md:bottom-36"
+        pointerEvents={scrollDirection ? "auto" : "none"}
         style={{ opacity: buttonOffsetAnimation, marginBottom }}
       >
         <TouchableHighlight
@@ -229,7 +296,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
           underlayColor={theme["900"] + "10"}
         >
           <View
-            className="flex flex-row items-center space-x-4 rounded-md border-2 px-3 py-2 shadow-md"
+            className="flex flex-row items-center gap-4 rounded-md border-2 px-3 py-2 shadow-md"
             style={{
               backgroundColor: theme["900"],
               borderColor: theme["500"],
@@ -253,9 +320,10 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
       <SelectedTrackPopover
         onRequestClose={() => setSelectedTrack(undefined)}
         track={selectedTrack}
+        userVoteMap={userVoteMap}
       />
 
-      <QuickVoteModal onTouchEnd={handleTouchEnd} getTrackVotes={getTrackVotes} />
+      <QuickVoteModal onTouchEnd={handleTouchEnd} getTrackVotes={getTrackVotes} userVoteMap={userVoteMap} />
     </>
   );
 };
@@ -263,24 +331,24 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
 const SkipTrackButton = () => {
   const { pin } = useGlobalSearchParams();
 
-  const { mutateAsync, isLoading } = useSkipTrack(String(pin));
+  const { mutateAsync, isPending } = useSkipTrack(String(pin));
 
   return (
     <IconButton
       onPress={mutateAsync}
-      disabled={isLoading}
+      disabled={isPending}
       title="play next song"
       icon="skip-forward"
     />
   );
 };
 
-const SelectedTrackPopover: FC<SelectedTrackPopoverProps> = ({ track, onRequestClose }) => {
+const SelectedTrackPopover: FC<SelectedTrackPopoverProps> = ({ track, onRequestClose, userVoteMap }) => {
   return (
     <Popover visible={!!track} onRequestClose={onRequestClose}>
       {track && <TrackListItem inverted track={track} hasBorder />}
       <Divider />
-      {track && <TrackActions track={track} onPress={onRequestClose} />}
+      {track && <TrackActions track={track} onPress={onRequestClose} userVoteMap={userVoteMap} />}
     </Popover>
   );
 };
@@ -288,9 +356,10 @@ const SelectedTrackPopover: FC<SelectedTrackPopoverProps> = ({ track, onRequestC
 interface SelectedTrackPopoverProps {
   track?: SpotifyApi.TrackObjectFull;
   onRequestClose: () => void;
+  userVoteMap: Map<string, number>;
 }
 
-const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
+const TrackActions: FC<TrackActionsProps> = ({ track, onPress, userVoteMap }) => {
   const { pin } = useGlobalSearchParams();
   const { data: fissa } = api.fissa.byId.useQuery(String(pin), {
     enabled: !!pin,
@@ -302,18 +371,18 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
 
   const { user } = useAuth();
 
-  const { data } = api.vote.byTrackFromUser.useQuery({ pin: String(pin), trackId: track.id });
+  const userVote = userVoteMap.get(track.id);
 
-  const { mutateAsync: voteOnTrack, isLoading: isVoting } = useCreateVote(String(pin));
+  const { mutateAsync: voteOnTrack, isPending: isVoting } = useCreateVote(String(pin));
 
-  const { mutateAsync: deleteTrack, isLoading: isDeleting } = api.track.deleteTrack.useMutation({
+  const { mutateAsync: deleteTrack, isPending: isDeleting } = api.track.deleteTrack.useMutation({
     // TODO: optimistic update
     onSettled: async () => {
       await notificationAsync(NotificationFeedbackType.Success);
     },
   });
 
-  const { mutateAsync: skipTrack, isLoading: isSkipping } = useSkipTrack(String(pin), {
+  const { mutateAsync: skipTrack, isPending: isSkipping } = useSkipTrack(String(pin), {
     onMutate: () => {
       onPress();
     },
@@ -356,21 +425,22 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
         <Action
           onPress={handleVote(1)}
           inverted
-          active={data?.vote === 1}
-          disabled={isVoting || data?.vote === 1}
+          active={userVote === 1}
+          disabled={isVoting || userVote === 1}
           icon="arrow-up"
           title="Up-vote song"
           subtitle="It might move up in the queue"
         />
       )}
-      {canRemoveTrack && !isActiveTrack && !hasBeenPlayed && (
+      {!isActiveTrack && !hasBeenPlayed && (
         <Action
+          onPress={handleVote(-1)}
           inverted
-          onPress={handleDelete}
-          icon="trash"
-          disabled={isDeleting}
-          title="Remove song"
-          subtitle="Mistakes were made"
+          active={userVote === -1}
+          disabled={isVoting || userVote === -1}
+          icon="arrow-down"
+          title="Down-vote song"
+          subtitle="It might move down in the queue"
         />
       )}
       {isActiveTrack && !hasBeenPlayed && (
@@ -383,17 +453,6 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
           icon="skip-forward"
         />
       )}
-      {!isActiveTrack && !hasBeenPlayed && (
-        <Action
-          onPress={handleVote(-1)}
-          inverted
-          active={data?.vote === -1}
-          disabled={isVoting || data?.vote === -1}
-          icon="arrow-down"
-          title="Down-vote song"
-          subtitle="It might move down in the queue"
-        />
-      )}
       <Action
         inverted
         title="Save to spotify"
@@ -404,6 +463,16 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
           push(`/fissa/${fissa?.pin}/${track?.id}`);
         }}
       />
+      {canRemoveTrack && !isActiveTrack && !hasBeenPlayed && (
+        <Action
+          inverted
+          onPress={handleDelete}
+          icon="trash"
+          disabled={isDeleting}
+          title="Remove song"
+          subtitle="Mistakes were made"
+        />
+      )}
     </>
   );
 };
@@ -411,4 +480,5 @@ const TrackActions: FC<TrackActionsProps> = ({ track, onPress }) => {
 interface TrackActionsProps {
   track: SpotifyApi.TrackObjectFull;
   onPress: () => void;
+  userVoteMap: Map<string, number>;
 }

@@ -1,8 +1,17 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": ["expo/tsconfig.base", "../../tsconfig.json"],
   "compilerOptions": {
     "jsx": "react-native"
   },
-  "include": ["app", "expo-plugins", "src", "app.config.ts", "index.js"],
-  "exclude": ["node_modules"]
+  "include": [
+    "app",
+    "expo-plugins",
+    "src",
+    "app.config.ts",
+    "index.js",
+    "nativewind-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

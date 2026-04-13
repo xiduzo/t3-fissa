@@ -1,18 +1,17 @@
-import { theme } from "@fissa/tailwind-config"
 import { format, formatNumber } from "@fissa/utils"
 import { FlashList } from "@shopify/flash-list"
 import { Stack, useRouter } from "expo-router"
 import { useCallback, useState } from "react"
-import { TouchableHighlight, View } from "react-native"
-import { BADGE } from "../../../../packages/db"
+import { Text, TouchableHighlight, View } from "react-native"
+import { BADGE } from "../../../../packages/db/schema"
 import { Button, PageTemplate, Popover, Typography } from "../../src/components"
-import { useAuth } from "../../src/providers"
+import { useAuth, useTheme } from "../../src/providers"
 import { api } from "../../src/utils"
 
 const Index = () => {
   const { user, signOut } = useAuth()
   const { replace } = useRouter()
-  const { data, isInitialLoading } = api.auth.getUserStats.useQuery()
+  const { data, isLoading: isInitialLoading } = api.auth.getUserStats.useQuery()
 
   const signOutUser = useCallback(() => {
     signOut()
@@ -27,18 +26,18 @@ const Index = () => {
           headerBackVisible: true
         }}
       />
-      <View className="space-y-10">
-        <View className="space-y-1">
+      <View className="gap-10">
+        <View className="gap-1">
           <Typography centered variant="h1">{user?.display_name}</Typography>
           <Typography centered dimmed>Joined {format(data?.createdAt ?? new Date(), "MMMM yyyy")}</Typography>
         </View>
-        <View className="space-y-2">
+        <View className="gap-2">
           <View className="justify-between items-center flex-row">
             <Typography variant="h2">Stats</Typography>
             {/* <Typography dimmed>+2 undiscovered</Typography> */}
           </View>
           <View className="flex-grow h-80 -mx-2">
-            <FlashList estimatedItemSize={24} horizontal renderItem={({ item }) => {
+            <FlashList horizontal renderItem={({ item }) => {
               return <Badge isLoading={isInitialLoading} badge={item} score={data?.badges.find(badge => badge.name === item)?.score} />
             }} data={Object.values(BADGE)} />
           </View>
@@ -101,6 +100,7 @@ const BADGE_NAMES: Record<BADGE, Badge> = {
 }
 
 const Badge = ({ badge, score, isLoading }: { badge: BADGE, isLoading: boolean, score?: number }) => {
+  const theme = useTheme()
   const [selected, setSelected] = useState(false)
 
   return (
@@ -110,14 +110,14 @@ const Badge = ({ badge, score, isLoading }: { badge: BADGE, isLoading: boolean, 
         onPress={() => setSelected(true)}
         underlayColor={theme['100'] + '40'}
       >
-        <View className="items-center border rounded-md w-36 lg:w-56 p-3 space-y-2" style={{
+        <View className="items-center border rounded-md w-36 p-3 gap-2" style={{
           borderColor: theme['100'] + '40',
         }}>
           <Typography centered dimmed>{BADGE_NAMES[badge].name}</Typography>
-          <View className="w-24 h-24 lg:w-32 lg:h-32 items-center justify-center">
-            <Typography centered dimmed className="text-6xl lg:text-7xl" style={{
-              lineHeight: 70
-            }}>{BADGE_NAMES[badge].icon}</Typography>
+          <View style={{ width: 96, height: 96, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 60, lineHeight: 70, textAlign: 'center', opacity: 0.6 }}>
+              {BADGE_NAMES[badge].icon}
+            </Text>
           </View>
           {!isLoading && <Typography variant='h3'>{formatNumber(score ?? 0)}</Typography>}
           {isLoading && <Typography variant='h3' className="w-6 animate-pulse" style={{ backgroundColor: theme['100'] + '10' }}>&nbsp;</Typography>}

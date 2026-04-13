@@ -1,13 +1,13 @@
 import { forwardRef, useCallback } from "react";
 import { Animated, View, type GestureResponderEvent } from "react-native";
-import { FlashList, type FlashListProps } from "@shopify/flash-list";
-import { theme } from "@fissa/tailwind-config";
+import { FlashList, type FlashListProps, type FlashListRef } from "@shopify/flash-list";
 import { cva } from "@fissa/utils";
 
+import { useTheme } from "../../providers";
 import { Badge } from "./Badge";
 import { TrackListItem } from "./TrackListItem";
 
-export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props>(
+export const TrackList = forwardRef<FlashListRef<SpotifyApi.TrackObjectFull>, Props>(
   function TrackList(
     {
       onTrackPress,
@@ -22,6 +22,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
     },
     ref,
   ) {
+    const theme = useTheme();
     const subtitlePrefix = useCallback(
       (item: SpotifyApi.TrackObjectFull) => {
         if (!getTrackVotes) return null;
@@ -40,7 +41,7 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
         <FlashList
           {...props}
           ref={ref}
-          estimatedItemSize={80}
+          estimatedItemSize={104}
           keyExtractor={(item) => item?.id}
           extraData={(extraData as unknown) ?? selectedTracks}
           renderItem={({ item, index }) => {
@@ -48,10 +49,8 @@ export const TrackList = forwardRef<FlashList<SpotifyApi.TrackObjectFull>, Props
             const isHeader = props.stickyHeaderIndices?.includes(index);
             return (
               <Animated.View
-                className="shadow-xl"
                 style={{
                   backgroundColor: theme["900"],
-                  shadowColor: isHeader ? theme["900"] : "transparent",
                 }}
               >
                 <TrackListItem
@@ -94,7 +93,7 @@ interface Props
   onTrackLongPress?: (track: SpotifyApi.TrackObjectFull) => (event: GestureResponderEvent) => void;
 }
 
-const trackListItem = cva("rounded-2xl transition-all duration-1000 my-3", {
+const trackListItem = cva("rounded-2xl my-3", {
   variants: {
     highlighted: {
       true: "mx-4 p-2 pr-4",

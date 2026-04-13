@@ -2,6 +2,8 @@
   "name": "@fissa/api",
   "version": "0.1.0",
   "main": "./index.ts",
+  "react-native": "./client.ts",
+  "browser": "./client.ts",
   "types": "./index.ts",
   "license": "MIT",
   "scripts": {
@@ -14,8 +16,8 @@
     "@fissa/auth": "*",
     "@fissa/db": "*",
     "@fissa/utils": "*",
-    "@trpc/client": "10.21.1",
-    "@trpc/server": "10.21.1",
+    "@trpc/client": "11.16.0",
+    "@trpc/server": "11.16.0",
     "spotify-web-api-node": "5.0.2",
     "superjson": "2.2.1",
     "zod": "3.23.8"
@@ -24,6 +26,6 @@
     "@fissa/eslint-config": "*",
     "@types/spotify-web-api-node": "5.0.11",
     "eslint": "8.57.0",
-    "typescript": "5.4.5"
+    "typescript": "~5.8.3"
   }
 }

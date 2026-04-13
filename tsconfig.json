@@ -7,16 +7,25 @@
     "incremental": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "es2017",
-    "types": ["@total-typescript/ts-reset"]
+    "types": [
+      "@total-typescript/ts-reset"
+    ]
   },
-  "include": [".eslintrc.js", "prettier.config.cjs"]
+  "include": [
+    ".eslintrc.js",
+    "prettier.config.cjs"
+  ]
 }

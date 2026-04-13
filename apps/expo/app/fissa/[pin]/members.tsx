@@ -26,7 +26,6 @@ const Members = () => {
       />
       <View className="h-full w-full">
         <FlashList
-          estimatedItemSize={80}
           keyExtractor={({ user }) => user.name ?? user.id}
           data={data}
           renderItem={({ item }) => (

@@ -1,16 +1,17 @@
-import { SAVED_TRACKS_PLAYLIST_ID, useSpotify, useTracks } from "@fissa/utils";
+import { SAVED_TRACKS_PLAYLIST_ID, useSpotify } from "@fissa/utils";
 import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import { useCallback } from "react";
 import { View } from "react-native";
 
 import { PageTemplate, PlaylistList, TrackListItem } from "../../../../src/components";
+import { useSpotifyTracks } from "../../../../src/hooks";
 import { toast } from "../../../../src/utils";
 
 const AddToPlaylist = () => {
   const { trackId } = useGlobalSearchParams();
   const { back } = useRouter();
   const spotify = useSpotify();
-  const tracks = useTracks([String(trackId)]);
+  const { data: tracks = [] } = useSpotifyTracks([String(trackId)]);
 
   const track = tracks?.find(({ id }) => id === trackId);
 

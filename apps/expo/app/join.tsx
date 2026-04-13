@@ -1,131 +1,165 @@
-import { theme } from "@fissa/tailwind-config";
 import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-    TextInput,
-    View,
-    type NativeSyntheticEvent,
-    type TextInputChangeEventData,
-    type TextInputTextInputEventData,
+  TextInput,
+  View,
+  type NativeSyntheticEvent,
+  type TextInputKeyPressEventData,
 } from "react-native";
+import type { TextStyle } from "react-native";
 
 import { Button, PageTemplate, Typography } from "../src/components";
+import { useTheme } from "../src/providers";
 import { api } from "../src/utils/api";
 import { toast } from "../src/utils/Toast";
 
+const PIN_LENGTH = 4;
+
 const Join = () => {
+  const theme = useTheme();
+
+  const inputStyle: TextStyle = {
+    color: theme["100"],
+    textAlign: "center",
+  };
   const { replace } = useRouter();
-  const [pin, setPin] = useState(["", "", "", ""]);
+  const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(""));
+  const inputRefs = useRef<(TextInput | null)[]>([null, null, null, null]);
 
-  const { isFetching } = api.fissa.byId.useQuery(pin.join(""), {
-    enabled: !pin.includes(""),
-    retry: false,
-    onSuccess: ({ pin }) => {
-      toast.success({ message: "Enjoy the fissa", icon: "🎉" });
-      void notificationAsync(NotificationFeedbackType.Success);
-      replace(`/fissa/${pin}`);
-    },
-    onError: ({ message }) => {
-      reset();
-      toast.hide();
-      toast.warn({ message });
-    },
-  });
-
-  const key1 = useRef<TextInput>(null);
-  const key2 = useRef<TextInput>(null);
-  const key3 = useRef<TextInput>(null);
-  const key4 = useRef<TextInput>(null);
-
-  const keys = useMemo(() => [key1, key2, key3, key4], [key1, key2, key3, key4]);
-
-  const handleFocus = useCallback(
-    (selectedIndex: number) => () => {
-      keys.forEach(({ current }, index) => {
-        if (index < selectedIndex) return;
-        current?.clear();
-        setPin((prev) => {
-          const newPin = [...prev];
-          newPin[index] = "";
-          return newPin;
-        });
-      });
-
-      if (selectedIndex === 0) return;
-      if (pin[selectedIndex - 1] === "") keys[selectedIndex - 1]?.current?.focus();
-    },
-    [keys, pin],
-  );
-
-  const handleChange = useCallback(
-    (index: number) => (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-      const { text } = e.nativeEvent;
-      const nextIndex = index + (text === "" ? -1 : 1);
-      const next = keys[nextIndex];
-      next?.current?.focus();
-
-      setPin((prev) => {
-        const newPin = [...prev];
-        newPin[index] = text;
-        return newPin;
-      });
-    },
-    [keys],
-  );
-
-  const handleTextInput = useCallback(
-    (index: number) => (e: NativeSyntheticEvent<TextInputTextInputEventData>) => {
-      const { text, previousText } = e.nativeEvent;
-      if (text || previousText) return;
-
-      const next = keys[index - 1];
-      next?.current?.focus();
-    },
-    [keys],
-  );
+  const pinString = pin.join("");
+  const isComplete = !pin.includes("");
 
   const reset = useCallback(() => {
-    setPin(["", "", "", ""]);
+    setPin(Array(PIN_LENGTH).fill(""));
     setTimeout(() => {
-      keys[0]?.current?.focus();
+      inputRefs.current[0]?.focus();
     }, 100);
-  }, [keys]);
+  }, []);
+
+  const { data, error, isFetching } = api.fissa.byId.useQuery(pinString, {
+    enabled: isComplete,
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (!data) return;
+    toast.success({ message: "Enjoy the fissa", icon: "🎉" });
+    void notificationAsync(NotificationFeedbackType.Success);
+    replace(`/fissa/${data.pin}`);
+  }, [data, replace]);
+
+  useEffect(() => {
+    if (!error) return;
+    reset();
+    toast.hide();
+    toast.warn({ message: error.message });
+  }, [error, reset]);
+
+  const focusInput = (index: number) => {
+    if (index >= 0 && index < PIN_LENGTH) {
+      inputRefs.current[index]?.focus();
+    }
+  };
+
+  const handleChangeText = useCallback(
+    (index: number) => (text: string) => {
+      // Only accept numeric input
+      const digit = text.replace(/[^0-9]/g, "").slice(-1);
+
+      setPin((prev) => {
+        const next = [...prev];
+        next[index] = digit;
+        return next;
+      });
+
+      if (digit !== "") {
+        focusInput(index + 1);
+      }
+    },
+    [],
+  );
+
+  const handleKeyPress = useCallback(
+    (index: number) =>
+      (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+        if (e.nativeEvent.key !== "Backspace") return;
+
+        setPin((prev) => {
+          if (prev[index] !== "") {
+            // Clear current field
+            const next = [...prev];
+            next[index] = "";
+            return next;
+          }
+          // Field already empty — move back and clear previous
+          if (index > 0) {
+            const next = [...prev];
+            next[index - 1] = "";
+            focusInput(index - 1);
+            return next;
+          }
+          return prev;
+        });
+      },
+    [],
+  );
+
+  const handleFocus = useCallback(
+    (index: number) => () => {
+      // When tapping a later field, redirect to the first empty slot
+      const firstEmpty = pin.indexOf("");
+      if (firstEmpty !== -1 && firstEmpty < index) {
+        focusInput(firstEmpty);
+      }
+    },
+    [pin],
+  );
 
   return (
-    <PageTemplate className="justify-start space-y-14">
+    <PageTemplate className="justify-start gap-14">
       <Stack.Screen options={{ headerBackVisible: true }} />
       <Typography variant="h5" centered>
         Enter the session code of the Fissa you want to join
       </Typography>
-      <View className="flex-row justify-around space-x-4">
-        {keys.map((key, index) => (
-          <View className="flex-1" key={key.current?.props?.id ?? index}>
+      <View className="flex-row justify-around gap-4">
+        {pin.map((digit, index) => (
+          <View className="flex-1" key={index}>
             <TextInput
               autoFocus={index === 0}
-              ref={key}
-              editable={pin.includes("")}
-              onTextInput={handleTextInput(index)}
-              onChange={handleChange(index)}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
+              value={digit}
+              editable={!isComplete}
+              onKeyPress={handleKeyPress(index)}
+              onChangeText={handleChangeText(index)}
               onFocus={handleFocus(index)}
               placeholder="⦚"
+              placeholderTextColor={theme["100"] + "70"}
               maxLength={1}
               keyboardType="numeric"
               inputMode="numeric"
-              accessibilityLabel={`enter pin code digit ${index + 1} of 4`}
-              className="p-4 text-center text-5xl font-extrabold"
-              style={{ color: theme["100"] }}
+              accessibilityLabel={`enter pin code digit ${index + 1} of ${PIN_LENGTH}`}
+              className="p-4 text-5xl font-extrabold"
+              style={inputStyle}
             />
             <View
               className="border-2"
               style={{
-                borderColor: theme[pin.indexOf("") === index ? "500" : "100"],
+                borderColor:
+                  theme[pin.indexOf("") === index ? "500" : "100"],
               }}
             />
           </View>
         ))}
       </View>
-      <Button variant="text" title="clear code" onPress={reset} disabled={isFetching} />
+      <Button
+        variant="text"
+        title="clear code"
+        onPress={reset}
+        disabled={isFetching}
+      />
     </PageTemplate>
   );
 };

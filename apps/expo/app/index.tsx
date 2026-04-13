@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 import { Stack, useRouter } from "expo-router";
 import * as SystemUI from "expo-system-ui";
@@ -6,10 +5,12 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { Animated, View } from "react-native";
 
 import { Button, Logo, Typography } from "../src/components";
-import { useAuth } from "../src/providers";
+import { useAuth, useTheme } from "../src/providers";
+import { toast } from "../src/utils";
 
 const Index = () => {
   const { signIn, user, isLoading } = useAuth();
+  const theme = useTheme();
   const { replace } = useRouter();
 
   const colorAnimation = useRef(new Animated.Value(0)).current;
@@ -66,7 +67,10 @@ const Index = () => {
       toValue: 1,
       duration: AnimationSpeed.Fast,
       useNativeDriver: false,
-    }).start(() => replace("/home"));
+    }).start(() => {
+      toast.hide("gathering-account");
+      replace("/home");
+    });
   }, [user, notSignedInAnimation, signedInAnimation, replace])
 
   useEffect(() => {

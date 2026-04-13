@@ -1,8 +1,9 @@
 import { useEffect, useState, type FC } from "react";
 import { View, type ViewProps } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { theme } from "@fissa/tailwind-config";
 import { cva, differenceInMilliseconds, type VariantProps } from "@fissa/utils";
+
+import { useTheme } from "../../providers";
 
 export const ProgressBar: FC<Props> = ({
   expectedEndTime,
@@ -11,6 +12,7 @@ export const ProgressBar: FC<Props> = ({
   inverted,
   className,
 }) => {
+  const theme = useTheme();
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -41,14 +43,13 @@ export const ProgressBar: FC<Props> = ({
         disabled: Boolean(disabled) || !progress,
         className,
       })}
-      style={{ backgroundColor: theme[inverted ? "900" : "100"] + "20" }}
+      style={{ backgroundColor: theme[inverted ? "900" : "100"] + "20", height: 6 }}
     >
       <LinearGradient
         start={[0, 0]}
         end={[1, 1]}
         colors={inverted ? [theme["900"]] : theme.gradient}
-        className="h-1.5 rounded-r-md"
-        style={{ flex: progress }}
+        style={{ height: 6, borderTopRightRadius: 6, borderBottomRightRadius: 6, flex: progress }}
       />
     </View>
   );

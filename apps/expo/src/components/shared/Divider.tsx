@@ -1,8 +1,10 @@
 import { type FC } from "react";
 import { View } from "react-native";
-import { theme } from "@fissa/tailwind-config";
+
+import { useTheme } from "../../providers";
 
 export const Divider: FC<Props> = ({ inverted }) => {
+  const theme = useTheme();
   return (
     <View
       className="my-4 h-[1] w-full"

@@ -1,10 +1,11 @@
 import { useEffect, useRef, type FC } from "react";
 import { Animated } from "react-native";
-import { theme } from "@fissa/tailwind-config";
 
+import { useTheme } from "../../providers";
 import { Typography } from "./Typography";
 
 export const Badge: FC<Props> = ({ amount, inverted }) => {
+  const theme = useTheme();
   const amountRef = useRef(amount);
   const amountAnimation = useRef(new Animated.Value(0)).current;
 

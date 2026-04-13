@@ -1,6 +1,12 @@
-export { authOptions } from "./src/auth-options";
-export { getServerSession } from "./src/get-session";
-export type { Session } from "next-auth";
-import NextAuth from 'next-auth';
+export { auth } from "./src/auth";
+export { getSession } from "./src/get-session";
 
-export default NextAuth
+export type Session = {
+  expires: string;
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+    image: string | null;
+  };
+};

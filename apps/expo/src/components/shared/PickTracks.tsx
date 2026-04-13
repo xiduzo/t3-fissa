@@ -1,7 +1,6 @@
-import { theme } from "@fissa/tailwind-config";
-import { AnimationSpeed, getPlaylistTracks, useDebounceValue, useSpotify } from "@fissa/utils";
+import { AnimationSpeed, useDebounceValue, useSpotify } from "@fissa/utils";
 import { Stack, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState, type FC } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FC } from "react";
 import {
     View,
     type NativeSyntheticEvent,
@@ -9,7 +8,9 @@ import {
     type TextInputChangeEventData,
 } from "react-native";
 
-import { type FlashList } from "@shopify/flash-list";
+import { type FlashListRef } from "@shopify/flash-list";
+import { useTheme } from "../../providers";
+import { usePlaylistTracks } from "../../hooks";
 import { PageTemplate } from "../PageTemplate";
 import { BottomDrawer } from "./BottomDrawer";
 import { EmptyState } from "./EmptyState";
@@ -22,26 +23,38 @@ import { Typography } from "./Typography";
 import { Button, ButtonGroup, IconButton } from "./button";
 
 export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks }) => {
+  const theme = useTheme();
   const { back } = useRouter();
   const spotify = useSpotify();
 
   const inputRef = useRef<TextInput>(null);
   const [search, setSearch] = useState("");
   const [debounced] = useDebounceValue(search, 150);
-  const ref = useRef<FlashList<SpotifyApi.TrackObjectFull>>(null);
-
-  const playlistTracks = useRef<SpotifyApi.TrackObjectFull[]>([]);
+  const ref = useRef<FlashListRef<SpotifyApi.TrackObjectFull>>(null);
 
   const [searchedTracks, setSearchedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
   const [selectedTracks, setSelectedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
-  const [filteredTracks, setFilteredTracks] = useState<SpotifyApi.TrackObjectFull[]>([]);
 
   const [selectedPlaylist, setSelectedPlaylist] =
     useState<SpotifyApi.PlaylistObjectSimplified | null>(null);
 
+  // TanStack Query handles caching + persistence via SQLite
+  const { data: playlistTracks = [], isFetching: isFetchingPlaylistTracks } = usePlaylistTracks(selectedPlaylist?.id ?? null);
+
+  const filteredTracks = useMemo(() => {
+    if (!selectedPlaylist) return [];
+    if (!debounced) return playlistTracks;
+    const q = debounced.toLowerCase();
+    return playlistTracks.filter((track) => {
+      if (track.name?.toLowerCase().includes(q)) return true;
+      if (track.artists.some((a) => a.name?.toLowerCase().includes(q))) return true;
+      if (track.album.name?.toLowerCase().includes(q)) return true;
+      return false;
+    });
+  }, [selectedPlaylist, debounced, playlistTracks]);
+
   const clearSelectedPlaylist = useCallback(() => {
     setSelectedPlaylist(null);
-    playlistTracks.current = [];
     setSearch("");
   }, []);
 
@@ -61,49 +74,22 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
       if (mappedPrev.includes(track.id)) {
         return prev.filter((prevTrack) => prevTrack.id !== track.id);
       }
-
       return [...prev, track];
     });
   }, []);
 
+  // Spotify search (only when no playlist is selected)
   useEffect(() => {
-    if (!selectedPlaylist) {
-      if (!debounced) return setSearchedTracks([]);
-      void spotify.search(debounced, ["track"]).then(({ tracks }) => {
-        setSearchedTracks(tracks?.items ?? []);
-      });
-      return;
-    }
-
-    if (!debounced) return setFilteredTracks(playlistTracks.current);
-    setFilteredTracks(
-      playlistTracks.current.filter((track) => {
-        const nameMatch = track.name?.toLowerCase().includes(debounced?.toLowerCase());
-        if (nameMatch) return nameMatch;
-
-        const artistMatch = track.artists.some((artist) =>
-          artist.name?.toLowerCase().includes(debounced?.toLowerCase()),
-        );
-        if (artistMatch) return artistMatch;
-
-        const albumMatch = track.album.name?.toLowerCase().includes(debounced?.toLowerCase());
-        if (albumMatch) return albumMatch;
-      }),
-    );
-  }, [debounced, selectedPlaylist, spotify, playlistTracks]);
-
-  useEffect(() => {
-    if (!selectedPlaylist) return;
-
-    void getPlaylistTracks(selectedPlaylist.id, spotify, (newTracks) => {
-      playlistTracks.current = newTracks;
-      setFilteredTracks([...newTracks]);
+    if (selectedPlaylist) return;
+    if (!debounced) return setSearchedTracks([]);
+    void spotify.search(debounced, ["track"]).then(({ tracks }) => {
+      setSearchedTracks(tracks?.items ?? []);
     });
-  }, [selectedPlaylist, spotify]);
+  }, [debounced, selectedPlaylist, spotify]);
 
   useEffect(() => {
     ref.current?.scrollToIndex({ index: 0, animated: true });
-  }, [searchedTracks])
+  }, [searchedTracks]);
 
   return (
     <>
@@ -122,7 +108,7 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                     onPress={clearSelectedPlaylist}
                   />
                 )}
-                <View className="grow">
+                <View className="mr-3 shrink grow">
                   <Input
                     startIcon="search"
                     ref={inputRef}
@@ -139,10 +125,17 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
         />
         <View className="h-full w-full">
           <TrackList
-            data={searchedTracks}
+            data={selectedPlaylist ? filteredTracks : searchedTracks}
             ref={ref}
             selectedTracks={selectedTracks.map((track) => track.id)}
             onTrackPress={handleTrackPress}
+            ListHeaderComponent={
+              selectedPlaylist ? (
+                <View className="m-6">
+                  <PlaylistListItem playlist={selectedPlaylist} bigImage />
+                </View>
+              ) : undefined
+            }
             ListFooterComponent={<View className="pb-72" />}
             ListEmptyComponent={
               <View>
@@ -159,20 +152,8 @@ export const PickTracks: FC<Props> = ({ disabledAction, actionTitle, onAddTracks
                     />
                   </>
                 )}
-                {selectedPlaylist && (
-                  <>
-                    <View className="m-6">
-                      <PlaylistListItem playlist={selectedPlaylist} bigImage />
-                    </View>
-                    <TrackList
-                      data={filteredTracks}
-                      onTrackPress={handleTrackPress}
-                      selectedTracks={selectedTracks.map((track) => track.id)}
-                      ListEmptyComponent={
-                        <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
-                      }
-                    />
-                  </>
+                {selectedPlaylist && isFetchingPlaylistTracks && (
+                  <EmptyState icon="🐕" title="Fetching songs" subtitle="good boy" />
                 )}
               </View>
             }

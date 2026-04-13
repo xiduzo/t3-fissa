@@ -6,8 +6,14 @@
   "license": "MIT",
   "files": [
     "index.js",
-    "postcss.js"
+    "postcss.js",
+    "themes.ts"
   ],
+  "exports": {
+    ".": "./index.js",
+    "./postcss": "./postcss.js",
+    "./themes": "./themes.ts"
+  },
   "devDependencies": {
     "autoprefixer": "10.4.19",
     "postcss": "8.4.38",

@@ -1,13 +1,16 @@
-import { theme } from "@fissa/tailwind-config";
 import { cva, type VariantProps } from "@fissa/utils";
 import { type FC } from "react";
-import { SafeAreaView, View, type ViewProps } from "react-native";
+import { View, type ViewProps } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { useTheme } from "../providers";
 
 export const PageTemplate: FC<Props> = ({ children, className, fullScreen, ...props }) => {
+  const theme = useTheme();
   const Wrapper = fullScreen ? View : SafeAreaView;
 
   return (
-    <Wrapper style={{ backgroundColor: theme["900"] }}>
+    <Wrapper style={{ flex: 1, backgroundColor: theme["900"] }}>
       <View {...props} className={pageTemplate({ className, fullScreen })}>
         {children}
       </View>

@@ -36,7 +36,7 @@ export class Toaster {
     throw new NotImplemented();
   }
 
-  public hide() {
+  public hide(_id?: string) {
     throw new NotImplemented();
   }
 }
@@ -47,4 +47,5 @@ export interface ToasterProps {
   icon?: string;
   message: string;
   duration?: number;
+  id?: string;
 }

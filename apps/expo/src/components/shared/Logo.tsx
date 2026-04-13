@@ -1,7 +1,8 @@
 import { type FC } from "react";
 import { Animated, StyleSheet, type RegisteredStyle, type ViewStyle } from "react-native";
 import LottieView, { type AnimationObject } from "lottie-react-native";
-import { theme } from "@fissa/tailwind-config";
+
+import { useTheme } from "../../providers";
 
 type Source =
   | string
@@ -13,6 +14,7 @@ type Source =
 const AnimatedLottieView = Animated.createAnimatedComponent(LottieView)
 
 export const Logo: FC<Props> = ({ viewStyle, ...props }) => {
+  const theme = useTheme();
   const style = [viewStyle, styles.commonStyling];
 
   switch (theme.name) {

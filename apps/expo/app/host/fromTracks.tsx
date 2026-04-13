@@ -4,7 +4,7 @@ import { PickTracks } from "../../src/components";
 import { useCreateFissa } from "../../src/hooks";
 
 const FromTracks = () => {
-  const { mutateAsync, isLoading } = useCreateFissa();
+  const { mutateAsync, isPending } = useCreateFissa();
 
   const handleAddTracks = useCallback(
     async (tracks: SpotifyApi.TrackObjectFull[]) => {
@@ -16,7 +16,7 @@ const FromTracks = () => {
   return (
     <PickTracks
       onAddTracks={handleAddTracks}
-      disabledAction={isLoading}
+      disabledAction={isPending}
       actionTitle="Start fissa"
     />
   );

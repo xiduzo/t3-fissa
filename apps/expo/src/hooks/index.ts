@@ -5,4 +5,5 @@ export * from "./useIsOwner";
 export * from "./useOnActiveApp";
 export * from "./useShareFissa";
 export * from "./useSkipTrack";
+export * from "./useSpotifyQuery";
 export * from "./useSwipe";

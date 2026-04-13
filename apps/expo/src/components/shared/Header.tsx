@@ -1,4 +1,3 @@
-import { theme } from "@fissa/tailwind-config";
 import { type NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, type FC } from "react";
@@ -6,10 +5,12 @@ import { Animated, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AnimationSpeed } from "@fissa/utils";
+import { useTheme } from "../../providers";
 import { Typography } from "./Typography";
 import { IconButton } from "./button";
 
 export const Header: FC<NativeStackHeaderProps> = (props) => {
+  const theme = useTheme();
   const backButtonAnimation = useRef(new Animated.Value(0)).current;
 
   const { back } = useRouter();
@@ -32,11 +33,10 @@ export const Header: FC<NativeStackHeaderProps> = (props) => {
 
   return (
     <View
-      className="flex-row items-center justify-between space-x-2 px-6 pb-2 shadow-md"
+      className="flex-row items-center justify-between gap-2 px-6 pb-2"
       style={{
         backgroundColor: theme["900"],
         paddingTop: safeArea.top + 8,
-        shadowColor: theme["900"],
       }}
     >
       {!!props.options.headerRight && !props.options.title && !props.options.headerLeft && (

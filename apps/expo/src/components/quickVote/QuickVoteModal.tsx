@@ -1,34 +1,24 @@
 import { useContext, useEffect, useMemo, useRef, type FC } from "react";
-import { Animated, Dimensions, Modal, View, type GestureResponderEvent } from "react-native";
+import { Animated, Dimensions, Modal, StyleSheet, type GestureResponderEvent } from "react-native";
 import { selectionAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { useGlobalSearchParams } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
-import { api } from "../../utils";
+import { useTheme } from "../../providers";
 import { Action, Badge, TrackEnd, TrackListItem } from "../shared";
 import { QuickVoteContext } from "./QuickVoteContext";
 
 const windowHeight = Dimensions.get("window").height;
 const windowCenter = windowHeight / 2;
 
-export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
-  const { pin } = useGlobalSearchParams();
+export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes, userVoteMap }) => {
+  const theme = useTheme();
   const { vote, touchStartPosition, track } = useContext(QuickVoteContext);
 
   const focussedAnimation = useRef(new Animated.Value(0)).current;
   const actionOpacityAnimation = useRef(new Animated.Value(0)).current;
 
-  const { data } = api.vote.byTrackFromUser.useQuery(
-    {
-      pin: String(pin),
-      trackId: String(track?.id),
-    },
-    {
-      enabled: !!track,
-    },
-  );
+  const userVote = track ? userVoteMap?.get(track.id) : undefined;
 
   const opacity = focussedAnimation.interpolate({
     inputRange: [-Math.abs(touchStartPosition), 0],
@@ -76,16 +66,16 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
   }, [track, focussedAnimation, actionOpacityAnimation, touchStartPosition]);
 
   const upVoteGradient = useMemo(() => {
-    const isUpVote = vote === 1 || (data?.vote === 1 && vote !== -1);
+    const isUpVote = vote === 1 || (userVote === 1 && vote !== -1);
 
-    return [theme[isUpVote ? "100" : "900"] + "20", theme["900"] + "10"];
-  }, [vote, data?.vote]);
+    return [theme[isUpVote ? "100" : "900"] + "20", theme["900"] + "10"] as const;
+  }, [vote, userVote, theme]);
 
   const downVoteGradient = useMemo(() => {
-    const isDownVote = vote === -1 || (data?.vote === -1 && vote !== 1);
+    const isDownVote = vote === -1 || (userVote === -1 && vote !== 1);
 
-    return [theme["900"] + "10", theme[isDownVote ? "100" : "900"] + "20"];
-  }, [vote, data?.vote]);
+    return [theme["900"] + "10", theme[isDownVote ? "100" : "900"] + "20"] as const;
+  }, [vote, userVote, theme]);
 
   return (
     <Modal
@@ -96,12 +86,13 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
       // But if the track doesn't fire the user still needs a way out
       onTouchEnd={onTouchEnd}
     >
-      <Animated.View className="absolute inset-0" style={{ opacity }} />
-      <View
-        className="h-full justify-center"
-        style={{ backgroundColor: theme["900"], opacity: 0.95 }}
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFillObject,
+          { backgroundColor: theme["900"], opacity, flex: 1, justifyContent: "center" },
+        ]}
       >
-        <LinearGradient className="flex-1 justify-center" colors={upVoteGradient}>
+        <LinearGradient style={{ flex: 1, justifyContent: "center" }} colors={upVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -112,7 +103,7 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
               layout="column"
               title="Up-vote song"
               icon="arrow-up"
-              active={data?.vote === 1}
+              active={userVote === 1}
             />
           </Animated.View>
         </LinearGradient>
@@ -121,11 +112,11 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
             <TrackListItem
               track={track}
               subtitlePrefix={<Badge amount={getTrackVotes(track)} />}
-              end={<TrackEnd trackId={track.id} pin={String(pin)} />}
+              end={<TrackEnd vote={userVote} />}
             />
           )}
         </Animated.View>
-        <LinearGradient className="flex-1 justify-center" colors={downVoteGradient}>
+        <LinearGradient style={{ flex: 1, justifyContent: "center" }} colors={downVoteGradient}>
           <Animated.View
             style={{
               opacity: actionOpacityAnimation,
@@ -135,13 +126,13 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
             <Action
               layout="column"
               reversed
-              active={data?.vote === -1}
+              active={userVote === -1}
               icon="arrow-down"
               title="Down-vote song"
             />
           </Animated.View>
         </LinearGradient>
-      </View>
+      </Animated.View>
     </Modal>
   );
 };
@@ -149,4 +140,5 @@ export const QuickVoteModal: FC<Props> = ({ onTouchEnd, getTrackVotes }) => {
 interface Props {
   onTouchEnd?: (event: GestureResponderEvent) => void;
   getTrackVotes: (track: SpotifyApi.TrackObjectFull) => number | undefined;
+  userVoteMap?: Map<string, number>;
 }

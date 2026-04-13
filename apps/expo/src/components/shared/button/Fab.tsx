@@ -2,13 +2,14 @@ import { useCallback, useEffect, useRef, type FC } from "react";
 import { Animated, TouchableHighlight, type GestureResponderEvent } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { theme } from "@fissa/tailwind-config";
 import { AnimationSpeed } from "@fissa/utils";
 
+import { useTheme } from "../../../providers";
 import { Icon } from "../Icon";
 import { type IconButtonProps } from "./IconButton";
 
 export const Fab: FC<Props> = ({ icon, ...props }) => {
+  const theme = useTheme();
   const { onPress, linkTo } = props;
   const shownAnimation = useRef(new Animated.Value(0)).current;
 
@@ -31,20 +32,22 @@ export const Fab: FC<Props> = ({ icon, ...props }) => {
     }).start();
   }, [shownAnimation]);
 
+  const size = 56;
+
   return (
     <TouchableHighlight
       accessibilityLabel={props.title}
       accessibilityRole="button"
       {...props}
-      className="absolute bottom-6 right-6 z-50 flex h-14 w-14 rounded-2xl shadow-xl md:bottom-16"
+      style={{ position: "absolute", bottom: 24, right: 24, zIndex: 50, width: size, height: size, borderRadius: size / 2 }}
       onPress={handlePress}
     >
-      <Animated.View style={{ transform: [{ scale: shownAnimation }] }}>
+      <Animated.View style={{ width: size, height: size, borderRadius: size / 2, transform: [{ scale: shownAnimation }] }}>
         <LinearGradient
-          colors={theme.gradient}
+          colors={theme.gradient as [string, string, ...string[]]}
           start={[0, 0]}
           end={[1, 1]}
-          className="h-full w-full items-center justify-center rounded-2xl"
+          style={{ width: size, height: size, borderRadius: size / 2, alignItems: "center", justifyContent: "center" }}
         >
           <Icon name={icon} />
         </LinearGradient>

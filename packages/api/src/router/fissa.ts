@@ -1,49 +1,40 @@
-import { SpotifyService } from "@fissa/utils";
-
-import { BadgeService } from "../service/BadgeService";
-import { FissaService } from "../service/FissaService";
+import { createContainer } from "../container";
 import { createTRPCRouter, protectedProcedure, publicProcedure, serviceProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
 const sync = createTRPCRouter({
   active: serviceProcedure.query(({ ctx }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.activeFissas();
+    return createContainer(ctx).fissaService.activeFissas();
   }),
   next: serviceProcedure.input(Z_PIN).mutation(async ({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.playNextTrack(input);
+    return createContainer(ctx).fissaService.playNextTrack(input);
   }),
 });
 
 export const fissaRouter = createTRPCRouter({
   activeFissaCount: publicProcedure.query(({ ctx }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.activeFissasCount();
+    return createContainer(ctx).fissaService.activeFissasCount();
   }),
   skipTrack: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.skipTrack(input, ctx.session.user.id);
+    return createContainer(ctx).fissaService.skipTrack(input, ctx.session.user.id);
   }),
   restart: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.restart(input, ctx.session.user.id);
+    return createContainer(ctx).fissaService.restart(input, ctx.session.user.id);
   }),
   create: protectedProcedure.input(Z_TRACKS).mutation(({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.create(input, ctx.session.user.id);
+    return createContainer(ctx).fissaService.create(input, ctx.session.user.id);
   }),
   byId: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.byId(input, ctx.session?.user.id);
+    return createContainer(ctx).fissaService.byId(input);
+  }),
+  join: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
+    return createContainer(ctx).fissaService.join(input, ctx.session.user.id);
   }),
   members: publicProcedure.input(Z_PIN).query(({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.members(input);
+    return createContainer(ctx).fissaService.members(input);
   }),
   pause: protectedProcedure.input(Z_PIN).mutation(({ ctx, input }) => {
-    const service = new FissaService(ctx, new SpotifyService(), new BadgeService(ctx));
-    return service.pause(input, ctx.session.user.id);
+    return createContainer(ctx).fissaService.pause(input, ctx.session.user.id);
   }),
   sync,
 });

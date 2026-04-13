@@ -1,10 +1,9 @@
-import { theme } from "@fissa/tailwind-config";
-import { useDevices, useSpotify } from "@fissa/utils";
+import { useSpotify } from "@fissa/utils";
 import Slider from "@react-native-community/slider";
 import { NotificationFeedbackType, notificationAsync } from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
-import { useCallback, useState, type FC } from "react";
+import { useCallback, useEffect, useState, type FC } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import {
@@ -18,10 +17,12 @@ import {
   Settings,
   Typography,
 } from "../../../src/components";
-import { useIsOwner, useOnActiveApp, useShareFissa } from "../../../src/hooks";
+import { useIsOwner, useOnActiveApp, useShareFissa, useSpotifyDevices } from "../../../src/hooks";
+import { useTheme } from "../../../src/providers";
 import { api, mapDeviceToIcon, toast } from "../../../src/utils";
 
 const Fissa = () => {
+  const theme = useTheme();
   const { pin } = useGlobalSearchParams();
   const { replace } = useRouter();
 
@@ -34,6 +35,12 @@ const Fissa = () => {
       replace("/home");
     },
   });
+
+  // Join the fissa once on mount (fire-and-forget)
+  const { mutate: joinFissa } = api.fissa.join.useMutation();
+  useEffect(() => {
+    if (pin) joinFissa(String(pin));
+  }, [pin, joinFissa]);
 
   if (!pin) return null;
 
@@ -91,18 +98,19 @@ const HeaderLeft: FC = () => {
 };
 
 const SpeakerButton = () => {
+  const theme = useTheme();
   const spotify = useSpotify();
   const { pin } = useGlobalSearchParams();
   const isOwner = useIsOwner(String(pin));
 
-  const { activeDevice, fetchDevices } = useDevices(isOwner);
+  const { activeDevice, refetch: fetchDevices } = useSpotifyDevices(isOwner);
 
   // TODO: this call might be an unnecessary extra call even though it increases the UX.
   //       If the user decided to change the device outside of the app we are not aware of it.
   //       In this case re-fetching the devices should make sure we are aware of the current state.
   useOnActiveApp(() => {
     // We only need to fetch the devices if the user is the owner of the fissa
-    isOwner && fetchDevices();
+    if (isOwner) void fetchDevices();
   });
 
   const [selectDevice, setSelectDevice] = useState(false);
@@ -127,7 +135,7 @@ const SpeakerButton = () => {
           message: `Failed to connect to ${device.name}`,
         });
       } finally {
-        fetchDevices();
+        void fetchDevices();
       }
     },
     [spotify, fetchDevices, toggleSelectDevice],
@@ -158,7 +166,7 @@ const SpeakerButton = () => {
       <Popover visible={selectDevice} onRequestClose={toggleSelectDevice}>
         <SelectDevice onSelectDevice={handleDeviceSelect} inverted />
         {activeDevice && (
-          <View className="space-y-6 py-4">
+          <View className="gap-6 py-4">
             <Slider
               minimumValue={0}
               maximumValue={100}

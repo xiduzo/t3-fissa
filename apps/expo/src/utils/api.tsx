@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import Constants from "expo-constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@fissa/api";
-import { transformer } from "@fissa/api/transformer";
+import superjson from "superjson";
 
 // relative path import to prevent circular dependency
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
+import { sqliteStorage } from "./sqlite-storage";
 
 /**
  * A set of type-safe hooks for consuming your API.
@@ -28,24 +31,30 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 /**
- * Extend this function when going to production by
- * setting the baseUrl to your production API URL.
+ * Extends this function when going to production by
+ * setting the SERVER_URL to your production API URL.
  */
 const getBaseUrl = () => {
-  /**
-   * Gets the IP address of your host-machine. If it cannot automatically find it,
-   * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
-   * you don't have anything else running on it, or you'd have to change it.
-   */
-  const config = Constants.expoConfig as { hostUri?: string; extra?: { vercelUrl?: string } };
+  const config = Constants.expoConfig as { hostUri?: string; extra?: { serverUrl?: string } };
 
+  // Prefer the explicitly configured server URL (production or custom)
+  if (config.extra?.serverUrl) return config.extra.serverUrl;
+  if (process.env.SERVER_URL) return process.env.SERVER_URL;
+
+  // Fall back to local dev server on the same machine as Expo
   const localhost = config.hostUri?.split(":")[0];
-  if (!localhost) {
-    return process.env.VERCEL_URL ?? config.extra?.vercelUrl;
-  }
+  if (localhost) return `http://${localhost}:3000`;
 
-  return `http://${localhost}:3000`;
+  return "http://localhost:3000";
 };
+
+/** 24 hours — how long persisted query data survives. */
+const CACHE_TIME_MS = 24 * 60 * 60 * 1000;
+
+const queryPersister = createAsyncStoragePersister({
+  storage: sqliteStorage,
+  key: "fissa-query-cache",
+});
 
 /**
  * A wrapper for your app that provides the TRPC context.
@@ -54,17 +63,47 @@ const getBaseUrl = () => {
 export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { getValueFor } = useEncryptedStorage(ENCRYPTED_STORAGE_KEYS.sessionToken);
 
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(() => {
+    const client = new QueryClient({
+      defaultOptions: {
+        queries: {
+          gcTime: CACHE_TIME_MS,
+          staleTime: 30_000,
+          refetchOnReconnect: "always",
+          retry: (failureCount, error) => {
+            // Don't retry on 4xx client errors, do retry network failures up to 3 times
+            if (error instanceof Error && "data" in error) return false;
+            return failureCount < 3;
+          },
+        },
+        mutations: {
+          retry: false,
+          onError: (error) => {
+            console.warn("[tRPC mutation error]", error);
+          },
+        },
+      },
+    });
+
+    // Restore cache from SQLite in the background — does NOT block rendering
+    void persistQueryClient({
+      queryClient: client,
+      persister: queryPersister,
+      maxAge: CACHE_TIME_MS,
+    });
+
+    return client;
+  });
 
   const [trpcClient] = useState(() =>
     api.createClient({
-      transformer,
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
+          transformer: superjson,
           headers: async () => {
             return {
-              authorization: (await getValueFor()) ?? "",
+              authorization: `Bearer ${(await getValueFor()) ?? ""}`,
             };
           },
         }),
@@ -74,7 +113,9 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
     </api.Provider>
   );
 };

@@ -3,20 +3,23 @@ import { notificationAsync, NotificationFeedbackType } from "expo-haptics";
 import { api } from "../utils";
 
 export const useCreateVote = (pin: string) => {
-  const queryClient = api.useContext();
+  const queryClient = api.useUtils();
 
   const { mutate, mutateAsync, ...rest } = api.vote.create.useMutation({
     onMutate: async ({ pin, trackId, vote }) => {
       await queryClient.fissa.byId.cancel(pin);
 
-      const previousVote = queryClient.vote.byTrackFromUser.getData({ pin, trackId });
+      const previousVotes = queryClient.vote.byFissaFromUser.getData(pin);
 
-      queryClient.vote.byTrackFromUser.setData({ pin, trackId }, () => ({
-        pin,
-        trackId,
-        vote,
-        userId: "", // Does not matter, will be set on the server
-      }));
+      // Optimistically update the batched user votes
+      queryClient.vote.byFissaFromUser.setData(pin, (prev) => {
+        if (!prev) return prev;
+        const existing = prev.find((v) => v.trackId === trackId);
+        if (existing) {
+          return prev.map((v) => (v.trackId === trackId ? { ...v, vote } : v));
+        }
+        return [...prev, { pin, trackId, vote, userId: "" }];
+      });
 
       queryClient.fissa.byId.setData(
         pin,
@@ -24,22 +27,25 @@ export const useCreateVote = (pin: string) => {
           prev && {
             ...prev,
             tracks: prev.tracks.map((track) => {
-              if (track.trackId === trackId) {
-                track.score += vote - (previousVote?.vote ?? 0);
+              if (track.trackId !== trackId) return track;
+
+              const previousVote = previousVotes?.find((v) => v.trackId === trackId)?.vote ?? 0;
+              return {
+                ...track,
+                score: track.score + vote - previousVote,
                 // Replaying a track just gives it a vote,
                 // Make sure to reset the hasBeenPlayed flag
-                track.hasBeenPlayed = false;
-              }
-              return track;
+                hasBeenPlayed: false,
+              };
             }),
           },
       );
 
       await notificationAsync(NotificationFeedbackType[vote > 0 ? "Success" : "Warning"]);
     },
-    onSettled: async (_data, _, { pin, trackId }) => {
+    onSettled: async (_data, _, { pin }) => {
       await queryClient.fissa.byId.invalidate(pin);
-      await queryClient.vote.byTrackFromUser.invalidate({ pin, trackId });
+      await queryClient.vote.byFissaFromUser.invalidate(pin);
     },
   });
 

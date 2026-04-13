@@ -4,7 +4,7 @@ export const useSkipTrack = (
   pin: string,
   options: Parameters<typeof api.fissa.skipTrack.useMutation>[0] = {},
 ) => {
-  const queryClient = api.useContext();
+  const queryClient = api.useUtils();
 
   const { mutate, mutateAsync, ...rest } = api.fissa.skipTrack.useMutation({
     ...options,
