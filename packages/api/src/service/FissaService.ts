@@ -164,7 +164,7 @@ export class FissaService {
     });
   };
 
-  playNextTrack = async (pin: string, forceToPlay = false) => {
+  playNextTrack = async (pin: string, forceToPlay = false): Promise<Date | null> => {
     const fissaDetails = await this.fissaRepo.findDetailedForSync(pin);
     const { by, trackList: fissaTracks, currentlyPlaying, expectedEndTime } = fissaDetails;
 
@@ -188,10 +188,11 @@ export class FissaService {
 
       const timeToPlay = forceToPlay ? new Date() : expectedEndTime;
       await sleep(differenceInMilliseconds(timeToPlay, new Date()));
-      await this.playTrack({ pin }, nextTrack as Track, accessToken, currentlyPlaying);
+      return await this.playTrack({ pin }, nextTrack as Track, accessToken, currentlyPlaying);
     } catch (e) {
       console.error(e);
       await this.stopFissa(pin, accessToken);
+      return null;
     }
   };
 
@@ -209,8 +210,9 @@ export class FissaService {
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
     currentlyPlaying?: { trackId?: string; by?: { userId: string } },
-  ) => {
+  ): Promise<Date | null> => {
     const playing = this.spotifyService.playTrack(accessToken, trackId);
+    const newExpectedEndTime = addMilliseconds(new Date(), durationMs);
 
     await this.db.transaction(async (tx) => {
       if (currentlyPlaying?.trackId) {
@@ -241,13 +243,12 @@ export class FissaService {
         }
       }
 
-      // Update currently playing inside the same transaction for atomicity
       await tx
         .update(fissas)
         .set({
           currentlyPlayingId: trackId,
           currentlyPlayingPin: pin,
-          expectedEndTime: addMilliseconds(new Date(), durationMs),
+          expectedEndTime: newExpectedEndTime,
         })
         .where(eq(fissas.pin, pin));
     });
@@ -261,6 +262,8 @@ export class FissaService {
 
       return this.playNextTrack(pin, true);
     }
+
+    return newExpectedEndTime;
   };
 
   private getNextTracks = (

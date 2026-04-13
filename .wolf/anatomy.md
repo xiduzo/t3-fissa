@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T21:49:05.425Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T22:08:32.691Z
 > Files: 508 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -294,7 +294,7 @@
 
 ## packages/api/src/orchestration/
 
-- `FissaSyncOrchestrator.ts` — Orchestrates background sync loops for active fissas. (~710 tok)
+- `FissaSyncOrchestrator.ts` — Orchestrates background sync loops for active fissas. (~1102 tok)
 
 ## packages/api/src/repository/
 
@@ -317,7 +317,7 @@
 
 - `AuthService.ts` — Exports AuthService (~815 tok)
 - `BadgeService.ts` — Exports BadgeService (~904 tok)
-- `FissaService.ts` — Exports TRACKS_BEFORE_ADDING_RECOMMENDATIONS, FissaService (~2673 tok)
+- `FissaService.ts` — Exports TRACKS_BEFORE_ADDING_RECOMMENDATIONS, FissaService (~2695 tok)
 - `TrackService.ts` — Exports TrackService (~304 tok)
 - `VoteService.ts` — Exports VoteService (~938 tok)
 
