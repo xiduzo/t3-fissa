@@ -70,6 +70,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     currentOffset: 0,
     isProgrammaticScroll: false,
   });
+  const userHasScrolledManually = useRef(false);
   const [scrollDirection, setScrollDirection] = useState<"up" | "down" | undefined>();
 
   const marginBottom = buttonOffsetAnimation.interpolate({
@@ -199,6 +200,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   }, [data?.expectedEndTime, context]);
 
   const scrollToCurrentIndex = useCallback(() => {
+      userHasScrolledManually.current = false;
       scrollState.current.isProgrammaticScroll = true;
       listRef?.current?.scrollToIndex({
         index: currentTrackIndex,
@@ -216,14 +218,12 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     [currentTrackIndex, showBackButton],
   );
 
-  // Stable ref so useOnActiveApp doesn't re-subscribe on every render
-  const scrollToCurrentIndexRef = useRef(scrollToCurrentIndex);
-  scrollToCurrentIndexRef.current = scrollToCurrentIndex;
-
   useEffect(() => {
     if (scrollState.current.lastScrolledTo === data?.currentlyPlayingId) return;
     if (!data?.currentlyPlayingId) return;
 
+    // Track changed — reset manual scroll flag so we always follow the new track
+    userHasScrolledManually.current = false;
     // Reset scroll direction so the button hides after a track change
     setScrollDirection(undefined);
 
@@ -235,7 +235,28 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     return () => task.cancel();
   }, [data?.currentlyPlayingId, scrollToCurrentIndex]);
 
-  useOnActiveApp(useCallback(() => scrollToCurrentIndexRef.current(), []));
+  // Re-scroll to active track on every refetch (same track, list may have reordered),
+  // but only if the user hasn't manually scrolled away.
+  useEffect(() => {
+    if (!data?.currentlyPlayingId) return;
+    // Let the track-change effect above handle new tracks
+    if (scrollState.current.lastScrolledTo !== data.currentlyPlayingId) return;
+    if (userHasScrolledManually.current) return;
+
+    const task = InteractionManager.runAfterInteractions(() => {
+      scrollToCurrentIndex();
+    });
+
+    return () => task.cancel();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]); // intentionally fires on every refetch
+
+  useOnActiveApp(useCallback(() => {
+    // App came to foreground — trigger a fresh fetch.
+    // The refetch-based scroll effect below will scroll to the active track
+    // once new data arrives (if the user hasn't manually scrolled away).
+    void context.fissa.byId.invalidate(pin);
+  }, [context, pin]));
 
   return (
     <>
@@ -244,6 +265,7 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
         onScrollBeginDrag={() => {
           // User started dragging — any programmatic scroll is effectively done
           scrollState.current.isProgrammaticScroll = false;
+          userHasScrolledManually.current = true;
         }}
         onScroll={({ nativeEvent }) => {
           // Don't show/hide the button while a programmatic scroll is animating

@@ -92,3 +92,17 @@
 | 22:37 | Session end: 2 writes across 2 files (FissaService.ts, SpotifyService.ts) | 3 reads | ~3980 tok |
 | 22:38 | Created packages/api/src/infrastructure/SpotifyService.ts | — | ~1084 |
 | 22:38 | Session end: 3 writes across 2 files (FissaService.ts, SpotifyService.ts) | 3 reads | ~5257 tok |
+
+## Session: 2026-04-13 23:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:32 | Edited apps/expo/src/components/pages/fissa/Tracks.tsx | 7→8 lines | ~92 |
+| 23:32 | Edited apps/expo/src/components/pages/fissa/Tracks.tsx | 17→18 lines | ~191 |
+| 23:32 | Edited apps/expo/src/components/pages/fissa/Tracks.tsx | added 3 condition(s) | ~430 |
+| 23:33 | Edited apps/expo/src/components/pages/fissa/Tracks.tsx | 4→5 lines | ~68 |
+| 23:33 | scroll-to-active: guard manual scroll, re-scroll on refetch, reset on app-active/track-change | apps/expo/src/components/pages/fissa/Tracks.tsx | done | ~400 |
+| 23:33 | Session end: 4 writes across 1 files (Tracks.tsx) | 2 reads | ~4496 tok |
+| 23:44 | Edited apps/expo/src/components/pages/fissa/Tracks.tsx | 5→6 lines | ~89 |
+| 23:44 | Edited apps/expo/src/components/pages/fissa/Tracks.tsx | removed 5 lines | ~4 |
+| 23:44 | Session end: 6 writes across 1 files (Tracks.tsx) | 2 reads | ~4589 tok |

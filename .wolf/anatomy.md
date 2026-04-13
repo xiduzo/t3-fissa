@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T20:38:40.302Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T21:44:26.792Z
 > Files: 508 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -117,7 +117,7 @@
 - `ListEmptyComponent.tsx` — ListEmptyComponent — uses useContext, useMutation, useCallback (~656 tok)
 - `ListFooterComponent.tsx` — ListFooterComponent (~142 tok)
 - `Settings.tsx` — Settings (~1148 tok)
-- `Tracks.tsx` — SCROLL_DISTANCE (~3606 tok)
+- `Tracks.tsx` — SCROLL_DISTANCE (~4762 tok)
 
 ## apps/expo/src/components/quickVote/
 

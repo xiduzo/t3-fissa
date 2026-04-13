@@ -1,50 +1,62 @@
 {
-  "session_id": "session-2026-04-13-2235",
-  "started": "2026-04-13T20:35:03.045Z",
+  "session_id": "session-2026-04-13-2330",
+  "started": "2026-04-13T21:30:11.611Z",
   "files_read": {
-    "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts": {
+    "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx": {
       "count": 1,
-      "tokens": 2667,
-      "first_read": "2026-04-13T20:35:14.145Z"
+      "tokens": 3606,
+      "first_read": "2026-04-13T21:30:48.012Z"
     },
-    "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts": {
-      "count": 2,
-      "tokens": 983,
-      "first_read": "2026-04-13T20:35:20.074Z"
-    },
-    "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/ISpotifyService.ts": {
+    "/Users/sander/personal/t3-fissa/apps/expo/src/hooks/useOnActiveApp.ts": {
       "count": 1,
-      "tokens": 224,
-      "first_read": "2026-04-13T20:37:04.392Z"
+      "tokens": 109,
+      "first_read": "2026-04-13T21:30:48.296Z"
     }
   },
   "files_written": [
     {
-      "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
       "action": "edit",
-      "tokens": 78,
-      "at": "2026-04-13T20:36:22.475Z"
+      "tokens": 92,
+      "at": "2026-04-13T21:32:29.889Z"
     },
     {
-      "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
       "action": "edit",
-      "tokens": 221,
-      "at": "2026-04-13T20:37:21.171Z"
+      "tokens": 191,
+      "at": "2026-04-13T21:32:41.953Z"
     },
     {
-      "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
-      "action": "create",
-      "tokens": 1084,
-      "at": "2026-04-13T20:38:40.309Z"
+      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+      "action": "edit",
+      "tokens": 430,
+      "at": "2026-04-13T21:32:53.360Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+      "action": "edit",
+      "tokens": 68,
+      "at": "2026-04-13T21:33:00.013Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+      "action": "edit",
+      "tokens": 89,
+      "at": "2026-04-13T21:44:06.290Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+      "action": "edit",
+      "tokens": 4,
+      "at": "2026-04-13T21:44:26.799Z"
     }
   ],
   "edit_counts": {
-    "packages/api/src/service/FissaService.ts": 1,
-    "packages/api/src/infrastructure/SpotifyService.ts": 2
+    "apps/expo/src/components/pages/fissa/Tracks.tsx": 6
   },
-  "anatomy_hits": 3,
+  "anatomy_hits": 2,
   "anatomy_misses": 0,
-  "repeated_reads_warned": 1,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 3
+  "stop_count": 2
 }

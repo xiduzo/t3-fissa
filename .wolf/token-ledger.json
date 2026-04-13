@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-10T17:27:26.117Z",
   "lifetime": {
-    "total_tokens_estimated": 54351,
-    "total_reads": 106,
-    "total_writes": 19,
-    "total_sessions": 13,
-    "anatomy_hits": 103,
+    "total_tokens_estimated": 63436,
+    "total_reads": 110,
+    "total_writes": 29,
+    "total_sessions": 14,
+    "anatomy_hits": 107,
     "anatomy_misses": 3,
     "repeated_reads_blocked": 4,
-    "estimated_savings_vs_bare_cli": 24693
+    "estimated_savings_vs_bare_cli": 25493
   },
   "sessions": [
     {
@@ -942,6 +942,114 @@
         "writes_count": 3,
         "repeated_reads_blocked": 1,
         "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-04-13-2330",
+      "started": "2026-04-13T21:30:11.611Z",
+      "ended": "2026-04-13T21:33:21.291Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 3606,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/hooks/useOnActiveApp.ts",
+          "tokens_estimated": 109,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 191,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 430,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 68,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3715,
+        "output_tokens_estimated": 781,
+        "reads_count": 2,
+        "writes_count": 4,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-04-13-2330",
+      "started": "2026-04-13T21:30:11.611Z",
+      "ended": "2026-04-13T21:44:33.034Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 3606,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/hooks/useOnActiveApp.ts",
+          "tokens_estimated": 109,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 191,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 430,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 68,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 89,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 4,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3715,
+        "output_tokens_estimated": 874,
+        "reads_count": 2,
+        "writes_count": 6,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
       }
     }
   ],
