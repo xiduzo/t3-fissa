@@ -1,62 +1,33 @@
 {
-  "session_id": "session-2026-04-13-2330",
-  "started": "2026-04-13T21:30:11.611Z",
+  "session_id": "session-2026-04-13-2346",
+  "started": "2026-04-13T21:46:27.660Z",
   "files_read": {
-    "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx": {
+    "/Users/sander/personal/t3-fissa/packages/api/src/orchestration/FissaSyncOrchestrator.ts": {
       "count": 1,
-      "tokens": 3606,
-      "first_read": "2026-04-13T21:30:48.012Z"
-    },
-    "/Users/sander/personal/t3-fissa/apps/expo/src/hooks/useOnActiveApp.ts": {
-      "count": 1,
-      "tokens": 109,
-      "first_read": "2026-04-13T21:30:48.296Z"
+      "tokens": 674,
+      "first_read": "2026-04-13T21:47:50.363Z"
     }
   },
   "files_written": [
     {
-      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/orchestration/FissaSyncOrchestrator.ts",
       "action": "edit",
-      "tokens": 92,
-      "at": "2026-04-13T21:32:29.889Z"
+      "tokens": 46,
+      "at": "2026-04-13T21:48:41.978Z"
     },
     {
-      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/orchestration/FissaSyncOrchestrator.ts",
       "action": "edit",
-      "tokens": 191,
-      "at": "2026-04-13T21:32:41.953Z"
-    },
-    {
-      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
-      "action": "edit",
-      "tokens": 430,
-      "at": "2026-04-13T21:32:53.360Z"
-    },
-    {
-      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
-      "action": "edit",
-      "tokens": 68,
-      "at": "2026-04-13T21:33:00.013Z"
-    },
-    {
-      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
-      "action": "edit",
-      "tokens": 89,
-      "at": "2026-04-13T21:44:06.290Z"
-    },
-    {
-      "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
-      "action": "edit",
-      "tokens": 4,
-      "at": "2026-04-13T21:44:26.799Z"
+      "tokens": 198,
+      "at": "2026-04-13T21:49:05.433Z"
     }
   ],
   "edit_counts": {
-    "apps/expo/src/components/pages/fissa/Tracks.tsx": 6
+    "packages/api/src/orchestration/FissaSyncOrchestrator.ts": 2
   },
-  "anatomy_hits": 2,
+  "anatomy_hits": 1,
   "anatomy_misses": 0,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 2
+  "stop_count": 1
 }

@@ -15,6 +15,7 @@ export interface IFissaSyncCaller {
 export class FissaSyncOrchestrator {
   private readonly SYNC_INTERVAL_MS = 55_000;
   private readonly WIGGLE_S = 5;
+  private readonly MIN_CHECK_DELAY_MS = 500;
 
   constructor(private readonly caller: IFissaSyncCaller) {}
 
@@ -68,13 +69,16 @@ export class FissaSyncOrchestrator {
 
       if (delay >= this.SYNC_INTERVAL_MS) return;
 
-      console.info(`[sync] ${fissa.pin} — next track in ${delay}ms`);
-
-      setTimeout(() => {
+      if (delay <= this.MIN_CHECK_DELAY_MS) {
         this.caller
           .playNextTrack(fissa.pin)
           .catch((err: unknown) => console.error(`[sync] ${fissa.pin} failed`, err));
-      }, Math.max(0, delay));
+        return;
+      }
+
+      console.info(`[sync] ${fissa.pin} — next track in ${delay}ms`);
+
+      setTimeout(() => this.scheduleNextTrack(fissa), delay / 2);
     } catch (err) {
       console.error(`[sync] ${fissa.pin} error`, err);
     }

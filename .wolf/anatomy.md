@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T21:44:26.792Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T21:49:05.425Z
 > Files: 508 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -294,7 +294,7 @@
 
 ## packages/api/src/orchestration/
 
-- `FissaSyncOrchestrator.ts` — Orchestrates background sync loops for active fissas. (~674 tok)
+- `FissaSyncOrchestrator.ts` — Orchestrates background sync loops for active fissas. (~710 tok)
 
 ## packages/api/src/repository/
 
