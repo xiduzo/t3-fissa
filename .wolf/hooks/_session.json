@@ -1,32 +1,12 @@
 {
-  "session_id": "session-2026-04-17-2005",
-  "started": "2026-04-17T18:05:35.207Z",
-  "files_read": {
-    "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts": {
-      "count": 1,
-      "tokens": 2765,
-      "first_read": "2026-04-17T18:05:50.015Z"
-    },
-    "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts": {
-      "count": 1,
-      "tokens": 1084,
-      "first_read": "2026-04-17T18:05:55.521Z"
-    }
-  },
-  "files_written": [
-    {
-      "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
-      "action": "edit",
-      "tokens": 100,
-      "at": "2026-04-17T18:07:14.003Z"
-    }
-  ],
-  "edit_counts": {
-    "packages/api/src/infrastructure/SpotifyService.ts": 1
-  },
-  "anatomy_hits": 2,
+  "session_id": "session-2026-04-17-2009",
+  "started": "2026-04-17T18:09:13.084Z",
+  "files_read": {},
+  "files_written": [],
+  "edit_counts": {},
+  "anatomy_hits": 0,
   "anatomy_misses": 0,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 1
+  "stop_count": 0
 }
