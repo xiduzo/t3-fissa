@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-13T22:20:21.643Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-17T18:07:13.983Z
 > Files: 508 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -279,7 +279,7 @@
 
 ## packages/api/src/infrastructure/
 
-- `SpotifyService.ts` — Exports SpotifyService (~1084 tok)
+- `SpotifyService.ts` — Exports SpotifyService (~1126 tok)
 
 ## packages/api/src/interfaces/
 

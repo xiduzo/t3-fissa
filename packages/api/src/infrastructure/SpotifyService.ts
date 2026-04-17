@@ -72,9 +72,14 @@ export class SpotifyService implements ISpotifyService {
 
     try {
       await this.withRetry(() => client.play({ uris: [`spotify:track:${trackId}`] }));
-      await sleep(1500);
-      const { body } = await client.getMyCurrentPlaybackState();
-      return body.is_playing;
+
+      for (let attempt = 0; attempt < 3; attempt++) {
+        await sleep(1000 * 2 ** attempt);
+        const { body } = await client.getMyCurrentPlaybackState();
+        if (body.is_playing && body.item?.id === trackId) return true;
+      }
+
+      return false;
     } catch (e: unknown) {
       if (trial > MAX_RETRIES) throw new UnableToPlayTrack("Could not play track");
 
