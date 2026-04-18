@@ -66,6 +66,10 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
     (t) => t.trackId === data.currentlyPlayingId,
   );
 
+  const upcomingTracks = data?.tracks?.filter(
+    (t) => !t.hasBeenPlayed && t.trackId !== data?.currentlyPlayingId,
+  ) ?? [];
+
   return (
     <Layout>
       <div className="flex min-h-screen flex-col">
@@ -81,7 +85,13 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
 
         {/* Upcoming tracks list slot */}
         <section data-testid="queue-upcoming" className="flex-1 px-4 py-4">
-          {/* Placeholder — upcoming tracks list wired in a later task */}
+          {upcomingTracks.length === 0 ? (
+            <p data-testid="queue-empty" className="text-center text-muted-foreground">
+              No upcoming tracks
+            </p>
+          ) : (
+            null /* Placeholder — upcoming tracks list wired in a later task */
+          )}
         </section>
 
         {/* Unauthenticated sign-in CTA slot */}

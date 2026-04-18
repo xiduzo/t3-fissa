@@ -423,3 +423,173 @@ describe("/fissa/$pin — Fissa-not-found and Fissa-ended states (Task #64)", ()
     expect(screen.queryByTestId("queue-signin-cta")).not.toBeInTheDocument();
   });
 });
+
+describe("/fissa/$pin — Empty queue state (Task #65)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Active Fissa with no upcoming tracks
+   *   Given a valid Fissa PIN with an active Fissa
+   *   And the Fissa has only one track which is currently playing
+   *   When the visitor navigates to /fissa/<pin>
+   *   Then an empty-queue message is shown in the queue area (data-testid="queue-empty")
+   */
+  it("shows empty-queue message when the only track is currently playing", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 0 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("queue-empty")).toBeInTheDocument();
+    expect(screen.getByTestId("queue-empty")).toHaveTextContent(/no upcoming tracks/i);
+  });
+
+  /**
+   * Scenario: Active Fissa where all tracks have been played
+   *   Given all tracks have hasBeenPlayed: true except the currently playing one
+   *   Then an appropriate empty-queue state is displayed
+   */
+  it("shows empty-queue message when all non-playing tracks have been played", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 0 },
+          { trackId: "track-2", hasBeenPlayed: true, durationMs: 180000, score: 0, totalScore: 0 },
+          { trackId: "track-3", hasBeenPlayed: true, durationMs: 200000, score: 0, totalScore: 0 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("queue-empty")).toBeInTheDocument();
+    expect(screen.getByTestId("queue-empty")).toHaveTextContent(/no upcoming tracks/i);
+  });
+
+  /**
+   * Scenario: Empty queue transitions to populated queue on next poll
+   *   When new tracks are added and next poll completes
+   *   Then data-testid="queue-empty" is NOT present when upcomingTracks.length > 0
+   */
+  it("does not show empty-queue message when there are upcoming tracks", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 0 },
+          { trackId: "track-2", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 0 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("queue-empty")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Empty-queue message must NOT appear when Fissa is loading
+   */
+  it("does not show empty-queue message while loading", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("queue-empty")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Empty-queue message must NOT appear when Fissa is not found
+   */
+  it("does not show empty-queue message when Fissa is not found", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      error: { message: "Fissa not found" },
+    } as any);
+
+    render(<QueuePage pin="XXXX" />);
+
+    expect(screen.queryByTestId("queue-empty")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Empty-queue message must NOT appear when Fissa has ended
+   */
+  it("does not show empty-queue message when Fissa has ended", () => {
+    const pastTime = new Date(Date.now() - 1000 * 60 * 60);
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        expectedEndTime: pastTime,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("queue-empty")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Currently playing track must still be shown even when queue is empty
+   */
+  it("still shows the currently playing track alongside the empty-queue message", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 0 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("queue-now-playing")).toBeInTheDocument();
+    expect(screen.getByTestId("currently-playing-track")).toBeInTheDocument();
+    expect(screen.getByTestId("queue-empty")).toBeInTheDocument();
+  });
+});
