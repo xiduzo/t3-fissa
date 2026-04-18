@@ -32,6 +32,9 @@ vi.mock("~/providers/ThemeProvider", () => ({
 vi.mock("@tanstack/react-router", () => ({
   createFileRoute: () => () => ({ component: null }),
   useNavigate: () => vi.fn(),
+  Link: ({ children, to, ...props }: { children: React.ReactNode; to: string; [key: string]: unknown }) => (
+    <a href={to} {...props}>{children}</a>
+  ),
 }));
 
 vi.mock("~/components/Layout", () => ({
@@ -233,5 +236,190 @@ describe("/fissa/$pin — Currently playing track (Task #59)", () => {
     render(<QueuePage pin="ABC123" />);
 
     expect(screen.queryByTestId("currently-playing-track")).not.toBeInTheDocument();
+  });
+});
+
+describe("/fissa/$pin — Fissa-not-found and Fissa-ended states (Task #64)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: PIN does not correspond to an active Fissa
+   *   Given a visitor navigates to /fissa/<invalid-pin>
+   *   When fissa.byId returns a NOT_FOUND error
+   *   Then a "Fissa not found" message is shown
+   *   And a link or button to go home is displayed
+   *   And the page does not crash
+   */
+  it("shows Fissa-not-found UI when the query returns an error", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      error: { message: "Fissa not found: XXXX" },
+    } as any);
+
+    render(<QueuePage pin="XXXX" />);
+
+    expect(screen.getByTestId("fissa-not-found")).toBeInTheDocument();
+    expect(screen.getByTestId("fissa-not-found")).toHaveTextContent(/fissa not found/i);
+    expect(screen.getByTestId("go-home-link")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: PIN does not correspond to an active Fissa — page does not crash
+   *   The queue sections must NOT be rendered when error state is active.
+   */
+  it("does not render queue sections when isError is true", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      error: { message: "Fissa not found: XXXX" },
+    } as any);
+
+    render(<QueuePage pin="XXXX" />);
+
+    expect(screen.queryByTestId("queue-now-playing")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("queue-upcoming")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("queue-signin-cta")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Visitor arrives after Fissa has already ended
+   *   Given a Fissa that has ended (expectedEndTime is in the past)
+   *   When a visitor navigates to /fissa/<pin>
+   *   Then a "Fissa has ended" message is shown immediately
+   *   And a link or button to go home is displayed
+   */
+  it("shows Fissa-ended UI when expectedEndTime is in the past", () => {
+    const pastTime = new Date(Date.now() - 1000 * 60 * 60); // 1 hour ago
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        expectedEndTime: pastTime,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("fissa-ended")).toBeInTheDocument();
+    expect(screen.getByTestId("fissa-ended")).toHaveTextContent(/fissa has ended/i);
+    expect(screen.getByTestId("go-home-link")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Fissa has ended — queue sections must not be rendered
+   */
+  it("does not render queue sections when Fissa has ended", () => {
+    const pastTime = new Date(Date.now() - 1000 * 60 * 60);
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        expectedEndTime: pastTime,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("queue-now-playing")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("queue-upcoming")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("queue-signin-cta")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Fissa ends while visitor is watching
+   *   Given a visitor is viewing an active Fissa page
+   *   When the next poll detects expectedEndTime has passed
+   *   Then the page transitions to a "Fissa has ended" message
+   */
+  it("transitions to Fissa-ended state when expectedEndTime passes during polling", () => {
+    // First render with active fissa
+    const futureTime = new Date(Date.now() + 1000 * 60); // 1 minute in future
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "trackId",
+        expectedEndTime: futureTime,
+        tracks: [{ trackId: "trackId", durationMs: 210000, score: 0, totalScore: 0, hasBeenPlayed: false }],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    const { rerender } = render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("fissa-ended")).not.toBeInTheDocument();
+
+    // Simulate poll returning ended state
+    const pastTime = new Date(Date.now() - 1000);
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        expectedEndTime: pastTime,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    rerender(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("fissa-ended")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Loading state is shown while query is in-flight
+   */
+  it("shows a loading indicator while the query is loading", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("fissa-loading")).toBeInTheDocument();
+  });
+
+  /**
+   * Loading state — queue sections must not be rendered while loading
+   */
+  it("does not render queue sections while loading", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("queue-now-playing")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("queue-upcoming")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("queue-signin-cta")).not.toBeInTheDocument();
   });
 });
