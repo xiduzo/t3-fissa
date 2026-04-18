@@ -1,7 +1,56 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-18T10:00:00.992Z
-> Files: 507 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-18T14:22:23.935Z
+> Files: 553 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../../tmp/
+
+- `feature-1-body.md` — 🚀 Feature: Party Guest can view the live Queue at a Fissa PIN page without signing in (~689 tok)
+- `feature-2-body.md` — 🚀 Feature: Party Guest can sign in with Spotify on the Fissa page and return to the same Fissa (~739 tok)
+- `feature-3-body.md` — 🚀 Feature: Party Guest can add a Track to the Queue from the browser (~609 tok)
+- `feature-4-body.md` — 🚀 Feature: Party Guest can cast a Vote on a Track from the browser (~614 tok)
+- `feature-5-body.md` — 🚀 Feature: Party Host can create a Fissa from the browser (~648 tok)
+- `feature-6-body.md` — 🚀 Feature: Party Guest can open the Fissa in the native app from the browser (~624 tok)
+- `task-1-body.md` — 🛠 Task: Replace auto-redirect with a Queue view layout at /fissa/<pin> (~1219 tok)
+- `task-2-body.md` — 🛠 Task: Fetch and render the currently playing Track (~1507 tok)
+- `task-3-body.md` — 🛠 Task: Render upcoming Tracks list in vote-ranked order (~1310 tok)
+- `task-4-body.md` — 🛠 Task: Add polling to keep the Queue live (~1121 tok)
+- `task-45-2.md` — 🛠 Task: Fetch and render the currently playing Track from `fissa.byId` (~1044 tok)
+- `task-45-3.md` — 🛠 Task: Render upcoming Tracks list in vote-ranked order (~1114 tok)
+- `task-45-4.md` — 🛠 Task: Add polling to keep the Queue live (`refetchInterval`) (~1213 tok)
+- `task-45-5.md` — 🛠 Task: Implement Fissa-not-found and Fissa-ended states (~1184 tok)
+- `task-45-6.md` — 🛠 Task: Implement empty Queue state (~1236 tok)
+- `task-46-1.md` — 🛠 Task: Add "Sign in with Spotify" CTA to the unauthenticated Fissa page (~855 tok)
+- `task-46-2.md` — 🛠 Task: Pass Fissa PIN as callbackURL when initiating Spotify OAuth via better-auth (~925 tok)
+- `task-46-3.md` — 🛠 Task: Verify better-auth honors callbackURL redirect after successful sign-in (~943 tok)
+- `task-46-4.md` — 🛠 Task: Show Queue interaction controls when Guest is authenticated (~968 tok)
+- `task-46-5.md` — 🛠 Task: Handle OAuth cancellation and error — return to Fissa page without redirect loop (~1251 tok)
+- `task-47-1.md` — 🛠 Task: Add "Add Track" entry point to authenticated Fissa page (~959 tok)
+- `task-47-2.md` — 🛠 Task: Implement Spotify Track search UI using `useSpotifyQuery` hooks (~1070 tok)
+- `task-47-3.md` — 🛠 Task: Render search results with artwork, title, and artist (~1047 tok)
+- `task-47-4.md` — 🛠 Task: Wire up `track.addTracks` tRPC mutation for selected Track (~1194 tok)
+- `task-47-5.md` — 🛠 Task: Handle duplicate-Track-in-Queue feedback (~1154 tok)
+- `task-47-6.md` — 🛠 Task: Handle search empty state and add error states (~1299 tok)
+- `task-48-1.md` — 🛠 Task: Add upvote/downvote controls to each Queue Track item (~872 tok)
+- `task-48-2.md` — 🛠 Task: Fetch Guest's existing Votes on load (`vote.byFissaFromUser`) (~1004 tok)
+- `task-48-3.md` — 🛠 Task: Wire up `vote.create` tRPC mutation for upvote/downvote (~1168 tok)
+- `task-48-4.md` — 🛠 Task: Re-order Queue after Vote is cast (~975 tok)
+- `task-48-5.md` — 🛠 Task: Disable Vote controls for currently playing Track (~916 tok)
+- `task-48-6.md` — 🛠 Task: Handle Vote mutation error with rollback and retry (~1301 tok)
+- `task-49-1.md` — 🛠 Task: Add "Create a Fissa" entry point in the web app (~831 tok)
+- `task-49-2.md` — 🛠 Task: Implement Spotify Track search and multi-select UI for seeding the Queue (~1041 tok)
+- `task-49-3.md` — 🛠 Task: Wire up `fissa.create` tRPC mutation with seed Tracks (~1046 tok)
+- `task-49-4.md` — 🛠 Task: Navigate to `/fissa/<pin>` on successful creation (~843 tok)
+- `task-49-5.md` — 🛠 Task: Display Fissa PIN with copy/share action (~974 tok)
+- `task-49-6.md` — 🛠 Task: Handle Spotify Premium error and already-hosting error cases (~1256 tok)
+- `task-5-body.md` — 🛠 Task: Implement Fissa-not-found and Fissa-ended states (~1299 tok)
+- `task-50-1.md` — 🛠 Task: Remove automatic deep-link redirect from Fissa page load (~980 tok)
+- `task-50-2.md` — 🛠 Task: Add "Open in mobile app" CTA with com.fissa deep link (~1188 tok)
+- `task-50-3.md` — 🛠 Task: Add "Open in desktop app" CTA (~1117 tok)
+- `task-50-4.md` — 🛠 Task: Style both app-open CTAs as visually secondary (~1091 tok)
+- `task-6-body.md` — 🛠 Task: Implement empty Queue state (~1131 tok)
+- `task-body.md` — 🛠 Task: Replace auto-redirect with Queue view layout at `/fissa/[pin]` (~1188 tok)
+- `wtf-epic-body.md` — 🎯 Epic: Browser-Native Fissa Participation (~897 tok)
 
 ## ./
 

@@ -134,3 +134,67 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 13:16 | Created ../../../../tmp/wtf-epic-body.md | — | ~1024 |
+| 13:18 | Created ../../../../tmp/wtf-epic-body.md | — | ~936 |
+| 13:20 | Edited ../../../../tmp/wtf-epic-body.md | inline fix | ~36 |
+| 13:23 | Created ../../../../tmp/feature-1-body.md | — | ~735 |
+| 13:26 | Created ../../../../tmp/feature-2-body.md | — | ~788 |
+| 13:37 | Created ../../../../tmp/feature-3-body.md | — | ~650 |
+| 13:45 | Created ../../../../tmp/feature-4-body.md | — | ~655 |
+| 13:55 | Created ../../../../tmp/feature-5-body.md | — | ~691 |
+| 14:05 | Created ../../../../tmp/feature-6-body.md | — | ~666 |
+| 14:17 | Created ../../../../tmp/task-1-body.md | — | ~1300 |
+| 14:23 | Created ../../../../tmp/task-2-body.md | — | ~1608 |
+| 14:25 | Created ../../../../tmp/task-3-body.md | — | ~1397 |
+| 14:29 | Created ../../../../tmp/task-4-body.md | — | ~1196 |
+| 14:38 | Created ../../../../tmp/task-5-body.md | — | ~1386 |
+| 16:08 | Created ../../../../tmp/task-6-body.md | — | ~1207 |
+| 16:10 | Session end: 15 writes across 13 files (wtf-epic-body.md, feature-1-body.md, feature-2-body.md, feature-3-body.md, feature-4-body.md) | 15 reads | ~26143 tok |
+
+## Session: 2026-04-18 16:11
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:16 | Created ../../../../tmp/task-body.md | — | ~1268 |
+| 16:19 | Created ../../../../tmp/task-45-2.md | — | ~1114 |
+| 16:19 | Created ../../../../tmp/task-46-1.md | — | ~912 |
+| 16:19 | Created ../../../../tmp/task-45-3.md | — | ~1189 |
+| 16:20 | Created ../../../../tmp/task-46-2.md | — | ~986 |
+| 16:20 | Created ../../../../tmp/task-47-1.md | — | ~1023 |
+| 16:20 | Created ../../../../tmp/task-45-4.md | — | ~1294 |
+| 16:20 | Created ../../../../tmp/task-46-3.md | — | ~1006 |
+| 16:20 | Created ../../../../tmp/task-48-1.md | — | ~931 |
+| 16:20 | Created ../../../../tmp/task-47-2.md | — | ~1141 |
+| 16:20 | Created ../../../../tmp/task-46-4.md | — | ~1032 |
+| 16:20 | Created ../../../../tmp/task-45-5.md | — | ~1263 |
+| 16:20 | Created ../../../../tmp/task-48-2.md | — | ~1071 |
+| 16:20 | Created ../../../../tmp/task-49-1.md | — | ~886 |
+| 16:20 | Session end: 14 writes across 14 files (task-body.md, task-45-2.md, task-46-1.md, task-45-3.md, task-46-2.md) | 9 reads | ~29566 tok |
+| 16:20 | Created ../../../../tmp/task-47-3.md | — | ~1117 |
+| 16:21 | Created ../../../../tmp/task-48-3.md | — | ~1246 |
+| 16:21 | Created ../../../../tmp/task-45-6.md | — | ~1319 |
+| 16:21 | Created ../../../../tmp/task-46-5.md | — | ~1335 |
+| 16:21 | Created ../../../../tmp/task-49-2.md | — | ~1110 |
+| 16:21 | Created ../../../../tmp/task-47-4.md | — | ~1274 |
+| 16:21 | Created ../../../../tmp/task-48-4.md | — | ~1040 |
+| 16:21 | Created ../../../../tmp/task-50-1.md | — | ~1046 |
+| 16:21 | Created ../../../../tmp/task-49-3.md | — | ~1116 |
+| 16:21 | Created ../../../../tmp/task-48-5.md | — | ~977 |
+| 16:21 | Created ../../../../tmp/task-47-5.md | — | ~1231 |
+| 16:21 | Created ../../../../tmp/task-49-4.md | — | ~899 |
+| 16:21 | Created ../../../../tmp/task-50-2.md | — | ~1268 |
+| 16:21 | Created ../../../../tmp/task-48-6.md | — | ~1387 |
+| 16:21 | Created ../../../../tmp/task-49-5.md | — | ~1039 |
+| 16:22 | Created ../../../../tmp/task-47-6.md | — | ~1386 |
+| 16:22 | Created ../../../../tmp/task-50-3.md | — | ~1191 |
+| 16:22 | Created ../../../../tmp/task-49-6.md | — | ~1340 |
+| 16:22 | Created ../../../../tmp/task-50-4.md | — | ~1164 |
+| 16:22 | Session end: 33 writes across 33 files (task-body.md, task-45-2.md, task-46-1.md, task-45-3.md, task-46-2.md) | 9 reads | ~53653 tok |
+| 16:22 | Session end: 33 writes across 33 files (task-body.md, task-45-2.md, task-46-1.md, task-45-3.md, task-46-2.md) | 9 reads | ~53653 tok |
+| 16:23 | Session end: 33 writes across 33 files (task-body.md, task-45-2.md, task-46-1.md, task-45-3.md, task-46-2.md) | 9 reads | ~53653 tok |
+| 16:23 | Session end: 33 writes across 33 files (task-body.md, task-45-2.md, task-46-1.md, task-45-3.md, task-46-2.md) | 9 reads | ~53653 tok |
+
+## Session: 2026-04-18 16:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

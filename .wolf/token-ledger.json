@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-10T17:27:26.117Z",
   "lifetime": {
-    "total_tokens_estimated": 103206,
-    "total_reads": 136,
-    "total_writes": 81,
-    "total_sessions": 23,
-    "anatomy_hits": 133,
+    "total_tokens_estimated": 373527,
+    "total_reads": 196,
+    "total_writes": 242,
+    "total_sessions": 25,
+    "anatomy_hits": 193,
     "anatomy_misses": 3,
     "repeated_reads_blocked": 8,
-    "estimated_savings_vs_bare_cli": 33949
+    "estimated_savings_vs_bare_cli": 45949
   },
   "sessions": [
     {
@@ -1619,6 +1619,1273 @@
         "writes_count": 1,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-04-18-1254",
+      "started": "2026-04-18T10:54:27.370Z",
+      "ended": "2026-04-18T14:10:22.628Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 536,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/FissaCode.tsx",
+          "tokens_estimated": 1069,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/JoinAFissa.tsx",
+          "tokens_estimated": 386,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/docs/steering/VISION.md",
+          "tokens_estimated": 749,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/auth/src/auth.ts",
+          "tokens_estimated": 229,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts",
+          "tokens_estimated": 501,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/TrackList.tsx",
+          "tokens_estimated": 1214,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.github/ISSUE_TEMPLATE/FEATURE.md",
+          "tokens_estimated": 286,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/track.ts",
+          "tokens_estimated": 253,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/vote.ts",
+          "tokens_estimated": 388,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.github/ISSUE_TEMPLATE/TASK.md",
+          "tokens_estimated": 627,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/IFissaRepository.ts",
+          "tokens_estimated": 411,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/utils/api.ts",
+          "tokens_estimated": 263,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2765,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/repository/FissaRepository.ts",
+          "tokens_estimated": 1175,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/wtf-epic-body.md",
+          "tokens_estimated": 1097,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/wtf-epic-body.md",
+          "tokens_estimated": 1002,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/wtf-epic-body.md",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/feature-1-body.md",
+          "tokens_estimated": 788,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/feature-2-body.md",
+          "tokens_estimated": 844,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/feature-3-body.md",
+          "tokens_estimated": 696,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/feature-4-body.md",
+          "tokens_estimated": 702,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/feature-5-body.md",
+          "tokens_estimated": 740,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/feature-6-body.md",
+          "tokens_estimated": 714,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-1-body.md",
+          "tokens_estimated": 1393,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-2-body.md",
+          "tokens_estimated": 1722,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-3-body.md",
+          "tokens_estimated": 1497,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-4-body.md",
+          "tokens_estimated": 1281,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-5-body.md",
+          "tokens_estimated": 1484,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-6-body.md",
+          "tokens_estimated": 1293,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 10852,
+        "output_tokens_estimated": 15291,
+        "reads_count": 15,
+        "writes_count": 15,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 15
+      }
+    },
+    {
+      "id": "session-2026-04-18-1611",
+      "started": "2026-04-18T14:11:15.317Z",
+      "ended": "2026-04-18T14:20:50.802Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 536,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts",
+          "tokens_estimated": 501,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2765,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/repository/FissaRepository.ts",
+          "tokens_estimated": 1175,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/IFissaRepository.ts",
+          "tokens_estimated": 411,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackList.tsx",
+          "tokens_estimated": 949,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackListItem.tsx",
+          "tokens_estimated": 646,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/app/fissa/[pin]/index.tsx",
+          "tokens_estimated": 1622,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 4762,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/task-body.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-2.md",
+          "tokens_estimated": 1194,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-1.md",
+          "tokens_estimated": 977,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-3.md",
+          "tokens_estimated": 1274,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-2.md",
+          "tokens_estimated": 1057,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-1.md",
+          "tokens_estimated": 1096,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-4.md",
+          "tokens_estimated": 1387,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-3.md",
+          "tokens_estimated": 1078,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-1.md",
+          "tokens_estimated": 997,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-2.md",
+          "tokens_estimated": 1223,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-4.md",
+          "tokens_estimated": 1106,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-5.md",
+          "tokens_estimated": 1354,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-2.md",
+          "tokens_estimated": 1148,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-1.md",
+          "tokens_estimated": 950,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13367,
+        "output_tokens_estimated": 16199,
+        "reads_count": 9,
+        "writes_count": 14,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-04-18-1611",
+      "started": "2026-04-18T14:11:15.317Z",
+      "ended": "2026-04-18T14:22:27.043Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 536,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts",
+          "tokens_estimated": 501,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2765,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/repository/FissaRepository.ts",
+          "tokens_estimated": 1175,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/IFissaRepository.ts",
+          "tokens_estimated": 411,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackList.tsx",
+          "tokens_estimated": 949,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackListItem.tsx",
+          "tokens_estimated": 646,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/app/fissa/[pin]/index.tsx",
+          "tokens_estimated": 1622,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 4762,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/task-body.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-2.md",
+          "tokens_estimated": 1194,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-1.md",
+          "tokens_estimated": 977,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-3.md",
+          "tokens_estimated": 1274,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-2.md",
+          "tokens_estimated": 1057,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-1.md",
+          "tokens_estimated": 1096,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-4.md",
+          "tokens_estimated": 1387,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-3.md",
+          "tokens_estimated": 1078,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-1.md",
+          "tokens_estimated": 997,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-2.md",
+          "tokens_estimated": 1223,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-4.md",
+          "tokens_estimated": 1106,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-5.md",
+          "tokens_estimated": 1354,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-2.md",
+          "tokens_estimated": 1148,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-1.md",
+          "tokens_estimated": 950,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-3.md",
+          "tokens_estimated": 1196,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-3.md",
+          "tokens_estimated": 1335,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-6.md",
+          "tokens_estimated": 1413,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-5.md",
+          "tokens_estimated": 1430,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-2.md",
+          "tokens_estimated": 1190,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-4.md",
+          "tokens_estimated": 1364,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-4.md",
+          "tokens_estimated": 1115,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-1.md",
+          "tokens_estimated": 1120,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-3.md",
+          "tokens_estimated": 1195,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-5.md",
+          "tokens_estimated": 1047,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-5.md",
+          "tokens_estimated": 1319,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-4.md",
+          "tokens_estimated": 963,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-2.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-6.md",
+          "tokens_estimated": 1486,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-5.md",
+          "tokens_estimated": 1113,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-6.md",
+          "tokens_estimated": 1485,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-3.md",
+          "tokens_estimated": 1276,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-6.md",
+          "tokens_estimated": 1435,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-4.md",
+          "tokens_estimated": 1247,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13367,
+        "output_tokens_estimated": 40286,
+        "reads_count": 9,
+        "writes_count": 33,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-04-18-1611",
+      "started": "2026-04-18T14:11:15.317Z",
+      "ended": "2026-04-18T14:22:40.374Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 536,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts",
+          "tokens_estimated": 501,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2765,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/repository/FissaRepository.ts",
+          "tokens_estimated": 1175,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/IFissaRepository.ts",
+          "tokens_estimated": 411,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackList.tsx",
+          "tokens_estimated": 949,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackListItem.tsx",
+          "tokens_estimated": 646,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/app/fissa/[pin]/index.tsx",
+          "tokens_estimated": 1622,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 4762,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/task-body.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-2.md",
+          "tokens_estimated": 1194,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-1.md",
+          "tokens_estimated": 977,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-3.md",
+          "tokens_estimated": 1274,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-2.md",
+          "tokens_estimated": 1057,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-1.md",
+          "tokens_estimated": 1096,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-4.md",
+          "tokens_estimated": 1387,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-3.md",
+          "tokens_estimated": 1078,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-1.md",
+          "tokens_estimated": 997,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-2.md",
+          "tokens_estimated": 1223,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-4.md",
+          "tokens_estimated": 1106,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-5.md",
+          "tokens_estimated": 1354,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-2.md",
+          "tokens_estimated": 1148,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-1.md",
+          "tokens_estimated": 950,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-3.md",
+          "tokens_estimated": 1196,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-3.md",
+          "tokens_estimated": 1335,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-6.md",
+          "tokens_estimated": 1413,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-5.md",
+          "tokens_estimated": 1430,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-2.md",
+          "tokens_estimated": 1190,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-4.md",
+          "tokens_estimated": 1364,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-4.md",
+          "tokens_estimated": 1115,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-1.md",
+          "tokens_estimated": 1120,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-3.md",
+          "tokens_estimated": 1195,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-5.md",
+          "tokens_estimated": 1047,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-5.md",
+          "tokens_estimated": 1319,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-4.md",
+          "tokens_estimated": 963,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-2.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-6.md",
+          "tokens_estimated": 1486,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-5.md",
+          "tokens_estimated": 1113,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-6.md",
+          "tokens_estimated": 1485,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-3.md",
+          "tokens_estimated": 1276,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-6.md",
+          "tokens_estimated": 1435,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-4.md",
+          "tokens_estimated": 1247,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13367,
+        "output_tokens_estimated": 40286,
+        "reads_count": 9,
+        "writes_count": 33,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-04-18-1611",
+      "started": "2026-04-18T14:11:15.317Z",
+      "ended": "2026-04-18T14:23:12.693Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 536,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts",
+          "tokens_estimated": 501,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2765,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/repository/FissaRepository.ts",
+          "tokens_estimated": 1175,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/IFissaRepository.ts",
+          "tokens_estimated": 411,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackList.tsx",
+          "tokens_estimated": 949,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackListItem.tsx",
+          "tokens_estimated": 646,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/app/fissa/[pin]/index.tsx",
+          "tokens_estimated": 1622,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 4762,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/task-body.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-2.md",
+          "tokens_estimated": 1194,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-1.md",
+          "tokens_estimated": 977,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-3.md",
+          "tokens_estimated": 1274,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-2.md",
+          "tokens_estimated": 1057,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-1.md",
+          "tokens_estimated": 1096,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-4.md",
+          "tokens_estimated": 1387,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-3.md",
+          "tokens_estimated": 1078,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-1.md",
+          "tokens_estimated": 997,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-2.md",
+          "tokens_estimated": 1223,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-4.md",
+          "tokens_estimated": 1106,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-5.md",
+          "tokens_estimated": 1354,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-2.md",
+          "tokens_estimated": 1148,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-1.md",
+          "tokens_estimated": 950,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-3.md",
+          "tokens_estimated": 1196,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-3.md",
+          "tokens_estimated": 1335,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-6.md",
+          "tokens_estimated": 1413,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-5.md",
+          "tokens_estimated": 1430,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-2.md",
+          "tokens_estimated": 1190,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-4.md",
+          "tokens_estimated": 1364,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-4.md",
+          "tokens_estimated": 1115,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-1.md",
+          "tokens_estimated": 1120,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-3.md",
+          "tokens_estimated": 1195,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-5.md",
+          "tokens_estimated": 1047,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-5.md",
+          "tokens_estimated": 1319,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-4.md",
+          "tokens_estimated": 963,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-2.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-6.md",
+          "tokens_estimated": 1486,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-5.md",
+          "tokens_estimated": 1113,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-6.md",
+          "tokens_estimated": 1485,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-3.md",
+          "tokens_estimated": 1276,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-6.md",
+          "tokens_estimated": 1435,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-4.md",
+          "tokens_estimated": 1247,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13367,
+        "output_tokens_estimated": 40286,
+        "reads_count": 9,
+        "writes_count": 33,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-04-18-1611",
+      "started": "2026-04-18T14:11:15.317Z",
+      "ended": "2026-04-18T14:23:45.926Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 536,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts",
+          "tokens_estimated": 501,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2765,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/repository/FissaRepository.ts",
+          "tokens_estimated": 1175,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/IFissaRepository.ts",
+          "tokens_estimated": 411,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackList.tsx",
+          "tokens_estimated": 949,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/shared/TrackListItem.tsx",
+          "tokens_estimated": 646,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/app/fissa/[pin]/index.tsx",
+          "tokens_estimated": 1622,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/expo/src/components/pages/fissa/Tracks.tsx",
+          "tokens_estimated": 4762,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/tmp/task-body.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-2.md",
+          "tokens_estimated": 1194,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-1.md",
+          "tokens_estimated": 977,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-3.md",
+          "tokens_estimated": 1274,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-2.md",
+          "tokens_estimated": 1057,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-1.md",
+          "tokens_estimated": 1096,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-4.md",
+          "tokens_estimated": 1387,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-3.md",
+          "tokens_estimated": 1078,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-1.md",
+          "tokens_estimated": 997,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-2.md",
+          "tokens_estimated": 1223,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-4.md",
+          "tokens_estimated": 1106,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-5.md",
+          "tokens_estimated": 1354,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-2.md",
+          "tokens_estimated": 1148,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-1.md",
+          "tokens_estimated": 950,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-3.md",
+          "tokens_estimated": 1196,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-3.md",
+          "tokens_estimated": 1335,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-45-6.md",
+          "tokens_estimated": 1413,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-46-5.md",
+          "tokens_estimated": 1430,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-2.md",
+          "tokens_estimated": 1190,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-4.md",
+          "tokens_estimated": 1364,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-4.md",
+          "tokens_estimated": 1115,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-1.md",
+          "tokens_estimated": 1120,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-3.md",
+          "tokens_estimated": 1195,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-5.md",
+          "tokens_estimated": 1047,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-5.md",
+          "tokens_estimated": 1319,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-4.md",
+          "tokens_estimated": 963,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-2.md",
+          "tokens_estimated": 1358,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-48-6.md",
+          "tokens_estimated": 1486,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-5.md",
+          "tokens_estimated": 1113,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-47-6.md",
+          "tokens_estimated": 1485,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-3.md",
+          "tokens_estimated": 1276,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-49-6.md",
+          "tokens_estimated": 1435,
+          "action": "create"
+        },
+        {
+          "file": "/tmp/task-50-4.md",
+          "tokens_estimated": 1247,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13367,
+        "output_tokens_estimated": 40286,
+        "reads_count": 9,
+        "writes_count": 33,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 9
       }
     }
   ],
