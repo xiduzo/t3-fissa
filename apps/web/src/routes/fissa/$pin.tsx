@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { type FC } from "react";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
+import { QueueTrackList } from "~/components/QueueTrackList";
 import { api } from "~/utils/api";
 
 export const Route = createFileRoute("/fissa/$pin")({
@@ -90,7 +91,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
               No upcoming tracks
             </p>
           ) : (
-            null /* Placeholder — upcoming tracks list wired in a later task */
+            <QueueTrackList tracks={upcomingTracks} />
           )}
         </section>
 

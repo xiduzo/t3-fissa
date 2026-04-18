@@ -593,3 +593,116 @@ describe("/fissa/$pin — Empty queue state (Task #65)", () => {
     expect(screen.getByTestId("queue-empty")).toBeInTheDocument();
   });
 });
+
+describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Queue is displayed in vote-ranked order
+   *   Given the Fissa has multiple upcoming tracks
+   *   Then the upcoming tracks list (track-list) is shown inside queue-upcoming
+   *   And played tracks are not shown
+   *   And the currently playing track is not shown
+   */
+  it("renders the track list when there are upcoming tracks", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 5 },
+          { trackId: "track-2", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 3 },
+          { trackId: "track-3", hasBeenPlayed: false, durationMs: 200000, score: 0, totalScore: 8 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("track-list")).toBeInTheDocument();
+    expect(screen.queryByTestId("queue-empty")).not.toBeInTheDocument();
+  });
+
+  it("does not render the currently playing track in the upcoming list", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 5 },
+          { trackId: "track-2", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 3 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    const items = screen.getAllByTestId("track-item");
+    // only track-2 appears in the list (track-1 is currently playing)
+    expect(items).toHaveLength(1);
+    expect(items[0]).toHaveAttribute("data-trackid", "track-2");
+  });
+
+  it("does not render already-played tracks in the upcoming list", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 5 },
+          { trackId: "track-2", hasBeenPlayed: true, durationMs: 180000, score: 0, totalScore: 3 },
+          { trackId: "track-3", hasBeenPlayed: false, durationMs: 200000, score: 0, totalScore: 1 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    const items = screen.getAllByTestId("track-item");
+    expect(items).toHaveLength(1);
+    expect(items[0]).toHaveAttribute("data-trackid", "track-3");
+  });
+
+  it("renders tracks sorted by totalScore descending in the queue", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 5 },
+          { trackId: "track-low", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 1 },
+          { trackId: "track-high", hasBeenPlayed: false, durationMs: 200000, score: 0, totalScore: 9 },
+          { trackId: "track-mid", hasBeenPlayed: false, durationMs: 200000, score: 0, totalScore: 4 },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    const items = screen.getAllByTestId("track-item");
+    expect(items[0]).toHaveAttribute("data-trackid", "track-high");
+    expect(items[1]).toHaveAttribute("data-trackid", "track-mid");
+    expect(items[2]).toHaveAttribute("data-trackid", "track-low");
+  });
+});
