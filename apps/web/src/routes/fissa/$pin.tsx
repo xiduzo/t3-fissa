@@ -17,6 +17,8 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
   });
 
   if (isLoading) {
@@ -29,7 +31,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
     );
   }
 
-  if (isError) {
+  if (isError && !data) {
     return (
       <Layout>
         <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">

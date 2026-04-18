@@ -594,6 +594,84 @@ describe("/fissa/$pin — Empty queue state (Task #65)", () => {
   });
 });
 
+describe("/fissa/$pin — Auto-polling every 5 seconds (Task #62)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Queue updates automatically while tab is active
+   *   Given a visitor is viewing the Fissa page
+   *   When 5 seconds elapse
+   *   Then the queue and currently playing track are refreshed without a page reload
+   *   (verify refetchInterval: 5000 is passed to useQuery)
+   */
+  it("passes refetchInterval: 5000 to useQuery", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      "ABC123",
+      expect.objectContaining({ refetchInterval: 5000 }),
+    );
+  });
+
+  /**
+   * Scenario: Polling pauses when tab is hidden
+   *   Given a visitor is viewing the Fissa page
+   *   When the visitor switches to another browser tab
+   *   Then no new requests are sent to fissa.byId
+   *   (verify refetchIntervalInBackground: false is passed to useQuery)
+   */
+  it("passes refetchIntervalInBackground: false to useQuery", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      "ABC123",
+      expect.objectContaining({ refetchIntervalInBackground: false }),
+    );
+  });
+
+  /**
+   * Scenario: Network error during polling preserves last known queue
+   *   Given a visitor is viewing the Fissa page
+   *   And the queue has loaded successfully
+   *   When a refetch request fails due to a network error
+   *   Then the previously loaded queue remains visible
+   *   And the page does not crash or show an empty state
+   */
+  it("keeps the previously loaded queue visible when a poll fails with a network error", () => {
+    // Simulate useQuery returning stale data alongside isError: true
+    // (React Query preserves previous data on refetch failure)
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: "track-1",
+        tracks: [
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 5 },
+          { trackId: "track-2", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 3 },
+        ],
+      },
+      isLoading: false,
+      isError: true,
+      error: { message: "Network Error" },
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // Queue sections must still be visible (data is preserved)
+    expect(screen.getByTestId("queue-now-playing")).toBeInTheDocument();
+    expect(screen.getByTestId("queue-upcoming")).toBeInTheDocument();
+    expect(screen.queryByTestId("fissa-not-found")).not.toBeInTheDocument();
+  });
+});
+
 describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
   const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
 
