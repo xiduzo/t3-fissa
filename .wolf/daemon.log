@@ -134,3 +134,11 @@
 [2026-04-17T18:09:08.962Z] [INFO] File watcher started on .wolf/
 [2026-04-17T18:09:08.966Z] [INFO] OpenWolf daemon started
 [2026-04-17T18:09:08.968Z] [INFO] Dashboard server listening on port 18791
+[2026-04-17T22:00:00.796Z] [INFO] Executing task: Full anatomy rescan
+[2026-04-17T22:00:01.321Z] [INFO] Task Full anatomy rescan completed in 525ms
+[2026-04-18T00:00:00.695Z] [INFO] Executing task: Consolidate old memory
+[2026-04-18T00:00:00.707Z] [INFO] Task Consolidate old memory completed in 10ms
+[2026-04-18T04:00:00.015Z] [INFO] Executing task: Full anatomy rescan
+[2026-04-18T04:00:01.294Z] [INFO] Task Full anatomy rescan completed in 1277ms
+[2026-04-18T10:00:00.292Z] [INFO] Executing task: Full anatomy rescan
+[2026-04-18T10:00:00.997Z] [INFO] Task Full anatomy rescan completed in 703ms

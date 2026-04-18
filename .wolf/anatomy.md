@@ -1,46 +1,60 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-17T18:07:13.983Z
-> Files: 508 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-18T10:00:00.992Z
+> Files: 507 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
+- `.dockerignore` — Docker ignore rules (~28 tok)
 - `.eslintrc.js` — ESLint configuration (~130 tok)
-- `.gitignore` — Git ignore rules (~145 tok)
-- `.npmrc` — Expo doesn't play nice with pnpm by default. (~135 tok)
+- `.gitignore` — Git ignore rules (~146 tok)
+- `.npmrc` — Expo doesn't play nice with pnpm by default. (~76 tok)
 - `.nvmrc` (~1 tok)
 - `CLAUDE.md` — OpenWolf (~57 tok)
 - `docker-compose.yaml` — Docker Compose services (~100 tok)
+- `docker-compose.yml` — Docker Compose services (~400 tok)
 - `LICENSE` — Project license (~286 tok)
-- `package.json` — Node.js package manifest (~334 tok)
-- `pnpm-lock.yaml` — pnpm lock file (~169130 tok)
+- `package.json` — Node.js package manifest (~314 tok)
+- `pnpm-lock.yaml` — pnpm lock file (~210057 tok)
 - `pnpm-workspace.yaml` (~57 tok)
 - `prettier.config.cjs` — Declares config (~253 tok)
-- `README.md` — Project documentation (~2444 tok)
+- `README.md` — Project documentation (~2434 tok)
 - `renovate.json` (~73 tok)
 - `reset.d.ts` (~11 tok)
-- `tsconfig.json` — TypeScript configuration (~168 tok)
-- `turbo.json` — Turborepo configuration (~329 tok)
+- `supabase_dump_20260412_180717.sql` — PostgreSQL database dump (~89944 tok)
+- `tsconfig.json` — TypeScript configuration (~182 tok)
+- `tsconfig.tsbuildinfo` (~4606 tok)
+- `turbo.json` — Turborepo configuration (~376 tok)
 - `vitest.config.ts` — Vitest test configuration (~153 tok)
 
 ## .claude/
 
 - `settings.json` (~441 tok)
-- `settings.local.json` (~28 tok)
+- `settings.local.json` (~364 tok)
 
 ## .claude/rules/
 
 - `openwolf.md` (~313 tok)
 
+## .expo/
+
+- `devices.json` (~6 tok)
+- `README.md` — Project documentation (~188 tok)
+
 ## .github/
 
 - `dependabot.yml` — Basic `dependabot.yml` file with (~170 tok)
 - `FUNDING.yml` — These are supported funding model platforms (~20 tok)
+- `pull_request_template.md` — Summary (~91 tok)
 
 ## .github/ISSUE_TEMPLATE/
 
 - `bug_report.yml` (~354 tok)
+- `BUG.md` — 🐞 Bug: {{title}} (~157 tok)
+- `EPIC.md` — 🎯 Epic: {{title}} (~244 tok)
 - `feature_request.yml` — This template is heavily inspired by the Next.js's template: (~353 tok)
+- `FEATURE.md` — 🚀 Feature: {{title}} (~286 tok)
+- `TASK.md` — 🛠 Task: {{title}} (~627 tok)
 
 ## .github/workflows/
 
@@ -48,14 +62,27 @@
 
 ## apps/expo/
 
-- `app.config.ts` — Declares version (~444 tok)
-- `babel.config.js` — Babel configuration (~41 tok)
+- `app.config.ts` — Declares version (~583 tok)
+- `babel.config.js` — Babel configuration (~45 tok)
+- `CLAUDE.md` — OpenWolf (~57 tok)
 - `eas.json` (~165 tok)
+- `global.css` — Styles: 2 rules (~16 tok)
 - `index.js` — This is the entry point for the Expo app. (~144 tok)
-- `metro.config.js` — Learn more: https://docs.expo.dev/guides/monorepos/ (~322 tok)
-- `package.json` — Node.js package manifest (~600 tok)
-- `tailwind.config.cjs` (~47 tok)
-- `tsconfig.json` — TypeScript configuration (~57 tok)
+- `metro.config.js` — Learn more: https://docs.expo.dev/guides/monorepos/ (~428 tok)
+- `nativewind-env.d.ts` — / <reference types="nativewind/types" /> (~13 tok)
+- `package.json` — Node.js package manifest (~671 tok)
+- `postcss.config.mjs` (~19 tok)
+- `README.md` — Project documentation (~434 tok)
+- `tailwind.config.cjs` (~51 tok)
+- `tsconfig.json` — TypeScript configuration (~80 tok)
+
+## apps/expo/.claude/
+
+- `settings.json` (~441 tok)
+
+## apps/expo/.claude/rules/
+
+- `openwolf.md` (~313 tok)
 
 ## apps/expo/.expo-shared/
 
@@ -64,34 +91,34 @@
 ## apps/expo/.expo/
 
 - `devices.json` (~6 tok)
-- `README.md` — Project documentation (~188 tok)
+- `README.md` — Project documentation (~189 tok)
 
 ## apps/expo/app/
 
-- `_layout.tsx` — RootLayout — uses useEffect (~438 tok)
-- `home.tsx` — Home — uses useQuery, useRouter, useState, useCallback (~941 tok)
-- `index.tsx` — Index — uses useRouter, useRef, useCallback, useEffect (~1188 tok)
-- `join.tsx` — Join (~1166 tok)
+- `_layout.tsx` — ThemedStack — uses useEffect (~554 tok)
+- `home.tsx` — Home — uses useQuery, useRouter, useState, useCallback (~944 tok)
+- `index.tsx` — Index — uses useRouter, useRef, useCallback, useEffect (~1211 tok)
+- `join.tsx` — PIN_LENGTH — uses useRouter, useCallback, useQuery, useEffect (~1335 tok)
 
 ## apps/expo/app/fissa/[pin]/
 
-- `addTracks.tsx` — AddTracks — uses useContext, useRouter, useMutation, useCallback (~744 tok)
-- `index.tsx` — Fissa — uses useRouter, useQuery, useState, useCallback (~1538 tok)
-- `members.tsx` — Members — uses useRouter, useQuery (~388 tok)
+- `addTracks.tsx` — AddTracks — uses useRouter, useMutation, useCallback (~911 tok)
+- `index.tsx` — Fissa (~1622 tok)
+- `members.tsx` — Members — uses useRouter, useQuery (~378 tok)
 
 ## apps/expo/app/fissa/[pin]/[trackId]/
 
-- `index.tsx` — AddToPlaylist — uses useRouter, useCallback (~493 tok)
+- `index.tsx` — AddToPlaylist — uses useRouter, useCallback (~512 tok)
 
 ## apps/expo/app/host/
 
-- `fromPlaylist.tsx` — FromPlaylist — uses useCallback (~638 tok)
+- `fromPlaylist.tsx` — FromPlaylist — uses useCallback (~628 tok)
 - `fromTracks.tsx` — FromTracks — uses useCallback (~158 tok)
 - `index.tsx` — MAX_SEED_TRACKS — uses useState, useCallback (~590 tok)
 
 ## apps/expo/app/profile/
 
-- `index.tsx` — Index (~1430 tok)
+- `index.tsx` — Index — uses useRouter, useQuery, useCallback, useState (~1419 tok)
 
 ## apps/expo/assets/animations/
 
@@ -109,77 +136,79 @@
 ## apps/expo/src/components/
 
 - `index.ts` (~34 tok)
-- `PageTemplate.tsx` — Fullscreen means `max-w-screen-2xl` (1536px) (~264 tok)
+- `PageTemplate.tsx` — Fullscreen means `max-w-screen-2xl` (1536px) (~286 tok)
 
 ## apps/expo/src/components/pages/fissa/
 
 - `index.ts` (~38 tok)
-- `ListEmptyComponent.tsx` — ListEmptyComponent — uses useContext, useMutation, useCallback (~656 tok)
+- `ListEmptyComponent.tsx` — ListEmptyComponent — uses useMutation, useCallback (~646 tok)
 - `ListFooterComponent.tsx` — ListFooterComponent (~142 tok)
-- `Settings.tsx` — Settings (~1148 tok)
+- `Settings.tsx` — Settings (~1156 tok)
 - `Tracks.tsx` — SCROLL_DISTANCE (~4762 tok)
 
 ## apps/expo/src/components/quickVote/
 
 - `index.ts` (~30 tok)
 - `QuickVoteContext.tsx` — QuickVoteContext — uses useState, useCallback, useMemo (~496 tok)
-- `QuickVoteModal.tsx` — windowHeight — renders modal (~1355 tok)
+- `QuickVoteModal.tsx` — windowHeight — renders modal — uses useContext, useRef, useEffect, useMemo (~1317 tok)
 - `useQuickVote.ts` — API routes: GET (1 endpoints) (~432 tok)
 
 ## apps/expo/src/components/shared/
 
-- `Action.tsx` — Action (~698 tok)
-- `Badge.tsx` — Badge — uses useRef, useEffect (~518 tok)
-- `BottomDrawer.tsx` — BottomDrawer (~369 tok)
-- `Divider.tsx` — Divider (~104 tok)
+- `Action.tsx` — Action (~708 tok)
+- `Badge.tsx` — Badge — uses useRef, useEffect (~525 tok)
+- `BottomDrawer.tsx` — BottomDrawer (~404 tok)
+- `Divider.tsx` — Divider (~111 tok)
 - `DraggableView.tsx` — After how many pixels of dragging should the view drag along (~342 tok)
 - `EmptyState.tsx` — EmptyState (~284 tok)
-- `Header.tsx` — Header — uses useRef, useRouter, useEffect (~569 tok)
+- `Header.tsx` — Header — uses useRef, useRouter, useEffect (~562 tok)
 - `Icon.tsx` — Icon (~260 tok)
-- `Image.tsx` — Image (~209 tok)
+- `Image.tsx` — Image (~247 tok)
 - `index.ts` (~215 tok)
-- `Input.tsx` — Input (~376 tok)
-- `ListItem.tsx` — ListItem — uses useRef, useEffect (~1122 tok)
-- `Logo.tsx` — AnimatedLottieView (~740 tok)
-- `PickTracks.tsx` — PickTracks — uses useRouter, useState, useCallback, useEffect (~2033 tok)
-- `PlaylistList.tsx` — PlaylistList (~468 tok)
-- `PlaylistListItem.tsx` — PlaylistListItem (~182 tok)
-- `Popover.tsx` — Popover — renders modal — uses useRef, useCallback, useEffect (~650 tok)
-- `ProgressBar.tsx` — ProgressBar — uses useState, useEffect (~500 tok)
-- `Rejoin.tsx` — Rejoin — uses useQuery (~246 tok)
+- `Input.tsx` — Input (~389 tok)
+- `ListItem.tsx` — ListItem — uses useRef, useEffect (~1144 tok)
+- `Logo.tsx` — AnimatedLottieView (~747 tok)
+- `PickTracks.tsx` — PickTracks (~1902 tok)
+- `PlaylistList.tsx` — PlaylistList (~466 tok)
+- `PlaylistListItem.tsx` — PlaylistListItem (~200 tok)
+- `Popover.tsx` — Popover — renders modal — uses useRef, useCallback, useEffect (~665 tok)
+- `ProgressBar.tsx` — ProgressBar — uses useState, useEffect (~518 tok)
+- `Rejoin.tsx` — Rejoin — uses useQuery (~257 tok)
 - `SafeAreaView.tsx` — SafeAreaView (~188 tok)
-- `SelectDevice.tsx` — SelectDevice — uses useState, useCallback (~1069 tok)
-- `ToastContainer.tsx` — Emoji which is being shown (~486 tok)
-- `TrackEnd.tsx` — TrackEnd — uses useQuery (~161 tok)
-- `TrackList.tsx` — TrackList — uses useCallback (~974 tok)
-- `TrackListItem.tsx` — windowHeight — uses useRef, useCallback, useEffect (~619 tok)
-- `Typography.tsx` — Typography (~379 tok)
+- `SelectDevice.tsx` — SelectDevice — uses useState, useCallback (~1071 tok)
+- `ToastContainer.tsx` — Emoji which is being shown (~492 tok)
+- `TrackEnd.tsx` — TrackEnd (~136 tok)
+- `TrackList.tsx` — TrackList — uses useCallback (~949 tok)
+- `TrackListItem.tsx` — windowHeight — uses useRef, useCallback, useEffect (~646 tok)
+- `Typography.tsx` — Typography (~386 tok)
 
 ## apps/expo/src/components/shared/button/
 
-- `Button.tsx` — Button — uses useRouter, useMemo, useCallback (~812 tok)
-- `ButtonGroup.tsx` — ButtonGroup (~64 tok)
-- `Fab.tsx` — Fab — uses useRef, useRouter, useCallback, useEffect (~470 tok)
-- `IconButton.tsx` — IconButton — uses useMemo (~312 tok)
+- `Button.tsx` — Button — uses useRouter, useMemo, useCallback (~834 tok)
+- `ButtonGroup.tsx` — ButtonGroup (~63 tok)
+- `Fab.tsx` — Fab — uses useRef, useRouter, useCallback, useEffect (~528 tok)
+- `IconButton.tsx` — IconButton — uses useMemo (~322 tok)
 - `index.ts` (~32 tok)
 
 ## apps/expo/src/hooks/
 
-- `index.ts` (~76 tok)
+- `index.ts` (~86 tok)
 - `useCreateFissa.ts` — Exports useCreateFissa (~322 tok)
-- `useCreateVote.ts` — Exports useCreateVote (~479 tok)
+- `useCreateVote.ts` — Exports useCreateVote (~561 tok)
 - `useEncryptedStorage.ts` — Exports useEncryptedStorage, ENCRYPTED_STORAGE_KEYS (~327 tok)
 - `useIsOwner.ts` — Exports useIsOwner (~96 tok)
 - `useOnActiveApp.ts` — Exports useOnActiveApp (~109 tok)
-- `useShareFissa.ts` — Exports useShareFissa (~206 tok)
+- `useShareFissa.ts` — Exports useShareFissa (~201 tok)
 - `useSkipTrack.ts` — Exports useSkipTrack (~241 tok)
+- `useSpotifyQuery.ts` — TanStack Query hooks for Spotify API calls. (~907 tok)
 - `useSwipe.ts` — Exports useSwipe (~425 tok)
 
 ## apps/expo/src/providers/
 
-- `index.ts` (~22 tok)
-- `NotificationProvider.tsx` — NotificationContext — uses useEffect, useMemo, useContext (~847 tok)
-- `SpotifyProvider.tsx` — REFRESH_INTERVAL_MINUTES (~1607 tok)
+- `index.ts` (~31 tok)
+- `NotificationProvider.tsx` — NotificationContext — uses useEffect, useMemo, useContext (~804 tok)
+- `SpotifyProvider.tsx` — REFRESH_INTERVAL_MINUTES (~1656 tok)
+- `ThemeProvider.tsx` — THEME_CACHE_KEY — uses useEffect, useContext (~377 tok)
 
 ## apps/expo/src/types/
 
@@ -187,48 +216,55 @@
 
 ## apps/expo/src/utils/
 
-- `api.tsx` — A set of type-safe hooks for consuming your API. (~741 tok)
+- `api.tsx` — A set of type-safe hooks for consuming your API. (~1088 tok)
 - `index.ts` (~22 tok)
 - `mappers.ts` — Exports mapDeviceToIcon, mapSpotifyTrackToTrpcTrack (~195 tok)
-- `Toast.ts` — Declares ToasterProps (~262 tok)
+- `nativewind-interop.ts` — Register third-party components with NativeWind v5 (~107 tok)
+- `sqlite-storage.ts` — A simple key-value storage adapter backed by expo-sqlite. (~1478 tok)
+- `Toast.ts` — Declares ToasterProps (~306 tok)
 
 ## apps/server/
 
-- `package.json` — Node.js package manifest (~230 tok)
+- `build.mjs` — Declares require (~184 tok)
+- `Dockerfile` — Docker container definition (~424 tok)
+- `package.json` — Node.js package manifest (~242 tok)
 - `tsconfig.json` — TypeScript configuration (~76 tok)
-- `tsconfig.tsbuildinfo` (~63307 tok)
+- `tsconfig.tsbuildinfo` (~71970 tok)
 
 ## apps/server/src/
 
-- `index.ts` — API routes: GET (1 endpoints) (~449 tok)
+- `index.ts` — API routes: GET (1 endpoints) (~674 tok)
+- `instrument.ts` (~51 tok)
 
 ## apps/web/
 
+- `Dockerfile` — Docker container definition (~352 tok)
 - `index.html` — Fissa (~120 tok)
-- `package.json` — Node.js package manifest (~390 tok)
+- `package.json` — Node.js package manifest (~414 tok)
 - `postcss.config.cjs` — PostCSS configuration (~20 tok)
 - `tailwind.config.cjs` — Declares config (~210 tok)
-- `tsconfig.json` — TypeScript configuration (~132 tok)
+- `tsconfig.json` — TypeScript configuration (~203 tok)
 - `tsconfig.tsbuildinfo` (~76119 tok)
 - `vite.config.ts` — Vite build configuration (~96 tok)
 
 ## apps/web/src/
 
-- `main.tsx` — router (~156 tok)
+- `instrument.ts` (~93 tok)
+- `main.tsx` — router (~162 tok)
 - `routeTree.gen.ts` — @ts-nocheck (~614 tok)
 
 ## apps/web/src/components/
 
-- `AppDemo.tsx` — AppDemo (~72 tok)
+- `AppDemo.tsx` — AppDemo (~71 tok)
 - `AppScreen.tsx` — AppScreen (~474 tok)
 - `AppStoreLink.tsx` — AppStoreLink (~155 tok)
 - `Button.tsx` — baseStyles (~531 tok)
 - `CircleBackground.tsx` — CircleBackground (~274 tok)
 - `Container.tsx` — Container (~107 tok)
-- `Faqs.tsx` — faqs (~1092 tok)
-- `FissaCode.tsx` — FissaCode — uses useState, useQuery, useMemo, useCallback (~1070 tok)
+- `Faqs.tsx` — faqs (~1094 tok)
+- `FissaCode.tsx` — FissaCode — uses useState, useQuery, useMemo, useCallback (~1069 tok)
 - `Footer.tsx` — Footer (~528 tok)
-- `Header.tsx` — MobileNavLink (~1065 tok)
+- `Header.tsx` — MobileNavLink (~1063 tok)
 - `Hero.tsx` — BackgroundIllustration (~930 tok)
 - `JoinAFissa.tsx` — JoinAFissa — uses useQuery, useMemo (~386 tok)
 - `Layout.tsx` — Layout (~90 tok)
@@ -236,14 +272,14 @@
 - `NavLinks.tsx` — links (~424 tok)
 - `PhoneFrame.tsx` — PlaceholderFrame (~793 tok)
 - `PlayStoreLink.tsx` — PlayStoreLink (~166 tok)
-- `PrimaryFeatures.tsx` — MotionAppScreenBody — uses useEffect, useState (~5204 tok)
+- `PrimaryFeatures.tsx` — MotionAppScreenBody — uses useEffect, useState (~5180 tok)
 - `SecondaryFeatures.tsx` — features — renders chart (~2303 tok)
 - `Toast.tsx` — AUTO_CLOSE_TIME_MS (~298 tok)
-- `TrackList.tsx` — TrackList (~1227 tok)
+- `TrackList.tsx` — TrackList (~1214 tok)
 
 ## apps/web/src/providers/
 
-- `ThemeProvider.tsx` — getTheme — uses useContext (~162 tok)
+- `ThemeProvider.tsx` — ThemeContext — uses useContext (~134 tok)
 
 ## apps/web/src/routes/
 
@@ -260,7 +296,14 @@
 
 ## apps/web/src/utils/
 
-- `api.ts` — Exports api, trpcClient, RouterInputs, RouterOutputs (~264 tok)
+- `api.ts` — Exports api, trpcClient, RouterInputs, RouterOutputs (~263 tok)
+
+## docs/steering/
+
+- `DESIGN.md` — Fissa Design Guidelines (~2235 tok)
+- `QA.md` — Fissa QA Standards (~1204 tok)
+- `TECH.md` — Fissa Technical Guidelines (~1582 tok)
+- `VISION.md` — Fissa Vision (~749 tok)
 
 ## packages/api/
 
@@ -290,7 +333,7 @@
 - `ISpotifyService.ts` — Exports SpotifyTokenResponse, ISpotifyService (~224 tok)
 - `ITrackRepository.ts` — Exports InsertTrackInput, ITrackRepository (~102 tok)
 - `IUserRepository.ts` — Exports User, Session, Account, UserWithSessions + 4 more (~454 tok)
-- `IVoteRepository.ts` — Exports Vote, IVoteRepository (~108 tok)
+- `IVoteRepository.ts` — Exports Vote, IVoteRepository (~128 tok)
 
 ## packages/api/src/orchestration/
 
@@ -303,23 +346,23 @@
 - `index.ts` (~75 tok)
 - `TrackRepository.ts` — Exports TrackRepository (~224 tok)
 - `UserRepository.ts` — Exports UserRepository (~1216 tok)
-- `VoteRepository.ts` — Exports VoteRepository (~240 tok)
+- `VoteRepository.ts` — Exports VoteRepository (~298 tok)
 
 ## packages/api/src/router/
 
 - `auth.ts` — tRPC router: 5 procedures (~337 tok)
 - `constants.ts` — Zod schemas: Z_TRACK_ID, Z_PIN (~72 tok)
-- `fissa.ts` — tRPC router: 9 procedures (~462 tok)
+- `fissa.ts` — tRPC router: 10 procedures (~501 tok)
 - `track.ts` — tRPC router: 3 procedures (~253 tok)
-- `vote.ts` — tRPC router: 4 procedures (~336 tok)
+- `vote.ts` — tRPC router: 5 procedures (~388 tok)
 
 ## packages/api/src/service/
 
 - `AuthService.ts` — Exports AuthService (~815 tok)
 - `BadgeService.ts` — Exports BadgeService (~904 tok)
-- `FissaService.ts` — Exports TRACKS_BEFORE_ADDING_RECOMMENDATIONS, FissaService (~2765 tok)
+- `FissaService.ts` — Zustand store (~2765 tok)
 - `TrackService.ts` — Exports TrackService (~304 tok)
-- `VoteService.ts` — Exports VoteService (~938 tok)
+- `VoteService.ts` — Exports VoteService (~981 tok)
 
 ## packages/api/src/utils/
 
@@ -329,8 +372,8 @@
 ## packages/auth/
 
 - `index.ts` — Exports Session (~66 tok)
-- `package.json` — Node.js package manifest (~138 tok)
-- `tsconfig.json` — TypeScript configuration (~54 tok)
+- `package.json` — Node.js package manifest (~139 tok)
+- `tsconfig.json` — TypeScript configuration (~44 tok)
 - `tsconfig.tsbuildinfo` (~50056 tok)
 
 ## packages/auth/src/
@@ -341,42 +384,38 @@
 ## packages/config/eslint/
 
 - `index.js` — Declares config (~269 tok)
-- `package.json` — Node.js package manifest (~136 tok)
+- `package.json` — Node.js package manifest (~137 tok)
 
 ## packages/config/tailwind/
 
-- `index.d.ts` — Exports Theme (~93 tok)
+- `index.d.ts` — Exports Theme, Theme, themes, extrodonary, getThemeForUser (~190 tok)
 - `index.js` — Declares pinkey (~359 tok)
 - `package.json` — Node.js package manifest (~118 tok)
 - `postcss.js` (~24 tok)
-- `themes.ts` — Exports Theme, themes (~288 tok)
+- `themes.ts` — Deterministically select a theme based on a user ID string. (~470 tok)
 
 ## packages/db/
 
 - `drizzle.config.ts` — Drizzle ORM configuration (~61 tok)
-- `index.ts` — Exports Fissa, Track, db, DB (~227 tok)
-- `package.json` — Node.js package manifest (~176 tok)
-- `schema.ts` — Drizzle schema defining all tables, relations, and the `BADGE` enum constant. (~2291 tok)
+- `index.ts` — Run all pending Drizzle migrations. (~931 tok)
+- `package.json` — Node.js package manifest (~192 tok)
+- `schema.ts` — Enum constant matching the `badgeType` pgEnum values. (~2367 tok)
 - `tsconfig.json` — TypeScript configuration (~43 tok)
 - `tsconfig.tsbuildinfo` (~17982 tok)
 
 ## packages/db/drizzle/
 
-- `0000_goofy_umar.sql` — SQL: tables: accounts, badges, fissas, sessions, 7 alter(s) (~1430 tok)
-- `0001_known_dark_phoenix.sql` — SQL: 3 alter(s) (~66 tok)
-- `0002_blue_cyclops.sql` — SQL: 28 alter(s) (~735 tok)
+- `0000_initial.sql` — Squashed initial migration (idempotent) (~1752 tok)
 
 ## packages/db/drizzle/meta/
 
-- `_journal.json` (~140 tok)
-- `0000_snapshot.json` (~4654 tok)
-- `0001_snapshot.json` (~4556 tok)
-- `0002_snapshot.json` (~4982 tok)
+- `_journal.json` (~58 tok)
+- `0000_snapshot.json` (~5591 tok)
 
 ## packages/env/
 
 - `client.ts` — Exports env (~104 tok)
-- `index.ts` — Exports env (~164 tok)
+- `index.ts` — Exports env (~179 tok)
 - `package.json` — Node.js package manifest (~163 tok)
 - `tsconfig.json` — TypeScript configuration (~47 tok)
 - `tsconfig.tsbuildinfo` (~7330 tok)
@@ -393,7 +432,7 @@
 ## packages/utils/
 
 - `array.test.ts` — Declares SortableTrack (~909 tok)
-- `array.ts` — Exports splitInChunks, SortableTrack, sortFissaTracksOrder, randomSort, biasSort (~663 tok)
+- `array.ts` — Exports splitInChunks, SortableTrack, sortFissaTracksOrder, randomSort, biasSort (~668 tok)
 - `date.ts` (~8 tok)
 - `hooks.ts` (~9 tok)
 - `index.ts` (~117 tok)
@@ -401,7 +440,7 @@
 - `package.json` — Node.js package manifest (~171 tok)
 - `setupTests.ts` (~29 tok)
 - `sleep.ts` — Exports sleep (~26 tok)
-- `spotify.ts` — When you'd like to update a state while fetching tracks (~998 tok)
+- `spotify.ts` — When you'd like to update a state while fetching tracks (~1017 tok)
 - `tsconfig.json` — TypeScript configuration (~32 tok)
 - `uuid.ts` (~11 tok)
 
@@ -409,7 +448,7 @@
 
 - `Error.ts` — Exports NotTheHost, FissaIsPaused, NotAbleToAccessSpotify, NoNextTrack + 4 more (~380 tok)
 - `index.ts` (~15 tok)
-- `Toaster.ts` — Exports Toaster, ToasterProps (~300 tok)
+- `Toaster.ts` — Exports Toaster, ToasterProps (~308 tok)
 
 ## packages/utils/services/
 
@@ -419,7 +458,7 @@
 ## packages/utils/stores/
 
 - `index.ts` (~10 tok)
-- `spotifyStore.ts` — Exports useTracks, usePlayLists, useSpotify, useDevices (~880 tok)
+- `spotifyStore.ts` — Minimal Zustand store — only holds the SpotifyWebApi client instance. (~114 tok)
 
 ## packages/utils/types/
 
@@ -665,31 +704,3 @@
 - `3601_vm` (~2185 tok)
 - `3602` (~2184 tok)
 - `3602_fsm` (~6554 tok)
-- `3602_vm` (~2185 tok)
-- `3603` (~6533 tok)
-- `3603_fsm` (~6554 tok)
-- `3603_vm` (~2185 tok)
-- `3604` (~4368 tok)
-- `3605` (~4368 tok)
-- `3606` (~4369 tok)
-- `3607` (~4369 tok)
-- `3608` (~4368 tok)
-- `3609` (~8717 tok)
-- `3712` (~4368 tok)
-- `3764` (~2185 tok)
-- `3764_fsm` (~6554 tok)
-- `3764_vm` (~2185 tok)
-- `3766` (~4369 tok)
-- `3767` (~4369 tok)
-- `3997` (~2185 tok)
-- `4143` (~0 tok)
-- `4144` (~2185 tok)
-- `4145` (~0 tok)
-- `4146` (~2185 tok)
-- `4147` (~0 tok)
-- `4148` (~2185 tok)
-- `4149` (~0 tok)
-- `4150` (~2185 tok)
-- `4151` (~0 tok)
-- `4152` (~2185 tok)
-- `4153` (~0 tok)
