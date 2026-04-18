@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type FC } from "react";
+import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
 import { toast } from "~/components/Toast";
 import { api } from "~/utils/api";
@@ -15,7 +16,7 @@ interface QueuePageProps {
 export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
   const navigate = useNavigate();
 
-  api.fissa.byId.useQuery(pin, {
+  const { data } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
     onError: (error) => {
@@ -23,6 +24,10 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
       void navigate({ to: "/" });
     },
   });
+
+  const currentlyPlayingTrack = data?.tracks?.find(
+    (t) => t.trackId === data.currentlyPlayingId,
+  );
 
   return (
     <Layout>
@@ -34,7 +39,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
 
         {/* Currently-playing track slot */}
         <section data-testid="queue-now-playing" className="px-4 py-4">
-          {/* Placeholder — live track data wired in a later task */}
+          <CurrentlyPlayingTrack track={currentlyPlayingTrack} />
         </section>
 
         {/* Upcoming tracks list slot */}
