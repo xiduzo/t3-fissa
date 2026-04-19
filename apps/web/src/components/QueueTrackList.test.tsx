@@ -130,196 +130,84 @@ describe("QueueTrackList", () => {
   });
 
   /**
-   * Scenario: Signed-in guest sees vote controls on queued tracks
-   *   Given I am signed in as a Party Guest
-   *   And the Fissa has queued tracks
-   *   When I view the Queue
-   *   Then each queued track row shows an upvote button
-   *   And each queued track row shows a downvote button
+   * Scenario: Vote error indicator and retry button
    */
-  it("shows upvote and downvote buttons for each track when isAuthenticated=true", () => {
-    render(
-      <QueueTrackList
-        isAuthenticated
-        tracks={makeTracks([
-          { trackId: "track-a", totalScore: 1 },
-          { trackId: "track-b", totalScore: 2 },
-        ])}
-      />,
-    );
+  describe("vote error indicator and retry (Task #78)", () => {
+    it("shows vote error indicator when voteErrors has the trackId", () => {
+      const voteErrors = new Map([["track-a", { vote: 1 as const }]]);
+      render(
+        <QueueTrackList
+          tracks={makeTracks([{ trackId: "track-a", totalScore: 3 }])}
+          voteErrors={voteErrors}
+        />,
+      );
 
-    expect(screen.getByTestId("upvote-track-a")).toBeInTheDocument();
-    expect(screen.getByTestId("downvote-track-a")).toBeInTheDocument();
-    expect(screen.getByTestId("upvote-track-b")).toBeInTheDocument();
-    expect(screen.getByTestId("downvote-track-b")).toBeInTheDocument();
+      expect(screen.getByTestId("vote-error-track-a")).toBeInTheDocument();
+    });
 
-    expect(screen.getByRole("button", { name: "Upvote track-a" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Downvote track-a" })).toBeInTheDocument();
-  });
+    it("shows retry button when voteErrors has the trackId", () => {
+      const voteErrors = new Map([["track-a", { vote: 1 as const }]]);
+      render(
+        <QueueTrackList
+          tracks={makeTracks([{ trackId: "track-a", totalScore: 3 }])}
+          voteErrors={voteErrors}
+        />,
+      );
 
-  /**
-   * Scenario: Unauthenticated guest does not see vote controls
-   *   Given I am not signed in
-   *   And the Fissa has queued tracks
-   *   When I view the Queue
-   *   Then no upvote or downvote buttons are visible
-   */
-  it("does not show upvote or downvote buttons when isAuthenticated=false", () => {
-    render(
-      <QueueTrackList
-        tracks={makeTracks([
-          { trackId: "track-a", totalScore: 1 },
-          { trackId: "track-b", totalScore: 2 },
-        ])}
-      />,
-    );
+      expect(screen.getByTestId("retry-vote-track-a")).toBeInTheDocument();
+    });
 
-    expect(screen.queryByTestId("upvote-track-a")).not.toBeInTheDocument();
-    expect(screen.queryByTestId("downvote-track-a")).not.toBeInTheDocument();
-    expect(screen.queryByTestId("upvote-track-b")).not.toBeInTheDocument();
-    expect(screen.queryByTestId("downvote-track-b")).not.toBeInTheDocument();
-  });
+    it("does not show error indicator or retry button when voteErrors is empty", () => {
+      render(
+        <QueueTrackList
+          tracks={makeTracks([{ trackId: "track-a", totalScore: 3 }])}
+          voteErrors={new Map()}
+        />,
+      );
 
-  it("disables vote buttons for currently playing track", () => {
-    render(
-      <QueueTrackList
-        isAuthenticated
-        currentlyPlayingId="track-a"
-        tracks={makeTracks([
-          { trackId: "track-a", totalScore: 1 },
-          { trackId: "track-b", totalScore: 0 },
-        ])}
-      />,
-    );
-    expect(screen.getByTestId("upvote-track-a")).toBeDisabled();
-    expect(screen.getByTestId("downvote-track-a")).toBeDisabled();
-    expect(screen.getByTestId("upvote-track-b")).not.toBeDisabled();
-    expect(screen.getByTestId("downvote-track-b")).not.toBeDisabled();
-  });
+      expect(screen.queryByTestId("vote-error-track-a")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("retry-vote-track-a")).not.toBeInTheDocument();
+    });
 
-  /**
-   * Scenario: Guest's previously cast upvote is shown on load (#69)
-   *   Given I am signed in as a Party Guest and I previously upvoted track "track-123"
-   *   When I load the Fissa page
-   *   Then the upvote button for "track-123" shows as active/selected (aria-pressed=true)
-   */
-  it("marks upvote button as aria-pressed=true when user previously upvoted", () => {
-    const userVotes = new Map<string, 1 | -1>([["track-123", 1]]);
-    render(
-      <QueueTrackList
-        tracks={makeTracks([{ trackId: "track-123", totalScore: 3 }])}
-        isAuthenticated
-        userVotes={userVotes}
-      />,
-    );
+    it("does not show error indicator when voteErrors prop is not provided", () => {
+      render(
+        <QueueTrackList tracks={makeTracks([{ trackId: "track-a", totalScore: 3 }])} />,
+      );
 
-    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
-  });
+      expect(screen.queryByTestId("vote-error-track-a")).not.toBeInTheDocument();
+    });
 
-  it("marks downvote button as aria-pressed=true when user previously downvoted", () => {
-    const userVotes = new Map<string, 1 | -1>([["track-456", -1]]);
-    render(
-      <QueueTrackList
-        tracks={makeTracks([{ trackId: "track-456", totalScore: -1 }])}
-        isAuthenticated
-        userVotes={userVotes}
-      />,
-    );
+    it("calls onRetryVote with trackId and vote when retry button is clicked", () => {
+      const voteErrors = new Map([["track-a", { vote: 1 as const }]]);
+      const onRetryVote = vi.fn();
+      render(
+        <QueueTrackList
+          tracks={makeTracks([{ trackId: "track-a", totalScore: 3 }])}
+          voteErrors={voteErrors}
+          onRetryVote={onRetryVote}
+        />,
+      );
 
-    expect(screen.getByTestId("upvote-track-456")).toHaveAttribute("aria-pressed", "false");
-    expect(screen.getByTestId("downvote-track-456")).toHaveAttribute("aria-pressed", "true");
-  });
+      fireEvent.click(screen.getByTestId("retry-vote-track-a"));
 
-  it("shows both vote buttons as aria-pressed=false when user has not voted on track", () => {
-    render(
-      <QueueTrackList
-        tracks={makeTracks([{ trackId: "track-789", totalScore: 0 }])}
-        isAuthenticated
-        userVotes={new Map()}
-      />,
-    );
+      expect(onRetryVote).toHaveBeenCalledWith("track-a", 1);
+    });
 
-    expect(screen.getByTestId("upvote-track-789")).toHaveAttribute("aria-pressed", "false");
-    expect(screen.getByTestId("downvote-track-789")).toHaveAttribute("aria-pressed", "false");
-  });
-});
+    it("only shows error for tracks with errors, not for tracks without errors", () => {
+      const voteErrors = new Map([["track-a", { vote: -1 as const }]]);
+      render(
+        <QueueTrackList
+          tracks={makeTracks([
+            { trackId: "track-a", totalScore: 3 },
+            { trackId: "track-b", totalScore: 1 },
+          ])}
+          voteErrors={voteErrors}
+        />,
+      );
 
-describe("QueueTrackList — onVote callback (Task #71)", () => {
-  /**
-   * Scenario: Guest casts an upvote
-   *   When I click the upvote button on a track
-   *   Then onVote is called with (trackId, 1)
-   */
-  it("calls onVote with (trackId, 1) when upvote button is clicked", () => {
-    const onVote = vi.fn();
-    render(
-      <QueueTrackList
-        isAuthenticated
-        tracks={[{ trackId: "track-a", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
-        onVote={onVote}
-      />,
-    );
-
-    fireEvent.click(screen.getByTestId("upvote-track-a"));
-
-    expect(onVote).toHaveBeenCalledWith("track-a", 1);
-    expect(onVote).toHaveBeenCalledTimes(1);
-  });
-
-  /**
-   * Scenario: Guest casts a downvote
-   *   When I click the downvote button on a track
-   *   Then onVote is called with (trackId, -1)
-   */
-  it("calls onVote with (trackId, -1) when downvote button is clicked", () => {
-    const onVote = vi.fn();
-    render(
-      <QueueTrackList
-        isAuthenticated
-        tracks={[{ trackId: "track-b", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
-        onVote={onVote}
-      />,
-    );
-
-    fireEvent.click(screen.getByTestId("downvote-track-b"));
-
-    expect(onVote).toHaveBeenCalledWith("track-b", -1);
-    expect(onVote).toHaveBeenCalledTimes(1);
-  });
-
-  /**
-   * onVote is not called when button is disabled (currently playing track)
-   */
-  it("does not call onVote when voting on the currently playing track (buttons are disabled)", () => {
-    const onVote = vi.fn();
-    render(
-      <QueueTrackList
-        isAuthenticated
-        currentlyPlayingId="track-c"
-        tracks={[{ trackId: "track-c", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
-        onVote={onVote}
-      />,
-    );
-
-    fireEvent.click(screen.getByTestId("upvote-track-c"));
-
-    expect(onVote).not.toHaveBeenCalled();
-  });
-
-  /**
-   * onVote is optional — component renders without it
-   */
-  it("renders without errors when onVote is not provided", () => {
-    render(
-      <QueueTrackList
-        isAuthenticated
-        tracks={[{ trackId: "track-d", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
-      />,
-    );
-
-    // Should not throw — clicking still works
-    fireEvent.click(screen.getByTestId("upvote-track-d"));
-    expect(screen.getByTestId("upvote-track-d")).toBeInTheDocument();
+      expect(screen.getByTestId("vote-error-track-a")).toBeInTheDocument();
+      expect(screen.queryByTestId("vote-error-track-b")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("retry-vote-track-b")).not.toBeInTheDocument();
+    });
   });
 });

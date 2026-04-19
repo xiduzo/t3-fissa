@@ -7,7 +7,7 @@
  * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
@@ -1635,5 +1635,147 @@ describe("/fissa/$pin — Wire vote.create mutation (Task #71)", () => {
 
     expect(mockInvalidateVotes).toHaveBeenCalledWith({ pin: "ABC123" });
     expect(mockInvalidateFissa).toHaveBeenCalledWith("ABC123");
+  });
+});
+
+describe("/fissa/$pin — Vote error rollback and retry (Task #78)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockCreateVoteMutation = vi.mocked(api.vote.create.useMutation);
+
+  const activeFissaWithTracks = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "sweet-child", hasBeenPlayed: false, durationMs: 356000, score: 0, totalScore: 5 },
+      { trackId: "macarena", hasBeenPlayed: false, durationMs: 230000, score: 0, totalScore: 3 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({ data: activeFissaWithTracks, isLoading: false, isError: false, error: null } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+    mockUseSession.mockReturnValue({ data: { user: { id: "user1", name: "Guest" } }, isPending: false } as any);
+  });
+
+  /**
+   * Scenario: Network error rolls back optimistic update
+   *   When onError is called, error indicator and retry button appear
+   */
+  it("shows error indicator and retry button after vote failure", () => {
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "INTERNAL_SERVER_ERROR" } },
+        { trackId: "sweet-child", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    expect(screen.getByTestId("vote-error-sweet-child")).toBeInTheDocument();
+    expect(screen.getByTestId("retry-vote-sweet-child")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest retries after error and succeeds
+   *   Clicking retry button calls createVote again with the same vote
+   */
+  it("calls createVote mutate when retry button is clicked", () => {
+    const mockMutate = vi.fn();
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: mockMutate };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "INTERNAL_SERVER_ERROR" } },
+        { trackId: "sweet-child", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    fireEvent.click(screen.getByTestId("retry-vote-sweet-child"));
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ trackId: "sweet-child", vote: 1, pin: "1234" }));
+  });
+
+  /**
+   * Scenario: Voting on a removed track refreshes the Queue
+   *   When NOT_FOUND error, fissa.byId is invalidated
+   */
+  it("invalidates fissa.byId when vote returns NOT_FOUND error", () => {
+    const mockInvalidateFissa = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(api.useUtils).mockReturnValue({
+      vote: { byFissaFromUser: { invalidate: vi.fn().mockResolvedValue(undefined) } },
+      fissa: { byId: { invalidate: mockInvalidateFissa } },
+    } as any);
+
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "macarena", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "NOT_FOUND" } },
+        { trackId: "macarena", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    expect(mockInvalidateFissa).toHaveBeenCalledWith("1234");
+  });
+
+  /**
+   * Error indicator clears after successful vote
+   */
+  it("removes error indicator after successful vote", () => {
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnSuccess: ((data: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnSuccess = callbacks?.onSuccess;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.({ data: { code: "INTERNAL_SERVER_ERROR" } }, { trackId: "sweet-child", vote: 1, pin: "1234" }, ctx);
+    });
+    expect(screen.getByTestId("vote-error-sweet-child")).toBeInTheDocument();
+
+    act(() => {
+      capturedOnSuccess?.({}, { trackId: "sweet-child", vote: 1, pin: "1234" }, ctx);
+    });
+    expect(screen.queryByTestId("vote-error-sweet-child")).not.toBeInTheDocument();
   });
 });
