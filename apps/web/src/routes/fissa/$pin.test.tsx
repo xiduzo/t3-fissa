@@ -13,6 +13,10 @@ import React from "react";
 // ── Mocks ──────────────────────────────────────────────────────────────────────
 // Note: vi.mock factories are hoisted — no variable references allowed inside.
 
+vi.mock("~/hooks/useTrackSearch", () => ({
+  useTrackSearch: () => ({ results: [], isLoading: false, query: "", setQuery: vi.fn() }),
+}));
+
 vi.mock("~/utils/api", () => ({
   api: {
     fissa: {
