@@ -1,8 +1,10 @@
 /**
- * Tests for /fissa/$pin page (Task #57)
+ * Tests for /fissa/$pin page (Task #57, #58)
  *
  * Scenario: Fissa page renders layout without automatic redirect
  * Scenario: Visitor with native app installed is not auto-redirected
+ * Scenario: Unauthenticated visitor sees Sign in CTA (Task #58)
+ * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
@@ -64,9 +66,25 @@ vi.mock("~/components/CurrentlyPlayingTrack", () => ({
     track ? <div data-testid="currently-playing-track">{track.trackId}</div> : null,
 }));
 
+vi.mock("~/lib/auth-client", () => ({
+  authClient: {
+    useSession: vi.fn().mockReturnValue({ data: null, isPending: false }),
+    signIn: {
+      social: vi.fn(),
+    },
+  },
+}));
+
+vi.mock("~/components/SpotifySignInButton", () => ({
+  SpotifySignInButton: () => (
+    <button data-testid="spotify-signin-btn">Sign in with Spotify</button>
+  ),
+}));
+
 // ── Imports after mocks ────────────────────────────────────────────────────────
 
 import { api } from "~/utils/api";
+import { authClient } from "~/lib/auth-client";
 import { QueuePage } from "./$pin";
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
@@ -672,6 +690,126 @@ describe("/fissa/$pin — Auto-polling every 5 seconds (Task #62)", () => {
   });
 });
 
+describe("/fissa/$pin — No auto deep-link redirect on page load (Task #81)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    // Reset window.location to a clean state
+    Object.defineProperty(window, "location", {
+      value: {
+        href: "http://localhost/fissa/ABC123",
+        replace: vi.fn(),
+        assign: vi.fn(),
+      },
+      writable: true,
+      configurable: true,
+    });
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Fissa page loads without auto-redirect
+   *   Given a guest navigates to /fissa/<pin>
+   *   When page finishes loading
+   *   Then browser remains on /fissa/<pin>
+   *   AND no deep-link redirect is triggered automatically
+   */
+  it("does not call window.location.replace on mount (no deep-link redirect)", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(window.location.replace).not.toHaveBeenCalled();
+  });
+
+  it("does not call window.location.href with a deep-link scheme on mount", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // href must stay on the page URL — never set to a deep-link
+    expect(window.location.href).not.toMatch(/^com\.fissa:\/\//);
+    expect(window.location.replace).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^com\.fissa:\/\//),
+    );
+  });
+
+  /**
+   * Scenario: Fissa page loads when native app is installed
+   *   Given a guest navigates to /fissa/<pin>
+   *   And the native app is installed
+   *   When page finishes loading
+   *   Then browser still remains on /fissa/<pin>
+   *   AND app is not launched automatically
+   */
+  it("does not redirect even when fissa data loads successfully (app installed simulation)", () => {
+    // Simulate query succeeding (as if native app is installed, data returns)
+    mockUseQuery.mockImplementation(
+      (_pin: string, options?: { onSuccess?: (data: unknown) => void }) => {
+        // Call onSuccess if it exists — prior code had redirect in onSuccess
+        options?.onSuccess?.({ pin: "ABC123" });
+        return {
+          data: { pin: "ABC123", currentlyPlayingId: null, tracks: [] },
+          isLoading: false,
+          isError: false,
+          error: null,
+        } as any;
+      },
+    );
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(window.location.replace).not.toHaveBeenCalled();
+    expect(window.location.assign).not.toHaveBeenCalled();
+    // href must not have been redirected to a native deep-link
+    expect(window.location.href).not.toMatch(/^com\.fissa:\/\//);
+  });
+
+  it("does not redirect to any deep-link scheme regardless of query state", () => {
+    // Test with multiple query states to ensure no state triggers a redirect
+    const states = [
+      { data: undefined, isLoading: true, isError: false, error: null },
+      { data: { pin: "ABC123", tracks: [] }, isLoading: false, isError: false, error: null },
+      { data: undefined, isLoading: false, isError: true, error: { message: "Not found" } },
+    ];
+
+    for (const state of states) {
+      // Reset replace mock between renders
+      const replaceSpy = vi.fn();
+      Object.defineProperty(window, "location", {
+        value: { href: "http://localhost/fissa/ABC123", replace: replaceSpy, assign: vi.fn() },
+        writable: true,
+        configurable: true,
+      });
+
+      mockUseQuery.mockReturnValue(state as any);
+      const { unmount } = render(<QueuePage pin="ABC123" />);
+
+      expect(replaceSpy).not.toHaveBeenCalled();
+      unmount();
+    }
+  });
+});
+
 describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
   const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
 
@@ -782,5 +920,80 @@ describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
     expect(items[0]).toHaveAttribute("data-trackid", "track-high");
     expect(items[1]).toHaveAttribute("data-trackid", "track-mid");
     expect(items[2]).toHaveAttribute("data-trackid", "track-low");
+  });
+});
+
+describe("/fissa/$pin — Sign in with Spotify CTA (Task #58)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Unauthenticated visitor sees Sign in CTA
+   *   Given visitor is not signed in
+   *   When they navigate to /fissa/<pin>
+   *   Then they see a "Sign in with Spotify" button
+   *   AND the Queue view is also visible
+   */
+  it("shows the Sign in with Spotify button when the visitor is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("spotify-signin-btn")).toBeInTheDocument();
+  });
+
+  it("shows the queue sections alongside the sign-in CTA when unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("queue-now-playing")).toBeInTheDocument();
+    expect(screen.getByTestId("queue-signin-cta")).toBeInTheDocument();
+    expect(screen.getByTestId("spotify-signin-btn")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Authenticated user does not see Sign in CTA
+   *   Given visitor is signed in with Spotify
+   *   When they navigate to /fissa/<pin>
+   *   Then the "Sign in with Spotify" button is not visible
+   */
+  it("does not show the Sign in with Spotify button when the visitor is authenticated", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("spotify-signin-btn")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Session is loading — suppress CTA to avoid flash
+   *   Given session is still being determined (isPending: true)
+   *   Then the Sign in button is NOT shown yet
+   */
+  it("does not show the Sign in button while session is loading (isPending)", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: true } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("spotify-signin-btn")).not.toBeInTheDocument();
   });
 });
