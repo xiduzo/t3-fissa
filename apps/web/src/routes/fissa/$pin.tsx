@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { type FC } from "react";
+import { type FC, useState } from "react";
+import { AddTrackSheet } from "~/components/AddTrackSheet";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
 import { QueueTrackList } from "~/components/QueueTrackList";
@@ -20,6 +21,7 @@ interface QueuePageProps {
 }
 
 export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const navigate = useNavigate({ from: "/fissa/$pin" });
   const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
@@ -140,13 +142,19 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
         {/* Queue interaction controls — visible only for authenticated guests */}
         {session?.user && (
           <section data-testid="queue-interaction-controls" className="px-4 py-4">
-            <button data-testid="add-track-btn" className="w-full rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90" type="button">
+            <button
+              data-testid="add-track-btn"
+              className="w-full rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              type="button"
+              onClick={() => setIsSheetOpen(true)}
+            >
               Add Track
             </button>
             <div data-testid="vote-controls">{/* Vote controls — Feature #47 */}</div>
           </section>
         )}
       </div>
+      <AddTrackSheet isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} />
     </Layout>
   );
 };

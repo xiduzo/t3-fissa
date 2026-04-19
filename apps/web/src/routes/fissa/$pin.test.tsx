@@ -7,7 +7,7 @@
  * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
@@ -81,6 +81,17 @@ vi.mock("~/components/SpotifySignInButton", () => ({
       Sign in with Spotify
     </button>
   ),
+}));
+
+vi.mock("~/components/AddTrackSheet", () => ({
+  AddTrackSheet: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
+    isOpen ? (
+      <div data-testid="add-track-sheet">
+        <button data-testid="add-track-sheet-close" onClick={onClose} type="button">
+          Close
+        </button>
+      </div>
+    ) : null,
 }));
 
 // ── Imports after mocks ────────────────────────────────────────────────────────
@@ -1323,5 +1334,110 @@ describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
     const desktopCta = screen.getByTestId("open-desktop-app-cta");
 
     expect(mobileCta.className).toBe(desktopCta.className);
+  });
+});
+
+describe("/fissa/$pin — Add Track sheet entry point (Task #70)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Authenticated guest sees the Add Track entry point
+   *   Given I am a signed-in Party Guest on the Fissa page
+   *   When the Fissa page loads
+   *   Then I see an "Add Track" button
+   */
+  it("shows the Add Track button when the visitor is authenticated", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.getByTestId("add-track-btn")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest opens the Add Track sheet
+   *   Given I am a signed-in Party Guest on the Fissa page
+   *   When I click the Add Track button
+   *   Then the Add Track sheet opens
+   */
+  it("opens the Add Track sheet when the Add Track button is clicked", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest closes the Add Track sheet
+   *   Given the Add Track sheet is open
+   *   When I click the close button
+   *   Then the sheet is dismissed
+   */
+  it("closes the Add Track sheet when the close button is clicked", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("add-track-sheet-close"));
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Add Track sheet is not visible on initial load
+   *   The sheet must be closed by default
+   */
+  it("does not show the Add Track sheet on initial load", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Unauthenticated visitor must not see the Add Track sheet trigger
+   */
+  it("does not show the Add Track button for unauthenticated visitors", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-btn")).not.toBeInTheDocument();
   });
 });
