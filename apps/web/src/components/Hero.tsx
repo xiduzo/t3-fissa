@@ -1,5 +1,7 @@
 import { useId } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import { useTheme } from '~/providers/ThemeProvider'
+import { authClient } from '~/lib/auth-client'
 import { AppDemo } from './AppDemo'
 import { AppStoreLink } from './AppStoreLink'
 import { Container } from './Container'
@@ -52,6 +54,19 @@ function BackgroundIllustration(props: React.ComponentPropsWithoutRef<'div'>) {
 
 export function Hero() {
   const { theme } = useTheme()
+  const { data: session } = authClient.useSession()
+  const navigate = useNavigate()
+
+  const handleCreateFissa = () => {
+    if (session?.user) {
+      void navigate({ to: '/fissa/create' })
+    } else {
+      void authClient.signIn.social({
+        provider: 'spotify',
+        callbackURL: '/fissa/create',
+      })
+    }
+  }
 
   return (
     <div className="overflow-hidden py-20 sm:py-32 lg:pb-32 xl:pb-36" style={{ backgroundColor: theme[900] }}>
@@ -65,6 +80,15 @@ export function Hero() {
               Having friends at a party with a bad taste in music stinks. Use Fissa to create a collaborative and democratic playlist for everyone to enjoy.
             </p>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4">
+              <button
+                data-testid="create-fissa-btn"
+                onClick={handleCreateFissa}
+                className="rounded-full px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80"
+                style={{ backgroundColor: theme[500] }}
+                type="button"
+              >
+                Create a Fissa
+              </button>
               <AppStoreLink />
               <PlayStoreLink />
             </div>
