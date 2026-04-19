@@ -34,5 +34,5 @@ export interface ISpotifyService {
   searchTracks(
     accessToken: string,
     query: string,
-  ): Promise<Array<{ id: string; name: string; artists: string[]; albumArt: string }>>;
+  ): Promise<Array<{ id: string; name: string; artists: string[]; albumArt: string; durationMs: number }>>;
 }
