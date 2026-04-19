@@ -18,6 +18,7 @@ type SearchTrack = {
   name: string;
   artists: string[];
   albumArt: string;
+  durationMs: number;
 };
 
 export const CreateFissa: FC = () => {
@@ -26,6 +27,16 @@ export const CreateFissa: FC = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTracks, setSelectedTracks] = useState<Map<string, SearchTrack>>(new Map());
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const { mutate: createFissa, isPending: isCreating } = api.fissa.create.useMutation({
+    onSuccess: (fissa) => {
+      console.log("Fissa created:", fissa.pin);
+    },
+    onError: (err) => {
+      setCreateError(err.message);
+    },
+  });
 
   // Only query when user has typed something
   const { data: searchData, isLoading: isSearchLoading } = api.spotify.searchTracks.useQuery(
@@ -61,6 +72,17 @@ export const CreateFissa: FC = () => {
   const selectedCount = selectedTracks.size;
   const tracksNeeded = Math.max(0, MIN_SEED_TRACKS - selectedCount);
   const canSubmit = selectedCount >= MIN_SEED_TRACKS;
+
+  const handleSubmit = () => {
+    if (!canSubmit || isCreating) return;
+    setCreateError(null);
+    createFissa(
+      Array.from(selectedTracks.values()).map((t) => ({
+        trackId: t.id,
+        durationMs: t.durationMs,
+      })),
+    );
+  };
 
   return (
     <div data-testid="create-fissa-page" className="flex min-h-screen flex-col items-center gap-6 px-4 py-8">
@@ -188,15 +210,21 @@ export const CreateFissa: FC = () => {
             </p>
           )}
 
+          {/* Error message */}
+          {createError && (
+            <p data-testid="create-fissa-error" className="text-sm text-red-600">{createError}</p>
+          )}
+
           {/* Submit button */}
           <button
             data-testid="create-fissa-submit-btn"
-            disabled={!canSubmit}
+            disabled={!canSubmit || isCreating}
             type="button"
+            onClick={handleSubmit}
             className="w-full rounded-full px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
             style={{ backgroundColor: "#1DB954" }}
           >
-            Start Fissa
+            {isCreating ? <span data-testid="create-fissa-loading">Creating…</span> : "Start Fissa"}
           </button>
         </div>
       )}

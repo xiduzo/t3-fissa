@@ -92,6 +92,11 @@ vi.mock("~/utils/api", () => ({
         useQuery: vi.fn(),
       },
     },
+    fissa: {
+      create: {
+        useMutation: vi.fn(),
+      },
+    },
   },
 }));
 
@@ -111,6 +116,10 @@ describe("/fissa/create — Create a Fissa page (Task #80)", () => {
     vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
+    } as any);
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
     } as any);
   });
 
@@ -262,6 +271,11 @@ describe("CreateFissa — Track search UI (Task #82)", () => {
     vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
+    } as any);
+
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
     } as any);
   });
 
@@ -446,5 +460,102 @@ describe("CreateFissa — Track search UI (Task #82)", () => {
     rerender(<CreateFissa />);
 
     expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+  });
+});
+
+// ── Tests — fissa.create mutation wiring (Task #83) ──────────────────────────
+
+/**
+ * Scenario: Host submits the creation form successfully
+ *   Given I am on the Fissa creation page
+ *   And I have selected the minimum required number of tracks
+ *   When I click the "Create Fissa" button
+ *   Then the fissa.create mutation is called with my selected track IDs and durationMs
+ *
+ * Scenario: Mutation is in-flight
+ *   Given I have clicked "Create Fissa"
+ *   Then the submit button is disabled
+ *   And a loading spinner is visible
+ *
+ * Scenario: Mutation returns an error
+ *   Given I have clicked "Create Fissa"
+ *   When the server returns an error
+ *   Then the error is surfaced via the error element
+ */
+describe("CreateFissa — fissa.create mutation wiring (Task #83)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockNavigate.mockResolvedValue(undefined);
+
+    vi.mocked(authClient.useSession).mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg", durationMs: 247000 },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+  });
+
+  it("calls fissa.create mutation with selected tracks when submit is clicked", () => {
+    const mockMutate = vi.fn();
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: mockMutate,
+      isPending: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    expect(mockMutate).toHaveBeenCalledWith([
+      { trackId: "track-1", durationMs: 247000 },
+    ]);
+  });
+
+  it("disables the submit button and shows loading indicator while mutation is in-flight", () => {
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: true,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+
+    const submitBtn = screen.getByTestId("create-fissa-submit-btn");
+    expect(submitBtn).toBeDisabled();
+    expect(screen.getByTestId("create-fissa-loading")).toBeInTheDocument();
+  });
+
+  it("surfaces mutation error via error element when server returns an error", () => {
+    let capturedOnError: ((err: { message: string }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Something went wrong" });
+    });
+
+    expect(screen.getByTestId("create-fissa-error")).toHaveTextContent("Something went wrong");
   });
 });
