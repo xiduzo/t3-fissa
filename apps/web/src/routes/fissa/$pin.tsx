@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { type FC, useState } from "react";
-import { AddTrackSheet } from "~/components/AddTrackSheet";
+import { type FC, useCallback, useState } from "react";
+import { AddTrackSheet, type SearchTrack } from "~/components/AddTrackSheet";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
 import { QueueTrackList } from "~/components/QueueTrackList";
 import { SpotifySignInButton } from "~/components/SpotifySignInButton";
+import { toast } from "~/components/Toast";
 import { authClient } from "~/lib/auth-client";
 import { api } from "~/utils/api";
 
@@ -31,6 +32,24 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
   });
+
+  const { mutate: addTracks, isPending: isAdding } = api.track.addTracks.useMutation({
+    onSuccess: () => {
+      setIsSheetOpen(false);
+      toast.success({ message: "Track added to queue!" });
+    },
+    onError: () => {
+      void navigate({ to: "/fissa/$pin", params: { pin }, search: { error: "add_track_failed" } });
+    },
+  });
+
+  const handleSelect = useCallback(
+    (track: SearchTrack) => {
+      if (isAdding) return;
+      addTracks({ pin, tracks: [{ trackId: track.id, durationMs: track.durationMs }] });
+    },
+    [addTracks, isAdding, pin],
+  );
 
   if (isLoading) {
     return (
@@ -154,7 +173,13 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
           </section>
         )}
       </div>
-      <AddTrackSheet isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} pin={pin} />
+      <AddTrackSheet
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+        pin={pin}
+        onSelect={handleSelect}
+        isAdding={isAdding}
+      />
     </Layout>
   );
 };

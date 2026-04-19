@@ -5,6 +5,7 @@ import { useDebounce } from "~/hooks/useDebounce";
 export interface SearchTrack {
   id: string;
   name: string;
+  durationMs: number;
   artists: string[];
   albumArt: string;
 }
@@ -14,12 +15,13 @@ interface AddTrackSheetProps {
   onClose: () => void;
   pin: string;
   onSelect?: (track: SearchTrack) => void;
+  isAdding?: boolean;
   addError?: boolean;
   onRetry?: () => void;
   fissaEnded?: boolean;
 }
 
-export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, onSelect, addError, onRetry, fissaEnded }) => {
+export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, onSelect, isAdding, addError, onRetry, fissaEnded }) => {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
 
@@ -75,10 +77,16 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, on
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search Spotify…"
           className="mt-4 w-full rounded-md border px-4 py-2 text-sm"
-          disabled={fissaEnded}
+          disabled={fissaEnded ?? isAdding}
         />
 
-        {!fissaEnded && isLoading && (
+        {isAdding && (
+          <div data-testid="add-track-loading" className="mt-4 text-center text-sm text-gray-500">
+            Adding track…
+          </div>
+        )}
+
+        {!fissaEnded && !isAdding && isLoading && (
           <div data-testid="track-search-loading" className="mt-4 text-center text-sm text-gray-500">
             Searching…
           </div>
