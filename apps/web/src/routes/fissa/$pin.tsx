@@ -102,7 +102,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
 
         {/* Unauthenticated sign-in CTA slot */}
         <section data-testid="queue-signin-cta" className="px-4 py-6">
-          {!sessionPending && !session?.user && <SpotifySignInButton />}
+          {!sessionPending && !session?.user && <SpotifySignInButton pin={pin} />}
         </section>
       </div>
     </Layout>
