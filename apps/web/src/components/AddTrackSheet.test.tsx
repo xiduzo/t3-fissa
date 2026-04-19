@@ -131,3 +131,78 @@ describe("AddTrackSheet (Task #72)", () => {
     expect(screen.queryByTestId("track-search-results")).not.toBeInTheDocument();
   });
 });
+
+describe("AddTrackSheet (Task #79)", () => {
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({ data: undefined, isLoading: false });
+  });
+
+  /**
+   * Scenario: Search returns no results
+   *   Given the Add Track sheet is open
+   *   When I type "xyzzy1234567890" and the search completes
+   *   And Spotify returns zero results
+   *   Then I see a "No tracks found" message
+   *   And the search field remains usable
+   */
+  it("shows 'No tracks found' when search returns zero results", () => {
+    mockUseQuery.mockReturnValue({ data: { tracks: [] }, isLoading: false });
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" />);
+
+    const input = screen.getByTestId("track-search-input");
+    fireEvent.change(input, { target: { value: "xyzzy1234567890" } });
+
+    expect(screen.getByTestId("track-search-empty")).toBeInTheDocument();
+    expect(screen.getByTestId("track-search-empty")).toHaveTextContent("No tracks found");
+    expect(input).not.toBeDisabled();
+  });
+
+  /**
+   * Scenario: Network error during track addition
+   *   Given I have selected a track to add
+   *   When the add mutation fails due to a network error
+   *   Then I see an error message indicating the add failed
+   *   And I see a retry button
+   *   And the track is not silently dropped
+   */
+  it("shows error message and retry button when addError is true", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" addError={true} onRetry={noop} />);
+
+    expect(screen.getByTestId("track-add-error")).toBeInTheDocument();
+    expect(screen.getByTestId("track-add-retry-btn")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Retrying after a network error
+   *   Given an add-error state is shown
+   *   When I tap the retry button
+   *   Then the add mutation is attempted again with the same track
+   */
+  it("calls onRetry when retry button is clicked", () => {
+    const onRetry = vi.fn();
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" addError={true} onRetry={onRetry} />);
+
+    fireEvent.click(screen.getByTestId("track-add-retry-btn"));
+    expect(onRetry).toHaveBeenCalledOnce();
+  });
+
+  /**
+   * Scenario: Fissa ends while guest is searching
+   *   Given the Add Track sheet is open
+   *   When the Fissa is detected as ended
+   *   Then the sheet shows an ended-Fissa state
+   *   And the search UI is no longer interactive
+   */
+  it("shows fissa-ended state and disables input when fissaEnded is true", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" fissaEnded={true} />);
+
+    expect(screen.getByTestId("fissa-ended-state")).toBeInTheDocument();
+    expect(screen.getByTestId("track-search-input")).toBeDisabled();
+  });
+
+  it("does not show add-error when fissaEnded is true", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" fissaEnded={true} addError={true} onRetry={noop} />);
+
+    expect(screen.queryByTestId("track-add-error")).not.toBeInTheDocument();
+  });
+});
