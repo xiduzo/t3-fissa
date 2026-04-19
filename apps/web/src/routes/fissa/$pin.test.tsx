@@ -792,6 +792,74 @@ describe("/fissa/$pin — No auto deep-link redirect on page load (Task #81)", (
   });
 });
 
+describe("/fissa/$pin — Open in mobile app CTA (Task #84)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Deep link href contains correct pin
+   *   Given a Fissa page with pin "ABC123"
+   *   Then there is an anchor with href="com.fissa://fissa/ABC123"
+   */
+  it("renders an anchor with the correct com.fissa deep-link href", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta).toBeInTheDocument();
+    expect(cta).toHaveAttribute("href", "com.fissa://fissa/ABC123");
+  });
+
+  /**
+   * Scenario: "Open in mobile app" CTA is visible on the page
+   */
+  it("shows 'Open in mobile app' text on the CTA", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByText(/open in mobile app/i)).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest taps without app installed — browser stays on page
+   *   The element must be a plain <a> tag (not a button), so the browser
+   *   handles the deep-link natively without JS navigation.
+   */
+  it("uses a plain <a> element (not a button) so the browser handles deep-link gracefully", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta.tagName.toLowerCase()).toBe("a");
+  });
+
+  /**
+   * Deep link href is pin-specific — different pin produces different href
+   */
+  it("uses the pin prop in the deep-link href", () => {
+    mockUseQuery.mockReturnValue({
+      data: { pin: "XYZ999", currentlyPlayingId: null, tracks: [] },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="XYZ999" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta).toHaveAttribute("href", "com.fissa://fissa/XYZ999");
+  });
+});
+
 describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
   const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
 
