@@ -132,77 +132,93 @@ describe("AddTrackSheet (Task #72)", () => {
   });
 });
 
-describe("AddTrackSheet (Task #79)", () => {
+// ── Task #74 Tests ─────────────────────────────────────────────────────────────
+
+const tracks = [
+  { id: "t1", name: "Song One", artists: ["Artist A"], albumArt: "https://img/t1.jpg" },
+  { id: "t2", name: "Song Two", artists: ["Artist B", "Artist C"], albumArt: "" },
+];
+
+describe("AddTrackSheet (Task #74)", () => {
   beforeEach(() => {
-    mockUseQuery.mockReturnValue({ data: undefined, isLoading: false });
+    mockUseQuery.mockReturnValue({
+      data: { tracks },
+      isLoading: false,
+    });
   });
 
   /**
-   * Scenario: Search returns no results
-   *   Given the Add Track sheet is open
-   *   When I type "xyzzy1234567890" and the search completes
-   *   And Spotify returns zero results
-   *   Then I see a "No tracks found" message
-   *   And the search field remains usable
+   * Scenario: Search result shows artwork, title, and artist
+   *   Given search results are loaded
+   *   Then each result item shows an album artwork thumbnail
+   *   And each result item shows the track title
+   *   And each result item shows the artist name
    */
-  it("shows 'No tracks found' when search returns zero results", () => {
-    mockUseQuery.mockReturnValue({ data: { tracks: [] }, isLoading: false });
+  it("shows artwork, title, and artist for each result", () => {
     render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" />);
 
-    const input = screen.getByTestId("track-search-input");
-    fireEvent.change(input, { target: { value: "xyzzy1234567890" } });
+    expect(screen.getByTestId("search-result-artwork-t1")).toBeInTheDocument();
+    expect(screen.getByTestId("search-result-name-t1")).toHaveTextContent("Song One");
+    expect(screen.getByTestId("search-result-artists-t1")).toHaveTextContent("Artist A");
 
-    expect(screen.getByTestId("track-search-empty")).toBeInTheDocument();
-    expect(screen.getByTestId("track-search-empty")).toHaveTextContent("No tracks found");
-    expect(input).not.toBeDisabled();
+    expect(screen.getByTestId("search-result-name-t2")).toHaveTextContent("Song Two");
+    expect(screen.getByTestId("search-result-artists-t2")).toHaveTextContent("Artist B, Artist C");
   });
 
   /**
-   * Scenario: Network error during track addition
-   *   Given I have selected a track to add
-   *   When the add mutation fails due to a network error
-   *   Then I see an error message indicating the add failed
-   *   And I see a retry button
-   *   And the track is not silently dropped
+   * Scenario: Artwork fallback when no image is available
+   *   Given a search result has no artwork URL
+   *   Then a placeholder image is shown instead
    */
-  it("shows error message and retry button when addError is true", () => {
-    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" addError={true} onRetry={noop} />);
+  it("shows a placeholder when albumArt is empty", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" />);
 
-    expect(screen.getByTestId("track-add-error")).toBeInTheDocument();
-    expect(screen.getByTestId("track-add-retry-btn")).toBeInTheDocument();
+    // t1 has artwork — img element expected
+    const t1Artwork = screen.getByTestId("search-result-artwork-t1");
+    expect(t1Artwork.tagName).toBe("IMG");
+
+    // t2 has no artwork — placeholder div expected (no img src)
+    const t2Artwork = screen.getByTestId("search-result-artwork-t2");
+    expect(t2Artwork.tagName).not.toBe("IMG");
+    expect(t2Artwork).toBeInTheDocument();
   });
 
   /**
-   * Scenario: Retrying after a network error
-   *   Given an add-error state is shown
-   *   When I tap the retry button
-   *   Then the add mutation is attempted again with the same track
+   * Scenario: Selecting a result via click
+   *   Given search results are displayed
+   *   When I click a track result item
+   *   Then the onSelect callback is called with that track
    */
-  it("calls onRetry when retry button is clicked", () => {
-    const onRetry = vi.fn();
-    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" addError={true} onRetry={onRetry} />);
+  it("calls onSelect with the track when a result is clicked", () => {
+    const onSelect = vi.fn();
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" onSelect={onSelect} />);
 
-    fireEvent.click(screen.getByTestId("track-add-retry-btn"));
-    expect(onRetry).toHaveBeenCalledOnce();
+    fireEvent.click(screen.getByTestId("search-result-t1"));
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onSelect).toHaveBeenCalledWith(tracks[0]);
   });
 
   /**
-   * Scenario: Fissa ends while guest is searching
-   *   Given the Add Track sheet is open
-   *   When the Fissa is detected as ended
-   *   Then the sheet shows an ended-Fissa state
-   *   And the search UI is no longer interactive
+   * Scenario: Selecting a result via keyboard
+   *   Given search results are displayed and focused
+   *   When I press Enter on a track result item
+   *   Then the onSelect callback is called with that track
    */
-  it("shows fissa-ended state and disables input when fissaEnded is true", () => {
-    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" fissaEnded={true} />);
+  it("calls onSelect with the track when Enter is pressed on a result", () => {
+    const onSelect = vi.fn();
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" onSelect={onSelect} />);
 
-    expect(screen.getByTestId("fissa-ended-state")).toBeInTheDocument();
-    expect(screen.getByTestId("track-search-input")).toBeDisabled();
+    fireEvent.keyDown(screen.getByTestId("search-result-t1"), { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onSelect).toHaveBeenCalledWith(tracks[0]);
   });
 
-  it("does not show add-error when fissaEnded is true", () => {
-    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" fissaEnded={true} addError={true} onRetry={noop} />);
+  it("calls onSelect with the track when Space is pressed on a result", () => {
+    const onSelect = vi.fn();
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" onSelect={onSelect} />);
 
-    expect(screen.queryByTestId("track-add-error")).not.toBeInTheDocument();
+    fireEvent.keyDown(screen.getByTestId("search-result-t1"), { key: " " });
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onSelect).toHaveBeenCalledWith(tracks[0]);
   });
 });

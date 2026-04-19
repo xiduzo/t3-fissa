@@ -1,17 +1,25 @@
-import { type FC, useState } from "react";
+import { type FC, type KeyboardEvent, useState } from "react";
 import { api } from "~/utils/api";
 import { useDebounce } from "~/hooks/useDebounce";
+
+export interface SearchTrack {
+  id: string;
+  name: string;
+  artists: string[];
+  albumArt: string;
+}
 
 interface AddTrackSheetProps {
   isOpen: boolean;
   onClose: () => void;
   pin: string;
+  onSelect?: (track: SearchTrack) => void;
   addError?: boolean;
   onRetry?: () => void;
   fissaEnded?: boolean;
 }
 
-export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, addError, onRetry, fissaEnded }) => {
+export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, onSelect, addError, onRetry, fissaEnded }) => {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
 
@@ -23,6 +31,13 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, ad
   const results = data?.tracks ?? [];
 
   if (!isOpen) return null;
+
+  const handleTrackKeyDown = (e: KeyboardEvent<HTMLLIElement>, track: SearchTrack) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect?.(track);
+    }
+  };
 
   return (
     <>
@@ -72,18 +87,36 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, ad
         {!fissaEnded && !isLoading && results.length > 0 && (
           <ul data-testid="track-search-results" className="mt-4 flex flex-col gap-2">
             {results.map((track) => (
-              <li key={track.id} data-testid={`search-result-${track.id}`} className="flex items-center gap-3">
-                <img
-                  data-testid={`search-result-artwork-${track.id}`}
-                  src={track.albumArt}
-                  alt={track.name}
-                  className="h-10 w-10 rounded object-cover"
-                />
-                <div>
-                  <p data-testid={`search-result-name-${track.id}`} className="text-sm font-medium">
+              <li
+                key={track.id}
+                data-testid={`search-result-${track.id}`}
+                className="flex cursor-pointer items-center gap-3 rounded-md p-1 hover:bg-accent"
+                role="button"
+                tabIndex={0}
+                onClick={() => onSelect?.(track)}
+                onKeyDown={(e) => handleTrackKeyDown(e, track)}
+              >
+                {track.albumArt ? (
+                  <img
+                    data-testid={`search-result-artwork-${track.id}`}
+                    src={track.albumArt}
+                    alt={track.name}
+                    className="h-10 w-10 rounded object-cover"
+                  />
+                ) : (
+                  <div
+                    data-testid={`search-result-artwork-${track.id}`}
+                    className="flex h-10 w-10 items-center justify-center rounded bg-gray-200 text-gray-400"
+                    aria-label="No artwork"
+                  >
+                    ?
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p data-testid={`search-result-name-${track.id}`} className="truncate text-sm font-medium">
                     {track.name}
                   </p>
-                  <p data-testid={`search-result-artists-${track.id}`} className="text-xs text-gray-500">
+                  <p data-testid={`search-result-artists-${track.id}`} className="truncate text-xs text-gray-500">
                     {track.artists.join(", ")}
                   </p>
                 </div>
