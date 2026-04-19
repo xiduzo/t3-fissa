@@ -23,15 +23,90 @@ interface QueuePageProps {
 
 export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [optimisticVotes, setOptimisticVotes] = useState<Map<string, 1 | -1>>(new Map());
+  const [voteErrors, setVoteErrors] = useState<Map<string, { vote: 1 | -1 }>>(new Map());
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const navigate = useNavigate({ from: "/fissa/$pin" });
   const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
+  const utils = api.useUtils();
+
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
   });
+
+  const { data: votesData } = api.vote.byFissaFromUser.useQuery(
+    { pin },
+    { enabled: !!pin && !!session?.user },
+  );
+
+  // Merge server votes with optimistic updates (optimistic takes precedence)
+  const userVotes = new Map(
+    (votesData ?? []).map((v) => [v.trackId, v.score as 1 | -1]),
+  );
+  for (const [trackId, score] of optimisticVotes) {
+    userVotes.set(trackId, score);
+  }
+
+  const { mutate: createVote } = api.vote.create.useMutation({
+    onMutate: ({ trackId, vote }) => {
+      const previousVote = optimisticVotes.get(trackId) ?? null;
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        next.set(trackId, vote as 1 | -1);
+        return next;
+      });
+      return { previousVote, trackId };
+    },
+    onSuccess: (_data: unknown, vars?: { trackId?: string }) => {
+      if (vars?.trackId) {
+        setVoteErrors((prev) => {
+          const next = new Map(prev);
+          next.delete(vars.trackId!);
+          return next;
+        });
+      }
+      void utils.vote.byFissaFromUser.invalidate({ pin });
+      void utils.fissa.byId.invalidate(pin);
+    },
+    onError: (err, { trackId, vote }, context) => {
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        if (context?.previousVote != null) {
+          next.set(trackId, context.previousVote as 1 | -1);
+        } else {
+          next.delete(trackId);
+        }
+        return next;
+      });
+      setVoteErrors((prev) => new Map(prev).set(trackId, { vote: vote as 1 | -1 }));
+      const tRPCError = err as { data?: { code?: string } };
+      if (tRPCError?.data?.code === "NOT_FOUND") {
+        void utils.fissa.byId.invalidate(pin);
+      }
+    },
+  });
+
+  const handleVote = useCallback(
+    (trackId: string, vote: 1 | -1) => {
+      createVote({ pin, trackId, vote });
+    },
+    [createVote, pin],
+  );
+
+  const handleRetryVote = useCallback(
+    (trackId: string, vote: 1 | -1) => {
+      setVoteErrors((prev) => {
+        const next = new Map(prev);
+        next.delete(trackId);
+        return next;
+      });
+      createVote({ pin, trackId, vote });
+    },
+    [createVote, pin],
+  );
 
   const { mutate: addTracks, isPending: isAdding } = api.track.addTracks.useMutation({
     onSuccess: () => {
@@ -123,7 +198,15 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
               No upcoming tracks
             </p>
           ) : (
-            <QueueTrackList tracks={upcomingTracks} />
+            <QueueTrackList
+              tracks={upcomingTracks}
+              isAuthenticated={!!session?.user}
+              currentlyPlayingId={data?.currentlyPlayingId ?? undefined}
+              userVotes={session?.user ? userVotes : undefined}
+              onVote={session?.user ? handleVote : undefined}
+              voteErrors={voteErrors}
+              onRetryVote={handleRetryVote}
+            />
           )}
         </section>
 
@@ -169,7 +252,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
             >
               Add Track
             </button>
-            <div data-testid="vote-controls">{/* Vote controls — Feature #47 */}</div>
+            <div data-testid="vote-controls">{/* Vote controls wired via QueueTrackList */}</div>
           </section>
         )}
       </div>

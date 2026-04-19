@@ -13,6 +13,10 @@ import React from "react";
 // ── Mocks ──────────────────────────────────────────────────────────────────────
 // Note: vi.mock factories are hoisted — no variable references allowed inside.
 
+vi.mock("~/hooks/useTrackSearch", () => ({
+  useTrackSearch: () => ({ results: [], isLoading: false, query: "", setQuery: vi.fn() }),
+}));
+
 vi.mock("~/utils/api", () => ({
   api: {
     fissa: {
@@ -24,6 +28,18 @@ vi.mock("~/utils/api", () => ({
         }),
       },
     },
+    vote: {
+      byFissaFromUser: {
+        useQuery: vi.fn().mockReturnValue({
+          data: undefined,
+        }),
+      },
+      create: {
+        useMutation: vi.fn().mockReturnValue({
+          mutate: vi.fn(),
+        }),
+      },
+    },
     track: {
       addTracks: {
         useMutation: vi.fn().mockReturnValue({
@@ -32,6 +48,14 @@ vi.mock("~/utils/api", () => ({
         }),
       },
     },
+    useUtils: vi.fn().mockReturnValue({
+      vote: {
+        byFissaFromUser: { invalidate: vi.fn().mockResolvedValue(undefined) },
+      },
+      fissa: {
+        byId: { invalidate: vi.fn().mockResolvedValue(undefined) },
+      },
+    }),
   },
 }));
 
@@ -67,28 +91,6 @@ vi.mock("~/components/Button", () => ({
 
 vi.mock("~/components/Toast", () => ({
   toast: { error: vi.fn(), success: vi.fn() },
-}));
-
-vi.mock("~/components/CurrentlyPlayingTrack", () => ({
-  CurrentlyPlayingTrack: ({ track }: { track?: { trackId: string } }) =>
-    track ? <div data-testid="currently-playing-track">{track.trackId}</div> : null,
-}));
-
-vi.mock("~/lib/auth-client", () => ({
-  authClient: {
-    useSession: vi.fn().mockReturnValue({ data: null, isPending: false }),
-    signIn: {
-      social: vi.fn(),
-    },
-  },
-}));
-
-vi.mock("~/components/SpotifySignInButton", () => ({
-  SpotifySignInButton: ({ pin }: { pin: string }) => (
-    <button data-testid="spotify-signin-btn" data-pin={pin}>
-      Sign in with Spotify
-    </button>
-  ),
 }));
 
 vi.mock("~/components/AddTrackSheet", () => ({
@@ -127,6 +129,28 @@ vi.mock("~/components/AddTrackSheet", () => ({
         </button>
       </div>
     ) : null,
+}));
+
+vi.mock("~/components/CurrentlyPlayingTrack", () => ({
+  CurrentlyPlayingTrack: ({ track }: { track?: { trackId: string } }) =>
+    track ? <div data-testid="currently-playing-track">{track.trackId}</div> : null,
+}));
+
+vi.mock("~/lib/auth-client", () => ({
+  authClient: {
+    useSession: vi.fn().mockReturnValue({ data: null, isPending: false }),
+    signIn: {
+      social: vi.fn(),
+    },
+  },
+}));
+
+vi.mock("~/components/SpotifySignInButton", () => ({
+  SpotifySignInButton: ({ pin }: { pin: string }) => (
+    <button data-testid="spotify-signin-btn" data-pin={pin}>
+      Sign in with Spotify
+    </button>
+  ),
 }));
 
 // ── Imports after mocks ────────────────────────────────────────────────────────
@@ -1373,6 +1397,440 @@ describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
   });
 });
 
+describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "track-123", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 3 },
+      { trackId: "track-456", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 1 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: undefined } as any);
+  });
+
+  /**
+   * Scenario: Guest's previously cast upvote is shown on load
+   *   Given I am signed in as a Party Guest
+   *   And I previously upvoted track "track-123"
+   *   When I load the Fissa page
+   *   Then the upvote button for "track-123" shows as active/selected
+   */
+  it("calls vote.byFissaFromUser with { pin } when user is authenticated", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
+      { pin: "ABC123" },
+      expect.objectContaining({ enabled: true }),
+    );
+  });
+
+  it("does not call vote.byFissaFromUser when user is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
+      { pin: "ABC123" },
+      expect.objectContaining({ enabled: false }),
+    );
+  });
+
+  it("shows upvote button as aria-pressed=true for a previously upvoted track", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-123", score: 1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("shows downvote button as aria-pressed=true for a previously downvoted track", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-456", score: -1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-456")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-456")).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows both vote buttons as aria-pressed=false for unvoted tracks", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
+  });
+});
+
+describe("/fissa/$pin — Wire vote.create mutation (Task #71)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockCreateVoteMutation = vi.mocked(api.vote.create.useMutation);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "track-dancing-queen", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 0 },
+      { trackId: "track-barbie-girl", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 0 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test Guest" } },
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Guest casts an upvote
+   *   Given I am signed in as a Party Guest
+   *   And track "Dancing Queen" is in the Queue
+   *   When I click the upvote button on "Dancing Queen"
+   *   Then the upvote button is shown as active immediately (optimistic)
+   *   And the vote.create mutation is called with score +1
+   */
+  it("calls vote.create mutation with score +1 when upvote button is clicked", () => {
+    const mockMutate = vi.fn();
+    mockCreateVoteMutation.mockReturnValue({ mutate: mockMutate } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    fireEvent.click(screen.getByTestId("upvote-track-dancing-queen"));
+
+    expect(mockMutate).toHaveBeenCalledWith({
+      pin: "ABC123",
+      trackId: "track-dancing-queen",
+      vote: 1,
+    });
+  });
+
+  /**
+   * Scenario: Guest casts a downvote
+   *   Given I am signed in as a Party Guest
+   *   And track "Barbie Girl" is in the Queue
+   *   When I click the downvote button on "Barbie Girl"
+   *   Then the vote.create mutation is called with score -1
+   */
+  it("calls vote.create mutation with score -1 when downvote button is clicked", () => {
+    const mockMutate = vi.fn();
+    mockCreateVoteMutation.mockReturnValue({ mutate: mockMutate } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    fireEvent.click(screen.getByTestId("downvote-track-barbie-girl"));
+
+    expect(mockMutate).toHaveBeenCalledWith({
+      pin: "ABC123",
+      trackId: "track-barbie-girl",
+      vote: -1,
+    });
+  });
+
+  /**
+   * Scenario: Guest casts an upvote — optimistic update shown immediately
+   *   When I click the upvote button
+   *   Then the upvote button shows as active immediately (before server responds)
+   */
+  it("shows upvote button as aria-pressed=true immediately after clicking (optimistic update)", () => {
+    // Simulate onMutate being called immediately by calling it inline
+    mockCreateVoteMutation.mockImplementation(({ onMutate }: any) => ({
+      mutate: (input: any) => {
+        onMutate?.(input);
+      },
+    }));
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(screen.getByTestId("upvote-track-dancing-queen"));
+
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  /**
+   * Scenario: Guest casts a downvote — optimistic update shown immediately
+   */
+  it("shows downvote button as aria-pressed=true immediately after clicking (optimistic update)", () => {
+    mockCreateVoteMutation.mockImplementation(({ onMutate }: any) => ({
+      mutate: (input: any) => {
+        onMutate?.(input);
+      },
+    }));
+
+    render(<QueuePage pin="ABC123" />);
+
+    fireEvent.click(screen.getByTestId("downvote-track-barbie-girl"));
+
+    expect(screen.getByTestId("downvote-track-barbie-girl")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("upvote-track-barbie-girl")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  /**
+   * Scenario: Guest changes vote from upvote to downvote
+   *   Given I previously upvoted "Dancing Queen"
+   *   When I click the downvote button on "Dancing Queen"
+   *   Then the downvote button becomes active and upvote becomes inactive
+   *   And vote.create is called with score -1
+   */
+  it("changes active vote from upvote to downvote when clicking downvote (optimistic)", () => {
+    mockCreateVoteMutation.mockImplementation(({ onMutate }: any) => ({
+      mutate: (input: any) => {
+        onMutate?.(input);
+      },
+    }));
+    // Start with an existing upvote on the track
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-dancing-queen", score: 1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // Initially upvote is active
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+
+    // Click downvote to change the vote
+    fireEvent.click(screen.getByTestId("downvote-track-dancing-queen"));
+
+    // Downvote is now active, upvote is inactive
+    expect(screen.getByTestId("downvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  /**
+   * Scenario: vote.create is not called for unauthenticated users
+   *   (vote buttons are not rendered for unauthenticated users — verified by prior tests)
+   */
+  it("does not expose onVote when user is not authenticated", () => {
+    const mockMutate = vi.fn();
+    mockCreateVoteMutation.mockReturnValue({ mutate: mockMutate } as any);
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // No vote buttons should be in the DOM for unauthenticated users
+    expect(screen.queryByTestId("upvote-track-dancing-queen")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("downvote-track-dancing-queen")).not.toBeInTheDocument();
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Scenario: On success, cache invalidation is triggered
+   */
+  it("invalidates vote.byFissaFromUser and fissa.byId on mutation success", () => {
+    const mockInvalidateVotes = vi.fn().mockResolvedValue(undefined);
+    const mockInvalidateFissa = vi.fn().mockResolvedValue(undefined);
+
+    vi.mocked(api.useUtils).mockReturnValue({
+      vote: { byFissaFromUser: { invalidate: mockInvalidateVotes } },
+      fissa: { byId: { invalidate: mockInvalidateFissa } },
+    } as any);
+
+    let capturedOnSuccess: ((data: any) => void) | undefined;
+    mockCreateVoteMutation.mockImplementation(({ onSuccess }: any) => {
+      capturedOnSuccess = onSuccess;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    // Simulate success callback
+    capturedOnSuccess?.({});
+
+    expect(mockInvalidateVotes).toHaveBeenCalledWith({ pin: "ABC123" });
+    expect(mockInvalidateFissa).toHaveBeenCalledWith("ABC123");
+  });
+});
+
+describe("/fissa/$pin — Vote error rollback and retry (Task #78)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockCreateVoteMutation = vi.mocked(api.vote.create.useMutation);
+
+  const activeFissaWithTracks = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "sweet-child", hasBeenPlayed: false, durationMs: 356000, score: 0, totalScore: 5 },
+      { trackId: "macarena", hasBeenPlayed: false, durationMs: 230000, score: 0, totalScore: 3 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({ data: activeFissaWithTracks, isLoading: false, isError: false, error: null } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+    mockUseSession.mockReturnValue({ data: { user: { id: "user1", name: "Guest" } }, isPending: false } as any);
+  });
+
+  /**
+   * Scenario: Network error rolls back optimistic update
+   *   When onError is called, error indicator and retry button appear
+   */
+  it("shows error indicator and retry button after vote failure", () => {
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "INTERNAL_SERVER_ERROR" } },
+        { trackId: "sweet-child", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    expect(screen.getByTestId("vote-error-sweet-child")).toBeInTheDocument();
+    expect(screen.getByTestId("retry-vote-sweet-child")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest retries after error and succeeds
+   *   Clicking retry button calls createVote again with the same vote
+   */
+  it("calls createVote mutate when retry button is clicked", () => {
+    const mockMutate = vi.fn();
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: mockMutate };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "INTERNAL_SERVER_ERROR" } },
+        { trackId: "sweet-child", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    fireEvent.click(screen.getByTestId("retry-vote-sweet-child"));
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ trackId: "sweet-child", vote: 1, pin: "1234" }));
+  });
+
+  /**
+   * Scenario: Voting on a removed track refreshes the Queue
+   *   When NOT_FOUND error, fissa.byId is invalidated
+   */
+  it("invalidates fissa.byId when vote returns NOT_FOUND error", () => {
+    const mockInvalidateFissa = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(api.useUtils).mockReturnValue({
+      vote: { byFissaFromUser: { invalidate: vi.fn().mockResolvedValue(undefined) } },
+      fissa: { byId: { invalidate: mockInvalidateFissa } },
+    } as any);
+
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "macarena", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "NOT_FOUND" } },
+        { trackId: "macarena", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    expect(mockInvalidateFissa).toHaveBeenCalledWith("1234");
+  });
+
+  /**
+   * Error indicator clears after successful vote
+   */
+  it("removes error indicator after successful vote", () => {
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnSuccess: ((data: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnSuccess = callbacks?.onSuccess;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.({ data: { code: "INTERNAL_SERVER_ERROR" } }, { trackId: "sweet-child", vote: 1, pin: "1234" }, ctx);
+    });
+    expect(screen.getByTestId("vote-error-sweet-child")).toBeInTheDocument();
+
+    act(() => {
+      capturedOnSuccess?.({}, { trackId: "sweet-child", vote: 1, pin: "1234" }, ctx);
+    });
+    expect(screen.queryByTestId("vote-error-sweet-child")).not.toBeInTheDocument();
+  });
+});
+
 describe("/fissa/$pin — Add Track sheet entry point (Task #70)", () => {
   const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
   const mockUseSession = vi.mocked(authClient.useSession);
@@ -1496,12 +1954,12 @@ describe("/fissa/$pin — Wire track.addTracks mutation (Task #75)", () => {
       isError: false,
       error: null,
     } as any);
-    mockUseSession.mockReturnValue({
-      data: { user: { id: "user1", name: "Test Guest" } },
-      isPending: false,
-    } as any);
     mockAddTracksMutation.mockReturnValue({
       mutate: vi.fn(),
+      isPending: false,
+    } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test Guest" } },
       isPending: false,
     } as any);
   });

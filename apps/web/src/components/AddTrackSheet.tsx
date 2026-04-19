@@ -1,6 +1,5 @@
-import { type FC, type KeyboardEvent, useState } from "react";
-import { api } from "~/utils/api";
-import { useDebounce } from "~/hooks/useDebounce";
+import { type FC, type KeyboardEvent } from "react";
+import { useTrackSearch } from "~/hooks/useTrackSearch";
 
 export interface SearchTrack {
   id: string;
@@ -22,15 +21,8 @@ interface AddTrackSheetProps {
 }
 
 export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, onSelect, isAdding, addError, onRetry, fissaEnded }) => {
-  const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(query, 300);
-
-  const { data, isLoading } = api.spotify.searchTracks.useQuery(
-    { query: debouncedQuery },
-    { enabled: debouncedQuery.length > 0 },
-  );
-
-  const results = data?.tracks ?? [];
+  const { query, setQuery, results, isLoading } = useTrackSearch();
+  const debouncedQuery = query.trim();
 
   if (!isOpen) return null;
 

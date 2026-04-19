@@ -13,20 +13,10 @@ import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
 
-vi.mock("~/hooks/useDebounce", () => ({
-  useDebounce: (value: unknown) => value,
-}));
+const mockUseTrackSearch = vi.fn();
 
-const mockUseQuery = vi.fn();
-
-vi.mock("~/utils/api", () => ({
-  api: {
-    spotify: {
-      searchTracks: {
-        useQuery: (...args: unknown[]) => mockUseQuery(...args),
-      },
-    },
-  },
+vi.mock("~/hooks/useTrackSearch", () => ({
+  useTrackSearch: () => mockUseTrackSearch(),
 }));
 
 // ── Imports after mocks ────────────────────────────────────────────────────────
@@ -39,7 +29,7 @@ const noop = () => void 0;
 
 describe("AddTrackSheet (Task #72)", () => {
   beforeEach(() => {
-    mockUseQuery.mockReturnValue({ data: undefined, isLoading: false });
+    mockUseTrackSearch.mockReturnValue({ results: [], isLoading: false, query: "", setQuery: vi.fn() });
   });
 
   /**
@@ -93,7 +83,7 @@ describe("AddTrackSheet (Task #72)", () => {
    *   Then the loading indicator is visible
    */
   it("shows loading indicator when isLoading is true", () => {
-    mockUseQuery.mockReturnValue({ data: undefined, isLoading: true });
+    mockUseTrackSearch.mockReturnValue({ results: [], isLoading: true, query: "Bohemian", setQuery: vi.fn() });
     render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" />);
     expect(screen.getByTestId("track-search-loading")).toBeInTheDocument();
   });
@@ -104,14 +94,14 @@ describe("AddTrackSheet (Task #72)", () => {
    *   Then each track name, artists, and artwork are displayed
    */
   it("renders search results when data is returned", () => {
-    mockUseQuery.mockReturnValue({
-      data: {
-        tracks: [
-          { id: "t1", name: "Song One", durationMs: 180000, artists: ["Artist A"], albumArt: "https://img/t1.jpg" },
-          { id: "t2", name: "Song Two", durationMs: 240000, artists: ["Artist B", "Artist C"], albumArt: "https://img/t2.jpg" },
-        ],
-      },
+    mockUseTrackSearch.mockReturnValue({
+      results: [
+        { id: "t1", name: "Song One", durationMs: 180000, artists: ["Artist A"], albumArt: "https://img/t1.jpg" },
+        { id: "t2", name: "Song Two", durationMs: 240000, artists: ["Artist B", "Artist C"], albumArt: "https://img/t2.jpg" },
+      ],
       isLoading: false,
+      query: "Song",
+      setQuery: vi.fn(),
     });
     render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" />);
 
@@ -126,7 +116,7 @@ describe("AddTrackSheet (Task #72)", () => {
   });
 
   it("does not render results list when data is empty", () => {
-    mockUseQuery.mockReturnValue({ data: { tracks: [] }, isLoading: false });
+    mockUseTrackSearch.mockReturnValue({ results: [], isLoading: false, query: "", setQuery: vi.fn() });
     render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" />);
     expect(screen.queryByTestId("track-search-results")).not.toBeInTheDocument();
   });
@@ -141,9 +131,11 @@ const tracks = [
 
 describe("AddTrackSheet (Task #74)", () => {
   beforeEach(() => {
-    mockUseQuery.mockReturnValue({
-      data: { tracks },
+    mockUseTrackSearch.mockReturnValue({
+      results: tracks,
       isLoading: false,
+      query: "Song",
+      setQuery: vi.fn(),
     });
   });
 

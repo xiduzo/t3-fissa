@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T07:52:40.808Z
-> Files: 507 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T15:11:39.271Z
+> Files: 508 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -279,6 +279,7 @@
 - `QueueTrackList.test.tsx` — Tests for QueueTrackList component (Task #61) (~1244 tok)
 - `QueueTrackList.tsx` — Renders the upcoming tracks queue sorted by totalScore descending. (~519 tok)
 - `SecondaryFeatures.tsx` — features — renders chart (~2303 tok)
+- `SpotifySignInButton.test.tsx` — Tests for SpotifySignInButton component (Task #63) (~818 tok)
 - `Toast.tsx` — AUTO_CLOSE_TIME_MS (~298 tok)
 - `TrackList.tsx` — TrackList (~1214 tok)
 
@@ -293,8 +294,8 @@
 
 ## apps/web/src/routes/fissa/
 
-- `$pin.test.tsx` — Tests for /fissa/$pin page (Task #57) (~7261 tok)
-- `$pin.tsx` — Route — uses useQuery, useParams (~949 tok)
+- `$pin.test.tsx` — Tests for /fissa/$pin page (Task #57, #58) (~10976 tok)
+- `$pin.tsx` — Route (~1696 tok)
 
 ## apps/web/src/styles/
 
