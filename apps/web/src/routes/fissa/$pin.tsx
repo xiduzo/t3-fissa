@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useCallback, useState } from "react";
 import { type FC } from "react";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
@@ -23,13 +24,56 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const navigate = useNavigate({ from: "/fissa/$pin" });
   const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
+
+  // Optimistic vote state: trackId -> score
+  const [optimisticVotes, setOptimisticVotes] = useState<Map<string, 1 | -1>>(new Map());
+
   const { data: votesData } = api.vote.byFissaFromUser.useQuery(
     { pin },
     { enabled: !!pin && !!session?.user },
   );
+
+  const utils = api.useUtils();
+
+  const { mutate: createVote } = api.vote.create.useMutation({
+    onMutate: ({ trackId, vote }) => {
+      // Optimistic update: immediately reflect new vote state
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        next.set(trackId, vote as 1 | -1);
+        return next;
+      });
+    },
+    onSuccess: async () => {
+      // Invalidate queries to refresh data from server
+      await utils.vote.byFissaFromUser.invalidate({ pin });
+      await utils.fissa.byId.invalidate(pin);
+    },
+    onError: (_err, { trackId }) => {
+      // Rollback optimistic update on error (full error handling is Task #78)
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        next.delete(trackId);
+        return next;
+      });
+    },
+  });
+
+  // Merge server votes with optimistic updates (optimistic takes precedence)
   const userVotes = new Map(
     (votesData ?? []).map((v) => [v.trackId, v.score as 1 | -1]),
   );
+  for (const [trackId, score] of optimisticVotes) {
+    userVotes.set(trackId, score);
+  }
+
+  const handleVote = useCallback(
+    (trackId: string, vote: 1 | -1) => {
+      createVote({ pin, trackId, vote });
+    },
+    [createVote, pin],
+  );
+
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
@@ -109,7 +153,13 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
               No upcoming tracks
             </p>
           ) : (
-            <QueueTrackList tracks={upcomingTracks} isAuthenticated={!!session?.user} currentlyPlayingId={data?.currentlyPlayingId ?? undefined} userVotes={session?.user ? userVotes : undefined} />
+            <QueueTrackList
+              tracks={upcomingTracks}
+              isAuthenticated={!!session?.user}
+              currentlyPlayingId={data?.currentlyPlayingId ?? undefined}
+              userVotes={session?.user ? userVotes : undefined}
+              onVote={session?.user ? handleVote : undefined}
+            />
           )}
         </section>
 
