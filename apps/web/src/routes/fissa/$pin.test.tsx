@@ -672,6 +672,194 @@ describe("/fissa/$pin — Auto-polling every 5 seconds (Task #62)", () => {
   });
 });
 
+describe("/fissa/$pin — No auto deep-link redirect on page load (Task #81)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    // Reset window.location to a clean state
+    Object.defineProperty(window, "location", {
+      value: {
+        href: "http://localhost/fissa/ABC123",
+        replace: vi.fn(),
+        assign: vi.fn(),
+      },
+      writable: true,
+      configurable: true,
+    });
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Fissa page loads without auto-redirect
+   *   Given a guest navigates to /fissa/<pin>
+   *   When page finishes loading
+   *   Then browser remains on /fissa/<pin>
+   *   AND no deep-link redirect is triggered automatically
+   */
+  it("does not call window.location.replace on mount (no deep-link redirect)", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(window.location.replace).not.toHaveBeenCalled();
+  });
+
+  it("does not call window.location.href with a deep-link scheme on mount", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // href must stay on the page URL — never set to a deep-link
+    expect(window.location.href).not.toMatch(/^com\.fissa:\/\//);
+    expect(window.location.replace).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^com\.fissa:\/\//),
+    );
+  });
+
+  /**
+   * Scenario: Fissa page loads when native app is installed
+   *   Given a guest navigates to /fissa/<pin>
+   *   And the native app is installed
+   *   When page finishes loading
+   *   Then browser still remains on /fissa/<pin>
+   *   AND app is not launched automatically
+   */
+  it("does not redirect even when fissa data loads successfully (app installed simulation)", () => {
+    // Simulate query succeeding (as if native app is installed, data returns)
+    mockUseQuery.mockImplementation(
+      (_pin: string, options?: { onSuccess?: (data: unknown) => void }) => {
+        // Call onSuccess if it exists — prior code had redirect in onSuccess
+        options?.onSuccess?.({ pin: "ABC123" });
+        return {
+          data: { pin: "ABC123", currentlyPlayingId: null, tracks: [] },
+          isLoading: false,
+          isError: false,
+          error: null,
+        } as any;
+      },
+    );
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(window.location.replace).not.toHaveBeenCalled();
+    expect(window.location.assign).not.toHaveBeenCalled();
+    // href must not have been redirected to a native deep-link
+    expect(window.location.href).not.toMatch(/^com\.fissa:\/\//);
+  });
+
+  it("does not redirect to any deep-link scheme regardless of query state", () => {
+    // Test with multiple query states to ensure no state triggers a redirect
+    const states = [
+      { data: undefined, isLoading: true, isError: false, error: null },
+      { data: { pin: "ABC123", tracks: [] }, isLoading: false, isError: false, error: null },
+      { data: undefined, isLoading: false, isError: true, error: { message: "Not found" } },
+    ];
+
+    for (const state of states) {
+      // Reset replace mock between renders
+      const replaceSpy = vi.fn();
+      Object.defineProperty(window, "location", {
+        value: { href: "http://localhost/fissa/ABC123", replace: replaceSpy, assign: vi.fn() },
+        writable: true,
+        configurable: true,
+      });
+
+      mockUseQuery.mockReturnValue(state as any);
+      const { unmount } = render(<QueuePage pin="ABC123" />);
+
+      expect(replaceSpy).not.toHaveBeenCalled();
+      unmount();
+    }
+  });
+});
+
+describe("/fissa/$pin — Open in mobile app CTA (Task #84)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Deep link href contains correct pin
+   *   Given a Fissa page with pin "ABC123"
+   *   Then there is an anchor with href="com.fissa://fissa/ABC123"
+   */
+  it("renders an anchor with the correct com.fissa deep-link href", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta).toBeInTheDocument();
+    expect(cta).toHaveAttribute("href", "com.fissa://fissa/ABC123");
+  });
+
+  /**
+   * Scenario: "Open in mobile app" CTA is visible on the page
+   */
+  it("shows 'Open in mobile app' text on the CTA", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByText(/open in mobile app/i)).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest taps without app installed — browser stays on page
+   *   The element must be a plain <a> tag (not a button), so the browser
+   *   handles the deep-link natively without JS navigation.
+   */
+  it("uses a plain <a> element (not a button) so the browser handles deep-link gracefully", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta.tagName.toLowerCase()).toBe("a");
+  });
+
+  /**
+   * Deep link href is pin-specific — different pin produces different href
+   */
+  it("uses the pin prop in the deep-link href", () => {
+    mockUseQuery.mockReturnValue({
+      data: { pin: "XYZ999", currentlyPlayingId: null, tracks: [] },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="XYZ999" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta).toHaveAttribute("href", "com.fissa://fissa/XYZ999");
+  });
+});
+
 describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
   const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
 
@@ -782,5 +970,93 @@ describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
     expect(items[0]).toHaveAttribute("data-trackid", "track-high");
     expect(items[1]).toHaveAttribute("data-trackid", "track-mid");
     expect(items[2]).toHaveAttribute("data-trackid", "track-low");
+  });
+});
+
+describe("/fissa/$pin — Open in desktop app placeholder CTA (Task #87)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: "Open in desktop app" CTA is visible on the Fissa page
+   */
+  it("renders the 'Open in desktop app' CTA on the page", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("open-desktop-app-cta")).toBeInTheDocument();
+    expect(screen.getByText(/open in desktop app/i)).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: "Open in desktop app" CTA does not break the browser session
+   *   CTA href is "#" so clicking does not trigger navigation
+   */
+  it("has href='#' on the desktop app CTA to prevent navigation", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-desktop-app-cta");
+    expect(cta).toHaveAttribute("href", "#");
+  });
+
+  /**
+   * Scenario: Desktop scheme is N/A — CTA is a placeholder (anchor element)
+   */
+  it("is rendered as an anchor element (placeholder for future desktop scheme)", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-desktop-app-cta");
+    expect(cta.tagName.toLowerCase()).toBe("a");
+  });
+});
+
+describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Both app-open CTAs are present in the document
+   */
+  it("renders both app-open CTAs in the document", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("open-mobile-app-cta")).toBeInTheDocument();
+    expect(screen.getByTestId("open-desktop-app-cta")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Both CTAs share consistent styling
+   *   Both CTAs must have the same className to ensure visual consistency
+   */
+  it("applies identical className to both app-open CTAs for visual consistency", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const mobileCta = screen.getByTestId("open-mobile-app-cta");
+    const desktopCta = screen.getByTestId("open-desktop-app-cta");
+
+    expect(mobileCta.className).toBe(desktopCta.className);
   });
 });
