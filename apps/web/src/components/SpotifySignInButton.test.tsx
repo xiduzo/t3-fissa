@@ -10,24 +10,25 @@ import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
 
-const mockSignInSocial = vi.fn();
-
 vi.mock("~/lib/auth-client", () => ({
   authClient: {
     useSession: vi.fn().mockReturnValue({ data: null, isPending: false }),
     signIn: {
-      social: mockSignInSocial,
+      social: vi.fn(),
     },
   },
 }));
 
 // ── Imports after mocks ────────────────────────────────────────────────────────
 
+import { authClient } from "~/lib/auth-client";
 import { SpotifySignInButton } from "./SpotifySignInButton";
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 
 describe("SpotifySignInButton — callbackURL flows to signIn.social (Task #63)", () => {
+  const mockSignInSocial = vi.mocked(authClient.signIn.social);
+
   /**
    * Scenario: Successful OAuth redirects to Fissa page
    *   Given a SpotifySignInButton with pin="1234"

@@ -1169,3 +1169,159 @@ describe("/fissa/$pin — OAuth error handling (Task #67)", () => {
     expect(mockSignIn).not.toHaveBeenCalled();
   });
 });
+
+describe("/fissa/$pin — Open in mobile app CTA (Task #84)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Deep link href contains correct pin
+   *   Given a Fissa page with pin "ABC123"
+   *   Then there is an anchor with href="com.fissa://fissa/ABC123"
+   */
+  it("renders an anchor with the correct com.fissa deep-link href", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta).toBeInTheDocument();
+    expect(cta).toHaveAttribute("href", "com.fissa://fissa/ABC123");
+  });
+
+  /**
+   * Scenario: "Open in mobile app" CTA is visible on the page
+   */
+  it("shows 'Open in mobile app' text on the CTA", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByText(/open in mobile app/i)).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest taps without app installed — browser stays on page
+   *   The element must be a plain <a> tag (not a button), so the browser
+   *   handles the deep-link natively without JS navigation.
+   */
+  it("uses a plain <a> element (not a button) so the browser handles deep-link gracefully", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta.tagName.toLowerCase()).toBe("a");
+  });
+
+  /**
+   * Deep link href is pin-specific — different pin produces different href
+   */
+  it("uses the pin prop in the deep-link href", () => {
+    mockUseQuery.mockReturnValue({
+      data: { pin: "XYZ999", currentlyPlayingId: null, tracks: [] },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="XYZ999" />);
+
+    const cta = screen.getByTestId("open-mobile-app-cta");
+    expect(cta).toHaveAttribute("href", "com.fissa://fissa/XYZ999");
+  });
+});
+
+describe("/fissa/$pin — Open in desktop app placeholder CTA (Task #87)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: "Open in desktop app" CTA is visible on the Fissa page
+   */
+  it("renders the 'Open in desktop app' CTA on the page", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("open-desktop-app-cta")).toBeInTheDocument();
+    expect(screen.getByText(/open in desktop app/i)).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: "Open in desktop app" CTA does not break the browser session
+   *   CTA href is "#" so clicking does not trigger navigation
+   */
+  it("has href='#' on the desktop app CTA to prevent navigation", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-desktop-app-cta");
+    expect(cta).toHaveAttribute("href", "#");
+  });
+
+  /**
+   * Scenario: Desktop scheme is N/A — CTA is a placeholder (anchor element)
+   */
+  it("is rendered as an anchor element (placeholder for future desktop scheme)", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-desktop-app-cta");
+    expect(cta.tagName.toLowerCase()).toBe("a");
+  });
+});
+
+describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Both app-open CTAs are present in the document
+   */
+  it("renders both app-open CTAs in the document", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("open-mobile-app-cta")).toBeInTheDocument();
+    expect(screen.getByTestId("open-desktop-app-cta")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Both CTAs share consistent styling
+   *   Both CTAs must have the same className to ensure visual consistency
+   */
+  it("applies identical className to both app-open CTAs for visual consistency", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const mobileCta = screen.getByTestId("open-mobile-app-cta");
+    const desktopCta = screen.getByTestId("open-desktop-app-cta");
+
+    expect(mobileCta.className).toBe(desktopCta.className);
+  });
+});

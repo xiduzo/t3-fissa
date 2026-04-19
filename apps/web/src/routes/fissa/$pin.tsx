@@ -116,9 +116,25 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
           </div>
         )}
 
-        {/* Unauthenticated sign-in CTA slot */}
-        <section data-testid="queue-signin-cta" className="px-4 py-6">
+        {/* Unauthenticated sign-in CTA + native app links */}
+        <section data-testid="queue-signin-cta" className="flex flex-col items-center gap-3 px-4 py-6">
           {!sessionPending && !session?.user && <SpotifySignInButton pin={pin} />}
+          <a
+            href={`com.fissa://fissa/${pin}`}
+            data-testid="open-mobile-app-cta"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Open in mobile app
+          </a>
+          {/* TODO: replace href with desktop scheme when defined */}
+          <a
+            href="#"
+            data-testid="open-desktop-app-cta"
+            onClick={(e) => e.preventDefault()}
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Open in desktop app
+          </a>
         </section>
 
         {/* Queue interaction controls — visible only for authenticated guests */}
