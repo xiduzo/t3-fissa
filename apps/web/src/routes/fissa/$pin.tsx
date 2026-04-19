@@ -23,6 +23,13 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const navigate = useNavigate({ from: "/fissa/$pin" });
   const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
+  const { data: votesData } = api.vote.byFissaFromUser.useQuery(
+    { pin },
+    { enabled: !!pin && !!session?.user },
+  );
+  const userVotes = new Map(
+    (votesData ?? []).map((v) => [v.trackId, v.score as 1 | -1]),
+  );
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
@@ -102,7 +109,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
               No upcoming tracks
             </p>
           ) : (
-            <QueueTrackList tracks={upcomingTracks} isAuthenticated={!!session?.user} currentlyPlayingId={data?.currentlyPlayingId ?? undefined} />
+            <QueueTrackList tracks={upcomingTracks} isAuthenticated={!!session?.user} currentlyPlayingId={data?.currentlyPlayingId ?? undefined} userVotes={session?.user ? userVotes : undefined} />
           )}
         </section>
 

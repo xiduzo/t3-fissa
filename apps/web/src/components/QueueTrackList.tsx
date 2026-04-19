@@ -11,6 +11,7 @@ interface QueueTrackListProps {
   tracks: QueueTrack[];
   isAuthenticated?: boolean;
   currentlyPlayingId?: string;
+  userVotes?: Map<string, 1 | -1>;
 }
 
 /**
@@ -18,7 +19,7 @@ interface QueueTrackListProps {
  * Each track shows artwork (Spotify CDN), track identifier, and vote tally.
  * Defensively filters out already-played tracks.
  */
-export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticated = false, currentlyPlayingId }) => {
+export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticated = false, currentlyPlayingId, userVotes }) => {
   const sorted = [...tracks]
     .filter((t) => !t.hasBeenPlayed)
     .sort((a, b) => b.totalScore - a.totalScore);
@@ -27,6 +28,7 @@ export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticate
     <ul data-testid="track-list" className="flex flex-col gap-3">
       {sorted.map((track) => {
         const artworkUrl = `https://i.scdn.co/image/ab67616d00004851${track.trackId}`;
+        const userVote = userVotes?.get(track.trackId);
 
         return (
           <li
@@ -65,6 +67,7 @@ export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticate
                 <button
                   aria-label={`Upvote ${track.trackId}`}
                   data-testid={`upvote-${track.trackId}`}
+                  aria-pressed={userVote === 1}
                   type="button"
                   disabled={track.trackId === currentlyPlayingId}
                 >
@@ -73,6 +76,7 @@ export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticate
                 <button
                   aria-label={`Downvote ${track.trackId}`}
                   data-testid={`downvote-${track.trackId}`}
+                  aria-pressed={userVote === -1}
                   type="button"
                   disabled={track.trackId === currentlyPlayingId}
                 >
