@@ -1,6 +1,10 @@
 import { type FC } from "react";
 import { authClient } from "~/lib/auth-client";
 
+interface SpotifySignInButtonProps {
+  pin: string;
+}
+
 /**
  * SpotifySignInButton
  *
@@ -9,12 +13,12 @@ import { authClient } from "~/lib/auth-client";
  * - White text
  * - Spotify logo wordmark
  *
- * Calls authClient.signIn.social({ provider: "spotify" }) on click.
- * The callbackURL is handled by Task #60.
+ * Calls authClient.signIn.social({ provider: "spotify", callbackURL }) on click.
+ * callbackURL is set to /fissa/<pin> so the guest returns to the same Fissa after sign-in.
  */
-export const SpotifySignInButton: FC = () => {
+export const SpotifySignInButton: FC<SpotifySignInButtonProps> = ({ pin }) => {
   const handleSignIn = () => {
-    void authClient.signIn.social({ provider: "spotify" });
+    void authClient.signIn.social({ provider: "spotify", callbackURL: `/fissa/${pin}` });
   };
 
   return (
