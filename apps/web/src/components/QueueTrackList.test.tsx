@@ -179,4 +179,21 @@ describe("QueueTrackList", () => {
     expect(screen.queryByTestId("upvote-track-b")).not.toBeInTheDocument();
     expect(screen.queryByTestId("downvote-track-b")).not.toBeInTheDocument();
   });
+
+  it("disables vote buttons for currently playing track", () => {
+    render(
+      <QueueTrackList
+        isAuthenticated
+        currentlyPlayingId="track-a"
+        tracks={makeTracks([
+          { trackId: "track-a", totalScore: 1 },
+          { trackId: "track-b", totalScore: 0 },
+        ])}
+      />,
+    );
+    expect(screen.getByTestId("upvote-track-a")).toBeDisabled();
+    expect(screen.getByTestId("downvote-track-a")).toBeDisabled();
+    expect(screen.getByTestId("upvote-track-b")).not.toBeDisabled();
+    expect(screen.getByTestId("downvote-track-b")).not.toBeDisabled();
+  });
 });
