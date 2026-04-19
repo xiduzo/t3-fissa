@@ -107,6 +107,15 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
           >
             Open in mobile app
           </a>
+          {/* TODO: replace href with desktop scheme when defined */}
+          <a
+            href="#"
+            data-testid="open-desktop-app-cta"
+            onClick={(e) => e.preventDefault()}
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground"
+          >
+            Open in desktop app
+          </a>
         </section>
       </div>
     </Layout>
