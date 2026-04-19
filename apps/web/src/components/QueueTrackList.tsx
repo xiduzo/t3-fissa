@@ -13,6 +13,8 @@ interface QueueTrackListProps {
   currentlyPlayingId?: string;
   userVotes?: Map<string, 1 | -1>;
   onVote?: (trackId: string, score: 1 | -1) => void;
+  voteErrors?: Map<string, { vote: 1 | -1 }>;
+  onRetryVote?: (trackId: string, vote: 1 | -1) => void;
 }
 
 /**
@@ -20,7 +22,7 @@ interface QueueTrackListProps {
  * Each track shows artwork (Spotify CDN), track identifier, and vote tally.
  * Defensively filters out already-played tracks.
  */
-export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticated = false, currentlyPlayingId, userVotes, onVote }) => {
+export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticated = false, currentlyPlayingId, userVotes, onVote, voteErrors, onRetryVote }) => {
   const sorted = [...tracks]
     .filter((t) => !t.hasBeenPlayed)
     .sort((a, b) => b.totalScore - a.totalScore);
@@ -86,6 +88,29 @@ export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticate
                   -1
                 </button>
               </div>
+            )}
+
+            {voteErrors?.has(track.trackId) && (
+              <>
+                <span
+                  data-testid={`vote-error-${track.trackId}`}
+                  className="text-xs text-destructive"
+                  role="alert"
+                >
+                  Vote failed
+                </span>
+                <button
+                  data-testid={`retry-vote-${track.trackId}`}
+                  type="button"
+                  className="text-xs underline"
+                  onClick={() => {
+                    const voteError = voteErrors.get(track.trackId);
+                    if (voteError) onRetryVote?.(track.trackId, voteError.vote);
+                  }}
+                >
+                  Retry
+                </button>
+              </>
             )}
           </li>
         );

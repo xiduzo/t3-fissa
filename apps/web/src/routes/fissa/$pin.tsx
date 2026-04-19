@@ -21,43 +21,24 @@ interface QueuePageProps {
 }
 
 export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
+  const [optimisticVotes, setOptimisticVotes] = useState<Map<string, 1 | -1>>(new Map());
+  const [voteErrors, setVoteErrors] = useState<Map<string, { vote: 1 | -1 }>>(new Map());
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const navigate = useNavigate({ from: "/fissa/$pin" });
   const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
+  const utils = api.useUtils();
 
-  // Optimistic vote state: trackId -> score
-  const [optimisticVotes, setOptimisticVotes] = useState<Map<string, 1 | -1>>(new Map());
+  const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
+    retry: false,
+    enabled: !!pin,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
+  });
 
   const { data: votesData } = api.vote.byFissaFromUser.useQuery(
     { pin },
     { enabled: !!pin && !!session?.user },
   );
-
-  const utils = api.useUtils();
-
-  const { mutate: createVote } = api.vote.create.useMutation({
-    onMutate: ({ trackId, vote }) => {
-      // Optimistic update: immediately reflect new vote state
-      setOptimisticVotes((prev) => {
-        const next = new Map(prev);
-        next.set(trackId, vote as 1 | -1);
-        return next;
-      });
-    },
-    onSuccess: async () => {
-      // Invalidate queries to refresh data from server
-      await utils.vote.byFissaFromUser.invalidate({ pin });
-      await utils.fissa.byId.invalidate(pin);
-    },
-    onError: (_err, { trackId }) => {
-      // Rollback optimistic update on error (full error handling is Task #78)
-      setOptimisticVotes((prev) => {
-        const next = new Map(prev);
-        next.delete(trackId);
-        return next;
-      });
-    },
-  });
 
   // Merge server votes with optimistic updates (optimistic takes precedence)
   const userVotes = new Map(
@@ -67,6 +48,45 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
     userVotes.set(trackId, score);
   }
 
+  const { mutate: createVote } = api.vote.create.useMutation({
+    onMutate: ({ trackId, vote }) => {
+      const previousVote = optimisticVotes.get(trackId) ?? null;
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        next.set(trackId, vote as 1 | -1);
+        return next;
+      });
+      return { previousVote, trackId };
+    },
+    onSuccess: (_data: unknown, vars?: { trackId?: string }) => {
+      if (vars?.trackId) {
+        setVoteErrors((prev) => {
+          const next = new Map(prev);
+          next.delete(vars.trackId!);
+          return next;
+        });
+      }
+      void utils.vote.byFissaFromUser.invalidate({ pin });
+      void utils.fissa.byId.invalidate(pin);
+    },
+    onError: (err, { trackId, vote }, context) => {
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        if (context?.previousVote != null) {
+          next.set(trackId, context.previousVote as 1 | -1);
+        } else {
+          next.delete(trackId);
+        }
+        return next;
+      });
+      setVoteErrors((prev) => new Map(prev).set(trackId, { vote: vote as 1 | -1 }));
+      const tRPCError = err as { data?: { code?: string } };
+      if (tRPCError?.data?.code === "NOT_FOUND") {
+        void utils.fissa.byId.invalidate(pin);
+      }
+    },
+  });
+
   const handleVote = useCallback(
     (trackId: string, vote: 1 | -1) => {
       createVote({ pin, trackId, vote });
@@ -74,12 +94,17 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
     [createVote, pin],
   );
 
-  const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
-    retry: false,
-    enabled: !!pin,
-    refetchInterval: 5000,
-    refetchIntervalInBackground: false,
-  });
+  const handleRetryVote = useCallback(
+    (trackId: string, vote: 1 | -1) => {
+      setVoteErrors((prev) => {
+        const next = new Map(prev);
+        next.delete(trackId);
+        return next;
+      });
+      createVote({ pin, trackId, vote });
+    },
+    [createVote, pin],
+  );
 
   if (isLoading) {
     return (
@@ -159,6 +184,8 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
               currentlyPlayingId={data?.currentlyPlayingId ?? undefined}
               userVotes={session?.user ? userVotes : undefined}
               onVote={session?.user ? handleVote : undefined}
+              voteErrors={voteErrors}
+              onRetryVote={handleRetryVote}
             />
           )}
         </section>
@@ -200,7 +227,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
             <button data-testid="add-track-btn" className="w-full rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90" type="button">
               Add Track
             </button>
-            <div data-testid="vote-controls">{/* Vote controls — Feature #47 */}</div>
+            <div data-testid="vote-controls">{/* Vote controls wired via QueueTrackList */}</div>
           </section>
         )}
       </div>
