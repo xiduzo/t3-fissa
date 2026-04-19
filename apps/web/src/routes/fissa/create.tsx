@@ -63,7 +63,7 @@ export const CreateFissa: FC = () => {
 
   const { mutate: createFissa, isPending: isCreating } = api.fissa.create.useMutation({
     onSuccess: (fissa) => {
-      console.log("Fissa created:", fissa.pin);
+      void navigate({ to: "/fissa/$pin", params: { pin: fissa.pin } });
     },
     onError: (err) => {
       // Do NOT clear selectedTracks — preserve seed tracks on error

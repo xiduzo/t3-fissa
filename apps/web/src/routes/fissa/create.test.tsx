@@ -34,6 +34,20 @@
  * Scenario: Host meets the minimum track count
  *   Given I have selected the minimum required number of tracks
  *   Then the submit button becomes enabled
+ *
+ * Tests for Task #85: Navigate to /fissa/<pin> on successful creation
+ *
+ * Scenario: Host is navigated to the new Fissa page after creation
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation succeeds with a PIN
+ *   Then I am immediately navigated to /fissa/<pin>
+ *   And I can see the Fissa Queue
+ *
+ * Scenario: Navigation does not occur on error
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation returns an error
+ *   Then I remain on the Fissa creation page
+ *   And I can see the error message
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
@@ -793,5 +807,106 @@ describe("CreateFissa — error handling (Task #88)", () => {
     expect(errorEl).toHaveAttribute("data-error-code", "ALREADY_HOSTING");
     expect(screen.queryByTestId("existing-fissa-link")).not.toBeInTheDocument();
     expect(errorEl).toHaveTextContent(/end your existing fissa/i);
+  });
+});
+
+// ── Tests — Navigate to /fissa/<pin> after creation (Task #85) ───────────────
+
+/**
+ * Scenario: Host is navigated to the new Fissa page after creation
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation succeeds with a PIN
+ *   Then I am immediately navigated to /fissa/<pin>
+ *
+ * Scenario: Navigation does not occur on error
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation returns an error
+ *   Then I remain on the Fissa creation page
+ *   And I can see the error message
+ */
+describe("CreateFissa — navigate after creation (Task #85)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockNavigate.mockResolvedValue(undefined);
+
+    vi.mocked(authClient.useSession).mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg", durationMs: 247000 },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Host is navigated to the new Fissa page after creation
+   *   Given I have submitted the Fissa creation form
+   *   When the fissa.create mutation succeeds with a PIN
+   *   Then I am immediately navigated to /fissa/<pin>
+   */
+  it("navigates to /fissa/$pin with the returned PIN on successful creation", () => {
+    let capturedOnSuccess: ((fissa: { pin: string }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnSuccess = opts?.onSuccess;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnSuccess?.({ pin: "1234" });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: "/fissa/$pin",
+      params: { pin: "1234" },
+    });
+  });
+
+  /**
+   * Scenario: Navigation does not occur on error
+   *   Given I have submitted the Fissa creation form
+   *   When the fissa.create mutation returns an error
+   *   Then I remain on the Fissa creation page (navigate is not called)
+   *   And I can see the error message
+   */
+  it("does not navigate when the mutation returns an error", () => {
+    let capturedOnError: ((err: { message: string }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Failed to create fissa" });
+    });
+
+    // navigate should NOT have been called with /fissa/$pin
+    expect(mockNavigate).not.toHaveBeenCalledWith(
+      expect.objectContaining({ to: "/fissa/$pin" }),
+    );
+    // Error message should be visible
+    expect(screen.getByTestId("create-fissa-error")).toHaveTextContent("Failed to create fissa");
   });
 });
