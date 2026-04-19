@@ -24,6 +24,13 @@ vi.mock("~/utils/api", () => ({
         }),
       },
     },
+    vote: {
+      byFissaFromUser: {
+        useQuery: vi.fn().mockReturnValue({
+          data: undefined,
+        }),
+      },
+    },
   },
 }));
 
@@ -1323,5 +1330,105 @@ describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
     const desktopCta = screen.getByTestId("open-desktop-app-cta");
 
     expect(mobileCta.className).toBe(desktopCta.className);
+  });
+});
+
+describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "track-123", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 3 },
+      { trackId: "track-456", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 1 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: undefined } as any);
+  });
+
+  /**
+   * Scenario: Guest's previously cast upvote is shown on load
+   *   Given I am signed in as a Party Guest
+   *   And I previously upvoted track "track-123"
+   *   When I load the Fissa page
+   *   Then the upvote button for "track-123" shows as active/selected
+   */
+  it("calls vote.byFissaFromUser with { pin } when user is authenticated", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
+      { pin: "ABC123" },
+      expect.objectContaining({ enabled: true }),
+    );
+  });
+
+  it("does not call vote.byFissaFromUser when user is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
+      { pin: "ABC123" },
+      expect.objectContaining({ enabled: false }),
+    );
+  });
+
+  it("shows upvote button as aria-pressed=true for a previously upvoted track", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-123", score: 1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("shows downvote button as aria-pressed=true for a previously downvoted track", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-456", score: -1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-456")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-456")).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows both vote buttons as aria-pressed=false for unvoted tracks", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
   });
 });

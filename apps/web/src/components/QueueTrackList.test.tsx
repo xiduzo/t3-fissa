@@ -196,4 +196,51 @@ describe("QueueTrackList", () => {
     expect(screen.getByTestId("upvote-track-b")).not.toBeDisabled();
     expect(screen.getByTestId("downvote-track-b")).not.toBeDisabled();
   });
+
+  /**
+   * Scenario: Guest's previously cast upvote is shown on load (#69)
+   *   Given I am signed in as a Party Guest and I previously upvoted track "track-123"
+   *   When I load the Fissa page
+   *   Then the upvote button for "track-123" shows as active/selected (aria-pressed=true)
+   */
+  it("marks upvote button as aria-pressed=true when user previously upvoted", () => {
+    const userVotes = new Map<string, 1 | -1>([["track-123", 1]]);
+    render(
+      <QueueTrackList
+        tracks={makeTracks([{ trackId: "track-123", totalScore: 3 }])}
+        isAuthenticated
+        userVotes={userVotes}
+      />,
+    );
+
+    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("marks downvote button as aria-pressed=true when user previously downvoted", () => {
+    const userVotes = new Map<string, 1 | -1>([["track-456", -1]]);
+    render(
+      <QueueTrackList
+        tracks={makeTracks([{ trackId: "track-456", totalScore: -1 }])}
+        isAuthenticated
+        userVotes={userVotes}
+      />,
+    );
+
+    expect(screen.getByTestId("upvote-track-456")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-456")).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows both vote buttons as aria-pressed=false when user has not voted on track", () => {
+    render(
+      <QueueTrackList
+        tracks={makeTracks([{ trackId: "track-789", totalScore: 0 }])}
+        isAuthenticated
+        userVotes={new Map()}
+      />,
+    );
+
+    expect(screen.getByTestId("upvote-track-789")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-789")).toHaveAttribute("aria-pressed", "false");
+  });
 });
