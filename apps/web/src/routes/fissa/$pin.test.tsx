@@ -972,3 +972,51 @@ describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
     expect(items[2]).toHaveAttribute("data-trackid", "track-low");
   });
 });
+
+describe("/fissa/$pin — Open in desktop app placeholder CTA (Task #87)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: "Open in desktop app" CTA is visible on the Fissa page
+   */
+  it("renders the 'Open in desktop app' CTA on the page", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("open-desktop-app-cta")).toBeInTheDocument();
+    expect(screen.getByText(/open in desktop app/i)).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: "Open in desktop app" CTA does not break the browser session
+   *   CTA href is "#" so clicking does not trigger navigation
+   */
+  it("has href='#' on the desktop app CTA to prevent navigation", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-desktop-app-cta");
+    expect(cta).toHaveAttribute("href", "#");
+  });
+
+  /**
+   * Scenario: Desktop scheme is N/A — CTA is a placeholder (anchor element)
+   */
+  it("is rendered as an anchor element (placeholder for future desktop scheme)", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const cta = screen.getByTestId("open-desktop-app-cta");
+    expect(cta.tagName.toLowerCase()).toBe("a");
+  });
+});
