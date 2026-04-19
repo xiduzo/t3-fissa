@@ -6,9 +6,12 @@ interface AddTrackSheetProps {
   isOpen: boolean;
   onClose: () => void;
   pin: string;
+  addError?: boolean;
+  onRetry?: () => void;
+  fissaEnded?: boolean;
 }
 
-export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin }) => {
+export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, addError, onRetry, fissaEnded }) => {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
 
@@ -44,6 +47,12 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin }) 
           </button>
         </div>
 
+        {fissaEnded ? (
+          <div data-testid="fissa-ended-state" className="mt-4 text-center text-sm text-gray-500">
+            This fissa has ended.
+          </div>
+        ) : null}
+
         <input
           data-testid="track-search-input"
           type="text"
@@ -51,15 +60,16 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin }) 
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search Spotify…"
           className="mt-4 w-full rounded-md border px-4 py-2 text-sm"
+          disabled={fissaEnded}
         />
 
-        {isLoading && (
+        {!fissaEnded && isLoading && (
           <div data-testid="track-search-loading" className="mt-4 text-center text-sm text-gray-500">
             Searching…
           </div>
         )}
 
-        {!isLoading && results.length > 0 && (
+        {!fissaEnded && !isLoading && results.length > 0 && (
           <ul data-testid="track-search-results" className="mt-4 flex flex-col gap-2">
             {results.map((track) => (
               <li key={track.id} data-testid={`search-result-${track.id}`} className="flex items-center gap-3">
@@ -80,6 +90,26 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin }) 
               </li>
             ))}
           </ul>
+        )}
+
+        {!fissaEnded && !isLoading && results.length === 0 && debouncedQuery.length > 0 && (
+          <div data-testid="track-search-empty" className="mt-4 text-center text-sm text-gray-500">
+            No tracks found
+          </div>
+        )}
+
+        {!fissaEnded && addError && (
+          <div data-testid="track-add-error" className="mt-4 text-center text-sm text-red-500">
+            Failed to add track.{" "}
+            <button
+              data-testid="track-add-retry-btn"
+              type="button"
+              onClick={onRetry}
+              className="underline"
+            >
+              Retry
+            </button>
+          </div>
         )}
       </div>
     </>
