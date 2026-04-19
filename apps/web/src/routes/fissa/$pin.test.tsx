@@ -7,7 +7,7 @@
  * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
@@ -21,6 +21,14 @@ vi.mock("~/utils/api", () => ({
           data: undefined,
           isLoading: true,
           error: null,
+        }),
+      },
+    },
+    track: {
+      addTracks: {
+        useMutation: vi.fn().mockReturnValue({
+          mutate: vi.fn(),
+          isPending: false,
         }),
       },
     },
@@ -58,7 +66,7 @@ vi.mock("~/components/Button", () => ({
 }));
 
 vi.mock("~/components/Toast", () => ({
-  toast: { error: vi.fn() },
+  toast: { error: vi.fn(), success: vi.fn() },
 }));
 
 vi.mock("~/components/CurrentlyPlayingTrack", () => ({
@@ -84,11 +92,38 @@ vi.mock("~/components/SpotifySignInButton", () => ({
 }));
 
 vi.mock("~/components/AddTrackSheet", () => ({
-  AddTrackSheet: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void; pin: string }) =>
+  AddTrackSheet: ({
+    isOpen,
+    onClose,
+    onSelect,
+    isAdding,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    pin: string;
+    onSelect?: (track: { id: string; name: string; durationMs: number; artists: string[]; albumArt: string }) => void;
+    isAdding?: boolean;
+  }) =>
     isOpen ? (
       <div data-testid="add-track-sheet">
         <button data-testid="add-track-sheet-close" onClick={onClose} type="button">
           Close
+        </button>
+        {isAdding && <div data-testid="add-track-loading" />}
+        <button
+          data-testid="simulate-select-track"
+          type="button"
+          onClick={() =>
+            onSelect?.({
+              id: "4oLU6hMCjMI75M1A2tKUQ2",
+              name: "Test Song",
+              durationMs: 180000,
+              artists: ["Test Artist"],
+              albumArt: "",
+            })
+          }
+        >
+          Select Track
         </button>
       </div>
     ) : null,
@@ -98,6 +133,7 @@ vi.mock("~/components/AddTrackSheet", () => ({
 
 import { api } from "~/utils/api";
 import { authClient } from "~/lib/auth-client";
+import { toast } from "~/components/Toast";
 import { QueuePage } from "./$pin";
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
@@ -1439,5 +1475,152 @@ describe("/fissa/$pin — Add Track sheet entry point (Task #70)", () => {
     render(<QueuePage pin="1234" />);
 
     expect(screen.queryByTestId("add-track-btn")).not.toBeInTheDocument();
+  });
+});
+
+describe("/fissa/$pin — Wire track.addTracks mutation (Task #75)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockAddTracksMutation = vi.mocked(api.track.addTracks.useMutation);
+
+  const activeFissaData = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test Guest" } },
+      isPending: false,
+    } as any);
+    mockAddTracksMutation.mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Successfully adding a track
+   *   When I select a track result
+   *   Then track.addTracks is called with the selected track mapped to { trackId, durationMs }
+   */
+  it("calls track.addTracks mutation when a track is selected from the sheet", () => {
+    const mockMutate = vi.fn();
+    mockAddTracksMutation.mockReturnValue({ mutate: mockMutate, isPending: false } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    // Simulate selecting a track via the mock AddTrackSheet
+    fireEvent.click(screen.getByTestId("simulate-select-track"));
+
+    expect(mockMutate).toHaveBeenCalledOnce();
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pin: "1234",
+        tracks: expect.arrayContaining([
+          expect.objectContaining({ trackId: "4oLU6hMCjMI75M1A2tKUQ2", durationMs: 180000 }),
+        ]),
+      }),
+    );
+  });
+
+  /**
+   * Scenario: Loading state while mutation is in-flight
+   *   Given a track addition is in flight
+   *   Then a loading state is shown (isAdding=true passed to sheet)
+   */
+  it("passes isAdding=true to AddTrackSheet while mutation is pending", () => {
+    mockAddTracksMutation.mockReturnValue({ mutate: vi.fn(), isPending: true } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    expect(screen.getByTestId("add-track-loading")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Preventing double-submission
+   *   Given a track addition is in flight
+   *   When I tap another result
+   *   Then no second mutation is fired
+   */
+  it("does not fire a second mutation while isPending is true", () => {
+    const mockMutate = vi.fn();
+    mockAddTracksMutation.mockReturnValue({ mutate: mockMutate, isPending: true } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Try to select a track while mutation is in-flight
+    fireEvent.click(screen.getByTestId("simulate-select-track"));
+
+    // mutate should NOT have been called
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Scenario: Successfully adding a track — sheet closes
+   *   Given mutation succeeds via onSuccess callback
+   *   Then the sheet is closed
+   */
+  it("closes the sheet on mutation success", () => {
+    let capturedOnSuccess: (() => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnSuccess = callbacks?.onSuccess;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    // Simulate success (React state update needs act)
+    act(() => {
+      capturedOnSuccess?.();
+    });
+
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Successfully adding a track — confirmation toast shown
+   *   Given mutation succeeds
+   *   Then a success toast is shown
+   */
+  it("shows a success toast when track is added successfully", () => {
+    let capturedOnSuccess: (() => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnSuccess = callbacks?.onSuccess;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate success
+    act(() => {
+      capturedOnSuccess?.();
+    });
+
+    expect(vi.mocked(toast.success)).toHaveBeenCalledOnce();
   });
 });
