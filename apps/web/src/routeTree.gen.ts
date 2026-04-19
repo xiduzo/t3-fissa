@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FissaCreateRouteImport } from './routes/fissa/create'
 import { Route as FissaPinRouteImport } from './routes/fissa/$pin'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FissaCreateRoute = FissaCreateRouteImport.update({
+  id: '/fissa/create',
+  path: '/fissa/create',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FissaPinRoute = FissaPinRouteImport.update({
@@ -25,27 +31,31 @@ const FissaPinRoute = FissaPinRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/fissa/create': typeof FissaCreateRoute
   '/fissa/$pin': typeof FissaPinRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/fissa/create': typeof FissaCreateRoute
   '/fissa/$pin': typeof FissaPinRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/fissa/create': typeof FissaCreateRoute
   '/fissa/$pin': typeof FissaPinRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/fissa/$pin'
+  fullPaths: '/' | '/fissa/create' | '/fissa/$pin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/fissa/$pin'
-  id: '__root__' | '/' | '/fissa/$pin'
+  to: '/' | '/fissa/create' | '/fissa/$pin'
+  id: '__root__' | '/' | '/fissa/create' | '/fissa/$pin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FissaCreateRoute: typeof FissaCreateRoute
   FissaPinRoute: typeof FissaPinRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fissa/create': {
+      id: '/fissa/create'
+      path: '/fissa/create'
+      fullPath: '/fissa/create'
+      preLoaderRoute: typeof FissaCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fissa/$pin': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FissaCreateRoute: FissaCreateRoute,
   FissaPinRoute: FissaPinRoute,
 }
 export const routeTree = rootRouteImport
