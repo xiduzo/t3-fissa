@@ -3,6 +3,8 @@ import { type FC } from "react";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
 import { QueueTrackList } from "~/components/QueueTrackList";
+import { SpotifySignInButton } from "~/components/SpotifySignInButton";
+import { authClient } from "~/lib/auth-client";
 import { api } from "~/utils/api";
 
 export const Route = createFileRoute("/fissa/$pin")({
@@ -14,6 +16,7 @@ interface QueuePageProps {
 }
 
 export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
+  const { data: session, isPending: sessionPending } = authClient.useSession();
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
@@ -99,7 +102,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
 
         {/* Unauthenticated sign-in CTA slot */}
         <section data-testid="queue-signin-cta" className="px-4 py-6">
-          {/* Placeholder — sign-in CTA wired in a later task */}
+          {!sessionPending && !session?.user && <SpotifySignInButton />}
         </section>
       </div>
     </Layout>
