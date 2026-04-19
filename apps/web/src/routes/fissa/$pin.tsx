@@ -104,6 +104,16 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
         <section data-testid="queue-signin-cta" className="px-4 py-6">
           {!sessionPending && !session?.user && <SpotifySignInButton pin={pin} />}
         </section>
+
+        {/* Queue interaction controls — visible only for authenticated guests */}
+        {session?.user && (
+          <section data-testid="queue-interaction-controls" className="px-4 py-4">
+            <button data-testid="add-track-btn" className="w-full rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90" type="button">
+              Add Track
+            </button>
+            <div data-testid="vote-controls">{/* Vote controls — Feature #47 */}</div>
+          </section>
+        )}
       </div>
     </Layout>
   );
