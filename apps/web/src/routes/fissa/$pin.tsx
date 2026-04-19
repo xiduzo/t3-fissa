@@ -103,7 +103,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
           <a
             href={`com.fissa://fissa/${pin}`}
             data-testid="open-mobile-app-cta"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             Open in mobile app
           </a>
@@ -112,7 +112,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
             href="#"
             data-testid="open-desktop-app-cta"
             onClick={(e) => e.preventDefault()}
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             Open in desktop app
           </a>

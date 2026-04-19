@@ -1020,3 +1020,43 @@ describe("/fissa/$pin — Open in desktop app placeholder CTA (Task #87)", () =>
     expect(cta.tagName.toLowerCase()).toBe("a");
   });
 });
+
+describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Both app-open CTAs are present in the document
+   */
+  it("renders both app-open CTAs in the document", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("open-mobile-app-cta")).toBeInTheDocument();
+    expect(screen.getByTestId("open-desktop-app-cta")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Both CTAs share consistent styling
+   *   Both CTAs must have the same className to ensure visual consistency
+   */
+  it("applies identical className to both app-open CTAs for visual consistency", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    const mobileCta = screen.getByTestId("open-mobile-app-cta");
+    const desktopCta = screen.getByTestId("open-desktop-app-cta");
+
+    expect(mobileCta.className).toBe(desktopCta.className);
+  });
+});
