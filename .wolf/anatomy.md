@@ -1,56 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-18T14:22:23.935Z
-> Files: 553 tracked | Anatomy hits: 0 | Misses: 0
-
-## ../../../../tmp/
-
-- `feature-1-body.md` — 🚀 Feature: Party Guest can view the live Queue at a Fissa PIN page without signing in (~689 tok)
-- `feature-2-body.md` — 🚀 Feature: Party Guest can sign in with Spotify on the Fissa page and return to the same Fissa (~739 tok)
-- `feature-3-body.md` — 🚀 Feature: Party Guest can add a Track to the Queue from the browser (~609 tok)
-- `feature-4-body.md` — 🚀 Feature: Party Guest can cast a Vote on a Track from the browser (~614 tok)
-- `feature-5-body.md` — 🚀 Feature: Party Host can create a Fissa from the browser (~648 tok)
-- `feature-6-body.md` — 🚀 Feature: Party Guest can open the Fissa in the native app from the browser (~624 tok)
-- `task-1-body.md` — 🛠 Task: Replace auto-redirect with a Queue view layout at /fissa/<pin> (~1219 tok)
-- `task-2-body.md` — 🛠 Task: Fetch and render the currently playing Track (~1507 tok)
-- `task-3-body.md` — 🛠 Task: Render upcoming Tracks list in vote-ranked order (~1310 tok)
-- `task-4-body.md` — 🛠 Task: Add polling to keep the Queue live (~1121 tok)
-- `task-45-2.md` — 🛠 Task: Fetch and render the currently playing Track from `fissa.byId` (~1044 tok)
-- `task-45-3.md` — 🛠 Task: Render upcoming Tracks list in vote-ranked order (~1114 tok)
-- `task-45-4.md` — 🛠 Task: Add polling to keep the Queue live (`refetchInterval`) (~1213 tok)
-- `task-45-5.md` — 🛠 Task: Implement Fissa-not-found and Fissa-ended states (~1184 tok)
-- `task-45-6.md` — 🛠 Task: Implement empty Queue state (~1236 tok)
-- `task-46-1.md` — 🛠 Task: Add "Sign in with Spotify" CTA to the unauthenticated Fissa page (~855 tok)
-- `task-46-2.md` — 🛠 Task: Pass Fissa PIN as callbackURL when initiating Spotify OAuth via better-auth (~925 tok)
-- `task-46-3.md` — 🛠 Task: Verify better-auth honors callbackURL redirect after successful sign-in (~943 tok)
-- `task-46-4.md` — 🛠 Task: Show Queue interaction controls when Guest is authenticated (~968 tok)
-- `task-46-5.md` — 🛠 Task: Handle OAuth cancellation and error — return to Fissa page without redirect loop (~1251 tok)
-- `task-47-1.md` — 🛠 Task: Add "Add Track" entry point to authenticated Fissa page (~959 tok)
-- `task-47-2.md` — 🛠 Task: Implement Spotify Track search UI using `useSpotifyQuery` hooks (~1070 tok)
-- `task-47-3.md` — 🛠 Task: Render search results with artwork, title, and artist (~1047 tok)
-- `task-47-4.md` — 🛠 Task: Wire up `track.addTracks` tRPC mutation for selected Track (~1194 tok)
-- `task-47-5.md` — 🛠 Task: Handle duplicate-Track-in-Queue feedback (~1154 tok)
-- `task-47-6.md` — 🛠 Task: Handle search empty state and add error states (~1299 tok)
-- `task-48-1.md` — 🛠 Task: Add upvote/downvote controls to each Queue Track item (~872 tok)
-- `task-48-2.md` — 🛠 Task: Fetch Guest's existing Votes on load (`vote.byFissaFromUser`) (~1004 tok)
-- `task-48-3.md` — 🛠 Task: Wire up `vote.create` tRPC mutation for upvote/downvote (~1168 tok)
-- `task-48-4.md` — 🛠 Task: Re-order Queue after Vote is cast (~975 tok)
-- `task-48-5.md` — 🛠 Task: Disable Vote controls for currently playing Track (~916 tok)
-- `task-48-6.md` — 🛠 Task: Handle Vote mutation error with rollback and retry (~1301 tok)
-- `task-49-1.md` — 🛠 Task: Add "Create a Fissa" entry point in the web app (~831 tok)
-- `task-49-2.md` — 🛠 Task: Implement Spotify Track search and multi-select UI for seeding the Queue (~1041 tok)
-- `task-49-3.md` — 🛠 Task: Wire up `fissa.create` tRPC mutation with seed Tracks (~1046 tok)
-- `task-49-4.md` — 🛠 Task: Navigate to `/fissa/<pin>` on successful creation (~843 tok)
-- `task-49-5.md` — 🛠 Task: Display Fissa PIN with copy/share action (~974 tok)
-- `task-49-6.md` — 🛠 Task: Handle Spotify Premium error and already-hosting error cases (~1256 tok)
-- `task-5-body.md` — 🛠 Task: Implement Fissa-not-found and Fissa-ended states (~1299 tok)
-- `task-50-1.md` — 🛠 Task: Remove automatic deep-link redirect from Fissa page load (~980 tok)
-- `task-50-2.md` — 🛠 Task: Add "Open in mobile app" CTA with com.fissa deep link (~1188 tok)
-- `task-50-3.md` — 🛠 Task: Add "Open in desktop app" CTA (~1117 tok)
-- `task-50-4.md` — 🛠 Task: Style both app-open CTAs as visually secondary (~1091 tok)
-- `task-6-body.md` — 🛠 Task: Implement empty Queue state (~1131 tok)
-- `task-body.md` — 🛠 Task: Replace auto-redirect with Queue view layout at `/fissa/[pin]` (~1188 tok)
-- `wtf-epic-body.md` — 🎯 Epic: Browser-Native Fissa Participation (~897 tok)
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T07:52:40.808Z
+> Files: 507 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -64,7 +15,7 @@
 - `docker-compose.yml` — Docker Compose services (~400 tok)
 - `LICENSE` — Project license (~286 tok)
 - `package.json` — Node.js package manifest (~314 tok)
-- `pnpm-lock.yaml` — pnpm lock file (~210057 tok)
+- `pnpm-lock.yaml` — pnpm lock file (~214640 tok)
 - `pnpm-workspace.yaml` (~57 tok)
 - `prettier.config.cjs` — Declares config (~253 tok)
 - `README.md` — Project documentation (~2434 tok)
@@ -73,13 +24,13 @@
 - `supabase_dump_20260412_180717.sql` — PostgreSQL database dump (~89944 tok)
 - `tsconfig.json` — TypeScript configuration (~182 tok)
 - `tsconfig.tsbuildinfo` (~4606 tok)
-- `turbo.json` — Turborepo configuration (~376 tok)
+- `turbo.json` (~390 tok)
 - `vitest.config.ts` — Vitest test configuration (~153 tok)
 
 ## .claude/
 
 - `settings.json` (~441 tok)
-- `settings.local.json` (~364 tok)
+- `settings.local.json` (~490 tok)
 
 ## .claude/rules/
 
@@ -107,7 +58,7 @@
 
 ## .github/workflows/
 
-- `ci.yml` — CI: CI (~479 tok)
+- `ci.yml` — CI: CI (~478 tok)
 
 ## apps/expo/
 
@@ -289,12 +240,13 @@
 
 - `Dockerfile` — Docker container definition (~352 tok)
 - `index.html` — Fissa (~120 tok)
-- `package.json` — Node.js package manifest (~414 tok)
+- `package.json` — Node.js package manifest (~452 tok)
 - `postcss.config.cjs` — PostCSS configuration (~20 tok)
 - `tailwind.config.cjs` — Declares config (~210 tok)
 - `tsconfig.json` — TypeScript configuration (~203 tok)
 - `tsconfig.tsbuildinfo` (~76119 tok)
 - `vite.config.ts` — Vite build configuration (~96 tok)
+- `vitest.config.ts` — Vitest test configuration (~212 tok)
 
 ## apps/web/src/
 
@@ -310,6 +262,8 @@
 - `Button.tsx` — baseStyles (~531 tok)
 - `CircleBackground.tsx` — CircleBackground (~274 tok)
 - `Container.tsx` — Container (~107 tok)
+- `CurrentlyPlayingTrack.test.tsx` — Tests for CurrentlyPlayingTrack component (Task #59) (~514 tok)
+- `CurrentlyPlayingTrack.tsx` — Renders the currently playing track with artwork, track ID, and a progress bar. (~354 tok)
 - `Faqs.tsx` — faqs (~1094 tok)
 - `FissaCode.tsx` — FissaCode — uses useState, useQuery, useMemo, useCallback (~1069 tok)
 - `Footer.tsx` — Footer (~528 tok)
@@ -322,6 +276,8 @@
 - `PhoneFrame.tsx` — PlaceholderFrame (~793 tok)
 - `PlayStoreLink.tsx` — PlayStoreLink (~166 tok)
 - `PrimaryFeatures.tsx` — MotionAppScreenBody — uses useEffect, useState (~5180 tok)
+- `QueueTrackList.test.tsx` — Tests for QueueTrackList component (Task #61) (~1244 tok)
+- `QueueTrackList.tsx` — Renders the upcoming tracks queue sorted by totalScore descending. (~519 tok)
 - `SecondaryFeatures.tsx` — features — renders chart (~2303 tok)
 - `Toast.tsx` — AUTO_CLOSE_TIME_MS (~298 tok)
 - `TrackList.tsx` — TrackList (~1214 tok)
@@ -337,11 +293,16 @@
 
 ## apps/web/src/routes/fissa/
 
-- `$pin.tsx` — Route — uses useParams, useRef, useNavigate, useQuery (~536 tok)
+- `$pin.test.tsx` — Tests for /fissa/$pin page (Task #57) (~7261 tok)
+- `$pin.tsx` — Route — uses useQuery, useParams (~949 tok)
 
 ## apps/web/src/styles/
 
 - `globals.css` — Styles: 3 rules (~17 tok)
+
+## apps/web/src/test/
+
+- `setup.ts` (~11 tok)
 
 ## apps/web/src/utils/
 
@@ -746,10 +707,3 @@
 - `3598` (~0 tok)
 - `3599` (~2185 tok)
 - `3600` (~2184 tok)
-- `3600_fsm` (~6554 tok)
-- `3600_vm` (~2185 tok)
-- `3601` (~2185 tok)
-- `3601_fsm` (~6554 tok)
-- `3601_vm` (~2185 tok)
-- `3602` (~2184 tok)
-- `3602_fsm` (~6554 tok)

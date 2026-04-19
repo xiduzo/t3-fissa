@@ -3,28 +3,30 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 17:05 | Task #57: Replace auto-redirect with Queue layout scaffold at /fissa/$pin | apps/web/src/routes/fissa/$pin.tsx, $pin.test.tsx, vitest.config.ts, src/test/setup.ts | All 4 tests pass; committed eef5a5e; label 'implemented' added to issue #57 | ~4000 |
+
 | 18:58 | Fix console warning: vote.byTrackFromUser returning undefined | packages/api/src/router/vote.ts | return result ?? null so tRPC serializes correctly | ~200 |
 
 ## Session: 2026-04-10 19:28
-> Consolidated session (4 actions)
+> Consolidated session (0 actions)
 
 ## Session: 2026-04-10 19:42
 > Consolidated session (0 actions)
 
 ## Session: 2026-04-10 19:43
-> Consolidated session (4 actions)
+> Consolidated session (0 actions)
 
 ## Session: 2026-04-10 20:33
 > Consolidated session (0 actions)
 
 ## Session: 2026-04-10 20:41
-> Consolidated session (7 actions)
+> Consolidated session (0 actions)
 
 ## Session: 2026-04-10 20:56
 > Consolidated session (0 actions)
 
 ## Session: 2026-04-10 20:56
-> Consolidated session (2 actions)
+> Consolidated session (0 actions)
 
 ## Session: 2026-04-10 21:00
 > Consolidated session (0 actions)
@@ -195,6 +197,56 @@
 | 16:23 | Session end: 33 writes across 33 files (task-body.md, task-45-2.md, task-46-1.md, task-45-3.md, task-46-2.md) | 9 reads | ~53653 tok |
 
 ## Session: 2026-04-18 16:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:49 | Created apps/web/vitest.config.ts | — | ~108 |
+| 16:49 | Edited apps/web/package.json | 2→3 lines | ~26 |
+| 16:49 | Created apps/web/src/test/setup.ts | — | ~11 |
+| 16:49 | Created apps/web/src/routes/fissa/$pin.test.tsx | — | ~1344 |
+| 16:50 | Created apps/web/src/routes/fissa/$pin.test.tsx | — | ~1405 |
+| 17:02 | Edited apps/web/vitest.config.ts | 18→22 lines | ~163 |
+| 17:02 | Created apps/web/src/routes/fissa/$pin.test.tsx | — | ~1400 |
+| 17:03 | Created apps/web/src/routes/fissa/$pin.tsx | — | ~473 |
+| 17:03 | Edited apps/web/vitest.config.ts | 5→8 lines | ~75 |
+| 17:04 | Edited apps/web/vitest.config.ts | 8→8 lines | ~72 |
+| 17:16 | Created apps/web/src/components/CurrentlyPlayingTrack.test.tsx | — | ~514 |
+| 17:24 | Created apps/web/src/components/CurrentlyPlayingTrack.tsx | — | ~354 |
+| 17:24 | Edited apps/web/src/routes/fissa/$pin.tsx | added optional chaining | ~371 |
+| 17:24 | Edited apps/web/src/routes/fissa/$pin.test.tsx | CSS: CurrentlyPlayingTrack, trackId | ~128 |
+| 17:25 | Edited apps/web/src/routes/fissa/$pin.test.tsx | expanded (+75 lines) | ~710 |
+| 15:30 | Task #59: created CurrentlyPlayingTrack component + wired into $pin.tsx + TDD tests (10 pass) | apps/web/src/components/CurrentlyPlayingTrack.tsx, apps/web/src/components/CurrentlyPlayingTrack.test.tsx, apps/web/src/routes/fissa/$pin.tsx, apps/web/src/routes/fissa/$pin.test.tsx | commit 718c85b, issue #59 labeled implemented | ~2500 |
+| 17:34 | Edited apps/web/src/routes/fissa/$pin.test.tsx | expanded (+185 lines) | ~1934 |
+| 17:35 | Created apps/web/src/routes/fissa/$pin.tsx | — | ~818 |
+| 17:35 | Edited apps/web/src/routes/fissa/$pin.test.tsx | 4→7 lines | ~83 |
+| 17:37 | Implemented Task #64: Fissa-not-found, ended, and loading states in-place on queue page | apps/web/src/routes/fissa/$pin.tsx, apps/web/src/routes/fissa/$pin.test.tsx | 17 tests pass, committed 2527726, label implemented added to issue #64 | ~2500 |
+| 17:45 | Edited apps/web/src/routes/fissa/$pin.test.tsx | expanded (+170 lines) | ~1679 |
+| 17:45 | Edited apps/web/src/routes/fissa/$pin.tsx | added nullish coalescing | ~388 |
+| 17:46 | Task #65: empty queue state — upcomingTracks filter + queue-empty testid | apps/web/src/routes/fissa/$pin.tsx, $pin.test.tsx | 24/24 tests pass, commit e068f93 | ~800 |
+| 17:50 | Created apps/web/src/components/QueueTrackList.test.tsx | — | ~1244 |
+| 17:51 | Edited apps/web/src/routes/fissa/$pin.test.tsx | expanded (+113 lines) | ~1207 |
+| 17:51 | Created apps/web/src/components/QueueTrackList.tsx | — | ~519 |
+| 17:51 | Edited apps/web/src/routes/fissa/$pin.tsx | added 1 import(s) | ~90 |
+| 17:51 | Edited apps/web/src/routes/fissa/$pin.tsx | inline fix | ~16 |
+| 17:52 | Task #61: created QueueTrackList component + tests + wired into $pin.tsx | apps/web/src/components/QueueTrackList.tsx, QueueTrackList.test.tsx, $pin.tsx, $pin.test.tsx | 36/36 tests pass, commit 1149d1a | ~600 |
+| 22:40 | Edited apps/web/src/routes/fissa/$pin.test.tsx | expanded (+78 lines) | ~805 |
+| 22:40 | Edited apps/web/src/routes/fissa/$pin.tsx | CSS: refetchInterval, refetchIntervalInBackground | ~58 |
+| 22:40 | Edited apps/web/src/routes/fissa/$pin.tsx | inline fix | ~8 |
+| 22:41 | Task #62: added refetchInterval:5000 + refetchIntervalInBackground:false to fissa.byId useQuery; fixed isError guard to preserve stale data | apps/web/src/routes/fissa/$pin.tsx, $pin.test.tsx | 39/39 tests pass | ~800 |
+| 22:50 | Edited .github/workflows/ci.yml | 2→2 lines | ~17 |
+| 22:51 | Session end: 29 writes across 10 files (vitest.config.ts, package.json, setup.ts, $pin.test.tsx, $pin.tsx) | 26 reads | ~37572 tok |
+
+## Session: 2026-04-19 03:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:52 | Edited turbo.json | 2→4 lines | ~19 |
+| 09:52 | Session end: 1 writes across 1 files (turbo.json) | 1 reads | ~395 tok |
+
+| 09:10 | wtf.loop epic #44: Feature #45 (6 tasks #57,59,64,65,61,62) fully implemented and merged to main via PR #90. CI fixed: pnpm/action-setup→v4, turbo.json globalEnv added MIGRATIONS_PATH+SENTRY_DSN_SERVER. 39/39 tests pass. Remaining: #46(5t), #50(4t), #47(6t), #48(6t), #49(6t). Start next session from main branch. | apps/web/src/routes/fissa/$pin.tsx + components | merged | ~95k |
+| 10:42 | Session end: 1 writes across 1 files (turbo.json) | 1 reads | ~395 tok |
+
+## Session: 2026-04-19 11:36
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|

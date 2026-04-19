@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-10T17:27:26.117Z",
   "lifetime": {
-    "total_tokens_estimated": 373527,
-    "total_reads": 196,
-    "total_writes": 242,
-    "total_sessions": 25,
-    "anatomy_hits": 193,
+    "total_tokens_estimated": 411889,
+    "total_reads": 224,
+    "total_writes": 273,
+    "total_sessions": 27,
+    "anatomy_hits": 221,
     "anatomy_misses": 3,
-    "repeated_reads_blocked": 8,
-    "estimated_savings_vs_bare_cli": 45949
+    "repeated_reads_blocked": 32,
+    "estimated_savings_vs_bare_cli": 110704
   },
   "sessions": [
     {
@@ -2886,6 +2886,380 @@
         "writes_count": 33,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-04-18-1625",
+      "started": "2026-04-18T14:25:37.294Z",
+      "ended": "2026-04-18T20:51:40.868Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 927,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/utils/api.ts",
+          "tokens_estimated": 263,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/docs/steering/TECH.md",
+          "tokens_estimated": 1582,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/vitest.config.ts",
+          "tokens_estimated": 153,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/package.json",
+          "tokens_estimated": 314,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/providers/ThemeProvider.tsx",
+          "tokens_estimated": 134,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/Layout.tsx",
+          "tokens_estimated": 90,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/vite.config.ts",
+          "tokens_estimated": 96,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/turbo.json",
+          "tokens_estimated": 376,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/utils/package.json",
+          "tokens_estimated": 314,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/test/package.json",
+          "tokens_estimated": 314,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/package.json",
+          "tokens_estimated": 314,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/vitest.config.ts",
+          "tokens_estimated": 153,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.github/workflows/ci.yml",
+          "tokens_estimated": 479,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 6475,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/IFissaRepository.ts",
+          "tokens_estimated": 411,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts",
+          "tokens_estimated": 501,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts",
+          "tokens_estimated": 2765,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/utils/spotify.ts",
+          "tokens_estimated": 1017,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/packages/db/schema.ts",
+          "tokens_estimated": 2367,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.claude/worktrees/agent-a3194657/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.claude/worktrees/agent-a3194657/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 916,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/CurrentlyPlayingTrack.tsx",
+          "tokens_estimated": 150,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/CurrentlyPlayingTrack.test.tsx",
+          "tokens_estimated": 514,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.claude/worktrees/agent-a50b6cc3/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.claude/worktrees/agent-a50b6cc3/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 927,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/vitest.config.ts",
+          "tokens_estimated": 108,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/package.json",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/test/setup.ts",
+          "tokens_estimated": 11,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 1344,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/vitest.config.ts",
+          "tokens_estimated": 163,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 1400,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 473,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/vitest.config.ts",
+          "tokens_estimated": 75,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/vitest.config.ts",
+          "tokens_estimated": 72,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/CurrentlyPlayingTrack.test.tsx",
+          "tokens_estimated": 514,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/CurrentlyPlayingTrack.tsx",
+          "tokens_estimated": 354,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 371,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 128,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 710,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 1934,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 818,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 83,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 1679,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 388,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/QueueTrackList.test.tsx",
+          "tokens_estimated": 1244,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 1207,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/QueueTrackList.tsx",
+          "tokens_estimated": 519,
+          "action": "create"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 90,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 16,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 805,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 58,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/.github/workflows/ci.yml",
+          "tokens_estimated": 17,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 21552,
+        "output_tokens_estimated": 16020,
+        "reads_count": 26,
+        "writes_count": 29,
+        "repeated_reads_blocked": 24,
+        "anatomy_lookups": 26
+      }
+    },
+    {
+      "id": "session-2026-04-19-0300",
+      "started": "2026-04-19T01:00:00.597Z",
+      "ended": "2026-04-19T07:52:56.652Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/turbo.json",
+          "tokens_estimated": 376,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/turbo.json",
+          "tokens_estimated": 19,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 376,
+        "output_tokens_estimated": 19,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-04-19-0300",
+      "started": "2026-04-19T01:00:00.597Z",
+      "ended": "2026-04-19T08:42:22.229Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/turbo.json",
+          "tokens_estimated": 376,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/turbo.json",
+          "tokens_estimated": 19,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 376,
+        "output_tokens_estimated": 19,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],
