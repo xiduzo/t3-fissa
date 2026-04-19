@@ -672,6 +672,126 @@ describe("/fissa/$pin — Auto-polling every 5 seconds (Task #62)", () => {
   });
 });
 
+describe("/fissa/$pin — No auto deep-link redirect on page load (Task #81)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+
+  beforeEach(() => {
+    // Reset window.location to a clean state
+    Object.defineProperty(window, "location", {
+      value: {
+        href: "http://localhost/fissa/ABC123",
+        replace: vi.fn(),
+        assign: vi.fn(),
+      },
+      writable: true,
+      configurable: true,
+    });
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Fissa page loads without auto-redirect
+   *   Given a guest navigates to /fissa/<pin>
+   *   When page finishes loading
+   *   Then browser remains on /fissa/<pin>
+   *   AND no deep-link redirect is triggered automatically
+   */
+  it("does not call window.location.replace on mount (no deep-link redirect)", () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(window.location.replace).not.toHaveBeenCalled();
+  });
+
+  it("does not call window.location.href with a deep-link scheme on mount", () => {
+    mockUseQuery.mockReturnValue({
+      data: {
+        pin: "ABC123",
+        currentlyPlayingId: null,
+        tracks: [],
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // href must stay on the page URL — never set to a deep-link
+    expect(window.location.href).not.toMatch(/^com\.fissa:\/\//);
+    expect(window.location.replace).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^com\.fissa:\/\//),
+    );
+  });
+
+  /**
+   * Scenario: Fissa page loads when native app is installed
+   *   Given a guest navigates to /fissa/<pin>
+   *   And the native app is installed
+   *   When page finishes loading
+   *   Then browser still remains on /fissa/<pin>
+   *   AND app is not launched automatically
+   */
+  it("does not redirect even when fissa data loads successfully (app installed simulation)", () => {
+    // Simulate query succeeding (as if native app is installed, data returns)
+    mockUseQuery.mockImplementation(
+      (_pin: string, options?: { onSuccess?: (data: unknown) => void }) => {
+        // Call onSuccess if it exists — prior code had redirect in onSuccess
+        options?.onSuccess?.({ pin: "ABC123" });
+        return {
+          data: { pin: "ABC123", currentlyPlayingId: null, tracks: [] },
+          isLoading: false,
+          isError: false,
+          error: null,
+        } as any;
+      },
+    );
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(window.location.replace).not.toHaveBeenCalled();
+    expect(window.location.assign).not.toHaveBeenCalled();
+    // href must not have been redirected to a native deep-link
+    expect(window.location.href).not.toMatch(/^com\.fissa:\/\//);
+  });
+
+  it("does not redirect to any deep-link scheme regardless of query state", () => {
+    // Test with multiple query states to ensure no state triggers a redirect
+    const states = [
+      { data: undefined, isLoading: true, isError: false, error: null },
+      { data: { pin: "ABC123", tracks: [] }, isLoading: false, isError: false, error: null },
+      { data: undefined, isLoading: false, isError: true, error: { message: "Not found" } },
+    ];
+
+    for (const state of states) {
+      // Reset replace mock between renders
+      const replaceSpy = vi.fn();
+      Object.defineProperty(window, "location", {
+        value: { href: "http://localhost/fissa/ABC123", replace: replaceSpy, assign: vi.fn() },
+        writable: true,
+        configurable: true,
+      });
+
+      mockUseQuery.mockReturnValue(state as any);
+      const { unmount } = render(<QueuePage pin="ABC123" />);
+
+      expect(replaceSpy).not.toHaveBeenCalled();
+      unmount();
+    }
+  });
+});
+
 describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
   const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
 
