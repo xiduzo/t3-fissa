@@ -14,9 +14,43 @@
  *   Then I see a "Create a Fissa" button
  *   When I click it
  *   Then I see a sign-in prompt (or I am redirected to sign in)
+ *
+ * Tests for Task #82: Spotify Track search and multi-select UI
+ *
+ * Scenario: Host searches for and selects seed tracks
+ *   Given I am on the Fissa creation page
+ *   When I type "Daft Punk" in the track search input
+ *   Then I see a list of Spotify tracks matching "Daft Punk"
+ *   When I click a track to select it
+ *   Then the track appears in my selected tracks summary
+ *   And the track is visually marked as selected in the results list
+ *
+ * Scenario: Host tries to submit without enough seed tracks
+ *   Given I am on the Fissa creation page
+ *   And I have selected fewer tracks than the minimum required
+ *   Then the submit button is disabled
+ *   And a message indicates how many more tracks are needed
+ *
+ * Scenario: Host meets the minimum track count
+ *   Given I have selected the minimum required number of tracks
+ *   Then the submit button becomes enabled
+ *
+ * Tests for Task #85: Navigate to /fissa/<pin> on successful creation
+ *
+ * Scenario: Host is navigated to the new Fissa page after creation
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation succeeds with a PIN
+ *   Then I am immediately navigated to /fissa/<pin>
+ *   And I can see the Fissa Queue
+ *
+ * Scenario: Navigation does not occur on error
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation returns an error
+ *   Then I remain on the Fissa creation page
+ *   And I can see the error message
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
@@ -64,11 +98,28 @@ vi.mock("~/components/PhoneFrame", () => ({
   PhoneFrame: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+// Mock the tRPC API
+vi.mock("~/utils/api", () => ({
+  api: {
+    spotify: {
+      searchTracks: {
+        useQuery: vi.fn(),
+      },
+    },
+    fissa: {
+      create: {
+        useMutation: vi.fn(),
+      },
+    },
+  },
+}));
+
 // ── Imports after mocks ────────────────────────────────────────────────────────
 
 import { authClient } from "~/lib/auth-client";
 import { CreateFissa } from "./create";
 import { Hero } from "~/components/Hero";
+import { api } from "~/utils/api";
 
 // ── Tests — /fissa/create page ──────────────────────────────────────────────────
 
@@ -76,11 +127,16 @@ describe("/fissa/create — Create a Fissa page (Task #80)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockNavigate.mockResolvedValue(undefined);
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+    } as any);
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
   });
 
-  /**
-   * Scenario: Page renders the create fissa content
-   */
   it("renders the create fissa page with data-testid", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: { user: { id: "user1", name: "Test User" } },
@@ -92,11 +148,6 @@ describe("/fissa/create — Create a Fissa page (Task #80)", () => {
     expect(screen.getByTestId("create-fissa-page")).toBeInTheDocument();
   });
 
-  /**
-   * Scenario: Authenticated user sees the creation page
-   *   Given I am signed in
-   *   Then I see the Create a Fissa heading
-   */
   it("shows the Create a Fissa heading", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: { user: { id: "user1", name: "Test User" } },
@@ -108,12 +159,6 @@ describe("/fissa/create — Create a Fissa page (Task #80)", () => {
     expect(screen.getByText(/create a fissa/i)).toBeInTheDocument();
   });
 
-  /**
-   * Scenario: Unauthenticated user sees sign-in prompt on the create page
-   *   Given I am not signed in
-   *   When I visit /fissa/create
-   *   Then I see a sign-in button
-   */
   it("shows a sign-in button for unauthenticated users", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: null,
@@ -125,9 +170,6 @@ describe("/fissa/create — Create a Fissa page (Task #80)", () => {
     expect(screen.getByTestId("create-fissa-signin-btn")).toBeInTheDocument();
   });
 
-  /**
-   * Scenario: Unauthenticated user clicks sign-in — triggers Spotify OAuth
-   */
   it("triggers Spotify OAuth when unauthenticated user clicks sign-in", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: null,
@@ -144,9 +186,6 @@ describe("/fissa/create — Create a Fissa page (Task #80)", () => {
     });
   });
 
-  /**
-   * Scenario: Authenticated user does NOT see the sign-in button
-   */
   it("does not show sign-in button for authenticated users", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: { user: { id: "user1", name: "Test User" } },
@@ -167,12 +206,6 @@ describe("Home page — Create a Fissa CTA (Task #80)", () => {
     mockNavigate.mockResolvedValue(undefined);
   });
 
-  /**
-   * Scenario: Signed-in user sees the Create a Fissa button on the home page
-   *   Given I am signed in
-   *   When I visit the home page
-   *   Then I see a "Create a Fissa" button
-   */
   it("renders a Create a Fissa button on the home page", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: { user: { id: "user1", name: "Test User" } },
@@ -185,12 +218,6 @@ describe("Home page — Create a Fissa CTA (Task #80)", () => {
     expect(screen.getByTestId("create-fissa-btn")).toHaveTextContent(/create a fissa/i);
   });
 
-  /**
-   * Scenario: Unauthenticated user sees the Create a Fissa button on the home page
-   *   Given I am not signed in
-   *   When I visit the home page
-   *   Then I see a "Create a Fissa" button
-   */
   it("renders a Create a Fissa button even when unauthenticated", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: null,
@@ -202,12 +229,6 @@ describe("Home page — Create a Fissa CTA (Task #80)", () => {
     expect(screen.getByTestId("create-fissa-btn")).toBeInTheDocument();
   });
 
-  /**
-   * Scenario: Signed-in user clicks the CTA and is navigated to /fissa/create
-   *   Given I am signed in as a Party Host
-   *   When I click "Create a Fissa"
-   *   Then I am navigated to /fissa/create
-   */
   it("navigates authenticated user to /fissa/create on CTA click", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: { user: { id: "user1", name: "Test User" } },
@@ -221,12 +242,6 @@ describe("Home page — Create a Fissa CTA (Task #80)", () => {
     expect(mockNavigate).toHaveBeenCalledWith({ to: "/fissa/create" });
   });
 
-  /**
-   * Scenario: Unauthenticated user clicks the CTA — triggers Spotify sign-in
-   *   Given I am not signed in
-   *   When I click "Create a Fissa"
-   *   Then Spotify OAuth is triggered with callbackURL "/fissa/create"
-   */
   it("triggers Spotify OAuth for unauthenticated user clicking the CTA", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: null,
@@ -243,9 +258,6 @@ describe("Home page — Create a Fissa CTA (Task #80)", () => {
     });
   });
 
-  /**
-   * Scenario: Unauthenticated user is NOT auto-redirected — only on click
-   */
   it("does not trigger sign-in automatically on render for unauthenticated users", () => {
     vi.mocked(authClient.useSession).mockReturnValue({
       data: null,
@@ -255,5 +267,410 @@ describe("Home page — Create a Fissa CTA (Task #80)", () => {
     render(<Hero />);
 
     expect(authClient.signIn.social).not.toHaveBeenCalled();
+  });
+});
+
+// ── Tests — Track Search UI (Task #82) ────────────────────────────────────────
+
+describe("CreateFissa — Track search UI (Task #82)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockNavigate.mockResolvedValue(undefined);
+
+    vi.mocked(authClient.useSession).mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+    } as any);
+
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+  });
+
+  it("shows the track search input for authenticated users", () => {
+    render(<CreateFissa />);
+
+    expect(screen.getByTestId("track-search-input")).toBeInTheDocument();
+  });
+
+  it("renders search results when tracks are returned", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg" },
+          { id: "track-2", name: "One More Time", artists: ["Daft Punk"], albumArt: "https://example.com/art2.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    expect(screen.getByTestId("track-search-results")).toBeInTheDocument();
+    expect(screen.getAllByTestId(/^search-result-track-/)).toHaveLength(2);
+  });
+
+  it("shows track name, artist, and artwork in each result", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk", "Pharrell Williams"], albumArt: "https://example.com/art1.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    const result = screen.getByTestId("search-result-track-1");
+    expect(result).toBeInTheDocument();
+    expect(screen.getByTestId("search-result-name-track-1")).toHaveTextContent("Get Lucky");
+    expect(screen.getByTestId("search-result-artists-track-1")).toHaveTextContent("Daft Punk");
+    expect(screen.getByTestId("search-result-artwork-track-1")).toBeInTheDocument();
+  });
+
+  it("adds track to selected summary when clicked", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+
+    expect(screen.getByTestId("selected-tracks-summary")).toBeInTheDocument();
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+  });
+
+  it("marks track result as selected (aria-pressed) when clicked", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    const resultItem = screen.getByTestId("search-result-track-1");
+    expect(resultItem).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(resultItem);
+
+    expect(resultItem).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("deselects a track when clicking it again", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    expect(screen.queryByTestId("selected-count")).not.toBeInTheDocument();
+  });
+
+  it("disables the submit button when no tracks are selected", () => {
+    render(<CreateFissa />);
+
+    const submitBtn = screen.getByTestId("create-fissa-submit-btn");
+    expect(submitBtn).toBeDisabled();
+  });
+
+  it("shows how many more tracks are needed when below minimum", () => {
+    render(<CreateFissa />);
+
+    expect(screen.getByTestId("tracks-needed-message")).toBeInTheDocument();
+  });
+
+  it("enables the submit button when minimum track count is met", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+
+    const submitBtn = screen.getByTestId("create-fissa-submit-btn");
+    expect(submitBtn).not.toBeDisabled();
+  });
+
+  it("shows empty state when search returns no tracks", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: { tracks: [] },
+      isLoading: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.change(screen.getByTestId("track-search-input"), { target: { value: "Daft Punk" } });
+
+    expect(screen.getByTestId("track-search-empty")).toBeInTheDocument();
+  });
+
+  it("shows loading state while search is in progress", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+    } as any);
+
+    render(<CreateFissa />);
+
+    expect(screen.getByTestId("track-search-loading")).toBeInTheDocument();
+  });
+
+  it("preserves selected tracks when search results change", () => {
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    const { rerender } = render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-2", name: "Lose Yourself", artists: ["Eminem"], albumArt: "https://example.com/art2.jpg" },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    rerender(<CreateFissa />);
+
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+  });
+});
+
+// ── Tests — fissa.create mutation wiring (Task #83) ──────────────────────────
+
+/**
+ * Scenario: Host submits the creation form successfully
+ *   Given I am on the Fissa creation page
+ *   And I have selected the minimum required number of tracks
+ *   When I click the "Create Fissa" button
+ *   Then the fissa.create mutation is called with my selected track IDs and durationMs
+ *
+ * Scenario: Mutation is in-flight
+ *   Given I have clicked "Create Fissa"
+ *   Then the submit button is disabled
+ *   And a loading spinner is visible
+ *
+ * Scenario: Mutation returns an error
+ *   Given I have clicked "Create Fissa"
+ *   When the server returns an error
+ *   Then the error is surfaced via the error element
+ */
+describe("CreateFissa — fissa.create mutation wiring (Task #83)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockNavigate.mockResolvedValue(undefined);
+
+    vi.mocked(authClient.useSession).mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg", durationMs: 247000 },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+  });
+
+  it("calls fissa.create mutation with selected tracks when submit is clicked", () => {
+    const mockMutate = vi.fn();
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: mockMutate,
+      isPending: false,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    expect(mockMutate).toHaveBeenCalledWith([
+      { trackId: "track-1", durationMs: 247000 },
+    ]);
+  });
+
+  it("disables the submit button and shows loading indicator while mutation is in-flight", () => {
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: true,
+    } as any);
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+
+    const submitBtn = screen.getByTestId("create-fissa-submit-btn");
+    expect(submitBtn).toBeDisabled();
+    expect(screen.getByTestId("create-fissa-loading")).toBeInTheDocument();
+  });
+
+  it("surfaces mutation error via error element when server returns an error", () => {
+    let capturedOnError: ((err: { message: string }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Something went wrong" });
+    });
+
+    expect(screen.getByTestId("create-fissa-error")).toHaveTextContent("Something went wrong");
+  });
+});
+
+// ── Tests — Navigate to /fissa/<pin> after creation (Task #85) ───────────────
+
+/**
+ * Scenario: Host is navigated to the new Fissa page after creation
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation succeeds with a PIN
+ *   Then I am immediately navigated to /fissa/<pin>
+ *
+ * Scenario: Navigation does not occur on error
+ *   Given I have submitted the Fissa creation form
+ *   When the fissa.create mutation returns an error
+ *   Then I remain on the Fissa creation page
+ *   And I can see the error message
+ */
+describe("CreateFissa — navigate after creation (Task #85)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockNavigate.mockResolvedValue(undefined);
+
+    vi.mocked(authClient.useSession).mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg", durationMs: 247000 },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    vi.mocked(api.fissa.create.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Host is navigated to the new Fissa page after creation
+   *   Given I have submitted the Fissa creation form
+   *   When the fissa.create mutation succeeds with a PIN
+   *   Then I am immediately navigated to /fissa/<pin>
+   */
+  it("navigates to /fissa/$pin with the returned PIN on successful creation", () => {
+    let capturedOnSuccess: ((fissa: { pin: string }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnSuccess = opts?.onSuccess;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnSuccess?.({ pin: "1234" });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: "/fissa/$pin",
+      params: { pin: "1234" },
+    });
+  });
+
+  /**
+   * Scenario: Navigation does not occur on error
+   *   Given I have submitted the Fissa creation form
+   *   When the fissa.create mutation returns an error
+   *   Then I remain on the Fissa creation page (navigate is not called)
+   *   And I can see the error message
+   */
+  it("does not navigate when the mutation returns an error", () => {
+    let capturedOnError: ((err: { message: string }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Failed to create fissa" });
+    });
+
+    // navigate should NOT have been called with /fissa/$pin
+    expect(mockNavigate).not.toHaveBeenCalledWith(
+      expect.objectContaining({ to: "/fissa/$pin" }),
+    );
+    // Error message should be visible
+    expect(screen.getByTestId("create-fissa-error")).toHaveTextContent("Failed to create fissa");
   });
 });
