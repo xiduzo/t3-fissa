@@ -103,6 +103,14 @@ export class UserRepository implements IUserRepository {
     };
   };
 
+  getSpotifyAccessToken = async (userId: string): Promise<string | null> => {
+    const account = await this.db.query.accounts.findFirst({
+      where: and(eq(accounts.userId, userId), eq(accounts.providerId, "spotify")),
+      columns: { accessToken: true },
+    });
+    return account?.accessToken ?? null;
+  };
+
   createUserWithAccount = async (
     spotifyUser: SpotifyApi.CurrentUsersProfileResponse,
     tokens: Awaited<ReturnType<ISpotifyService["codeGrant"]>>,
