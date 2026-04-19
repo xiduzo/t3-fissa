@@ -5,8 +5,8 @@
  * Scenario: Already-played tracks are excluded from the queue
  * Scenario: Currently playing track is excluded from the queue
  */
-import { describe, it, expect } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, within, fireEvent } from "@testing-library/react";
 import React from "react";
 import { QueueTrackList } from "./QueueTrackList";
 
@@ -242,5 +242,84 @@ describe("QueueTrackList", () => {
 
     expect(screen.getByTestId("upvote-track-789")).toHaveAttribute("aria-pressed", "false");
     expect(screen.getByTestId("downvote-track-789")).toHaveAttribute("aria-pressed", "false");
+  });
+});
+
+describe("QueueTrackList — onVote callback (Task #71)", () => {
+  /**
+   * Scenario: Guest casts an upvote
+   *   When I click the upvote button on a track
+   *   Then onVote is called with (trackId, 1)
+   */
+  it("calls onVote with (trackId, 1) when upvote button is clicked", () => {
+    const onVote = vi.fn();
+    render(
+      <QueueTrackList
+        isAuthenticated
+        tracks={[{ trackId: "track-a", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
+        onVote={onVote}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("upvote-track-a"));
+
+    expect(onVote).toHaveBeenCalledWith("track-a", 1);
+    expect(onVote).toHaveBeenCalledTimes(1);
+  });
+
+  /**
+   * Scenario: Guest casts a downvote
+   *   When I click the downvote button on a track
+   *   Then onVote is called with (trackId, -1)
+   */
+  it("calls onVote with (trackId, -1) when downvote button is clicked", () => {
+    const onVote = vi.fn();
+    render(
+      <QueueTrackList
+        isAuthenticated
+        tracks={[{ trackId: "track-b", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
+        onVote={onVote}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("downvote-track-b"));
+
+    expect(onVote).toHaveBeenCalledWith("track-b", -1);
+    expect(onVote).toHaveBeenCalledTimes(1);
+  });
+
+  /**
+   * onVote is not called when button is disabled (currently playing track)
+   */
+  it("does not call onVote when voting on the currently playing track (buttons are disabled)", () => {
+    const onVote = vi.fn();
+    render(
+      <QueueTrackList
+        isAuthenticated
+        currentlyPlayingId="track-c"
+        tracks={[{ trackId: "track-c", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
+        onVote={onVote}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("upvote-track-c"));
+
+    expect(onVote).not.toHaveBeenCalled();
+  });
+
+  /**
+   * onVote is optional — component renders without it
+   */
+  it("renders without errors when onVote is not provided", () => {
+    render(
+      <QueueTrackList
+        isAuthenticated
+        tracks={[{ trackId: "track-d", totalScore: 0, hasBeenPlayed: false, durationMs: 180000 }]}
+      />,
+    );
+
+    // Should not throw — clicking still works
+    fireEvent.click(screen.getByTestId("upvote-track-d"));
+    expect(screen.getByTestId("upvote-track-d")).toBeInTheDocument();
   });
 });
