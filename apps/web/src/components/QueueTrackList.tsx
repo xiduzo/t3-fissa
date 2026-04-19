@@ -9,6 +9,7 @@ interface QueueTrack {
 
 interface QueueTrackListProps {
   tracks: QueueTrack[];
+  isAuthenticated?: boolean;
 }
 
 /**
@@ -16,7 +17,7 @@ interface QueueTrackListProps {
  * Each track shows artwork (Spotify CDN), track identifier, and vote tally.
  * Defensively filters out already-played tracks.
  */
-export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks }) => {
+export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticated = false }) => {
   const sorted = [...tracks]
     .filter((t) => !t.hasBeenPlayed)
     .sort((a, b) => b.totalScore - a.totalScore);
@@ -57,6 +58,25 @@ export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks }) => {
             >
               {track.totalScore}
             </span>
+
+            {isAuthenticated && (
+              <div className="flex gap-1">
+                <button
+                  aria-label={`Upvote ${track.trackId}`}
+                  data-testid={`upvote-${track.trackId}`}
+                  type="button"
+                >
+                  +1
+                </button>
+                <button
+                  aria-label={`Downvote ${track.trackId}`}
+                  data-testid={`downvote-${track.trackId}`}
+                  type="button"
+                >
+                  -1
+                </button>
+              </div>
+            )}
           </li>
         );
       })}

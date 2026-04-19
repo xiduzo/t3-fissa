@@ -289,6 +289,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-18T20:40:49.419Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-04-19T14:57:21.001Z",
+      "error_message": "CSS fix: QueuePage",
+      "file": "apps/web/src/routes/fissa/$pin.tsx",
+      "root_cause": "QueuePage: FC<QueuePageProps> = ({ pin → FC<QueuePageProps> = ({ pin, error",
+      "fix": "Changed QueuePage: FC<QueuePageProps> = ({ pin → FC<QueuePageProps> = ({ pin, error",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T14:57:21.001Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-04-19T14:57:35.043Z",
+      "error_message": "Wrong return value",
+      "file": "apps/web/src/routes/fissa/$pin.tsx",
+      "root_cause": "Was returning: <QueuePage pin={pin} />;",
+      "fix": "Now returns: <QueuePage pin={pin} error={error} />;",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T14:57:35.043Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-04-19T14:58:10.322Z",
+      "error_message": "Type error",
+      "file": "apps/web/src/routes/fissa/$pin.test.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T14:58:10.322Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-04-19T15:11:29.367Z",
+      "error_message": "CSS fix: social",
+      "file": "apps/web/src/components/SpotifySignInButton.test.tsx",
+      "root_cause": "social: mockSignInSocial, → vi.fn(),",
+      "fix": "Changed social: mockSignInSocial, → vi.fn(),",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T15:11:29.367Z"
     }
   ],
   "bugs_session_2026_04_10": [
