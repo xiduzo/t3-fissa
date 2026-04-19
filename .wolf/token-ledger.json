@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-10T17:27:26.117Z",
   "lifetime": {
-    "total_tokens_estimated": 411889,
-    "total_reads": 224,
-    "total_writes": 273,
-    "total_sessions": 27,
-    "anatomy_hits": 221,
-    "anatomy_misses": 3,
-    "repeated_reads_blocked": 32,
-    "estimated_savings_vs_bare_cli": 110704
+    "total_tokens_estimated": 426617,
+    "total_reads": 227,
+    "total_writes": 281,
+    "total_sessions": 28,
+    "anatomy_hits": 223,
+    "anatomy_misses": 4,
+    "repeated_reads_blocked": 41,
+    "estimated_savings_vs_bare_cli": 190151
   },
   "sessions": [
     {
@@ -3260,6 +3260,81 @@
         "writes_count": 1,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-04-19-1136",
+      "started": "2026-04-19T09:36:19.704Z",
+      "ended": "2026-04-19T15:14:49.733Z",
+      "reads": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 1429,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 10976,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/SpotifySignInButton.test.tsx",
+          "tokens_estimated": 786,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 191,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 104,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 216,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.test.tsx",
+          "tokens_estimated": 501,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx",
+          "tokens_estimated": 331,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/SpotifySignInButton.test.tsx",
+          "tokens_estimated": 50,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/SpotifySignInButton.test.tsx",
+          "tokens_estimated": 101,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13191,
+        "output_tokens_estimated": 1537,
+        "reads_count": 3,
+        "writes_count": 8,
+        "repeated_reads_blocked": 9,
+        "anatomy_lookups": 2
       }
     }
   ],

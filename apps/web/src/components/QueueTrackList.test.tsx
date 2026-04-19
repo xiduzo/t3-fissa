@@ -128,4 +128,55 @@ describe("QueueTrackList", () => {
     expect(list).toBeInTheDocument();
     expect(screen.queryAllByTestId("track-item")).toHaveLength(0);
   });
+
+  /**
+   * Scenario: Signed-in guest sees vote controls on queued tracks
+   *   Given I am signed in as a Party Guest
+   *   And the Fissa has queued tracks
+   *   When I view the Queue
+   *   Then each queued track row shows an upvote button
+   *   And each queued track row shows a downvote button
+   */
+  it("shows upvote and downvote buttons for each track when isAuthenticated=true", () => {
+    render(
+      <QueueTrackList
+        isAuthenticated
+        tracks={makeTracks([
+          { trackId: "track-a", totalScore: 1 },
+          { trackId: "track-b", totalScore: 2 },
+        ])}
+      />,
+    );
+
+    expect(screen.getByTestId("upvote-track-a")).toBeInTheDocument();
+    expect(screen.getByTestId("downvote-track-a")).toBeInTheDocument();
+    expect(screen.getByTestId("upvote-track-b")).toBeInTheDocument();
+    expect(screen.getByTestId("downvote-track-b")).toBeInTheDocument();
+
+    expect(screen.getByRole("button", { name: "Upvote track-a" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Downvote track-a" })).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Unauthenticated guest does not see vote controls
+   *   Given I am not signed in
+   *   And the Fissa has queued tracks
+   *   When I view the Queue
+   *   Then no upvote or downvote buttons are visible
+   */
+  it("does not show upvote or downvote buttons when isAuthenticated=false", () => {
+    render(
+      <QueueTrackList
+        tracks={makeTracks([
+          { trackId: "track-a", totalScore: 1 },
+          { trackId: "track-b", totalScore: 2 },
+        ])}
+      />,
+    );
+
+    expect(screen.queryByTestId("upvote-track-a")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("downvote-track-a")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("upvote-track-b")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("downvote-track-b")).not.toBeInTheDocument();
+  });
 });

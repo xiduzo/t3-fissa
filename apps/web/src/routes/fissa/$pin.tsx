@@ -102,7 +102,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
               No upcoming tracks
             </p>
           ) : (
-            <QueueTrackList tracks={upcomingTracks} />
+            <QueueTrackList tracks={upcomingTracks} isAuthenticated={!!session?.user} />
           )}
         </section>
 
