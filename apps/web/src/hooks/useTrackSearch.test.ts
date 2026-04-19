@@ -125,7 +125,7 @@ describe("useTrackSearch (Task #72)", () => {
    */
   it("returns results when search data is available", () => {
     const tracks = [
-      { id: "t1", name: "Bohemian Rhapsody", artists: ["Queen"], albumArt: "https://img/t1.jpg" },
+      { id: "t1", name: "Bohemian Rhapsody", durationMs: 354000, artists: ["Queen"], albumArt: "https://img/t1.jpg" },
     ];
     mockUseQuery.mockReturnValue({ data: { tracks }, isLoading: false });
 

@@ -96,8 +96,8 @@ describe("AddTrackSheet (Task #72)", () => {
   it("renders search results when data is returned", () => {
     mockUseTrackSearch.mockReturnValue({
       results: [
-        { id: "t1", name: "Song One", artists: ["Artist A"], albumArt: "https://img/t1.jpg" },
-        { id: "t2", name: "Song Two", artists: ["Artist B", "Artist C"], albumArt: "https://img/t2.jpg" },
+        { id: "t1", name: "Song One", durationMs: 180000, artists: ["Artist A"], albumArt: "https://img/t1.jpg" },
+        { id: "t2", name: "Song Two", durationMs: 240000, artists: ["Artist B", "Artist C"], albumArt: "https://img/t2.jpg" },
       ],
       isLoading: false,
       query: "Song",
@@ -125,8 +125,8 @@ describe("AddTrackSheet (Task #72)", () => {
 // ── Task #74 Tests ─────────────────────────────────────────────────────────────
 
 const tracks = [
-  { id: "t1", name: "Song One", artists: ["Artist A"], albumArt: "https://img/t1.jpg" },
-  { id: "t2", name: "Song Two", artists: ["Artist B", "Artist C"], albumArt: "" },
+  { id: "t1", name: "Song One", durationMs: 180000, artists: ["Artist A"], albumArt: "https://img/t1.jpg" },
+  { id: "t2", name: "Song Two", durationMs: 240000, artists: ["Artist B", "Artist C"], albumArt: "" },
 ];
 
 describe("AddTrackSheet (Task #74)", () => {
