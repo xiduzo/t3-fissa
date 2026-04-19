@@ -556,6 +556,242 @@ describe("CreateFissa — fissa.create mutation wiring (Task #83)", () => {
       capturedOnError?.({ message: "Something went wrong" });
     });
 
-    expect(screen.getByTestId("create-fissa-error")).toHaveTextContent("Something went wrong");
+    expect(screen.getByTestId("create-fissa-error")).toBeInTheDocument();
+  });
+});
+
+// ── Tests — Error handling (Task #88) ────────────────────────────────────────
+
+/**
+ * Scenario: Host without Spotify Premium tries to create a Fissa
+ *   Given I am signed in without Spotify Premium
+ *   And I have selected seed tracks
+ *   When I submit the Fissa creation form
+ *   Then I see an error explaining that Spotify Premium is required
+ *   And my selected seed tracks are still shown
+ *
+ * Scenario: Host who already has an active Fissa tries to create another
+ *   Given I already have an active Fissa with PIN "XYZ789"
+ *   And I have selected seed tracks
+ *   When I submit the Fissa creation form
+ *   Then I see an error stating I already have an active Fissa
+ *   And I see a link to navigate to my existing Fissa at /fissa/XYZ789
+ *   And my selected seed tracks are still shown
+ *
+ * Scenario: Network error during creation
+ *   Given I have selected seed tracks
+ *   When I submit the Fissa creation form
+ *   And a network/unknown error occurs
+ *   Then I see a generic error message with a retry affordance
+ *   And my selected seed tracks are still shown
+ */
+describe("CreateFissa — error handling (Task #88)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockNavigate.mockResolvedValue(undefined);
+
+    vi.mocked(authClient.useSession).mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    vi.mocked(api.spotify.searchTracks.useQuery).mockReturnValue({
+      data: {
+        tracks: [
+          { id: "track-1", name: "Get Lucky", artists: ["Daft Punk"], albumArt: "https://example.com/art1.jpg", durationMs: 247000 },
+        ],
+      },
+      isLoading: false,
+    } as any);
+  });
+
+  it("shows Spotify Premium required error when error code is SPOTIFY_PREMIUM_REQUIRED", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Spotify Premium required", data: { code: "SPOTIFY_PREMIUM_REQUIRED" } });
+    });
+
+    const errorEl = screen.getByTestId("create-fissa-error");
+    expect(errorEl).toBeInTheDocument();
+    expect(errorEl).toHaveAttribute("data-error-code", "SPOTIFY_PREMIUM_REQUIRED");
+    expect(errorEl).toHaveTextContent(/spotify premium/i);
+  });
+
+  it("preserves selected seed tracks after SPOTIFY_PREMIUM_REQUIRED error", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Spotify Premium required", data: { code: "SPOTIFY_PREMIUM_REQUIRED" } });
+    });
+
+    // Seed tracks must still be selected
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+    expect(screen.getByTestId("selected-tracks-summary")).toBeInTheDocument();
+  });
+
+  it("shows already-hosting error with link to existing Fissa when error code is ALREADY_HOSTING", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Already hosting a Fissa", data: { code: "ALREADY_HOSTING", existingPin: "XYZ789" } });
+    });
+
+    const errorEl = screen.getByTestId("create-fissa-error");
+    expect(errorEl).toBeInTheDocument();
+    expect(errorEl).toHaveAttribute("data-error-code", "ALREADY_HOSTING");
+    expect(errorEl).toHaveTextContent(/already have an active fissa/i);
+
+    const link = screen.getByTestId("existing-fissa-link");
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/fissa/XYZ789");
+  });
+
+  it("preserves selected seed tracks after ALREADY_HOSTING error", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Already hosting", data: { code: "ALREADY_HOSTING", existingPin: "XYZ789" } });
+    });
+
+    // Seed tracks must still be selected
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+    expect(screen.getByTestId("selected-tracks-summary")).toBeInTheDocument();
+  });
+
+  it("shows generic error with retry button for UNKNOWN errors", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Internal server error" });
+    });
+
+    const errorEl = screen.getByTestId("create-fissa-error");
+    expect(errorEl).toBeInTheDocument();
+    expect(errorEl).toHaveAttribute("data-error-code", "UNKNOWN");
+    expect(errorEl).toHaveTextContent(/something went wrong/i);
+    expect(screen.getByTestId("create-fissa-retry-btn")).toBeInTheDocument();
+  });
+
+  it("preserves selected seed tracks after UNKNOWN error", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Network error" });
+    });
+
+    // Seed tracks must still be selected
+    expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
+    expect(screen.getByTestId("selected-tracks-summary")).toBeInTheDocument();
+  });
+
+  it("detects SPOTIFY_PREMIUM_REQUIRED from error message when data code is absent", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Spotify Premium subscription required" });
+    });
+
+    const errorEl = screen.getByTestId("create-fissa-error");
+    expect(errorEl).toHaveAttribute("data-error-code", "SPOTIFY_PREMIUM_REQUIRED");
+  });
+
+  it("shows ALREADY_HOSTING without link when existingPin is absent", () => {
+    let capturedOnError: ((err: { message: string; data?: unknown }) => void) | undefined;
+
+    vi.mocked(api.fissa.create.useMutation).mockImplementation((opts: any) => {
+      capturedOnError = opts?.onError;
+      return { mutate: vi.fn(), isPending: false } as any;
+    });
+
+    render(<CreateFissa />);
+
+    fireEvent.click(screen.getByTestId("search-result-track-1"));
+    fireEvent.click(screen.getByTestId("create-fissa-submit-btn"));
+
+    act(() => {
+      capturedOnError?.({ message: "Already hosting a Fissa", data: { code: "ALREADY_HOSTING" } });
+    });
+
+    const errorEl = screen.getByTestId("create-fissa-error");
+    expect(errorEl).toHaveAttribute("data-error-code", "ALREADY_HOSTING");
+    expect(screen.queryByTestId("existing-fissa-link")).not.toBeInTheDocument();
+    expect(errorEl).toHaveTextContent(/end your existing fissa/i);
   });
 });

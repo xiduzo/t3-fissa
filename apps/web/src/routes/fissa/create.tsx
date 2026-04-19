@@ -21,20 +21,53 @@ type SearchTrack = {
   durationMs: number;
 };
 
+type CreateErrorCode = "SPOTIFY_PREMIUM_REQUIRED" | "ALREADY_HOSTING" | "UNKNOWN";
+
+type CreateError = {
+  code: CreateErrorCode;
+  existingPin: string | null;
+};
+
+function parseCreateError(err: { message: string; data?: unknown }): CreateError {
+  const errData = err.data as { code?: string; existingPin?: string } | undefined;
+
+  // Check for structured error code in data
+  if (errData?.code === "SPOTIFY_PREMIUM_REQUIRED") {
+    return { code: "SPOTIFY_PREMIUM_REQUIRED", existingPin: null };
+  }
+  if (errData?.code === "ALREADY_HOSTING") {
+    return { code: "ALREADY_HOSTING", existingPin: errData.existingPin ?? null };
+  }
+
+  // Fall back to message-based detection
+  const msg = err.message.toLowerCase();
+  if (msg.includes("premium")) {
+    return { code: "SPOTIFY_PREMIUM_REQUIRED", existingPin: null };
+  }
+  if (msg.includes("already hosting") || msg.includes("already have")) {
+    // Try to extract PIN from message if present (e.g. "XYZ789")
+    const pinMatch = /\b([A-Z0-9]{4,8})\b/.exec(err.message);
+    return { code: "ALREADY_HOSTING", existingPin: pinMatch?.[1] ?? null };
+  }
+
+  return { code: "UNKNOWN", existingPin: null };
+}
+
 export const CreateFissa: FC = () => {
   const { data: session } = authClient.useSession();
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTracks, setSelectedTracks] = useState<Map<string, SearchTrack>>(new Map());
-  const [createError, setCreateError] = useState<string | null>(null);
+  const [createError, setCreateError] = useState<CreateError | null>(null);
 
   const { mutate: createFissa, isPending: isCreating } = api.fissa.create.useMutation({
     onSuccess: (fissa) => {
       console.log("Fissa created:", fissa.pin);
     },
     onError: (err) => {
-      setCreateError(err.message);
+      // Do NOT clear selectedTracks — preserve seed tracks on error
+      setCreateError(parseCreateError(err));
     },
   });
 
@@ -211,8 +244,48 @@ export const CreateFissa: FC = () => {
           )}
 
           {/* Error message */}
-          {createError && (
-            <p data-testid="create-fissa-error" className="text-sm text-red-600">{createError}</p>
+          {createError?.code === "SPOTIFY_PREMIUM_REQUIRED" && (
+            <div data-testid="create-fissa-error" data-error-code="SPOTIFY_PREMIUM_REQUIRED" className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              <p className="font-semibold">Spotify Premium required</p>
+              <p>Creating a Fissa requires an active Spotify Premium subscription. Please upgrade your account and try again.</p>
+            </div>
+          )}
+
+          {createError?.code === "ALREADY_HOSTING" && (
+            <div data-testid="create-fissa-error" data-error-code="ALREADY_HOSTING" className="rounded-md border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800">
+              <p className="font-semibold">You already have an active Fissa</p>
+              {createError.existingPin ? (
+                <p>
+                  <a
+                    data-testid="existing-fissa-link"
+                    href={`/fissa/${createError.existingPin}`}
+                    className="underline hover:text-yellow-900"
+                  >
+                    Go to your existing Fissa
+                  </a>
+                </p>
+              ) : (
+                <p>Please end your existing Fissa before creating a new one.</p>
+              )}
+            </div>
+          )}
+
+          {createError?.code === "UNKNOWN" && (
+            <div data-testid="create-fissa-error" data-error-code="UNKNOWN" className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              <p className="font-semibold">Something went wrong</p>
+              <p>
+                An unexpected error occurred. Please{" "}
+                <button
+                  data-testid="create-fissa-retry-btn"
+                  type="button"
+                  onClick={handleSubmit}
+                  className="underline hover:text-red-900"
+                >
+                  try again
+                </button>
+                .
+              </p>
+            </div>
           )}
 
           {/* Submit button */}
