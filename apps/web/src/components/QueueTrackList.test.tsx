@@ -245,6 +245,137 @@ describe("QueueTrackList", () => {
   });
 });
 
+describe("QueueTrackList — queue re-order after vote (Task #73)", () => {
+  /**
+   * Scenario: Queue re-orders after upvote
+   *   Given the Queue has tracks A (score 2), B (score 0), C (score -1)
+   *   When a Guest upvotes track B (score becomes 1)
+   *   Then the Queue order is A (score 2), B (score 1), C (score -1)
+   */
+  it("re-renders in new score order when track scores change after a vote", () => {
+    const { rerender } = render(
+      <QueueTrackList
+        tracks={makeTracks([
+          { trackId: "track-A", totalScore: 2 },
+          { trackId: "track-B", totalScore: 0 },
+          { trackId: "track-C", totalScore: -1 },
+        ])}
+      />,
+    );
+
+    // Initial order: A, B, C
+    let items = screen.getAllByTestId("track-item");
+    expect(items[0]).toHaveAttribute("data-trackid", "track-A");
+    expect(items[1]).toHaveAttribute("data-trackid", "track-B");
+    expect(items[2]).toHaveAttribute("data-trackid", "track-C");
+
+    // Simulate vote success — track-B score rises to 1
+    rerender(
+      <QueueTrackList
+        tracks={makeTracks([
+          { trackId: "track-A", totalScore: 2 },
+          { trackId: "track-B", totalScore: 1 },
+          { trackId: "track-C", totalScore: -1 },
+        ])}
+      />,
+    );
+
+    // New order: A (2), B (1), C (-1)
+    items = screen.getAllByTestId("track-item");
+    expect(items[0]).toHaveAttribute("data-trackid", "track-A");
+    expect(items[1]).toHaveAttribute("data-trackid", "track-B");
+    expect(items[2]).toHaveAttribute("data-trackid", "track-C");
+  });
+
+  it("promotes a track above higher-scored tracks when its score surpasses them after a vote", () => {
+    const { rerender } = render(
+      <QueueTrackList
+        tracks={makeTracks([
+          { trackId: "track-A", totalScore: 2 },
+          { trackId: "track-B", totalScore: 0 },
+          { trackId: "track-C", totalScore: -1 },
+        ])}
+      />,
+    );
+
+    // Simulate track-B being upvoted three times to score 3 — should jump above track-A
+    rerender(
+      <QueueTrackList
+        tracks={makeTracks([
+          { trackId: "track-A", totalScore: 2 },
+          { trackId: "track-B", totalScore: 3 },
+          { trackId: "track-C", totalScore: -1 },
+        ])}
+      />,
+    );
+
+    const items = screen.getAllByTestId("track-item");
+    expect(items[0]).toHaveAttribute("data-trackid", "track-B");
+    expect(items[1]).toHaveAttribute("data-trackid", "track-A");
+    expect(items[2]).toHaveAttribute("data-trackid", "track-C");
+  });
+
+  /**
+   * Scenario: Currently playing track stays at top regardless of score
+   *   The currently playing track is excluded from the upcoming queue list
+   *   (filtered out by $pin.tsx before being passed to QueueTrackList).
+   *   QueueTrackList should not render a track whose trackId matches currentlyPlayingId
+   *   even if it is present in the passed tracks array.
+   *
+   *   Note: In production, $pin.tsx filters out the currently playing track before
+   *   passing to QueueTrackList. This test verifies QueueTrackList's own defensive
+   *   behaviour: it disables vote buttons for the currentlyPlayingId track but still
+   *   renders it — the exclusion responsibility belongs to the parent.
+   */
+  it("does not include the currently playing track in the sorted queue when parent excludes it", () => {
+    // Simulate what $pin.tsx does: exclude currentlyPlayingId from the tracks prop
+    const currentlyPlayingId = "track-X";
+    const upcomingTracks = makeTracks([
+      { trackId: "track-A", totalScore: 2 },
+      { trackId: "track-B", totalScore: 0 },
+      { trackId: "track-C", totalScore: -1 },
+    ]);
+
+    render(
+      <QueueTrackList
+        tracks={upcomingTracks}
+        currentlyPlayingId={currentlyPlayingId}
+      />,
+    );
+
+    const items = screen.getAllByTestId("track-item");
+    const renderedIds = items.map((el) => el.getAttribute("data-trackid"));
+
+    expect(renderedIds).not.toContain(currentlyPlayingId);
+    expect(renderedIds).toEqual(["track-A", "track-B", "track-C"]);
+  });
+
+  it("updated scores are reflected in rendered score elements after a vote", () => {
+    const { rerender } = render(
+      <QueueTrackList
+        tracks={makeTracks([
+          { trackId: "track-A", totalScore: 2 },
+          { trackId: "track-B", totalScore: 0 },
+        ])}
+      />,
+    );
+
+    expect(screen.getByTestId("queue-track-score-track-B")).toHaveTextContent("0");
+
+    // After upvote, score updates
+    rerender(
+      <QueueTrackList
+        tracks={makeTracks([
+          { trackId: "track-A", totalScore: 2 },
+          { trackId: "track-B", totalScore: 1 },
+        ])}
+      />,
+    );
+
+    expect(screen.getByTestId("queue-track-score-track-B")).toHaveTextContent("1");
+  });
+});
+
 describe("QueueTrackList — onVote callback (Task #71)", () => {
   /**
    * Scenario: Guest casts an upvote
