@@ -1131,3 +1131,41 @@ describe("/fissa/$pin — Queue interaction controls (Task #66)", () => {
     expect(screen.getByTestId("vote-controls")).toBeInTheDocument();
   });
 });
+
+describe("/fissa/$pin — OAuth error handling (Task #67)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({ data: { pin: "1234" }, isLoading: false, error: null } as any);
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+  });
+
+  it("shows error banner when error prop is present", () => {
+    render(<QueuePage pin="1234" error="access_denied" />);
+    expect(screen.getByTestId("oauth-error-banner")).toBeInTheDocument();
+    expect(screen.getByText(/Sign-in was cancelled or failed/)).toBeInTheDocument();
+  });
+
+  it("does not show error banner when no error prop", () => {
+    render(<QueuePage pin="1234" />);
+    expect(screen.queryByTestId("oauth-error-banner")).not.toBeInTheDocument();
+  });
+
+  it("sign-in button remains visible alongside the error banner", () => {
+    render(<QueuePage pin="1234" error="access_denied" />);
+    expect(screen.getByTestId("oauth-error-banner")).toBeInTheDocument();
+    expect(screen.getByTestId("spotify-signin-btn")).toBeInTheDocument();
+  });
+
+  it("dismiss button is present in the error banner", () => {
+    render(<QueuePage pin="1234" error="access_denied" />);
+    expect(screen.getByTestId("dismiss-error-btn")).toBeInTheDocument();
+  });
+
+  it("does not auto-trigger OAuth when error param is present", () => {
+    const mockSignIn = vi.mocked(authClient.signIn.social);
+    render(<QueuePage pin="1234" error="access_denied" />);
+    expect(mockSignIn).not.toHaveBeenCalled();
+  });
+});

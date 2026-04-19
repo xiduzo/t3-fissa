@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { type FC } from "react";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
@@ -8,15 +8,21 @@ import { authClient } from "~/lib/auth-client";
 import { api } from "~/utils/api";
 
 export const Route = createFileRoute("/fissa/$pin")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    error: typeof search.error === "string" ? search.error : undefined,
+  }),
   component: JoinFissa,
 });
 
 interface QueuePageProps {
   pin: string;
+  error?: string;
 }
 
-export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
+export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
   const { data: session, isPending: sessionPending } = authClient.useSession();
+  const navigate = useNavigate({ from: "/fissa/$pin" });
+  const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
@@ -100,6 +106,16 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
           )}
         </section>
 
+        {/* OAuth error banner */}
+        {error && (
+          <div data-testid="oauth-error-banner" role="alert" className="mx-4 my-2 flex items-center justify-between rounded border border-destructive bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            <span>Sign-in was cancelled or failed. Please try again.</span>
+            <button data-testid="dismiss-error-btn" onClick={dismissError} className="ml-4 text-xs underline" type="button">
+              Dismiss
+            </button>
+          </div>
+        )}
+
         {/* Unauthenticated sign-in CTA slot */}
         <section data-testid="queue-signin-cta" className="px-4 py-6">
           {!sessionPending && !session?.user && <SpotifySignInButton pin={pin} />}
@@ -121,5 +137,6 @@ export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
 
 function JoinFissa() {
   const { pin } = Route.useParams();
-  return <QueuePage pin={pin} />;
+  const { error } = Route.useSearch();
+  return <QueuePage pin={pin} error={error} />;
 }
