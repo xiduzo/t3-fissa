@@ -120,4 +120,20 @@ export class SpotifyService implements ISpotifyService {
       }
     }
   };
+
+  searchTracks = async (
+    accessToken: string,
+    query: string,
+  ): Promise<Array<{ id: string; name: string; artists: string[]; albumArt: string; durationMs: number }>> => {
+    const { body } = await this.withRetry(() =>
+      this.createClient(accessToken).search(query, ["track"], { limit: 20 }),
+    );
+    return (body.tracks?.items ?? []).map((track) => ({
+      id: track.id,
+      name: track.name,
+      artists: track.artists.map((a) => a.name),
+      albumArt: track.album.images[0]?.url ?? "",
+      durationMs: track.duration_ms,
+    }));
+  };
 }
