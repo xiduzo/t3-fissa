@@ -1,60 +1,112 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef } from "react";
-import { Button } from "~/components/Button";
-import { Container } from "~/components/Container";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { type FC } from "react";
+import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
-import { toast } from "~/components/Toast";
-import { useTheme } from "~/providers/ThemeProvider";
+import { QueueTrackList } from "~/components/QueueTrackList";
 import { api } from "~/utils/api";
 
 export const Route = createFileRoute("/fissa/$pin")({
   component: JoinFissa,
 });
 
-function JoinFissa() {
-  const { pin } = Route.useParams();
-  const { theme } = useTheme();
-  const shown = useRef(false);
-  const navigate = useNavigate();
+interface QueuePageProps {
+  pin: string;
+}
 
-  api.fissa.byId.useQuery(pin, {
+export const QueuePage: FC<QueuePageProps> = ({ pin }) => {
+  const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
-    enabled: !shown.current && !!pin,
-    onSuccess: (data) => {
-      shown.current = true;
-      window.location.replace(`com.fissa://fissa/${data.pin}`);
-    },
-    onError: (error) => {
-      toast.error({ message: error.message });
-      void navigate({ to: "/" });
-    },
+    enabled: !!pin,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
   });
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div data-testid="fissa-loading" className="flex min-h-screen items-center justify-center">
+          <p className="text-lg">Loading…</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (isError && !data) {
+    return (
+      <Layout>
+        <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
+          <p data-testid="fissa-not-found" className="text-2xl font-bold">
+            Fissa not found
+          </p>
+          <Link data-testid="go-home-link" to="/" className="underline">
+            Go home
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
+
+  const hasFissaEnded =
+    data?.expectedEndTime != null &&
+    new Date(data.expectedEndTime) < new Date();
+
+  if (hasFissaEnded) {
+    return (
+      <Layout>
+        <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
+          <p data-testid="fissa-ended" className="text-2xl font-bold">
+            Fissa has ended
+          </p>
+          <Link data-testid="go-home-link" to="/" className="underline">
+            Go home
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
+
+  const currentlyPlayingTrack = data?.tracks?.find(
+    (t) => t.trackId === data.currentlyPlayingId,
+  );
+
+  const upcomingTracks = data?.tracks?.filter(
+    (t) => !t.hasBeenPlayed && t.trackId !== data?.currentlyPlayingId,
+  ) ?? [];
 
   return (
     <Layout>
-      <section
-        id="get-free-shares-today"
-        className="relative overflow-hidden py-48 sm:py-64"
-        style={{ backgroundColor: theme[900] }}
-      >
-        <Container className="relative">
-          <div className="mx-auto max-w-md sm:text-center">
-            <h2 className="text-3xl font-medium tracking-tight sm:text-4xl">
-              You have been invited to join Fissa {pin},
-            </h2>
-            <p className="mt-4 text-lg">become the DJ you have always dreamt to be.</p>
-            <Button
-              className="mt-8"
-              style={{ backgroundColor: theme[500], color: theme[900] }}
-              onClick={() => {
-                window.location.replace(`com.fissa://fissa/${pin}`);
-              }}
-            >
-              Join Fissa {pin}
-            </Button>
-          </div>
-        </Container>
-      </section>
+      <div className="flex min-h-screen flex-col">
+        {/* Header: Fissa PIN */}
+        <header className="px-4 py-6 text-center">
+          <h1 className="text-2xl font-bold tracking-widest">{pin}</h1>
+        </header>
+
+        {/* Currently-playing track slot */}
+        <section data-testid="queue-now-playing" className="px-4 py-4">
+          <CurrentlyPlayingTrack track={currentlyPlayingTrack} />
+        </section>
+
+        {/* Upcoming tracks list slot */}
+        <section data-testid="queue-upcoming" className="flex-1 px-4 py-4">
+          {upcomingTracks.length === 0 ? (
+            <p data-testid="queue-empty" className="text-center text-muted-foreground">
+              No upcoming tracks
+            </p>
+          ) : (
+            <QueueTrackList tracks={upcomingTracks} />
+          )}
+        </section>
+
+        {/* Unauthenticated sign-in CTA slot */}
+        <section data-testid="queue-signin-cta" className="px-4 py-6">
+          {/* Placeholder — sign-in CTA wired in a later task */}
+        </section>
+      </div>
     </Layout>
   );
+};
+
+function JoinFissa() {
+  const { pin } = Route.useParams();
+  return <QueuePage pin={pin} />;
 }

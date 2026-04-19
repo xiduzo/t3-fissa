@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "preview": "vite preview",
+    "test": "vitest run",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -38,6 +39,8 @@
   "devDependencies": {
     "@fissa/eslint-config": "*",
     "@tanstack/router-plugin": "^1.114.23",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "20.12.11",
     "@types/react": "18.2.37",
     "@types/react-dom": "18.2.15",
@@ -45,6 +48,7 @@
     "autoprefixer": "10.4.19",
     "dotenv-cli": "7.4.2",
     "eslint": "8.57.0",
+    "jsdom": "^29.0.2",
     "postcss": "8.4.38",
     "tailwindcss": "3.3.1",
     "typescript": "~5.8.3",
