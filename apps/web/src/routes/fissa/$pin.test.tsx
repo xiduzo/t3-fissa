@@ -84,7 +84,7 @@ vi.mock("~/components/SpotifySignInButton", () => ({
 }));
 
 vi.mock("~/components/AddTrackSheet", () => ({
-  AddTrackSheet: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
+  AddTrackSheet: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void; pin: string }) =>
     isOpen ? (
       <div data-testid="add-track-sheet">
         <button data-testid="add-track-sheet-close" onClick={onClose} type="button">

@@ -30,4 +30,9 @@ export interface ISpotifyService {
   ): Promise<SpotifyApi.TrackObjectSimplified[]>;
 
   pause(accessToken: string): Promise<void>;
+
+  searchTracks(
+    accessToken: string,
+    query: string,
+  ): Promise<Array<{ id: string; name: string; artists: string[]; albumArt: string }>>;
 }

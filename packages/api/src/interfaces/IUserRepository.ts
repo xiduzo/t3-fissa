@@ -48,6 +48,8 @@ export interface IUserRepository {
 
   findFissaOwnerRefreshData(pin: string): Promise<FissaOwnerRefreshData | undefined>;
 
+  getSpotifyAccessToken(userId: string): Promise<string | null>;
+
   createUserWithAccount(
     spotifyUser: SpotifyApi.CurrentUsersProfileResponse,
     tokens: Awaited<ReturnType<ISpotifyService["codeGrant"]>>,

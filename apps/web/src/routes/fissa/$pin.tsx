@@ -154,7 +154,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
           </section>
         )}
       </div>
-      <AddTrackSheet isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} />
+      <AddTrackSheet isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} pin={pin} />
     </Layout>
   );
 };
