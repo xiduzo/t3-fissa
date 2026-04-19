@@ -292,67 +292,67 @@
     },
     {
       "id": "bug-019",
-      "timestamp": "2026-04-19T14:57:21.001Z",
-      "error_message": "CSS fix: QueuePage",
-      "file": "apps/web/src/routes/fissa/$pin.tsx",
-      "root_cause": "QueuePage: FC<QueuePageProps> = ({ pin → FC<QueuePageProps> = ({ pin, error",
-      "fix": "Changed QueuePage: FC<QueuePageProps> = ({ pin → FC<QueuePageProps> = ({ pin, error",
+      "timestamp": "2026-04-19T19:33:12.858Z",
+      "error_message": "Missing await",
+      "file": "apps/web/src/routes/fissa/$pin.test.tsx",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
       "tags": [
         "auto-detected",
-        "style-fix",
+        "async-fix",
         "tsx"
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-04-19T14:57:21.001Z"
+      "last_seen": "2026-04-19T19:33:12.858Z"
     },
     {
       "id": "bug-020",
-      "timestamp": "2026-04-19T14:57:35.043Z",
-      "error_message": "Wrong return value",
+      "timestamp": "2026-04-19T19:33:53.632Z",
+      "error_message": "Missing error handling in unknown",
       "file": "apps/web/src/routes/fissa/$pin.tsx",
-      "root_cause": "Was returning: <QueuePage pin={pin} />;",
-      "fix": "Now returns: <QueuePage pin={pin} error={error} />;",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
-        "return-value",
+        "error-handling",
         "tsx"
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-04-19T14:57:35.043Z"
+      "last_seen": "2026-04-19T19:33:53.632Z"
     },
     {
       "id": "bug-021",
-      "timestamp": "2026-04-19T14:58:10.322Z",
-      "error_message": "Type error",
-      "file": "apps/web/src/routes/fissa/$pin.test.tsx",
-      "root_cause": "Missing or incorrect type annotation",
-      "fix": "Added type assertion/annotation",
+      "timestamp": "2026-04-19T19:34:00.513Z",
+      "error_message": "Null/undefined access in ",
+      "file": "apps/web/src/routes/fissa/$pin.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
       "tags": [
         "auto-detected",
-        "type-fix",
+        "null-safety",
         "tsx"
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-04-19T14:58:10.322Z"
+      "last_seen": "2026-04-19T19:34:00.513Z"
     },
     {
       "id": "bug-022",
-      "timestamp": "2026-04-19T15:11:29.367Z",
-      "error_message": "CSS fix: social",
-      "file": "apps/web/src/components/SpotifySignInButton.test.tsx",
-      "root_cause": "social: mockSignInSocial, → vi.fn(),",
-      "fix": "Changed social: mockSignInSocial, → vi.fn(),",
+      "timestamp": "2026-04-19T19:36:22.994Z",
+      "error_message": "Null/undefined access in ",
+      "file": "apps/web/src/routes/fissa/$pin.test.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
       "tags": [
         "auto-detected",
-        "style-fix",
+        "null-safety",
         "tsx"
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-04-19T15:11:29.367Z"
+      "last_seen": "2026-04-19T19:36:22.994Z"
     }
   ],
   "bugs_session_2026_04_10": [

@@ -99,12 +99,16 @@ vi.mock("~/components/AddTrackSheet", () => ({
     onClose,
     onSelect,
     isAdding,
+    duplicateTrack,
+    onClearDuplicate,
   }: {
     isOpen: boolean;
     onClose: () => void;
     pin: string;
     onSelect?: (track: { id: string; name: string; durationMs: number; artists: string[]; albumArt: string }) => void;
     isAdding?: boolean;
+    duplicateTrack?: boolean;
+    onClearDuplicate?: () => void;
   }) =>
     isOpen ? (
       <div data-testid="add-track-sheet">
@@ -112,6 +116,9 @@ vi.mock("~/components/AddTrackSheet", () => ({
           Close
         </button>
         {isAdding && <div data-testid="add-track-loading" />}
+        {duplicateTrack && (
+          <div data-testid="track-duplicate-error">This track is already in the Queue</div>
+        )}
         <button
           data-testid="simulate-select-track"
           type="button"
@@ -126,6 +133,13 @@ vi.mock("~/components/AddTrackSheet", () => ({
           }
         >
           Select Track
+        </button>
+        <button
+          data-testid="simulate-clear-duplicate"
+          type="button"
+          onClick={() => onClearDuplicate?.()}
+        >
+          Clear Duplicate
         </button>
       </div>
     ) : null,
@@ -2080,5 +2094,308 @@ describe("/fissa/$pin — Wire track.addTracks mutation (Task #75)", () => {
     });
 
     expect(vi.mocked(toast.success)).toHaveBeenCalledOnce();
+  });
+});
+
+describe("/fissa/$pin — Duplicate track inline feedback (Task #77)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockAddTracksMutation = vi.mocked(api.track.addTracks.useMutation);
+
+  const activeFissaData = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockAddTracksMutation.mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test Guest" } },
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Adding a track that is already in the Queue
+   *   Given the Add Track sheet is open
+   *   When track.addTracks returns CONFLICT error
+   *   Then I see an inline message "This track is already in the Queue"
+   *   And the sheet remains open
+   */
+  it("shows inline duplicate feedback and keeps sheet open when CONFLICT error occurs", () => {
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    // Simulate CONFLICT error from tRPC
+    act(() => {
+      capturedOnError?.({ data: { code: "CONFLICT" } });
+    });
+
+    // Sheet must remain open
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+    // Inline duplicate feedback must be shown (passed via duplicateTrack prop)
+    expect(screen.getByTestId("track-duplicate-error")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Non-CONFLICT error does not set duplicate feedback
+   *   When track.addTracks returns a non-CONFLICT error
+   *   Then no duplicate feedback is shown
+   */
+  it("does not show duplicate feedback for non-CONFLICT errors", () => {
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate a generic (non-CONFLICT) error
+    act(() => {
+      capturedOnError?.({ data: { code: "INTERNAL_SERVER_ERROR" } });
+    });
+
+    // Duplicate feedback must NOT be shown
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Selecting a different track after duplicate feedback
+   *   Given duplicate feedback is shown
+   *   When I select a different track
+   *   Then the duplicate feedback is cleared
+   *   And the new track is submitted for addition
+   */
+  it("clears duplicate feedback when a new track is selected", () => {
+    const mockMutate = vi.fn();
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: mockMutate, isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate CONFLICT error to show duplicate feedback
+    act(() => {
+      capturedOnError?.({ data: { code: "CONFLICT" } });
+    });
+
+    expect(screen.getByTestId("track-duplicate-error")).toBeInTheDocument();
+
+    // Select a different track — duplicate feedback should clear
+    act(() => {
+      fireEvent.click(screen.getByTestId("simulate-select-track"));
+    });
+
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+    // New mutation was fired
+    expect(mockMutate).toHaveBeenCalledOnce();
+  });
+
+  /**
+   * Scenario: Clearing duplicate feedback on new search
+   *   Given duplicate feedback is shown
+   *   When I type in the search field (onClearDuplicate called)
+   *   Then the duplicate feedback message disappears
+   */
+  it("clears duplicate feedback when onClearDuplicate is triggered", () => {
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate CONFLICT error
+    act(() => {
+      capturedOnError?.({ data: { code: "CONFLICT" } });
+    });
+
+    expect(screen.getByTestId("track-duplicate-error")).toBeInTheDocument();
+
+    // Trigger onClearDuplicate (simulates typing in search)
+    act(() => {
+      fireEvent.click(screen.getByTestId("simulate-clear-duplicate"));
+    });
+
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+  });
+});
+
+describe("/fissa/$pin — Display PIN with copy/share for Host (Task #86)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    userId: "host-user-id",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(navigator, "share", {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  it("renders the host-pin-widget when the current user is the host", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("host-pin-widget")).toBeInTheDocument();
+    expect(screen.getByTestId("host-pin-display")).toHaveTextContent("ABC123");
+  });
+
+  it("does not render the host-pin-widget when the current user is a guest", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "guest-user-id", name: "Guest" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("does not render the host-pin-widget when the visitor is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("does not render the host-pin-widget while session is pending", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: true } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("copies the PIN to clipboard when the Copy PIN button is clicked", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("ABC123");
+  });
+
+  it("shows a confirmation message after the PIN is copied", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(screen.getByTestId("copy-pin-confirmation")).toBeInTheDocument();
+  });
+
+  it("does not render the share button when Web Share API is unavailable", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("share-pin-btn")).not.toBeInTheDocument();
+  });
+
+  it("renders the share button when Web Share API is available", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+    Object.defineProperty(navigator, "share", {
+      value: vi.fn().mockResolvedValue(undefined),
+      writable: true,
+      configurable: true,
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("share-pin-btn")).toBeInTheDocument();
+  });
+
+  it("shows a friendly error when clipboard API is blocked", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockRejectedValue(new Error("NotAllowedError")) },
+      writable: true,
+      configurable: true,
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(screen.getByTestId("copy-pin-error")).toBeInTheDocument();
   });
 });
