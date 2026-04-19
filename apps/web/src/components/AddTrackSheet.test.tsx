@@ -214,3 +214,81 @@ describe("AddTrackSheet (Task #74)", () => {
     expect(onSelect).toHaveBeenCalledWith(tracks[0]);
   });
 });
+
+// ── Task #77 Tests ─────────────────────────────────────────────────────────────
+
+describe("AddTrackSheet — duplicate track feedback (Task #77)", () => {
+  beforeEach(() => {
+    mockUseTrackSearch.mockReturnValue({
+      results: tracks,
+      isLoading: false,
+      query: "Bohemian",
+      setQuery: vi.fn(),
+    });
+  });
+
+  /**
+   * Scenario: Adding a track that is already in the Queue
+   *   Given the Add Track sheet is open
+   *   When duplicateTrack=true is passed
+   *   Then I see an inline message "This track is already in the Queue"
+   *   And the sheet remains open
+   */
+  it("shows inline duplicate feedback when duplicateTrack prop is true", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" duplicateTrack={true} />);
+    expect(screen.getByTestId("track-duplicate-error")).toBeInTheDocument();
+    expect(screen.getByTestId("track-duplicate-error")).toHaveTextContent(/already in the queue/i);
+  });
+
+  it("does not show duplicate feedback when duplicateTrack is false", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" duplicateTrack={false} />);
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+  });
+
+  it("does not show duplicate feedback when duplicateTrack is not provided", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" />);
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Sheet stays open on duplicate error
+   *   The sheet must NOT close when duplicateTrack is set
+   */
+  it("sheet remains open when duplicateTrack is true", () => {
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" duplicateTrack={true} />);
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Selecting a different track after duplicate feedback
+   *   Given duplicate feedback is shown
+   *   When I click a track result
+   *   Then onSelect is still called (so the parent can clear duplicate state)
+   */
+  it("calls onSelect when a track is clicked even when duplicateTrack is true", () => {
+    const onSelect = vi.fn();
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" onSelect={onSelect} duplicateTrack={true} />);
+    fireEvent.click(screen.getByTestId("search-result-t1"));
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onSelect).toHaveBeenCalledWith(tracks[0]);
+  });
+
+  /**
+   * Scenario: Clearing duplicate feedback on new search
+   *   Given duplicate feedback is shown
+   *   When I type in the search field
+   *   Then onClearDuplicate is called so the parent can clear the state
+   */
+  it("calls onClearDuplicate when user types in search input", () => {
+    const onClearDuplicate = vi.fn();
+    mockUseTrackSearch.mockReturnValue({
+      results: [],
+      isLoading: false,
+      query: "Bohemian",
+      setQuery: vi.fn(),
+    });
+    render(<AddTrackSheet isOpen={true} onClose={noop} pin="1234" duplicateTrack={true} onClearDuplicate={onClearDuplicate} />);
+    fireEvent.change(screen.getByTestId("track-search-input"), { target: { value: "Queen" } });
+    expect(onClearDuplicate).toHaveBeenCalled();
+  });
+});

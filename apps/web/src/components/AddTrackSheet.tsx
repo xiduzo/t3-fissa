@@ -18,9 +18,13 @@ interface AddTrackSheetProps {
   addError?: boolean;
   onRetry?: () => void;
   fissaEnded?: boolean;
+  /** Set to true when the last add attempt returned a CONFLICT (duplicate track). */
+  duplicateTrack?: boolean;
+  /** Called when the user types in the search input — parent should clear duplicateTrack state. */
+  onClearDuplicate?: () => void;
 }
 
-export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, onSelect, isAdding, addError, onRetry, fissaEnded }) => {
+export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, onSelect, isAdding, addError, onRetry, fissaEnded, duplicateTrack, onClearDuplicate }) => {
   const { query, setQuery, results, isLoading } = useTrackSearch();
   const debouncedQuery = query.trim();
 
@@ -66,7 +70,10 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, on
           data-testid="track-search-input"
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            onClearDuplicate?.();
+          }}
           placeholder="Search Spotify…"
           className="mt-4 w-full rounded-md border px-4 py-2 text-sm"
           disabled={fissaEnded ?? isAdding}
@@ -142,6 +149,12 @@ export const AddTrackSheet: FC<AddTrackSheetProps> = ({ isOpen, onClose, pin, on
             >
               Retry
             </button>
+          </div>
+        )}
+
+        {!fissaEnded && duplicateTrack && (
+          <div data-testid="track-duplicate-error" className="mt-4 text-center text-sm text-amber-600">
+            This track is already in the Queue
           </div>
         )}
       </div>
