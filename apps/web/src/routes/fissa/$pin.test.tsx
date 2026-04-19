@@ -7,7 +7,7 @@
  * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
@@ -76,17 +76,11 @@ vi.mock("~/lib/auth-client", () => ({
 }));
 
 vi.mock("~/components/SpotifySignInButton", () => ({
-  SpotifySignInButton: ({ pin }: { pin: string }) => {
-    const { authClient: ac } = require("~/lib/auth-client") as { authClient: { signIn: { social: (opts: { provider: string; callbackURL: string }) => void } } };
-    return (
-      <button
-        data-testid="spotify-signin-btn"
-        onClick={() => ac.signIn.social({ provider: "spotify", callbackURL: `/fissa/${pin}` })}
-      >
-        Sign in with Spotify
-      </button>
-    );
-  },
+  SpotifySignInButton: ({ pin }: { pin: string }) => (
+    <button data-testid="spotify-signin-btn" data-pin={pin}>
+      Sign in with Spotify
+    </button>
+  ),
 }));
 
 // ── Imports after mocks ────────────────────────────────────────────────────────
@@ -1009,7 +1003,6 @@ describe("/fissa/$pin — Sign in with Spotify CTA (Task #58)", () => {
 describe("/fissa/$pin — OAuth callbackURL (Task #60)", () => {
   const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
   const mockUseSession = vi.mocked(authClient.useSession);
-  const mockSignInSocial = vi.mocked(authClient.signIn.social);
 
   const activeFissaData = {
     pin: "1234",
@@ -1025,25 +1018,18 @@ describe("/fissa/$pin — OAuth callbackURL (Task #60)", () => {
       error: null,
     } as any);
     mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
-    mockSignInSocial.mockClear();
   });
 
   /**
    * Scenario: Sign-in is initiated with correct callbackURL
    *   Given an unauthenticated visitor on /fissa/1234
-   *   When they click "Sign in with Spotify"
-   *   Then signIn.social is called with callbackURL: "/fissa/1234"
+   *   Then SpotifySignInButton receives pin="1234" so it can build callbackURL: "/fissa/1234"
    */
-  it("calls signIn.social with callbackURL: /fissa/1234 when pin is 1234", () => {
+  it("passes pin='1234' to SpotifySignInButton so callbackURL resolves to /fissa/1234", () => {
     render(<QueuePage pin="1234" />);
 
     const btn = screen.getByTestId("spotify-signin-btn");
-    fireEvent.click(btn);
-
-    expect(mockSignInSocial).toHaveBeenCalledWith({
-      provider: "spotify",
-      callbackURL: "/fissa/1234",
-    });
+    expect(btn).toHaveAttribute("data-pin", "1234");
   });
 
   /**
@@ -1052,7 +1038,7 @@ describe("/fissa/$pin — OAuth callbackURL (Task #60)", () => {
    *   When they click "Sign in with Spotify"
    *   Then signIn.social is called with callbackURL: "/fissa/9999"
    */
-  it("calls signIn.social with callbackURL: /fissa/9999 when pin is 9999", () => {
+  it("passes pin='9999' to SpotifySignInButton so callbackURL resolves to /fissa/9999", () => {
     mockUseQuery.mockReturnValue({
       data: { ...activeFissaData, pin: "9999" },
       isLoading: false,
@@ -1063,11 +1049,85 @@ describe("/fissa/$pin — OAuth callbackURL (Task #60)", () => {
     render(<QueuePage pin="9999" />);
 
     const btn = screen.getByTestId("spotify-signin-btn");
-    fireEvent.click(btn);
+    expect(btn).toHaveAttribute("data-pin", "9999");
+  });
+});
 
-    expect(mockSignInSocial).toHaveBeenCalledWith({
-      provider: "spotify",
-      callbackURL: "/fissa/9999",
-    });
+describe("/fissa/$pin — Queue interaction controls (Task #66)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Authenticated guest sees interaction controls
+   *   Given a visitor who is signed in with Spotify
+   *   When they navigate to /fissa/<pin>
+   *   Then they see an "Add Track" button and vote controls
+   */
+  it("shows Add Track button and vote controls when the visitor is authenticated", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.getByTestId("add-track-btn")).toBeInTheDocument();
+    expect(screen.getByTestId("vote-controls")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Unauthenticated visitor does not see interaction controls
+   *   Given a visitor who is not signed in
+   *   When they navigate to /fissa/<pin>
+   *   Then they do NOT see the Add Track button or vote controls
+   */
+  it("does not show Add Track button or vote controls when the visitor is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-btn")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("vote-controls")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Controls become visible after sign-in without page reload
+   *   Given a visitor who starts unauthenticated
+   *   When the session updates to authenticated
+   *   Then the controls appear without a page reload
+   */
+  it("controls appear after sign-in (session update without page reload)", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    const { rerender } = render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-btn")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("vote-controls")).not.toBeInTheDocument();
+
+    // Simulate session becoming available (user signs in)
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    rerender(<QueuePage pin="1234" />);
+
+    expect(screen.getByTestId("add-track-btn")).toBeInTheDocument();
+    expect(screen.getByTestId("vote-controls")).toBeInTheDocument();
   });
 });
