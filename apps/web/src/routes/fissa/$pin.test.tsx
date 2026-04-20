@@ -7,7 +7,7 @@
  * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
@@ -1323,5 +1323,152 @@ describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
     const desktopCta = screen.getByTestId("open-desktop-app-cta");
 
     expect(mobileCta.className).toBe(desktopCta.className);
+  });
+});
+
+describe("/fissa/$pin — Display PIN with copy/share for Host (Task #86)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    userId: "host-user-id",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(navigator, "share", {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  it("renders the host-pin-widget when the current user is the host", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("host-pin-widget")).toBeInTheDocument();
+    expect(screen.getByTestId("host-pin-display")).toHaveTextContent("ABC123");
+  });
+
+  it("does not render the host-pin-widget when the current user is a guest", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "guest-user-id", name: "Guest" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("does not render the host-pin-widget when the visitor is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("does not render the host-pin-widget while session is pending", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: true } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("copies the PIN to clipboard when the Copy PIN button is clicked", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("ABC123");
+  });
+
+  it("shows a confirmation message after the PIN is copied", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(screen.getByTestId("copy-pin-confirmation")).toBeInTheDocument();
+  });
+
+  it("does not render the share button when Web Share API is unavailable", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("share-pin-btn")).not.toBeInTheDocument();
+  });
+
+  it("renders the share button when Web Share API is available", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+    Object.defineProperty(navigator, "share", {
+      value: vi.fn().mockResolvedValue(undefined),
+      writable: true,
+      configurable: true,
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("share-pin-btn")).toBeInTheDocument();
+  });
+
+  it("shows a friendly error when clipboard API is blocked", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockRejectedValue(new Error("NotAllowedError")) },
+      writable: true,
+      configurable: true,
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(screen.getByTestId("copy-pin-error")).toBeInTheDocument();
   });
 });

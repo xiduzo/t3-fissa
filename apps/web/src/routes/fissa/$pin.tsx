@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { type FC } from "react";
+import { type FC, useCallback, useState } from "react";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
 import { QueueTrackList } from "~/components/QueueTrackList";
@@ -13,6 +13,72 @@ export const Route = createFileRoute("/fissa/$pin")({
   }),
   component: JoinFissa,
 });
+
+
+interface HostPinWidgetProps {
+  pin: string;
+}
+
+const HostPinWidget: FC<HostPinWidgetProps> = ({ pin }) => {
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const hasShareApi = typeof navigator !== "undefined" && typeof navigator.share === "function";
+
+  const handleCopy = useCallback(async () => {
+    setCopyError(false);
+    try {
+      await navigator.clipboard.writeText(pin);
+      setCopied(true);
+    } catch {
+      setCopyError(true);
+    }
+  }, [pin]);
+
+  const handleShare = useCallback(async () => {
+    try {
+      await navigator.share({ title: "Join my Fissa!", text: `Use PIN: ${pin}`, url: window.location.href });
+    } catch {
+      // share was cancelled or failed — ignore
+    }
+  }, [pin]);
+
+  return (
+    <div data-testid="host-pin-widget" className="mx-4 mb-4 rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
+      <p className="mb-1 text-sm font-medium text-muted-foreground">Your Fissa PIN</p>
+      <p data-testid="host-pin-display" className="mb-3 text-4xl font-bold tracking-[0.3em]">{pin}</p>
+      <div className="flex justify-center gap-2">
+        <button
+          data-testid="copy-pin-btn"
+          type="button"
+          onClick={handleCopy}
+          className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          Copy PIN
+        </button>
+        {hasShareApi && (
+          <button
+            data-testid="share-pin-btn"
+            type="button"
+            onClick={handleShare}
+            className="rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition-opacity hover:opacity-90"
+          >
+            Share
+          </button>
+        )}
+      </div>
+      {copied && (
+        <p data-testid="copy-pin-confirmation" className="mt-2 text-sm text-green-600">
+          PIN copied to clipboard!
+        </p>
+      )}
+      {copyError && (
+        <p data-testid="copy-pin-error" className="mt-2 text-sm text-destructive">
+          Could not copy — please copy the PIN manually: {pin}
+        </p>
+      )}
+    </div>
+  );
+};
 
 interface QueuePageProps {
   pin: string;
@@ -82,6 +148,8 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
     (t) => !t.hasBeenPlayed && t.trackId !== data?.currentlyPlayingId,
   ) ?? [];
 
+  const isHost = !sessionPending && !!session?.user && !!data?.userId && session.user.id === data.userId;
+
   return (
     <Layout>
       <div className="flex min-h-screen flex-col">
@@ -89,6 +157,9 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
         <header className="px-4 py-6 text-center">
           <h1 className="text-2xl font-bold tracking-widest">{pin}</h1>
         </header>
+
+        {/* Host-only PIN widget */}
+        {isHost && <HostPinWidget pin={pin} />}
 
         {/* Currently-playing track slot */}
         <section data-testid="queue-now-playing" className="px-4 py-4">
