@@ -9,6 +9,12 @@ interface QueueTrack {
 
 interface QueueTrackListProps {
   tracks: QueueTrack[];
+  isAuthenticated?: boolean;
+  currentlyPlayingId?: string;
+  userVotes?: Map<string, 1 | -1>;
+  onVote?: (trackId: string, score: 1 | -1) => void;
+  voteErrors?: Map<string, { vote: 1 | -1 }>;
+  onRetryVote?: (trackId: string, vote: 1 | -1) => void;
 }
 
 /**
@@ -16,7 +22,7 @@ interface QueueTrackListProps {
  * Each track shows artwork (Spotify CDN), track identifier, and vote tally.
  * Defensively filters out already-played tracks.
  */
-export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks }) => {
+export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticated = false, currentlyPlayingId, userVotes, onVote, voteErrors, onRetryVote }) => {
   const sorted = [...tracks]
     .filter((t) => !t.hasBeenPlayed)
     .sort((a, b) => b.totalScore - a.totalScore);
@@ -25,6 +31,7 @@ export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks }) => {
     <ul data-testid="track-list" className="flex flex-col gap-3">
       {sorted.map((track) => {
         const artworkUrl = `https://i.scdn.co/image/ab67616d00004851${track.trackId}`;
+        const userVote = userVotes?.get(track.trackId);
 
         return (
           <li
@@ -57,6 +64,54 @@ export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks }) => {
             >
               {track.totalScore}
             </span>
+
+            {isAuthenticated && (
+              <div className="flex gap-1">
+                <button
+                  aria-label={`Upvote ${track.trackId}`}
+                  data-testid={`upvote-${track.trackId}`}
+                  aria-pressed={userVote === 1}
+                  type="button"
+                  disabled={track.trackId === currentlyPlayingId}
+                  onClick={() => onVote?.(track.trackId, 1)}
+                >
+                  +1
+                </button>
+                <button
+                  aria-label={`Downvote ${track.trackId}`}
+                  data-testid={`downvote-${track.trackId}`}
+                  aria-pressed={userVote === -1}
+                  type="button"
+                  disabled={track.trackId === currentlyPlayingId}
+                  onClick={() => onVote?.(track.trackId, -1)}
+                >
+                  -1
+                </button>
+              </div>
+            )}
+
+            {voteErrors?.has(track.trackId) && (
+              <>
+                <span
+                  data-testid={`vote-error-${track.trackId}`}
+                  className="text-xs text-destructive"
+                  role="alert"
+                >
+                  Vote failed
+                </span>
+                <button
+                  data-testid={`retry-vote-${track.trackId}`}
+                  type="button"
+                  className="text-xs underline"
+                  onClick={() => {
+                    const voteError = voteErrors.get(track.trackId);
+                    if (voteError) onRetryVote?.(track.trackId, voteError.vote);
+                  }}
+                >
+                  Retry
+                </button>
+              </>
+            )}
           </li>
         );
       })}

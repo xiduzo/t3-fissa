@@ -7,11 +7,15 @@
  * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
 // Note: vi.mock factories are hoisted — no variable references allowed inside.
+
+vi.mock("~/hooks/useTrackSearch", () => ({
+  useTrackSearch: () => ({ results: [], isLoading: false, query: "", setQuery: vi.fn() }),
+}));
 
 vi.mock("~/utils/api", () => ({
   api: {
@@ -24,6 +28,34 @@ vi.mock("~/utils/api", () => ({
         }),
       },
     },
+    vote: {
+      byFissaFromUser: {
+        useQuery: vi.fn().mockReturnValue({
+          data: undefined,
+        }),
+      },
+      create: {
+        useMutation: vi.fn().mockReturnValue({
+          mutate: vi.fn(),
+        }),
+      },
+    },
+    track: {
+      addTracks: {
+        useMutation: vi.fn().mockReturnValue({
+          mutate: vi.fn(),
+          isPending: false,
+        }),
+      },
+    },
+    useUtils: vi.fn().mockReturnValue({
+      vote: {
+        byFissaFromUser: { invalidate: vi.fn().mockResolvedValue(undefined) },
+      },
+      fissa: {
+        byId: { invalidate: vi.fn().mockResolvedValue(undefined) },
+      },
+    }),
   },
 }));
 
@@ -58,7 +90,59 @@ vi.mock("~/components/Button", () => ({
 }));
 
 vi.mock("~/components/Toast", () => ({
-  toast: { error: vi.fn() },
+  toast: { error: vi.fn(), success: vi.fn() },
+}));
+
+vi.mock("~/components/AddTrackSheet", () => ({
+  AddTrackSheet: ({
+    isOpen,
+    onClose,
+    onSelect,
+    isAdding,
+    duplicateTrack,
+    onClearDuplicate,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    pin: string;
+    onSelect?: (track: { id: string; name: string; durationMs: number; artists: string[]; albumArt: string }) => void;
+    isAdding?: boolean;
+    duplicateTrack?: boolean;
+    onClearDuplicate?: () => void;
+  }) =>
+    isOpen ? (
+      <div data-testid="add-track-sheet">
+        <button data-testid="add-track-sheet-close" onClick={onClose} type="button">
+          Close
+        </button>
+        {isAdding && <div data-testid="add-track-loading" />}
+        {duplicateTrack && (
+          <div data-testid="track-duplicate-error">This track is already in the Queue</div>
+        )}
+        <button
+          data-testid="simulate-select-track"
+          type="button"
+          onClick={() =>
+            onSelect?.({
+              id: "4oLU6hMCjMI75M1A2tKUQ2",
+              name: "Test Song",
+              durationMs: 180000,
+              artists: ["Test Artist"],
+              albumArt: "",
+            })
+          }
+        >
+          Select Track
+        </button>
+        <button
+          data-testid="simulate-clear-duplicate"
+          type="button"
+          onClick={() => onClearDuplicate?.()}
+        >
+          Clear Duplicate
+        </button>
+      </div>
+    ) : null,
 }));
 
 vi.mock("~/components/CurrentlyPlayingTrack", () => ({
@@ -87,6 +171,7 @@ vi.mock("~/components/SpotifySignInButton", () => ({
 
 import { api } from "~/utils/api";
 import { authClient } from "~/lib/auth-client";
+import { toast } from "~/components/Toast";
 import { QueuePage } from "./$pin";
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
@@ -1323,5 +1408,994 @@ describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
     const desktopCta = screen.getByTestId("open-desktop-app-cta");
 
     expect(mobileCta.className).toBe(desktopCta.className);
+  });
+});
+
+describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "track-123", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 3 },
+      { trackId: "track-456", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 1 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: undefined } as any);
+  });
+
+  /**
+   * Scenario: Guest's previously cast upvote is shown on load
+   *   Given I am signed in as a Party Guest
+   *   And I previously upvoted track "track-123"
+   *   When I load the Fissa page
+   *   Then the upvote button for "track-123" shows as active/selected
+   */
+  it("calls vote.byFissaFromUser with { pin } when user is authenticated", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
+      { pin: "ABC123" },
+      expect.objectContaining({ enabled: true }),
+    );
+  });
+
+  it("does not call vote.byFissaFromUser when user is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
+      { pin: "ABC123" },
+      expect.objectContaining({ enabled: false }),
+    );
+  });
+
+  it("shows upvote button as aria-pressed=true for a previously upvoted track", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-123", score: 1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("shows downvote button as aria-pressed=true for a previously downvoted track", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-456", score: -1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-456")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-456")).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows both vote buttons as aria-pressed=false for unvoted tracks", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test" } },
+      isPending: false,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-123")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("downvote-track-123")).toHaveAttribute("aria-pressed", "false");
+  });
+});
+
+describe("/fissa/$pin — Wire vote.create mutation (Task #71)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockCreateVoteMutation = vi.mocked(api.vote.create.useMutation);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "track-dancing-queen", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 0 },
+      { trackId: "track-barbie-girl", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 0 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test Guest" } },
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Guest casts an upvote
+   *   Given I am signed in as a Party Guest
+   *   And track "Dancing Queen" is in the Queue
+   *   When I click the upvote button on "Dancing Queen"
+   *   Then the upvote button is shown as active immediately (optimistic)
+   *   And the vote.create mutation is called with score +1
+   */
+  it("calls vote.create mutation with score +1 when upvote button is clicked", () => {
+    const mockMutate = vi.fn();
+    mockCreateVoteMutation.mockReturnValue({ mutate: mockMutate } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    fireEvent.click(screen.getByTestId("upvote-track-dancing-queen"));
+
+    expect(mockMutate).toHaveBeenCalledWith({
+      pin: "ABC123",
+      trackId: "track-dancing-queen",
+      vote: 1,
+    });
+  });
+
+  /**
+   * Scenario: Guest casts a downvote
+   *   Given I am signed in as a Party Guest
+   *   And track "Barbie Girl" is in the Queue
+   *   When I click the downvote button on "Barbie Girl"
+   *   Then the vote.create mutation is called with score -1
+   */
+  it("calls vote.create mutation with score -1 when downvote button is clicked", () => {
+    const mockMutate = vi.fn();
+    mockCreateVoteMutation.mockReturnValue({ mutate: mockMutate } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    fireEvent.click(screen.getByTestId("downvote-track-barbie-girl"));
+
+    expect(mockMutate).toHaveBeenCalledWith({
+      pin: "ABC123",
+      trackId: "track-barbie-girl",
+      vote: -1,
+    });
+  });
+
+  /**
+   * Scenario: Guest casts an upvote — optimistic update shown immediately
+   *   When I click the upvote button
+   *   Then the upvote button shows as active immediately (before server responds)
+   */
+  it("shows upvote button as aria-pressed=true immediately after clicking (optimistic update)", () => {
+    // Simulate onMutate being called immediately by calling it inline
+    mockCreateVoteMutation.mockImplementation(({ onMutate }: any) => ({
+      mutate: (input: any) => {
+        onMutate?.(input);
+      },
+    }));
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(screen.getByTestId("upvote-track-dancing-queen"));
+
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  /**
+   * Scenario: Guest casts a downvote — optimistic update shown immediately
+   */
+  it("shows downvote button as aria-pressed=true immediately after clicking (optimistic update)", () => {
+    mockCreateVoteMutation.mockImplementation(({ onMutate }: any) => ({
+      mutate: (input: any) => {
+        onMutate?.(input);
+      },
+    }));
+
+    render(<QueuePage pin="ABC123" />);
+
+    fireEvent.click(screen.getByTestId("downvote-track-barbie-girl"));
+
+    expect(screen.getByTestId("downvote-track-barbie-girl")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("upvote-track-barbie-girl")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  /**
+   * Scenario: Guest changes vote from upvote to downvote
+   *   Given I previously upvoted "Dancing Queen"
+   *   When I click the downvote button on "Dancing Queen"
+   *   Then the downvote button becomes active and upvote becomes inactive
+   *   And vote.create is called with score -1
+   */
+  it("changes active vote from upvote to downvote when clicking downvote (optimistic)", () => {
+    mockCreateVoteMutation.mockImplementation(({ onMutate }: any) => ({
+      mutate: (input: any) => {
+        onMutate?.(input);
+      },
+    }));
+    // Start with an existing upvote on the track
+    mockVoteByFissaFromUser.mockReturnValue({
+      data: [{ trackId: "track-dancing-queen", score: 1 }],
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // Initially upvote is active
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("downvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+
+    // Click downvote to change the vote
+    fireEvent.click(screen.getByTestId("downvote-track-dancing-queen"));
+
+    // Downvote is now active, upvote is inactive
+    expect(screen.getByTestId("downvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("upvote-track-dancing-queen")).toHaveAttribute("aria-pressed", "false");
+  });
+
+  /**
+   * Scenario: vote.create is not called for unauthenticated users
+   *   (vote buttons are not rendered for unauthenticated users — verified by prior tests)
+   */
+  it("does not expose onVote when user is not authenticated", () => {
+    const mockMutate = vi.fn();
+    mockCreateVoteMutation.mockReturnValue({ mutate: mockMutate } as any);
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    // No vote buttons should be in the DOM for unauthenticated users
+    expect(screen.queryByTestId("upvote-track-dancing-queen")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("downvote-track-dancing-queen")).not.toBeInTheDocument();
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Scenario: On success, cache invalidation is triggered
+   */
+  it("invalidates vote.byFissaFromUser and fissa.byId on mutation success", () => {
+    const mockInvalidateVotes = vi.fn().mockResolvedValue(undefined);
+    const mockInvalidateFissa = vi.fn().mockResolvedValue(undefined);
+
+    vi.mocked(api.useUtils).mockReturnValue({
+      vote: { byFissaFromUser: { invalidate: mockInvalidateVotes } },
+      fissa: { byId: { invalidate: mockInvalidateFissa } },
+    } as any);
+
+    let capturedOnSuccess: ((data: any) => void) | undefined;
+    mockCreateVoteMutation.mockImplementation(({ onSuccess }: any) => {
+      capturedOnSuccess = onSuccess;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    // Simulate success callback
+    capturedOnSuccess?.({});
+
+    expect(mockInvalidateVotes).toHaveBeenCalledWith({ pin: "ABC123" });
+    expect(mockInvalidateFissa).toHaveBeenCalledWith("ABC123");
+  });
+});
+
+describe("/fissa/$pin — Vote error rollback and retry (Task #78)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockCreateVoteMutation = vi.mocked(api.vote.create.useMutation);
+
+  const activeFissaWithTracks = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [
+      { trackId: "sweet-child", hasBeenPlayed: false, durationMs: 356000, score: 0, totalScore: 5 },
+      { trackId: "macarena", hasBeenPlayed: false, durationMs: 230000, score: 0, totalScore: 3 },
+    ],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({ data: activeFissaWithTracks, isLoading: false, isError: false, error: null } as any);
+    mockVoteByFissaFromUser.mockReturnValue({ data: [] } as any);
+    mockUseSession.mockReturnValue({ data: { user: { id: "user1", name: "Guest" } }, isPending: false } as any);
+  });
+
+  /**
+   * Scenario: Network error rolls back optimistic update
+   *   When onError is called, error indicator and retry button appear
+   */
+  it("shows error indicator and retry button after vote failure", () => {
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "INTERNAL_SERVER_ERROR" } },
+        { trackId: "sweet-child", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    expect(screen.getByTestId("vote-error-sweet-child")).toBeInTheDocument();
+    expect(screen.getByTestId("retry-vote-sweet-child")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest retries after error and succeeds
+   *   Clicking retry button calls createVote again with the same vote
+   */
+  it("calls createVote mutate when retry button is clicked", () => {
+    const mockMutate = vi.fn();
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: mockMutate };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "INTERNAL_SERVER_ERROR" } },
+        { trackId: "sweet-child", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    fireEvent.click(screen.getByTestId("retry-vote-sweet-child"));
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ trackId: "sweet-child", vote: 1, pin: "1234" }));
+  });
+
+  /**
+   * Scenario: Voting on a removed track refreshes the Queue
+   *   When NOT_FOUND error, fissa.byId is invalidated
+   */
+  it("invalidates fissa.byId when vote returns NOT_FOUND error", () => {
+    const mockInvalidateFissa = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(api.useUtils).mockReturnValue({
+      vote: { byFissaFromUser: { invalidate: vi.fn().mockResolvedValue(undefined) } },
+      fissa: { byId: { invalidate: mockInvalidateFissa } },
+    } as any);
+
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "macarena", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.(
+        { data: { code: "NOT_FOUND" } },
+        { trackId: "macarena", vote: 1, pin: "1234" },
+        ctx,
+      );
+    });
+
+    expect(mockInvalidateFissa).toHaveBeenCalledWith("1234");
+  });
+
+  /**
+   * Error indicator clears after successful vote
+   */
+  it("removes error indicator after successful vote", () => {
+    let capturedOnError: ((err: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnSuccess: ((data: unknown, vars: { trackId: string; vote: number; pin: string }, ctx: unknown) => void) | undefined;
+    let capturedOnMutate: ((vars: { trackId: string; vote: number; pin: string }) => unknown) | undefined;
+    mockCreateVoteMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      capturedOnSuccess = callbacks?.onSuccess;
+      capturedOnMutate = callbacks?.onMutate;
+      return { mutate: vi.fn() };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    const ctx = capturedOnMutate?.({ trackId: "sweet-child", vote: 1, pin: "1234" });
+    act(() => {
+      capturedOnError?.({ data: { code: "INTERNAL_SERVER_ERROR" } }, { trackId: "sweet-child", vote: 1, pin: "1234" }, ctx);
+    });
+    expect(screen.getByTestId("vote-error-sweet-child")).toBeInTheDocument();
+
+    act(() => {
+      capturedOnSuccess?.({}, { trackId: "sweet-child", vote: 1, pin: "1234" }, ctx);
+    });
+    expect(screen.queryByTestId("vote-error-sweet-child")).not.toBeInTheDocument();
+  });
+});
+
+describe("/fissa/$pin — Add Track sheet entry point (Task #70)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+  });
+
+  /**
+   * Scenario: Authenticated guest sees the Add Track entry point
+   *   Given I am a signed-in Party Guest on the Fissa page
+   *   When the Fissa page loads
+   *   Then I see an "Add Track" button
+   */
+  it("shows the Add Track button when the visitor is authenticated", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.getByTestId("add-track-btn")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest opens the Add Track sheet
+   *   Given I am a signed-in Party Guest on the Fissa page
+   *   When I click the Add Track button
+   *   Then the Add Track sheet opens
+   */
+  it("opens the Add Track sheet when the Add Track button is clicked", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Guest closes the Add Track sheet
+   *   Given the Add Track sheet is open
+   *   When I click the close button
+   *   Then the sheet is dismissed
+   */
+  it("closes the Add Track sheet when the close button is clicked", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("add-track-sheet-close"));
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Add Track sheet is not visible on initial load
+   *   The sheet must be closed by default
+   */
+  it("does not show the Add Track sheet on initial load", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test User" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Unauthenticated visitor must not see the Add Track sheet trigger
+   */
+  it("does not show the Add Track button for unauthenticated visitors", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    expect(screen.queryByTestId("add-track-btn")).not.toBeInTheDocument();
+  });
+});
+
+describe("/fissa/$pin — Wire track.addTracks mutation (Task #75)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockAddTracksMutation = vi.mocked(api.track.addTracks.useMutation);
+
+  const activeFissaData = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockAddTracksMutation.mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test Guest" } },
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Successfully adding a track
+   *   When I select a track result
+   *   Then track.addTracks is called with the selected track mapped to { trackId, durationMs }
+   */
+  it("calls track.addTracks mutation when a track is selected from the sheet", () => {
+    const mockMutate = vi.fn();
+    mockAddTracksMutation.mockReturnValue({ mutate: mockMutate, isPending: false } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    // Simulate selecting a track via the mock AddTrackSheet
+    fireEvent.click(screen.getByTestId("simulate-select-track"));
+
+    expect(mockMutate).toHaveBeenCalledOnce();
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pin: "1234",
+        tracks: expect.arrayContaining([
+          expect.objectContaining({ trackId: "4oLU6hMCjMI75M1A2tKUQ2", durationMs: 180000 }),
+        ]),
+      }),
+    );
+  });
+
+  /**
+   * Scenario: Loading state while mutation is in-flight
+   *   Given a track addition is in flight
+   *   Then a loading state is shown (isAdding=true passed to sheet)
+   */
+  it("passes isAdding=true to AddTrackSheet while mutation is pending", () => {
+    mockAddTracksMutation.mockReturnValue({ mutate: vi.fn(), isPending: true } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    expect(screen.getByTestId("add-track-loading")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Preventing double-submission
+   *   Given a track addition is in flight
+   *   When I tap another result
+   *   Then no second mutation is fired
+   */
+  it("does not fire a second mutation while isPending is true", () => {
+    const mockMutate = vi.fn();
+    mockAddTracksMutation.mockReturnValue({ mutate: mockMutate, isPending: true } as any);
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Try to select a track while mutation is in-flight
+    fireEvent.click(screen.getByTestId("simulate-select-track"));
+
+    // mutate should NOT have been called
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Scenario: Successfully adding a track — sheet closes
+   *   Given mutation succeeds via onSuccess callback
+   *   Then the sheet is closed
+   */
+  it("closes the sheet on mutation success", () => {
+    let capturedOnSuccess: (() => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnSuccess = callbacks?.onSuccess;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    // Simulate success (React state update needs act)
+    act(() => {
+      capturedOnSuccess?.();
+    });
+
+    expect(screen.queryByTestId("add-track-sheet")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Successfully adding a track — confirmation toast shown
+   *   Given mutation succeeds
+   *   Then a success toast is shown
+   */
+  it("shows a success toast when track is added successfully", () => {
+    let capturedOnSuccess: (() => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnSuccess = callbacks?.onSuccess;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate success
+    act(() => {
+      capturedOnSuccess?.();
+    });
+
+    expect(vi.mocked(toast.success)).toHaveBeenCalledOnce();
+  });
+});
+
+describe("/fissa/$pin — Duplicate track inline feedback (Task #77)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+  const mockAddTracksMutation = vi.mocked(api.track.addTracks.useMutation);
+
+  const activeFissaData = {
+    pin: "1234",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    mockAddTracksMutation.mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "user1", name: "Test Guest" } },
+      isPending: false,
+    } as any);
+  });
+
+  /**
+   * Scenario: Adding a track that is already in the Queue
+   *   Given the Add Track sheet is open
+   *   When track.addTracks returns CONFLICT error
+   *   Then I see an inline message "This track is already in the Queue"
+   *   And the sheet remains open
+   */
+  it("shows inline duplicate feedback and keeps sheet open when CONFLICT error occurs", () => {
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+
+    // Simulate CONFLICT error from tRPC
+    act(() => {
+      capturedOnError?.({ data: { code: "CONFLICT" } });
+    });
+
+    // Sheet must remain open
+    expect(screen.getByTestId("add-track-sheet")).toBeInTheDocument();
+    // Inline duplicate feedback must be shown (passed via duplicateTrack prop)
+    expect(screen.getByTestId("track-duplicate-error")).toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Non-CONFLICT error does not set duplicate feedback
+   *   When track.addTracks returns a non-CONFLICT error
+   *   Then no duplicate feedback is shown
+   */
+  it("does not show duplicate feedback for non-CONFLICT errors", () => {
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate a generic (non-CONFLICT) error
+    act(() => {
+      capturedOnError?.({ data: { code: "INTERNAL_SERVER_ERROR" } });
+    });
+
+    // Duplicate feedback must NOT be shown
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+  });
+
+  /**
+   * Scenario: Selecting a different track after duplicate feedback
+   *   Given duplicate feedback is shown
+   *   When I select a different track
+   *   Then the duplicate feedback is cleared
+   *   And the new track is submitted for addition
+   */
+  it("clears duplicate feedback when a new track is selected", () => {
+    const mockMutate = vi.fn();
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: mockMutate, isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate CONFLICT error to show duplicate feedback
+    act(() => {
+      capturedOnError?.({ data: { code: "CONFLICT" } });
+    });
+
+    expect(screen.getByTestId("track-duplicate-error")).toBeInTheDocument();
+
+    // Select a different track — duplicate feedback should clear
+    act(() => {
+      fireEvent.click(screen.getByTestId("simulate-select-track"));
+    });
+
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+    // New mutation was fired
+    expect(mockMutate).toHaveBeenCalledOnce();
+  });
+
+  /**
+   * Scenario: Clearing duplicate feedback on new search
+   *   Given duplicate feedback is shown
+   *   When I type in the search field (onClearDuplicate called)
+   *   Then the duplicate feedback message disappears
+   */
+  it("clears duplicate feedback when onClearDuplicate is triggered", () => {
+    let capturedOnError: ((err: unknown) => void) | undefined;
+    mockAddTracksMutation.mockImplementation((callbacks: any) => {
+      capturedOnError = callbacks?.onError;
+      return { mutate: vi.fn(), isPending: false };
+    });
+
+    render(<QueuePage pin="1234" />);
+
+    // Open the sheet
+    fireEvent.click(screen.getByTestId("add-track-btn"));
+
+    // Simulate CONFLICT error
+    act(() => {
+      capturedOnError?.({ data: { code: "CONFLICT" } });
+    });
+
+    expect(screen.getByTestId("track-duplicate-error")).toBeInTheDocument();
+
+    // Trigger onClearDuplicate (simulates typing in search)
+    act(() => {
+      fireEvent.click(screen.getByTestId("simulate-clear-duplicate"));
+    });
+
+    expect(screen.queryByTestId("track-duplicate-error")).not.toBeInTheDocument();
+  });
+});
+
+describe("/fissa/$pin — Display PIN with copy/share for Host (Task #86)", () => {
+  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseSession = vi.mocked(authClient.useSession);
+
+  const activeFissaData = {
+    pin: "ABC123",
+    userId: "host-user-id",
+    currentlyPlayingId: null,
+    tracks: [],
+  };
+
+  beforeEach(() => {
+    mockUseQuery.mockReturnValue({
+      data: activeFissaData,
+      isLoading: false,
+      isError: false,
+      error: null,
+    } as any);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(navigator, "share", {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  it("renders the host-pin-widget when the current user is the host", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("host-pin-widget")).toBeInTheDocument();
+    expect(screen.getByTestId("host-pin-display")).toHaveTextContent("ABC123");
+  });
+
+  it("does not render the host-pin-widget when the current user is a guest", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "guest-user-id", name: "Guest" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("does not render the host-pin-widget when the visitor is unauthenticated", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: false } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("does not render the host-pin-widget while session is pending", () => {
+    mockUseSession.mockReturnValue({ data: null, isPending: true } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("host-pin-widget")).not.toBeInTheDocument();
+  });
+
+  it("copies the PIN to clipboard when the Copy PIN button is clicked", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("ABC123");
+  });
+
+  it("shows a confirmation message after the PIN is copied", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(screen.getByTestId("copy-pin-confirmation")).toBeInTheDocument();
+  });
+
+  it("does not render the share button when Web Share API is unavailable", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.queryByTestId("share-pin-btn")).not.toBeInTheDocument();
+  });
+
+  it("renders the share button when Web Share API is available", () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+    Object.defineProperty(navigator, "share", {
+      value: vi.fn().mockResolvedValue(undefined),
+      writable: true,
+      configurable: true,
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    expect(screen.getByTestId("share-pin-btn")).toBeInTheDocument();
+  });
+
+  it("shows a friendly error when clipboard API is blocked", async () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { id: "host-user-id", name: "Host" } },
+      isPending: false,
+    } as any);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockRejectedValue(new Error("NotAllowedError")) },
+      writable: true,
+      configurable: true,
+    });
+
+    render(<QueuePage pin="ABC123" />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("copy-pin-btn"));
+    });
+
+    expect(screen.getByTestId("copy-pin-error")).toBeInTheDocument();
   });
 });

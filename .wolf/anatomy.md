@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T07:52:40.808Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T19:36:22.977Z
 > Files: 507 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -293,8 +293,8 @@
 
 ## apps/web/src/routes/fissa/
 
-- `$pin.test.tsx` — Tests for /fissa/$pin page (Task #57) (~7261 tok)
-- `$pin.tsx` — Route — uses useQuery, useParams (~949 tok)
+- `$pin.test.tsx` — Tests for /fissa/$pin page (Task #57, #58) (~21439 tok)
+- `$pin.tsx` — Route (~2379 tok)
 
 ## apps/web/src/styles/
 

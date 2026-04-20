@@ -289,6 +289,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-18T20:40:49.419Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-04-19T19:33:12.858Z",
+      "error_message": "Missing await",
+      "file": "apps/web/src/routes/fissa/$pin.test.tsx",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T19:33:12.858Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-04-19T19:33:53.632Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "apps/web/src/routes/fissa/$pin.tsx",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T19:33:53.632Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-04-19T19:34:00.513Z",
+      "error_message": "Null/undefined access in ",
+      "file": "apps/web/src/routes/fissa/$pin.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T19:34:00.513Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-04-19T19:36:22.994Z",
+      "error_message": "Null/undefined access in ",
+      "file": "apps/web/src/routes/fissa/$pin.test.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T19:36:22.994Z"
     }
   ],
   "bugs_session_2026_04_10": [

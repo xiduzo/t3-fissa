@@ -1,9 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { type FC } from "react";
+import { type FC, useCallback, useState } from "react";
+import { AddTrackSheet, type SearchTrack } from "~/components/AddTrackSheet";
 import { CurrentlyPlayingTrack } from "~/components/CurrentlyPlayingTrack";
 import { Layout } from "~/components/Layout";
 import { QueueTrackList } from "~/components/QueueTrackList";
 import { SpotifySignInButton } from "~/components/SpotifySignInButton";
+import { toast } from "~/components/Toast";
 import { authClient } from "~/lib/auth-client";
 import { api } from "~/utils/api";
 
@@ -14,21 +16,194 @@ export const Route = createFileRoute("/fissa/$pin")({
   component: JoinFissa,
 });
 
+
+interface HostPinWidgetProps {
+  pin: string;
+}
+
+const HostPinWidget: FC<HostPinWidgetProps> = ({ pin }) => {
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const hasShareApi = typeof navigator !== "undefined" && typeof navigator.share === "function";
+
+  const handleCopy = useCallback(async () => {
+    setCopyError(false);
+    try {
+      await navigator.clipboard.writeText(pin);
+      setCopied(true);
+    } catch {
+      setCopyError(true);
+    }
+  }, [pin]);
+
+  const handleShare = useCallback(async () => {
+    try {
+      await navigator.share({ title: "Join my Fissa!", text: `Use PIN: ${pin}`, url: window.location.href });
+    } catch {
+      // share was cancelled or failed — ignore
+    }
+  }, [pin]);
+
+  return (
+    <div data-testid="host-pin-widget" className="mx-4 mb-4 rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
+      <p className="mb-1 text-sm font-medium text-muted-foreground">Your Fissa PIN</p>
+      <p data-testid="host-pin-display" className="mb-3 text-4xl font-bold tracking-[0.3em]">{pin}</p>
+      <div className="flex justify-center gap-2">
+        <button
+          data-testid="copy-pin-btn"
+          type="button"
+          onClick={handleCopy}
+          className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          Copy PIN
+        </button>
+        {hasShareApi && (
+          <button
+            data-testid="share-pin-btn"
+            type="button"
+            onClick={handleShare}
+            className="rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition-opacity hover:opacity-90"
+          >
+            Share
+          </button>
+        )}
+      </div>
+      {copied && (
+        <p data-testid="copy-pin-confirmation" className="mt-2 text-sm text-green-600">
+          PIN copied to clipboard!
+        </p>
+      )}
+      {copyError && (
+        <p data-testid="copy-pin-error" className="mt-2 text-sm text-destructive">
+          Could not copy — please copy the PIN manually: {pin}
+        </p>
+      )}
+    </div>
+  );
+};
+
 interface QueuePageProps {
   pin: string;
   error?: string;
 }
 
 export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [duplicateTrack, setDuplicateTrack] = useState(false);
+  const [optimisticVotes, setOptimisticVotes] = useState<Map<string, 1 | -1>>(new Map());
+  const [voteErrors, setVoteErrors] = useState<Map<string, { vote: 1 | -1 }>>(new Map());
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const navigate = useNavigate({ from: "/fissa/$pin" });
   const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
+  const utils = api.useUtils();
+
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
   });
+
+  const { data: votesData } = api.vote.byFissaFromUser.useQuery(
+    { pin },
+    { enabled: !!pin && !!session?.user },
+  );
+
+  // Merge server votes with optimistic updates (optimistic takes precedence)
+  const userVotes = new Map(
+    (votesData ?? []).map((v) => [v.trackId, v.score as 1 | -1]),
+  );
+  for (const [trackId, score] of optimisticVotes) {
+    userVotes.set(trackId, score);
+  }
+
+  const { mutate: createVote } = api.vote.create.useMutation({
+    onMutate: ({ trackId, vote }) => {
+      const previousVote = optimisticVotes.get(trackId) ?? null;
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        next.set(trackId, vote as 1 | -1);
+        return next;
+      });
+      return { previousVote, trackId };
+    },
+    onSuccess: (_data: unknown, vars?: { trackId?: string }) => {
+      if (vars?.trackId) {
+        setVoteErrors((prev) => {
+          const next = new Map(prev);
+          next.delete(vars.trackId!);
+          return next;
+        });
+      }
+      void utils.vote.byFissaFromUser.invalidate({ pin });
+      void utils.fissa.byId.invalidate(pin);
+    },
+    onError: (err, { trackId, vote }, context) => {
+      setOptimisticVotes((prev) => {
+        const next = new Map(prev);
+        if (context?.previousVote != null) {
+          next.set(trackId, context.previousVote as 1 | -1);
+        } else {
+          next.delete(trackId);
+        }
+        return next;
+      });
+      setVoteErrors((prev) => new Map(prev).set(trackId, { vote: vote as 1 | -1 }));
+      const tRPCError = err as { data?: { code?: string } };
+      if (tRPCError?.data?.code === "NOT_FOUND") {
+        void utils.fissa.byId.invalidate(pin);
+      }
+    },
+  });
+
+  const handleVote = useCallback(
+    (trackId: string, vote: 1 | -1) => {
+      createVote({ pin, trackId, vote });
+    },
+    [createVote, pin],
+  );
+
+  const handleRetryVote = useCallback(
+    (trackId: string, vote: 1 | -1) => {
+      setVoteErrors((prev) => {
+        const next = new Map(prev);
+        next.delete(trackId);
+        return next;
+      });
+      createVote({ pin, trackId, vote });
+    },
+    [createVote, pin],
+  );
+
+  const { mutate: addTracks, isPending: isAdding } = api.track.addTracks.useMutation({
+    onSuccess: () => {
+      setDuplicateTrack(false);
+      setIsSheetOpen(false);
+      toast.success({ message: "Track added to queue!" });
+    },
+    onError: (err) => {
+      const tRPCError = err as { data?: { code?: string } };
+      if (tRPCError?.data?.code === "CONFLICT") {
+        // Duplicate track — show inline feedback, keep sheet open
+        setDuplicateTrack(true);
+        return;
+      }
+      void navigate({ to: "/fissa/$pin", params: { pin }, search: { error: "add_track_failed" } });
+    },
+  });
+
+  const handleSelect = useCallback(
+    (track: SearchTrack) => {
+      if (isAdding) return;
+      setDuplicateTrack(false);
+      addTracks({ pin, tracks: [{ trackId: track.id, durationMs: track.durationMs }] });
+    },
+    [addTracks, isAdding, pin],
+  );
+
+  const handleClearDuplicate = useCallback(() => {
+    setDuplicateTrack(false);
+  }, []);
 
   if (isLoading) {
     return (
@@ -82,6 +257,8 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
     (t) => !t.hasBeenPlayed && t.trackId !== data?.currentlyPlayingId,
   ) ?? [];
 
+  const isHost = !sessionPending && !!session?.user && !!data?.userId && session.user.id === data.userId;
+
   return (
     <Layout>
       <div className="flex min-h-screen flex-col">
@@ -89,6 +266,9 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
         <header className="px-4 py-6 text-center">
           <h1 className="text-2xl font-bold tracking-widest">{pin}</h1>
         </header>
+
+        {/* Host-only PIN widget */}
+        {isHost && <HostPinWidget pin={pin} />}
 
         {/* Currently-playing track slot */}
         <section data-testid="queue-now-playing" className="px-4 py-4">
@@ -102,7 +282,15 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
               No upcoming tracks
             </p>
           ) : (
-            <QueueTrackList tracks={upcomingTracks} />
+            <QueueTrackList
+              tracks={upcomingTracks}
+              isAuthenticated={!!session?.user}
+              currentlyPlayingId={data?.currentlyPlayingId ?? undefined}
+              userVotes={session?.user ? userVotes : undefined}
+              onVote={session?.user ? handleVote : undefined}
+              voteErrors={voteErrors}
+              onRetryVote={handleRetryVote}
+            />
           )}
         </section>
 
@@ -140,13 +328,27 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
         {/* Queue interaction controls — visible only for authenticated guests */}
         {session?.user && (
           <section data-testid="queue-interaction-controls" className="px-4 py-4">
-            <button data-testid="add-track-btn" className="w-full rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90" type="button">
+            <button
+              data-testid="add-track-btn"
+              className="w-full rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              type="button"
+              onClick={() => setIsSheetOpen(true)}
+            >
               Add Track
             </button>
-            <div data-testid="vote-controls">{/* Vote controls — Feature #47 */}</div>
+            <div data-testid="vote-controls">{/* Vote controls wired via QueueTrackList */}</div>
           </section>
         )}
       </div>
+      <AddTrackSheet
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+        pin={pin}
+        onSelect={handleSelect}
+        isAdding={isAdding}
+        duplicateTrack={duplicateTrack}
+        onClearDuplicate={handleClearDuplicate}
+      />
     </Layout>
   );
 };
