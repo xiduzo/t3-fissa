@@ -353,6 +353,86 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T19:36:22.994Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-04-20T08:04:55.739Z",
+      "error_message": "Wrong reference: react should be routeFileIgnorePattern",
+      "file": "apps/web/vite.config.ts",
+      "root_cause": "Used \"react\" instead of \"routeFileIgnorePattern\"",
+      "fix": "Changed react → routeFileIgnorePattern",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-20T08:04:55.739Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-04-20T08:14:49.839Z",
+      "error_message": "Significant refactor of ",
+      "file": "apps/web/src/components/Hero.tsx",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 13→4 lines (9 removed) | Also: const { data: session } = authClient.useSession(); const navigate = useNavigate()",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-20T08:14:58.274Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-04-20T08:15:08.313Z",
+      "error_message": "Null/undefined access in ",
+      "file": "apps/web/src/components/JoinAFissa.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-20T08:15:08.313Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-04-20T08:35:13.496Z",
+      "error_message": "Missing guard clause",
+      "file": "packages/api/src/infrastructure/SpotifyService.ts",
+      "root_cause": "No early return/throw for edge case: body.items.length < 50",
+      "fix": "Added guard clause: if (body.items.length < 50)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-20T08:35:13.496Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-04-20T08:47:38.667Z",
+      "error_message": "Null/undefined access in ",
+      "file": "apps/web/src/components/Hero.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-20T08:47:38.667Z"
     }
   ],
   "bugs_session_2026_04_10": [

@@ -64,6 +64,24 @@ vi.mock("~/components/PhoneFrame", () => ({
   PhoneFrame: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+vi.mock("~/utils/api", () => ({
+  api: {
+    fissa: {
+      create: { useMutation: () => ({ mutateAsync: vi.fn(), isPending: false }) },
+    },
+    spotify: {
+      surpriseMe: { useMutation: () => ({ mutateAsync: vi.fn(), isPending: false }) },
+      getMyPlaylists: { useQuery: () => ({ data: [], isLoading: false }) },
+      getPlaylistTracks: { useQuery: () => ({ data: [], isLoading: false }) },
+      searchTracks: { useQuery: () => ({ data: undefined, isLoading: false }) },
+    },
+  },
+}));
+
+vi.mock("~/hooks/useTrackSearch", () => ({
+  useTrackSearch: () => ({ query: "", setQuery: vi.fn(), results: [], isLoading: false }),
+}));
+
 // ── Imports after mocks ────────────────────────────────────────────────────────
 
 import { authClient } from "~/lib/auth-client";

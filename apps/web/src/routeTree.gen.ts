@@ -31,32 +31,32 @@ const FissaPinRoute = FissaPinRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/fissa/create': typeof FissaCreateRoute
   '/fissa/$pin': typeof FissaPinRoute
+  '/fissa/create': typeof FissaCreateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/fissa/create': typeof FissaCreateRoute
   '/fissa/$pin': typeof FissaPinRoute
+  '/fissa/create': typeof FissaCreateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/fissa/create': typeof FissaCreateRoute
   '/fissa/$pin': typeof FissaPinRoute
+  '/fissa/create': typeof FissaCreateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/fissa/create' | '/fissa/$pin'
+  fullPaths: '/' | '/fissa/$pin' | '/fissa/create'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/fissa/create' | '/fissa/$pin'
-  id: '__root__' | '/' | '/fissa/create' | '/fissa/$pin'
+  to: '/' | '/fissa/$pin' | '/fissa/create'
+  id: '__root__' | '/' | '/fissa/$pin' | '/fissa/create'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  FissaCreateRoute: typeof FissaCreateRoute
   FissaPinRoute: typeof FissaPinRoute
+  FissaCreateRoute: typeof FissaCreateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -87,8 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  FissaCreateRoute: FissaCreateRoute,
   FissaPinRoute: FissaPinRoute,
+  FissaCreateRoute: FissaCreateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

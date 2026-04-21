@@ -1,12 +1,161 @@
 {
-  "session_id": "session-2026-04-20-0922",
-  "started": "2026-04-20T07:22:19.369Z",
-  "files_read": {},
-  "files_written": [],
-  "edit_counts": {},
-  "anatomy_hits": 0,
-  "anatomy_misses": 0,
-  "repeated_reads_warned": 0,
+  "session_id": "session-2026-04-20-1026",
+  "started": "2026-04-20T08:26:43.770Z",
+  "files_read": {
+    "/Users/sander/personal/t3-fissa/apps/web/src/components/Hero.tsx": {
+      "count": 1,
+      "tokens": 930,
+      "first_read": "2026-04-20T08:27:16.141Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/create.tsx": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-04-20T08:27:21.254Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/expo/app/host/index.tsx": {
+      "count": 1,
+      "tokens": 590,
+      "first_read": "2026-04-20T08:30:22.063Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/expo/app/host/fromPlaylist.tsx": {
+      "count": 1,
+      "tokens": 628,
+      "first_read": "2026-04-20T08:30:22.896Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/expo/app/host/fromTracks.tsx": {
+      "count": 1,
+      "tokens": 158,
+      "first_read": "2026-04-20T08:30:23.006Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/utils/api.ts": {
+      "count": 1,
+      "tokens": 263,
+      "first_read": "2026-04-20T08:30:28.634Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/router/fissa.ts": {
+      "count": 1,
+      "tokens": 501,
+      "first_read": "2026-04-20T08:30:28.979Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/router/constants.ts": {
+      "count": 1,
+      "tokens": 72,
+      "first_read": "2026-04-20T08:30:32.549Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/$pin.tsx": {
+      "count": 2,
+      "tokens": 2379,
+      "first_read": "2026-04-20T08:30:33.134Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/expo/src/hooks/useSpotifyQuery.ts": {
+      "count": 1,
+      "tokens": 907,
+      "first_read": "2026-04-20T08:30:38.069Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/hooks/useTrackSearch.ts": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-04-20T08:30:44.223Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/components/AddTrackSheet.tsx": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-04-20T08:30:48.647Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/lib/auth-client.ts": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-04-20T08:30:48.888Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/root.ts": {
+      "count": 1,
+      "tokens": 124,
+      "first_read": "2026-04-20T08:30:55.040Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/router/spotify.ts": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-04-20T08:31:00.938Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/main.tsx": {
+      "count": 1,
+      "tokens": 162,
+      "first_read": "2026-04-20T08:31:09.332Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts": {
+      "count": 1,
+      "tokens": 1126,
+      "first_read": "2026-04-20T08:31:20.623Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/interfaces/ISpotifyService.ts": {
+      "count": 1,
+      "tokens": 224,
+      "first_read": "2026-04-20T08:31:37.820Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/create.test.tsx": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-04-20T08:31:59.521Z"
+    },
+    "/Users/sander/personal/t3-fissa/packages/api/src/service/FissaService.ts": {
+      "count": 2,
+      "tokens": 2765,
+      "first_read": "2026-04-20T08:32:32.465Z"
+    },
+    "/Users/sander/personal/t3-fissa/apps/web/src/routes/__root.tsx": {
+      "count": 1,
+      "tokens": 218,
+      "first_read": "2026-04-20T08:33:34.785Z"
+    }
+  },
+  "files_written": [
+    {
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/infrastructure/SpotifyService.ts",
+      "action": "edit",
+      "tokens": 841,
+      "at": "2026-04-20T08:35:13.495Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/packages/api/src/router/spotify.ts",
+      "action": "edit",
+      "tokens": 558,
+      "at": "2026-04-20T08:35:22.416Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/create.tsx",
+      "action": "create",
+      "tokens": 3663,
+      "at": "2026-04-20T08:35:59.978Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/apps/web/src/routes/fissa/create.test.tsx",
+      "action": "edit",
+      "tokens": 222,
+      "at": "2026-04-20T08:36:06.901Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/Hero.tsx",
+      "action": "edit",
+      "tokens": 113,
+      "at": "2026-04-20T08:47:25.598Z"
+    },
+    {
+      "file": "/Users/sander/personal/t3-fissa/apps/web/src/components/Hero.tsx",
+      "action": "edit",
+      "tokens": 469,
+      "at": "2026-04-20T08:47:38.666Z"
+    }
+  ],
+  "edit_counts": {
+    "packages/api/src/infrastructure/SpotifyService.ts": 1,
+    "packages/api/src/router/spotify.ts": 1,
+    "apps/web/src/routes/fissa/create.tsx": 1,
+    "apps/web/src/routes/fissa/create.test.tsx": 1,
+    "apps/web/src/components/Hero.tsx": 2
+  },
+  "anatomy_hits": 15,
+  "anatomy_misses": 6,
+  "repeated_reads_warned": 2,
   "cerebrum_warnings": 0,
-  "stop_count": 0
+  "stop_count": 2
 }

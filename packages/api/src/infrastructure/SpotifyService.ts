@@ -136,4 +136,83 @@ export class SpotifyService implements ISpotifyService {
       albumArt: track.album.images[0]?.url ?? "",
     }));
   };
+
+  getMyPlaylists = async (
+    accessToken: string,
+  ): Promise<Array<{ id: string; name: string; imageUrl: string; trackCount: number }>> => {
+    const client = this.createClient(accessToken);
+    const playlists: SpotifyApi.PlaylistObjectSimplified[] = [];
+    let offset = 0;
+
+    while (true) {
+      const { body } = await this.withRetry(() =>
+        client.getUserPlaylists({ limit: 50, offset }),
+      );
+      playlists.push(...body.items);
+      if (body.items.length < 50) break;
+      offset += 50;
+    }
+
+    return playlists.map((p) => ({
+      id: p.id,
+      name: p.name,
+      imageUrl: p.images[0]?.url ?? "",
+      trackCount: p.tracks.total,
+    }));
+  };
+
+  getPlaylistTracks = async (
+    accessToken: string,
+    playlistId: string,
+  ): Promise<Array<{ trackId: string; durationMs: number; name: string; artists: string[]; albumArt: string }>> => {
+    const client = this.createClient(accessToken);
+    const result: Array<{ trackId: string; durationMs: number; name: string; artists: string[]; albumArt: string }> = [];
+    let offset = 0;
+
+    while (true) {
+      const { body } = await this.withRetry(() =>
+        client.getPlaylistTracks(playlistId, { limit: 100, offset }),
+      );
+
+      for (const item of body.items) {
+        const track = item.track as SpotifyApi.TrackObjectFull | null;
+        if (!track?.id || !("duration_ms" in track)) continue;
+        result.push({
+          trackId: track.id,
+          durationMs: track.duration_ms,
+          name: track.name,
+          artists: track.artists.map((a) => a.name),
+          albumArt: track.album.images[0]?.url ?? "",
+        });
+      }
+
+      if (body.items.length < 100) break;
+      offset += 100;
+    }
+
+    return result;
+  };
+
+  surpriseMeTracks = async (
+    accessToken: string,
+  ): Promise<Array<{ trackId: string; durationMs: number }>> => {
+    const client = this.createClient(accessToken);
+    const { body: topTracks } = await this.withRetry(() =>
+      client.getMyTopTracks({ limit: 20 }),
+    );
+
+    const seedIds = topTracks.items
+      .map((t) => t.id)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 5);
+
+    const { body: recs } = await this.withRetry(() =>
+      client.getRecommendations({ seed_tracks: seedIds, limit: 10 }),
+    );
+
+    return recs.tracks.map((t) => ({
+      trackId: t.id,
+      durationMs: t.duration_ms,
+    }));
+  };
 }

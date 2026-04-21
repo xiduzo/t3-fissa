@@ -1,7 +1,7 @@
 import { useId } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { useTheme } from '~/providers/ThemeProvider'
 import { authClient } from '~/lib/auth-client'
+import { useTheme } from '~/providers/ThemeProvider'
 import { AppDemo } from './AppDemo'
 import { AppStoreLink } from './AppStoreLink'
 import { Container } from './Container'
@@ -61,10 +61,7 @@ export function Hero() {
     if (session?.user) {
       void navigate({ to: '/fissa/create' })
     } else {
-      void authClient.signIn.social({
-        provider: 'spotify',
-        callbackURL: '/fissa/create',
-      })
+      void authClient.signIn.social({ provider: 'spotify', callbackURL: '/fissa/create' })
     }
   }
 
@@ -82,10 +79,10 @@ export function Hero() {
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4">
               <button
                 data-testid="create-fissa-btn"
-                onClick={handleCreateFissa}
-                className="rounded-full px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80"
-                style={{ backgroundColor: theme[500] }}
                 type="button"
+                onClick={handleCreateFissa}
+                className="rounded-full px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#1DB954' }}
               >
                 Create a Fissa
               </button>
