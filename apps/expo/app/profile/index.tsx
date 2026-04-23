@@ -1,6 +1,6 @@
 import { format, formatNumber } from "@fissa/utils"
 import { FlashList } from "@shopify/flash-list"
-import { Stack, useRouter } from "expo-router"
+import { Stack } from "expo-router"
 import { useCallback, useState } from "react"
 import { Text, TouchableHighlight, View } from "react-native"
 import { BADGE } from "../../../../packages/db/schema"
@@ -10,13 +10,11 @@ import { api } from "../../src/utils"
 
 const Index = () => {
   const { user, signOut } = useAuth()
-  const { replace } = useRouter()
   const { data, isLoading: isInitialLoading } = api.auth.getUserStats.useQuery()
 
   const signOutUser = useCallback(() => {
     signOut()
-    replace("")
-  }, [signOut, replace])
+  }, [signOut])
 
   return (
     <PageTemplate fullScreen className="p-6 pb-4">

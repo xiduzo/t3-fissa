@@ -45,7 +45,7 @@ const SpotifyContext = createContext({
 export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const spotify = useSpotify();
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
-  const { replace } = useRouter();
+  const { dismissAll, replace } = useRouter();
   const { getState } = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -106,16 +106,18 @@ export const SpotifyProvider: FC<PropsWithChildren> = ({ children }) => {
       const state = getState();
 
       if (state?.routes[0]?.name === "index") return;
-      replace("");
+      dismissAll();
+      replace("/");
     }
-  }, [replace, getState, getRefreshToken, saveTokens, refresh]);
+  }, [dismissAll, replace, getState, getRefreshToken, saveTokens, refresh]);
 
   const signOut = useCallback(async () => {
     await saveSessionToken("");
     await saveRefreshToken("");
     setUser(undefined);
-    replace("");
-  }, [saveRefreshToken, saveSessionToken, replace]);
+    dismissAll();
+    replace("/");
+  }, [saveRefreshToken, saveSessionToken, dismissAll, replace]);
 
   const signIn = useCallback(() => {
     setIsLoading(true);

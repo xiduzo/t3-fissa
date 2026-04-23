@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ConfigContext, ExpoConfig } from "@expo/config";
 
-const version = "4.0.0"; // EAS VERSION
+const version = "4.0.1"; // EAS VERSION
 // Should be bumped every time a new build is made
-const buildNumber = "4"; // EAS VERSION
+const buildNumber = "1"; // EAS VERSION
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "fissa",
@@ -16,9 +16,9 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   splash: {
     image: "./assets/splash.png",
     resizeMode: "cover",
-    backgroundColor: "#000",
+    backgroundColor: "#050505",
   },
-  backgroundColor: "#000",
+  backgroundColor: "#050505",
   updates: {
     fallbackToCacheTimeout: 10 * 1000,
     url: "https://u.expo.dev/89f5d2ef-e72d-4e2c-a88c-3fe56e30e601",
@@ -43,7 +43,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     package: "com.fissa",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
-      backgroundColor: "#000",
+      backgroundColor: "#050505",
     },
   },
   extra: {
@@ -56,6 +56,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "./expo-plugins/with-modify-gradle.js",
+    "expo-dev-client",
     [
       "@sentry/react-native",
       {
