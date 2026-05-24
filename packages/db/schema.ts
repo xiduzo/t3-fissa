@@ -187,7 +187,10 @@ export const badges = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     lastUpdated: timestamp("last_updated").defaultNow().notNull(),
     name: badgeEnum("name").notNull(),
-    score: smallint("score").default(0).notNull(),
+    // `integer`, not `smallint`: POINTS_EARNED accumulates over a user's
+    // lifetime (e.g. -20 per skipped track) and can exceed smallint's
+    // ±32,767 range, overflowing and silently freezing the score.
+    score: integer("score").default(0).notNull(),
   },
   (t) => [unique().on(t.userId, t.name)],
 );

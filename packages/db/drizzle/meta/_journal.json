@@ -8,6 +8,20 @@
       "when": 1775835089654,
       "tag": "0000_initial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779664687790,
+      "tag": "0001_widen_badge_score",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779664900000,
+      "tag": "0002_reset_saturated_points",
+      "breakpoints": true
     }
   ]
 }

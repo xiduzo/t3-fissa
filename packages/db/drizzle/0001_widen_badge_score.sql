@@ -1,0 +1,1 @@
+ALTER TABLE "badges" ALTER COLUMN "score" SET DATA TYPE integer;
