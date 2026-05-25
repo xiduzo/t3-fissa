@@ -23,6 +23,7 @@ export type FissaDetailedForSync = {
   currentlyPlaying:
     | {
         trackId: string | undefined;
+        score: number;
         by: { userId: string } | undefined;
       }
     | undefined;

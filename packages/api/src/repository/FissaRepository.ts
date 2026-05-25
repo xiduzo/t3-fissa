@@ -41,7 +41,7 @@ export class FissaRepository implements IFissaRepository {
       columns: { pin: true, expectedEndTime: true },
       with: {
         currentlyPlaying: {
-          columns: { trackId: true },
+          columns: { trackId: true, score: true },
           with: {
             by: {
               columns: {},
@@ -79,6 +79,7 @@ export class FissaRepository implements IFissaRepository {
       currentlyPlaying: data.currentlyPlaying
         ? {
             trackId: data.currentlyPlaying.trackId,
+            score: data.currentlyPlaying.score,
             by: data.currentlyPlaying.by?.accounts[0],
           }
         : undefined,

@@ -216,18 +216,22 @@ export class FissaService {
     { pin }: Pick<Fissa, "pin">,
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
-    currentlyPlaying?: { trackId?: string; by?: { userId: string } },
+    currentlyPlaying?: { trackId?: string; score?: number; by?: { userId: string } },
   ): Promise<Date | null> => {
     const playing = this.spotifyService.playTrack(accessToken, trackId);
     const newExpectedEndTime = addMilliseconds(new Date(), durationMs);
 
     await this.db.transaction(async (tx) => {
       if (currentlyPlaying?.trackId) {
+        // Crowd-driven reward: the owner earns the track's net vote score
+        // (up minus down votes) accrued while it was queued/playing. A track
+        // nobody voted on pays 0; a well-liked one pays its score.
+        const award = currentlyPlaying.score ?? 0;
+
         await tx
           .update(tracks)
           .set({
             hasBeenPlayed: true,
-            totalScore: sql`${tracks.totalScore} + ${EarnedPoints.PlayedTrack}`,
             score: 0,
           })
           .where(and(eq(tracks.pin, pin), eq(tracks.trackId, currentlyPlaying.trackId)));
@@ -236,17 +240,17 @@ export class FissaService {
           .delete(votes)
           .where(and(eq(votes.pin, pin), eq(votes.trackId, currentlyPlaying.trackId)));
 
-        if (currentlyPlaying.by) {
+        if (currentlyPlaying.by && award !== 0) {
           await tx
             .update(usersInFissas)
-            .set({ points: sql`${usersInFissas.points} + ${EarnedPoints.PlayedTrack}` })
+            .set({ points: sql`${usersInFissas.points} + ${award}` })
             .where(
               and(
                 eq(usersInFissas.pin, pin),
                 eq(usersInFissas.userId, currentlyPlaying.by.userId),
               ),
             );
-          await this.badgeService.pointsEarned(currentlyPlaying.by.userId, EarnedPoints.PlayedTrack);
+          await this.badgeService.pointsEarned(currentlyPlaying.by.userId, award);
         }
       }
 
