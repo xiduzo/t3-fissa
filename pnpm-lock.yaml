@@ -393,6 +393,9 @@ importers:
       '@fissa/eslint-config':
         specifier: '*'
         version: link:../config/eslint
+      '@fissa/test':
+        specifier: '*'
+        version: link:../test
       '@types/spotify-web-api-node':
         specifier: 5.0.11
         version: 5.0.11

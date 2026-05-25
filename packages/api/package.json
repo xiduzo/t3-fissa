@@ -10,6 +10,7 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
+    "test": "vitest",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@fissa/eslint-config": "*",
+    "@fissa/test": "*",
     "@types/spotify-web-api-node": "5.0.11",
     "eslint": "8.57.0",
     "typescript": "~5.8.3"
