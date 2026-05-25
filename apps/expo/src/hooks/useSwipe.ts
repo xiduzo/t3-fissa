@@ -8,7 +8,7 @@ export const useSwipe = (
   const xRef = useRef(0);
   const yRef = useRef(0);
   const [isActive, setIsActive] = useState(false);
-  const cancelSwipeTimeout = useRef<NodeJS.Timeout>();
+  const cancelSwipeTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const touchStart = (event: GestureResponderEvent) => {
     clearTimeout(cancelSwipeTimeout.current);

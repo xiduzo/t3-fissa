@@ -94,24 +94,35 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
   const [voteErrors, setVoteErrors] = useState<Map<string, { vote: 1 | -1 }>>(new Map());
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const navigate = useNavigate({ from: "/fissa/$pin" });
-  const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: {} });
+  const dismissError = () => void navigate({ to: "/fissa/$pin", params: { pin }, search: { error: undefined } });
   const utils = api.useUtils();
 
   const { data, isLoading, isError } = api.fissa.byId.useQuery(pin, {
     retry: false,
     enabled: !!pin,
-    refetchInterval: 5000,
-    refetchIntervalInBackground: false,
+  });
+
+  // Live updates over SSE — refresh the queue only when the Fissa actually
+  // changes (vote, added track, playback advance) instead of polling. Also
+  // refetch on (re)connect to recover any change missed while disconnected.
+  api.fissa.onUpdate.useSubscription(pin, {
+    enabled: !!pin,
+    onStarted: () => {
+      void utils.fissa.byId.invalidate(pin);
+    },
+    onData: () => {
+      void utils.fissa.byId.invalidate(pin);
+    },
   });
 
   const { data: votesData } = api.vote.byFissaFromUser.useQuery(
-    { pin },
+    pin,
     { enabled: !!pin && !!session?.user },
   );
 
   // Merge server votes with optimistic updates (optimistic takes precedence)
   const userVotes = new Map(
-    (votesData ?? []).map((v) => [v.trackId, v.score as 1 | -1]),
+    (votesData ?? []).map((v) => [v.trackId, v.vote as 1 | -1]),
   );
   for (const [trackId, score] of optimisticVotes) {
     userVotes.set(trackId, score);
@@ -135,7 +146,7 @@ export const QueuePage: FC<QueuePageProps> = ({ pin, error }) => {
           return next;
         });
       }
-      void utils.vote.byFissaFromUser.invalidate({ pin });
+      void utils.vote.byFissaFromUser.invalidate(pin);
       void utils.fissa.byId.invalidate(pin);
     },
     onError: (err, { trackId, vote }, context) => {

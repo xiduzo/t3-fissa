@@ -118,7 +118,9 @@ export const ListItem: FC<Props> = memo(({
 ListItem.displayName = "ListItem";
 export type ListItemProps = Props;
 
-interface Props extends TouchableWithoutFeedbackProps, ViewProps {
+interface Props
+  extends TouchableWithoutFeedbackProps,
+    Omit<ViewProps, keyof TouchableWithoutFeedbackProps> {
   imageUri?: string | null;
   title: string;
   subtitle: string | number | boolean;

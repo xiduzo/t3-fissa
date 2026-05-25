@@ -48,7 +48,7 @@ export const ProgressBar: FC<Props> = ({
       <LinearGradient
         start={[0, 0]}
         end={[1, 1]}
-        colors={inverted ? [theme["900"]] : theme.gradient}
+        colors={inverted ? [theme["900"], theme["900"]] : theme.gradient}
         style={{ height: 6, borderTopRightRadius: 6, borderBottomRightRadius: 6, flex: progress }}
       />
     </View>

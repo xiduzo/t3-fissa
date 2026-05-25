@@ -26,7 +26,7 @@ const AddTracks = () => {
             ...prev,
             tracks: sortFissaTracksOrder([
               ...tracks.map((track) => ({
-                by: null,
+                by: { email: null },
                 lastUpdateAt: new Date(),
                 createdAt: new Date(),
                 hasBeenPlayed: false,

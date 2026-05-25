@@ -15,7 +15,9 @@ import * as Notifications from "expo-notifications";
 Notifications.setNotificationHandler({
   handleNotification: () =>
     Promise.resolve({
-      shouldShowAlert: true,
+      // `shouldShowAlert` is deprecated; banner + list replace it.
+      shouldShowBanner: true,
+      shouldShowList: true,
       shouldPlaySound: true,
       shouldSetBadge: true,
     }),
@@ -26,8 +28,8 @@ const NotificationContext = createContext({});
 export const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const [_expoPushToken, setExpoPushToken] = useState<string>();
   const [notification, setNotification] = useState<Notifications.Notification>();
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notificationListener = useRef<Notifications.Subscription | undefined>(undefined);
+  const responseListener = useRef<Notifications.Subscription | undefined>(undefined);
 
   useEffect(() => {
     void registerForPushNotificationsAsync().then(setExpoPushToken);

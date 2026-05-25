@@ -1,5 +1,4 @@
 import {
-  differenceInMilliseconds,
   sortFissaTracksOrder,
 } from "@fissa/utils";
 import { type FlashListRef } from "@shopify/flash-list";
@@ -34,20 +33,26 @@ import { ListFooterComponent } from "./ListFooterComponent";
 
 const SCROLL_DISTANCE = 150;
 
-const REFETCH_NORMAL = 5_000;
-const REFETCH_FAST = 1_000;
-const SONG_END_THRESHOLD = 10_000; // start fast-polling 10s before track ends
-
 export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
   const theme = useTheme();
   const context = api.useUtils();
 
   const listRef = useRef<FlashListRef<SpotifyApi.TrackObjectFull>>(null);
 
-  const [refetchInterval, setRefetchInterval] = useState(REFETCH_NORMAL);
+  const { data, isLoading: isInitialLoading } = api.fissa.byId.useQuery(pin);
 
-  const { data, isLoading: isInitialLoading } = api.fissa.byId.useQuery(pin, {
-    refetchInterval,
+  // Live updates over SSE — the server pushes when the queue, votes, or the
+  // currently-playing track change (incl. orchestrator-driven advances), so we
+  // refresh on demand instead of polling. Refetch on (re)connect to recover
+  // anything missed while disconnected.
+  api.fissa.onUpdate.useSubscription(pin, {
+    enabled: !!pin,
+    onStarted: () => {
+      void context.fissa.byId.invalidate(pin);
+    },
+    onData: () => {
+      void context.fissa.byId.invalidate(pin);
+    },
   });
 
   // Single query for all of the current user's votes in this fissa
@@ -160,44 +165,6 @@ export const FissaTracks: FC<{ pin: string }> = ({ pin }) => {
     },
     [data?.currentlyPlayingId, data?.expectedEndTime],
   );
-
-  // Track the previous currentlyPlayingId so we can detect track changes
-  const prevTrackIdRef = useRef(data?.currentlyPlayingId);
-
-  // When the active track changes, drop back to normal polling
-  useEffect(() => {
-    if (
-      prevTrackIdRef.current &&
-      data?.currentlyPlayingId &&
-      prevTrackIdRef.current !== data.currentlyPlayingId
-    ) {
-      setRefetchInterval(REFETCH_NORMAL);
-    }
-    prevTrackIdRef.current = data?.currentlyPlayingId;
-  }, [data?.currentlyPlayingId]);
-
-  useEffect(() => {
-    if (!data?.expectedEndTime) return;
-
-    const msUntilEnd = differenceInMilliseconds(data.expectedEndTime, new Date());
-
-    // Schedule fast-polling ~10s before the track ends
-    const msUntilFastPoll = Math.max(0, msUntilEnd - SONG_END_THRESHOLD);
-
-    const fastPollTimeout = setTimeout(() => {
-      setRefetchInterval(REFETCH_FAST);
-    }, msUntilFastPoll);
-
-    // Also keep the existing invalidation for when the track actually ends
-    const endTimeout = setTimeout(() => {
-      void context.fissa.byId.invalidate();
-    }, msUntilEnd);
-
-    return () => {
-      clearTimeout(fastPollTimeout);
-      clearTimeout(endTimeout);
-    };
-  }, [data?.expectedEndTime, context]);
 
   const scrollToCurrentIndex = useCallback(() => {
       userHasScrolledManually.current = false;

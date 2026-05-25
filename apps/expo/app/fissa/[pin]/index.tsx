@@ -26,15 +26,18 @@ const Fissa = () => {
   const { pin } = useGlobalSearchParams();
   const { replace } = useRouter();
 
-  api.fissa.byId.useQuery(String(pin), {
+  // React Query v5 dropped the `onError` query callback — derive the error
+  // from the result and react in an effect instead.
+  const { error: fissaError } = api.fissa.byId.useQuery(String(pin), {
     enabled: !!pin,
-    onError: (error) => {
-      toast.error({ message: error.message });
-      void notificationAsync(NotificationFeedbackType.Error);
-      // Fissa does not exist (anymore)
-      replace("/home");
-    },
   });
+  useEffect(() => {
+    if (!fissaError) return;
+    toast.error({ message: fissaError.message });
+    void notificationAsync(NotificationFeedbackType.Error);
+    // Fissa does not exist (anymore)
+    replace("/home");
+  }, [fissaError, replace]);
 
   // Join the fissa once on mount (fire-and-forget)
   const { mutate: joinFissa } = api.fissa.join.useMutation();

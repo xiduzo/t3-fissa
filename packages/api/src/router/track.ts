@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createContainer } from "../container";
+import { fissaEvents } from "../events/FissaEvents";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { Z_PIN, Z_TRACKS } from "./constants";
 
@@ -19,9 +20,12 @@ export const trackRouter = createTRPCRouter({
     return createContainer(ctx).trackService.byPin(input);
   }),
   addTracks: protectedProcedure.input(addTracks).mutation(async ({ ctx, input }) => {
-    return createContainer(ctx).trackService.addTracks(input.pin, input.tracks, ctx.session.user.id);
+    const result = await createContainer(ctx).trackService.addTracks(input.pin, input.tracks, ctx.session.user.id);
+    fissaEvents.publish(input.pin);
+    return result;
   }),
   deleteTrack: protectedProcedure.input(deleteTrack).mutation(async ({ ctx, input }) => {
     await createContainer(ctx).trackService.deleteTrack(input.pin, input.trackId);
+    fissaEvents.publish(input.pin);
   }),
 });

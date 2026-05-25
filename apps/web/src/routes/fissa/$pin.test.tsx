@@ -6,7 +6,7 @@
  * Scenario: Unauthenticated visitor sees Sign in CTA (Task #58)
  * Scenario: Authenticated user does not see Sign in CTA (Task #58)
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
@@ -26,6 +26,9 @@ vi.mock("~/utils/api", () => ({
           isLoading: true,
           error: null,
         }),
+      },
+      onUpdate: {
+        useSubscription: vi.fn(),
       },
     },
     vote: {
@@ -177,7 +180,7 @@ import { QueuePage } from "./$pin";
 // ── Tests ──────────────────────────────────────────────────────────────────────
 
 describe("/fissa/$pin — Queue view layout scaffold", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -270,7 +273,7 @@ describe("/fissa/$pin — Queue view layout scaffold", () => {
 });
 
 describe("/fissa/$pin — Currently playing track (Task #59)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -345,7 +348,7 @@ describe("/fissa/$pin — Currently playing track (Task #59)", () => {
 });
 
 describe("/fissa/$pin — Fissa-not-found and Fissa-ended states (Task #64)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -530,7 +533,7 @@ describe("/fissa/$pin — Fissa-not-found and Fissa-ended states (Task #64)", ()
 });
 
 describe("/fissa/$pin — Empty queue state (Task #65)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -699,8 +702,9 @@ describe("/fissa/$pin — Empty queue state (Task #65)", () => {
   });
 });
 
-describe("/fissa/$pin — Auto-polling every 5 seconds (Task #62)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+describe("/fissa/$pin — Live updates over SSE subscription (Task #62)", () => {
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
+  const mockUseSubscription = vi.mocked(api.fissa.onUpdate.useSubscription);
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -712,35 +716,41 @@ describe("/fissa/$pin — Auto-polling every 5 seconds (Task #62)", () => {
   });
 
   /**
-   * Scenario: Queue updates automatically while tab is active
+   * Scenario: Queue refreshes when the Fissa changes — not on a fixed timer
    *   Given a visitor is viewing the Fissa page
-   *   When 5 seconds elapse
-   *   Then the queue and currently playing track are refreshed without a page reload
-   *   (verify refetchInterval: 5000 is passed to useQuery)
+   *   When something changes the queue (vote, added track, playback advance)
+   *   Then the page refreshes via a push subscription, not interval polling
    */
-  it("passes refetchInterval: 5000 to useQuery", () => {
+  it("does not poll on an interval", () => {
     render(<QueuePage pin="ABC123" />);
 
-    expect(mockUseQuery).toHaveBeenCalledWith(
+    const [, options] = mockUseQuery.mock.calls.at(-1) ?? [];
+    expect(options).not.toHaveProperty("refetchInterval");
+    expect(options).not.toHaveProperty("refetchIntervalInBackground");
+  });
+
+  it("subscribes to fissa.onUpdate for the current pin", () => {
+    render(<QueuePage pin="ABC123" />);
+
+    expect(mockUseSubscription).toHaveBeenCalledWith(
       "ABC123",
-      expect.objectContaining({ refetchInterval: 5000 }),
+      expect.objectContaining({ enabled: true }),
     );
   });
 
-  /**
-   * Scenario: Polling pauses when tab is hidden
-   *   Given a visitor is viewing the Fissa page
-   *   When the visitor switches to another browser tab
-   *   Then no new requests are sent to fissa.byId
-   *   (verify refetchIntervalInBackground: false is passed to useQuery)
-   */
-  it("passes refetchIntervalInBackground: false to useQuery", () => {
+  it("invalidates the queue when a change is pushed", () => {
+    const invalidate = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(api.useUtils).mockReturnValue({
+      vote: { byFissaFromUser: { invalidate: vi.fn().mockResolvedValue(undefined) } },
+      fissa: { byId: { invalidate } },
+    } as any);
+
     render(<QueuePage pin="ABC123" />);
 
-    expect(mockUseQuery).toHaveBeenCalledWith(
-      "ABC123",
-      expect.objectContaining({ refetchIntervalInBackground: false }),
-    );
+    const [, options] = mockUseSubscription.mock.calls.at(-1) ?? [];
+    (options as { onData?: () => void })?.onData?.();
+
+    expect(invalidate).toHaveBeenCalledWith("ABC123");
   });
 
   /**
@@ -778,7 +788,7 @@ describe("/fissa/$pin — Auto-polling every 5 seconds (Task #62)", () => {
 });
 
 describe("/fissa/$pin — No auto deep-link redirect on page load (Task #81)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     // Reset window.location to a clean state
@@ -898,7 +908,7 @@ describe("/fissa/$pin — No auto deep-link redirect on page load (Task #81)", (
 });
 
 describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -1011,7 +1021,7 @@ describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
 });
 
 describe("/fissa/$pin — Sign in with Spotify CTA (Task #58)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
 
   const activeFissaData = {
@@ -1086,7 +1096,7 @@ describe("/fissa/$pin — Sign in with Spotify CTA (Task #58)", () => {
 });
 
 describe("/fissa/$pin — OAuth callbackURL (Task #60)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
 
   const activeFissaData = {
@@ -1139,7 +1149,7 @@ describe("/fissa/$pin — OAuth callbackURL (Task #60)", () => {
 });
 
 describe("/fissa/$pin — Queue interaction controls (Task #66)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
 
   const activeFissaData = {
@@ -1218,7 +1228,7 @@ describe("/fissa/$pin — Queue interaction controls (Task #66)", () => {
 });
 
 describe("/fissa/$pin — OAuth error handling (Task #67)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
 
   beforeEach(() => {
@@ -1256,7 +1266,7 @@ describe("/fissa/$pin — OAuth error handling (Task #67)", () => {
 });
 
 describe("/fissa/$pin — Open in mobile app CTA (Task #84)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -1324,7 +1334,7 @@ describe("/fissa/$pin — Open in mobile app CTA (Task #84)", () => {
 });
 
 describe("/fissa/$pin — Open in desktop app placeholder CTA (Task #87)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -1372,7 +1382,7 @@ describe("/fissa/$pin — Open in desktop app placeholder CTA (Task #87)", () =>
 });
 
 describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
 
   beforeEach(() => {
     mockUseQuery.mockReturnValue({
@@ -1412,8 +1422,8 @@ describe("/fissa/$pin — App-open CTAs visually secondary (Task #89)", () => {
 });
 
 describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
-  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
+  const mockVoteByFissaFromUser = api.vote.byFissaFromUser.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
 
   const activeFissaData = {
@@ -1442,7 +1452,7 @@ describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
    *   When I load the Fissa page
    *   Then the upvote button for "track-123" shows as active/selected
    */
-  it("calls vote.byFissaFromUser with { pin } when user is authenticated", () => {
+  it("calls vote.byFissaFromUser with pin when user is authenticated", () => {
     mockUseSession.mockReturnValue({
       data: { user: { id: "user1", name: "Test" } },
       isPending: false,
@@ -1451,7 +1461,7 @@ describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
     render(<QueuePage pin="ABC123" />);
 
     expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
-      { pin: "ABC123" },
+      "ABC123",
       expect.objectContaining({ enabled: true }),
     );
   });
@@ -1462,7 +1472,7 @@ describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
     render(<QueuePage pin="ABC123" />);
 
     expect(mockVoteByFissaFromUser).toHaveBeenCalledWith(
-      { pin: "ABC123" },
+      "ABC123",
       expect.objectContaining({ enabled: false }),
     );
   });
@@ -1473,7 +1483,7 @@ describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
       isPending: false,
     } as any);
     mockVoteByFissaFromUser.mockReturnValue({
-      data: [{ trackId: "track-123", score: 1 }],
+      data: [{ trackId: "track-123", vote: 1 }],
     } as any);
 
     render(<QueuePage pin="ABC123" />);
@@ -1488,7 +1498,7 @@ describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
       isPending: false,
     } as any);
     mockVoteByFissaFromUser.mockReturnValue({
-      data: [{ trackId: "track-456", score: -1 }],
+      data: [{ trackId: "track-456", vote: -1 }],
     } as any);
 
     render(<QueuePage pin="ABC123" />);
@@ -1512,10 +1522,10 @@ describe("/fissa/$pin — Fetch existing votes on load (Task #69)", () => {
 });
 
 describe("/fissa/$pin — Wire vote.create mutation (Task #71)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
-  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
+  const mockVoteByFissaFromUser = api.vote.byFissaFromUser.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
-  const mockCreateVoteMutation = vi.mocked(api.vote.create.useMutation);
+  const mockCreateVoteMutation = api.vote.create.useMutation as unknown as Mock;
 
   const activeFissaData = {
     pin: "ABC123",
@@ -1641,7 +1651,7 @@ describe("/fissa/$pin — Wire vote.create mutation (Task #71)", () => {
     }));
     // Start with an existing upvote on the track
     mockVoteByFissaFromUser.mockReturnValue({
-      data: [{ trackId: "track-dancing-queen", score: 1 }],
+      data: [{ trackId: "track-dancing-queen", vote: 1 }],
     } as any);
 
     render(<QueuePage pin="ABC123" />);
@@ -1698,16 +1708,16 @@ describe("/fissa/$pin — Wire vote.create mutation (Task #71)", () => {
     // Simulate success callback
     capturedOnSuccess?.({});
 
-    expect(mockInvalidateVotes).toHaveBeenCalledWith({ pin: "ABC123" });
+    expect(mockInvalidateVotes).toHaveBeenCalledWith("ABC123");
     expect(mockInvalidateFissa).toHaveBeenCalledWith("ABC123");
   });
 });
 
 describe("/fissa/$pin — Vote error rollback and retry (Task #78)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
-  const mockVoteByFissaFromUser = vi.mocked(api.vote.byFissaFromUser.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
+  const mockVoteByFissaFromUser = api.vote.byFissaFromUser.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
-  const mockCreateVoteMutation = vi.mocked(api.vote.create.useMutation);
+  const mockCreateVoteMutation = api.vote.create.useMutation as unknown as Mock;
 
   const activeFissaWithTracks = {
     pin: "1234",
@@ -1846,7 +1856,7 @@ describe("/fissa/$pin — Vote error rollback and retry (Task #78)", () => {
 });
 
 describe("/fissa/$pin — Add Track sheet entry point (Task #70)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
 
   const activeFissaData = {
@@ -1951,9 +1961,9 @@ describe("/fissa/$pin — Add Track sheet entry point (Task #70)", () => {
 });
 
 describe("/fissa/$pin — Wire track.addTracks mutation (Task #75)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
-  const mockAddTracksMutation = vi.mocked(api.track.addTracks.useMutation);
+  const mockAddTracksMutation = api.track.addTracks.useMutation as unknown as Mock;
 
   const activeFissaData = {
     pin: "1234",
@@ -2098,9 +2108,9 @@ describe("/fissa/$pin — Wire track.addTracks mutation (Task #75)", () => {
 });
 
 describe("/fissa/$pin — Duplicate track inline feedback (Task #77)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
-  const mockAddTracksMutation = vi.mocked(api.track.addTracks.useMutation);
+  const mockAddTracksMutation = api.track.addTracks.useMutation as unknown as Mock;
 
   const activeFissaData = {
     pin: "1234",
@@ -2254,7 +2264,7 @@ describe("/fissa/$pin — Duplicate track inline feedback (Task #77)", () => {
 });
 
 describe("/fissa/$pin — Display PIN with copy/share for Host (Task #86)", () => {
-  const mockUseQuery = vi.mocked(api.fissa.byId.useQuery);
+  const mockUseQuery = api.fissa.byId.useQuery as unknown as Mock;
   const mockUseSession = vi.mocked(authClient.useSession);
 
   const activeFissaData = {

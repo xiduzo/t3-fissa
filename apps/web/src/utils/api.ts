@@ -1,4 +1,4 @@
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { httpBatchLink, httpSubscriptionLink, loggerLink, splitLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@fissa/api";
@@ -16,10 +16,20 @@ export const trpcClient = api.createClient({
         import.meta.env.DEV ||
         (opts.direction === "down" && opts.result instanceof Error),
     }),
-    httpBatchLink({
-      url: `${getBaseUrl()}/api/trpc`,
-      transformer: superjson,
-      fetch: (url, options) => fetch(url, { ...options, credentials: "include" }),
+    // Subscriptions stream over SSE (one long-lived GET); queries/mutations
+    // keep the batched POST transport.
+    splitLink({
+      condition: (op) => op.type === "subscription",
+      true: httpSubscriptionLink({
+        url: `${getBaseUrl()}/api/trpc`,
+        transformer: superjson,
+        eventSourceOptions: () => ({ withCredentials: true }),
+      }),
+      false: httpBatchLink({
+        url: `${getBaseUrl()}/api/trpc`,
+        transformer: superjson,
+        fetch: (url, options) => fetch(url, { ...options, credentials: "include" }),
+      }),
     }),
   ],
 });

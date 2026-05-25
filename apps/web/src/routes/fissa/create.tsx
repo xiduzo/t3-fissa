@@ -32,7 +32,7 @@ export const CreateFissa: FC = () => {
 
   const { mutateAsync: createFissa, isPending: isCreating } = api.fissa.create.useMutation({
     onSuccess: (fissa) => {
-      void navigate({ to: "/fissa/$pin", params: { pin: fissa.pin } });
+      void navigate({ to: "/fissa/$pin", params: { pin: fissa.pin }, search: { error: undefined } });
     },
   });
 

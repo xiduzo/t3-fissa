@@ -250,7 +250,7 @@ function TheFissaNeverStops(props: ScreenProps) {
 }
 
 function usePrevious<T>(value: T) {
-  const ref = useRef<T>()
+  const ref = useRef<T | undefined>(undefined)
 
   useEffect(() => {
     ref.current = value
@@ -389,7 +389,9 @@ function FeaturesMobile() {
         {features.map((feature, featureIndex) => (
           <div
             key={featureIndex}
-            ref={(ref) => ref && (slideRefs.current[featureIndex] = ref)}
+            ref={(ref) => {
+              if (ref) slideRefs.current[featureIndex] = ref;
+            }}
             className="w-full flex-none snap-center px-4 sm:px-6"
           >
             <div className="relative transform overflow-hidden rounded-2xl px-5 py-6" style={{backgroundColor: theme[900]}}>

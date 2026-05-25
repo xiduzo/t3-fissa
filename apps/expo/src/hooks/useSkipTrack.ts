@@ -8,22 +8,22 @@ export const useSkipTrack = (
 
   const { mutate, mutateAsync, ...rest } = api.fissa.skipTrack.useMutation({
     ...options,
-    onSuccess: async (...props) => {
+    onSuccess: async (...args) => {
       await queryClient.fissa.byId.invalidate();
-      options.onSuccess?.(...props);
+      options.onSuccess?.(...args);
     },
-    onMutate(variables) {
+    onMutate: (...args) => {
       toast.info({
         icon: "🐍",
         message: "Ssssssssskipping song",
       });
 
-      options.onMutate?.(variables);
+      return options.onMutate?.(...args);
     },
-    onSettled(data, error, variables, context) {
+    onSettled: (...args) => {
       toast.hide();
 
-      options.onSettled?.(data, error, variables, context);
+      options.onSettled?.(...args);
     },
   });
 

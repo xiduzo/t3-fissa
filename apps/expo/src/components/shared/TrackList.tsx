@@ -1,4 +1,4 @@
-import { forwardRef, useCallback } from "react";
+import { forwardRef, useCallback, type JSX } from "react";
 import { Animated, View, type GestureResponderEvent } from "react-native";
 import { FlashList, type FlashListProps, type FlashListRef } from "@shopify/flash-list";
 import { cva } from "@fissa/utils";
@@ -41,7 +41,6 @@ export const TrackList = forwardRef<FlashListRef<SpotifyApi.TrackObjectFull>, Pr
         <FlashList
           {...props}
           ref={ref}
-          estimatedItemSize={104}
           keyExtractor={(item) => item?.id}
           extraData={(extraData as unknown) ?? selectedTracks}
           renderItem={({ item, index }) => {

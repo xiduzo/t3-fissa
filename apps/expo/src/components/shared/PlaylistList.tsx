@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type FC, type JSX } from "react";
 import { View } from "react-native";
 import { FlashList, type FlashListProps } from "@shopify/flash-list";
 

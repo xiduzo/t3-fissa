@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from "react";
 import { useTheme } from "~/providers/ThemeProvider";
 import { api } from "~/utils/api";
 import { toast } from "./Toast";
@@ -10,17 +10,14 @@ export function FissaCode() {
   const [pin, setPin] = useState(["", "", "", ""]);
   const [focussedIndex, setFocussedIndex] = useState(-1);
 
-  api.fissa.byId.useQuery(pin.includes("") ? "" : pin.join(""), {
-    retry: false,
-    enabled: !pin.includes(""),
-    onSuccess: (data) => {
-      window.location.href = `/fissa/${data.pin}`;
+  // React Query v5 dropped query `onSuccess`/`onError` — react to the result.
+  const { data: foundFissa, error: lookupError } = api.fissa.byId.useQuery(
+    pin.includes("") ? "" : pin.join(""),
+    {
+      retry: false,
+      enabled: !pin.includes(""),
     },
-    onError: (error) => {
-      toast.error({ message: error.message });
-      handleClear();
-    },
-  });
+  );
 
   const key1 = useRef<HTMLInputElement>(null);
   const key2 = useRef<HTMLInputElement>(null);
@@ -86,6 +83,18 @@ export function FissaCode() {
       keys[0]?.current?.focus();
     }, 100);
   }, [keys]);
+
+  // Redirect once a matching Fissa is found.
+  useEffect(() => {
+    if (foundFissa) window.location.href = `/fissa/${foundFissa.pin}`;
+  }, [foundFissa]);
+
+  // Surface lookup failures and reset the PIN inputs.
+  useEffect(() => {
+    if (!lookupError) return;
+    toast.error({ message: lookupError.message });
+    handleClear();
+  }, [lookupError, handleClear]);
 
   return (
     <section className="container mx-auto mt-32 gap-12">

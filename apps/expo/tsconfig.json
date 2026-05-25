@@ -1,7 +1,11 @@
 {
   "extends": ["expo/tsconfig.base", "../../tsconfig.json"],
   "compilerOptions": {
-    "jsx": "react-native"
+    "jsx": "react-native",
+    // The root config narrows `types` to ts-reset; restore Node typings so the
+    // server packages pulled into the type graph (@fissa/db, @fissa/api) and
+    // the build-time expo-plugins resolve `node:*`/`NodeJS.*`.
+    "types": ["node", "@total-typescript/ts-reset"]
   },
   "include": [
     "app",

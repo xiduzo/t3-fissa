@@ -3,11 +3,13 @@ import Constants from "expo-constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
-import { httpBatchLink } from "@trpc/client";
+import { httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@fissa/api";
 import superjson from "superjson";
+// React Native has no native EventSource; this XHR-based polyfill drives SSE.
+import RNEventSource from "react-native-sse";
 
 // relative path import to prevent circular dependency
 import { ENCRYPTED_STORAGE_KEYS, useEncryptedStorage } from "../hooks/useEncryptedStorage";
@@ -98,14 +100,25 @@ export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [trpcClient] = useState(() =>
     api.createClient({
       links: [
-        httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
-          transformer: superjson,
-          headers: async () => {
-            return {
-              authorization: `Bearer ${(await getValueFor()) ?? ""}`,
-            };
-          },
+        // Subscriptions stream over SSE (long-lived GET); queries/mutations
+        // keep the batched POST transport with the auth header.
+        splitLink({
+          condition: (op) => op.type === "subscription",
+          true: httpSubscriptionLink({
+            url: `${getBaseUrl()}/api/trpc`,
+            transformer: superjson,
+            // `fissa.onUpdate` is public, so the stream needs no auth header.
+            EventSource: RNEventSource as unknown as typeof EventSource,
+          }),
+          false: httpBatchLink({
+            url: `${getBaseUrl()}/api/trpc`,
+            transformer: superjson,
+            headers: async () => {
+              return {
+                authorization: `Bearer ${(await getValueFor()) ?? ""}`,
+              };
+            },
+          }),
         }),
       ],
     }),
