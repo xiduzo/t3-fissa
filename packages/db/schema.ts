@@ -2,6 +2,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -120,6 +121,8 @@ export const fissas = pgTable("fissas", {
   userId: text("user_id").notNull().unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastUpdateAt: timestamp("last_update_at").defaultNow().notNull(),
+  // Optimistic-lock token for the small Fissa aggregate (ADR-0001).
+  version: integer("version").default(0).notNull(),
 });
 
 export const tracks = pgTable(
@@ -193,6 +196,26 @@ export const badges = pgTable(
     score: integer("score").default(0).notNull(),
   },
   (t) => [unique().on(t.userId, t.name)],
+);
+
+// ---------------------------------------------------------------------------
+// Outbox
+// ---------------------------------------------------------------------------
+
+// Domain events are appended here in the same transaction as the state change
+// that raised them, then drained by a single worker into the Wallet and Badge
+// projections (ADR-0001: earning is eventual). `id` is the event's own uuid,
+// so re-appending or re-draining is idempotent.
+export const outbox = pgTable(
+  "outbox",
+  {
+    id: text("id").primaryKey(),
+    type: text("type").notNull(),
+    payload: jsonb("payload").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    processedAt: timestamp("processed_at"),
+  },
+  (t) => [index("outbox_unprocessed_idx").on(t.processedAt, t.createdAt)],
 );
 
 // ---------------------------------------------------------------------------

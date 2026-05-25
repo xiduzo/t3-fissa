@@ -1,6 +1,8 @@
 import { type z } from "zod";
 
-import type { IBadgeService, ITrackRepository } from "../interfaces";
+import type { ITrackRepository } from "../interfaces";
+import type { OutboxRepository } from "../repository/OutboxRepository";
+import { trackAdded } from "../domain/events";
 import { type Z_TRACKS } from "../router/constants";
 import { type VoteService } from "./VoteService";
 
@@ -8,7 +10,7 @@ export class TrackService {
   constructor(
     private readonly trackRepo: ITrackRepository,
     private readonly voteService: VoteService,
-    private readonly badgeService: IBadgeService,
+    private readonly outbox: OutboxRepository,
   ) {}
 
   byPin = async (pin: string) => {
@@ -20,7 +22,7 @@ export class TrackService {
       trackList.map((track) => ({ ...track, userId, pin })),
     );
 
-    await this.badgeService.tracksAdded(trackList.length);
+    await this.outbox.append([trackAdded({ pin, userId, count: trackList.length })]);
 
     const trackIds = trackList.map(({ trackId }) => trackId);
     return this.voteService.createVotes(pin, trackIds, 1, userId);

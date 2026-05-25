@@ -22,6 +22,13 @@
       "when": 1779664900000,
       "tag": "0002_reset_saturated_points",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1779700752120,
+      "tag": "0003_three_aggregate_outbox",
+      "breakpoints": true
     }
   ]
 }

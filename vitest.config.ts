@@ -7,6 +7,8 @@ export default defineConfig({
   test: {
     globals: true,
     // environment: "jsdom",
+    // Stale agent worktrees carry duplicate, broken test copies — keep them out.
+    exclude: ["**/node_modules/**", "**/dist/**", ".claude/**"],
     sequence: {
       shuffle: true,
     },

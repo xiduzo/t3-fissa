@@ -1,13 +1,16 @@
-import { tracks, usersInFissas, votes, type DB } from "@fissa/db";
+import { tracks, votes, type DB } from "@fissa/db";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
-import type { IBadgeService, IVoteRepository, IVoteRepository as _IVoteRepository, Vote } from "../interfaces";
+import type { IVoteRepository, Vote } from "../interfaces";
+import type { OutboxRepository } from "../repository/OutboxRepository";
+import { Track } from "../domain/Track";
+import type { VoteDirection } from "../domain/events";
 
 export class VoteService {
   constructor(
     private readonly voteRepo: IVoteRepository,
     private readonly db: DB,
-    private readonly badgeService: IBadgeService,
+    private readonly outbox: OutboxRepository,
   ) {}
 
   getVotesFromTrack = async (pin: string, trackId: string): Promise<Vote[]> => {
@@ -30,6 +33,12 @@ export class VoteService {
     return this.voteRepo.findByFissaFromUser(pin, userId);
   };
 
+  /**
+   * Cast or re-cast a vote on one track. The Track aggregate owns the score
+   * delta and the no-self-earn rule; the owner's reward rides a `PointsAwarded`
+   * event the outbox drainer folds into their Wallet later (earning is eventual,
+   * ADR-0001).
+   */
   createVote = async (
     pin: string,
     trackId: string,
@@ -37,29 +46,31 @@ export class VoteService {
     userId: string,
   ): Promise<Vote | undefined> => {
     return this.db.transaction(async (tx) => {
-      const previousVote = await tx.query.votes.findFirst({
+      const existing = await tx.query.tracks.findFirst({
+        where: and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)),
+        columns: { userId: true, score: true },
+      });
+      if (!existing) return undefined;
+
+      const previous = await tx.query.votes.findFirst({
         where: and(eq(votes.pin, pin), eq(votes.trackId, trackId), eq(votes.userId, userId)),
       });
 
-      const voteWeight = previousVote ? vote - previousVote.vote : vote;
+      const track = new Track(pin, trackId, existing.userId ?? null, existing.score);
+      const { scoreDelta, events } = track.castVote({
+        voterId: userId,
+        direction: vote as VoteDirection,
+        previousVote: previous?.vote ?? 0,
+      });
 
-      const [track] = await tx
+      await tx
         .update(tracks)
         .set({
-          score: sql`${tracks.score} + ${voteWeight}`,
-          totalScore: sql`${tracks.totalScore} + ${voteWeight}`,
+          score: sql`${tracks.score} + ${scoreDelta}`,
+          totalScore: sql`${tracks.totalScore} + ${scoreDelta}`,
           hasBeenPlayed: false,
         })
-        .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)))
-        .returning();
-
-      if (track?.userId && track.userId !== userId) {
-        await this.badgeService.voted(voteWeight, track.userId);
-        await tx
-          .update(usersInFissas)
-          .set({ points: sql`${usersInFissas.points} + ${voteWeight}` })
-          .where(and(eq(usersInFissas.pin, pin), eq(usersInFissas.userId, track.userId)));
-      }
+        .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)));
 
       const [result] = await tx
         .insert(votes)
@@ -70,10 +81,16 @@ export class VoteService {
         })
         .returning();
 
+      await this.outbox.append(events, tx);
+
       return result;
     });
   };
 
+  /**
+   * Bulk auto-upvotes applied when a guest adds tracks they queued themselves.
+   * These are self-votes — no points change hands — so no events are raised.
+   */
   createVotes = async (
     pin: string,
     trackIds: string[],

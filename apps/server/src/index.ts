@@ -8,7 +8,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import { auth } from "@fissa/auth";
-import { appRouter, createTRPCContext, FissaSyncOrchestrator } from "@fissa/api";
+import { appRouter, createOutboxDrainer, createTRPCContext, FissaSyncOrchestrator } from "@fissa/api";
 import { db, runMigrations } from "@fissa/db";
 import { env } from "@fissa/env";
 
@@ -74,6 +74,10 @@ async function main() {
   });
 
   orchestrator.startIntervals();
+
+  // Drain domain events into the Wallet + Badge projections (ADR-0001).
+  // Single process-level worker so folds stay serialized and idempotent.
+  createOutboxDrainer(db).startInterval();
 }
 
 main();

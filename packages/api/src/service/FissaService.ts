@@ -16,8 +16,10 @@ import {
 import { and, eq, sql } from "drizzle-orm";
 import type { Session } from "@fissa/auth";
 
-import type { IBadgeService, IFissaRepository, ISpotifyService, ITrackRepository } from "../interfaces";
-import { EarnedPoints } from "../utils/EarnedPoints";
+import type { IFissaRepository, ISpotifyService, ITrackRepository } from "../interfaces";
+import type { OutboxRepository } from "../repository/OutboxRepository";
+import { fissaCreated, memberJoined, pointsAwarded } from "../domain/events";
+import { playReward, SKIP_PENALTY } from "../domain/pointsPolicy";
 
 export const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
 
@@ -26,7 +28,7 @@ export class FissaService {
     private readonly fissaRepo: IFissaRepository,
     private readonly trackRepo: ITrackRepository,
     private readonly spotifyService: ISpotifyService,
-    private readonly badgeService: IBadgeService,
+    private readonly outbox: OutboxRepository,
     private readonly db: DB,
     private readonly session: Session | null,
   ) {}
@@ -83,7 +85,7 @@ export class FissaService {
     }
 
     await this.playTrack(fissa, trackList[0] as Track, account.accessToken);
-    await this.badgeService.fissaCreated();
+    await this.outbox.append([fissaCreated({ pin: fissa.pin, userId })]);
 
     return fissa;
   };
@@ -101,7 +103,12 @@ export class FissaService {
       .insert(usersInFissas)
       .values({ pin, userId })
       .onConflictDoNothing();
-    await this.badgeService.joinedFissa(pin);
+
+    // The host isn't "joining" their own party; only guests raise the event.
+    const fissa = await this.fissaRepo.findByPin(pin);
+    if (fissa && fissa.userId !== userId) {
+      await this.outbox.append([memberJoined({ pin, userId })]);
+    }
   };
 
   skipTrack = async (pin: string, userId: string) => {
@@ -116,18 +123,18 @@ export class FissaService {
       const [track] = await tx
         .update(tracks)
         .set({
-          totalScore: sql`${tracks.totalScore} + ${EarnedPoints.SkipTrack}`,
+          totalScore: sql`${tracks.totalScore} + ${SKIP_PENALTY}`,
           score: 0,
         })
         .where(and(eq(tracks.pin, pin), eq(tracks.trackId, currentlyPlayingId)))
         .returning();
 
       if (track?.userId) {
-        await tx
-          .update(usersInFissas)
-          .set({ points: sql`${usersInFissas.points} + ${EarnedPoints.SkipTrack}` })
-          .where(and(eq(usersInFissas.pin, pin), eq(usersInFissas.userId, track.userId)));
-        await this.badgeService.pointsEarned(track.userId, EarnedPoints.SkipTrack);
+        // Penalty is eventual: the Wallet folds it from the outbox (ADR-0001).
+        await this.outbox.append(
+          [pointsAwarded({ pin, userId: track.userId, amount: SKIP_PENALTY, reason: "skipPenalty" })],
+          tx,
+        );
       }
     });
 
@@ -226,7 +233,7 @@ export class FissaService {
         // Crowd-driven reward: the owner earns the track's net vote score
         // (up minus down votes) accrued while it was queued/playing. A track
         // nobody voted on pays 0; a well-liked one pays its score.
-        const award = currentlyPlaying.score ?? 0;
+        const award = playReward(currentlyPlaying.score ?? 0);
 
         await tx
           .update(tracks)
@@ -241,16 +248,11 @@ export class FissaService {
           .where(and(eq(votes.pin, pin), eq(votes.trackId, currentlyPlaying.trackId)));
 
         if (currentlyPlaying.by && award !== 0) {
-          await tx
-            .update(usersInFissas)
-            .set({ points: sql`${usersInFissas.points} + ${award}` })
-            .where(
-              and(
-                eq(usersInFissas.pin, pin),
-                eq(usersInFissas.userId, currentlyPlaying.by.userId),
-              ),
-            );
-          await this.badgeService.pointsEarned(currentlyPlaying.by.userId, award);
+          // Reward is eventual: the Wallet folds it from the outbox (ADR-0001).
+          await this.outbox.append(
+            [pointsAwarded({ pin, userId: currentlyPlaying.by.userId, amount: award, reason: "playReward" })],
+            tx,
+          );
         }
       }
 
