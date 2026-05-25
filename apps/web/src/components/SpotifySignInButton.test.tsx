@@ -17,6 +17,7 @@ vi.mock("~/lib/auth-client", () => ({
       social: vi.fn(),
     },
   },
+  webCallbackUrl: (path: string) => new URL(path, window.location.origin).toString(),
 }));
 
 // ── Imports after mocks ────────────────────────────────────────────────────────
@@ -33,9 +34,9 @@ describe("SpotifySignInButton — callbackURL flows to signIn.social (Task #63)"
    * Scenario: Successful OAuth redirects to Fissa page
    *   Given a SpotifySignInButton with pin="1234"
    *   When the user clicks it
-   *   Then authClient.signIn.social is called with callbackURL: "/fissa/1234"
+   *   Then authClient.signIn.social is called with an absolute callbackURL ending in /fissa/1234
    */
-  it("calls signIn.social with callbackURL='/fissa/1234' when pin='1234'", () => {
+  it("calls signIn.social with an absolute callbackURL for /fissa/1234 when pin='1234'", () => {
     render(<SpotifySignInButton pin="1234" />);
 
     fireEvent.click(screen.getByTestId("spotify-signin-btn"));
@@ -43,7 +44,7 @@ describe("SpotifySignInButton — callbackURL flows to signIn.social (Task #63)"
     expect(mockSignInSocial).toHaveBeenCalledWith(
       expect.objectContaining({
         provider: "spotify",
-        callbackURL: "/fissa/1234",
+        callbackURL: `${window.location.origin}/fissa/1234`,
       }),
     );
   });
@@ -71,9 +72,9 @@ describe("SpotifySignInButton — callbackURL flows to signIn.social (Task #63)"
    * Scenario: Different pin produces different callbackURL
    *   Given a SpotifySignInButton with pin="9999"
    *   When the user clicks it
-   *   Then callbackURL is "/fissa/9999"
+   *   Then callbackURL is an absolute URL ending in /fissa/9999
    */
-  it("calls signIn.social with callbackURL='/fissa/9999' when pin='9999'", () => {
+  it("calls signIn.social with an absolute callbackURL for /fissa/9999 when pin='9999'", () => {
     render(<SpotifySignInButton pin="9999" />);
 
     fireEvent.click(screen.getByTestId("spotify-signin-btn"));
@@ -81,7 +82,7 @@ describe("SpotifySignInButton — callbackURL flows to signIn.social (Task #63)"
     expect(mockSignInSocial).toHaveBeenCalledWith(
       expect.objectContaining({
         provider: "spotify",
-        callbackURL: "/fissa/9999",
+        callbackURL: `${window.location.origin}/fissa/9999`,
       }),
     );
   });

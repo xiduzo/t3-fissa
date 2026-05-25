@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { authClient } from "~/lib/auth-client";
+import { authClient, webCallbackUrl } from "~/lib/auth-client";
 
 interface SpotifySignInButtonProps {
   pin: string;
@@ -18,7 +18,7 @@ interface SpotifySignInButtonProps {
  */
 export const SpotifySignInButton: FC<SpotifySignInButtonProps> = ({ pin }) => {
   const handleSignIn = () => {
-    void authClient.signIn.social({ provider: "spotify", callbackURL: `/fissa/${pin}` });
+    void authClient.signIn.social({ provider: "spotify", callbackURL: webCallbackUrl(`/fissa/${pin}`) });
   };
 
   return (

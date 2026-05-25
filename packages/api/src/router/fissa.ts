@@ -7,7 +7,7 @@ const sync = createTRPCRouter({
     return createContainer(ctx).fissaService.activeFissas();
   }),
   next: serviceProcedure.input(Z_PIN).mutation(async ({ ctx, input }) => {
-    return createContainer(ctx).fissaService.playNextTrack(input);
+    return createContainer(ctx).playbackService.playNext(input);
   }),
 });
 

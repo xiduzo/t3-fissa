@@ -50,6 +50,16 @@ it folds domain events into counts and protects no invariant. Some badges deboun
 (max once per 24h).
 _Avoid_: Achievement object, points aggregate.
 
+### Playback
+
+**Playback**:
+The engine that advances a Fissa's `currentlyPlaying` pointer — it decides *what plays
+next and when*, drives the Spotify player, tops up the queue with recommendations, and
+rewards the played Track's owner. Distinct from the **Fissa** aggregate, which owns the
+pointer's *lifecycle* and the owner-only commands (skip, restart, pause) that ask Playback
+to act. Playback reads/writes through repositories; it holds no invariant of its own.
+_Avoid_: Player (that's Spotify's device), scheduler (that's the background sync loop).
+
 ### Coordination
 
 **Earning is eventual, spending is transactional**:

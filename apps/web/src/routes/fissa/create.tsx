@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type FC, useState } from "react";
 import { type SearchTrack } from "~/components/AddTrackSheet";
 import { useTrackSearch } from "~/hooks/useTrackSearch";
-import { authClient } from "~/lib/auth-client";
+import { authClient, webCallbackUrl } from "~/lib/auth-client";
 import { api } from "~/utils/api";
 
 export const Route = createFileRoute("/fissa/create")({
@@ -51,7 +51,7 @@ export const CreateFissa: FC = () => {
     );
 
   const handleSignIn = () => {
-    void authClient.signIn.social({ provider: "spotify", callbackURL: "/fissa/create" });
+    void authClient.signIn.social({ provider: "spotify", callbackURL: webCallbackUrl("/fissa/create") });
   };
 
   const handleBack = () => {

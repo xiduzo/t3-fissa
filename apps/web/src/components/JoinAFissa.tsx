@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useTheme } from "~/providers/ThemeProvider";
-import { authClient } from "~/lib/auth-client";
+import { authClient, webCallbackUrl } from "~/lib/auth-client";
 import { api } from "~/utils/api";
 import { Container } from "./Container";
 import { FissaCode } from "./FissaCode";
@@ -17,7 +17,7 @@ export function JoinAFissa() {
     } else {
       void authClient.signIn.social({
         provider: 'spotify',
-        callbackURL: '/fissa/create',
+        callbackURL: webCallbackUrl('/fissa/create'),
       });
     }
   };

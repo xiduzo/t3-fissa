@@ -38,6 +38,7 @@ vi.mock("~/lib/auth-client", () => ({
       social: vi.fn(),
     },
   },
+  webCallbackUrl: (path: string) => new URL(path, window.location.origin).toString(),
 }));
 
 vi.mock("~/providers/ThemeProvider", () => ({
@@ -158,7 +159,7 @@ describe("/fissa/create — Create a Fissa page (Task #80)", () => {
 
     expect(authClient.signIn.social).toHaveBeenCalledWith({
       provider: "spotify",
-      callbackURL: "/fissa/create",
+      callbackURL: `${window.location.origin}/fissa/create`,
     });
   });
 
@@ -257,7 +258,7 @@ describe("Home page — Create a Fissa CTA (Task #80)", () => {
 
     expect(authClient.signIn.social).toHaveBeenCalledWith({
       provider: "spotify",
-      callbackURL: "/fissa/create",
+      callbackURL: `${window.location.origin}/fissa/create`,
     });
   });
 

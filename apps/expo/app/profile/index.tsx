@@ -123,7 +123,7 @@ const Badge = ({ badge, score, isLoading }: { badge: BADGE, isLoading: boolean, 
       </TouchableHighlight>
       <Popover visible={selected} onRequestClose={() => setSelected(false)}>
         <Typography variant='h3' inverted centered>{BADGE_NAMES[badge].name}</Typography>
-        <Typography inverted centered className="pb-14 pt-16 text-6xl">{formatNumber(score ?? 0)}</Typography>
+        <Typography inverted centered className="pb-14 pt-16" style={{ fontSize: 96, lineHeight: 104, fontWeight: 'bold' }}>{formatNumber(score ?? 0)}</Typography>
         <Typography inverted centered dimmed>
           {BADGE_NAMES[badge].description}
         </Typography>

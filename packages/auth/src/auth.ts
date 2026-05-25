@@ -22,6 +22,16 @@ export const auth = betterAuth({
       clientSecret: env.SPOTIFY_CLIENT_SECRET,
     },
   },
+  account: {
+    accountLinking: {
+      // Spotify is our only provider, so linking a Spotify sign-in to an
+      // existing user with the same email can't hijack a foreign credential.
+      // Without this, a stale user row (no matching account) throws
+      // account_not_linked on re-login.
+      enabled: true,
+      trustedProviders: ["spotify"],
+    },
+  },
   // bearer() lets the Expo app authenticate via Authorization: Bearer <token>
   plugins: [bearer()],
   trustedOrigins: [env.WEB_URL],

@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { authClient } from '~/lib/auth-client'
+import { authClient, webCallbackUrl } from '~/lib/auth-client'
 import { useTheme } from '~/providers/ThemeProvider'
 import { AppDemo } from './AppDemo'
 import { AppStoreLink } from './AppStoreLink'
@@ -61,7 +61,7 @@ export function Hero() {
     if (session?.user) {
       void navigate({ to: '/fissa/create' })
     } else {
-      void authClient.signIn.social({ provider: 'spotify', callbackURL: '/fissa/create' })
+      void authClient.signIn.social({ provider: 'spotify', callbackURL: webCallbackUrl('/fissa/create') })
     }
   }
 
@@ -77,17 +77,19 @@ export function Hero() {
               Having friends at a party with a bad taste in music stinks. Use Fissa to create a collaborative and democratic playlist for everyone to enjoy.
             </p>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4">
+              <AppStoreLink />
+              <PlayStoreLink />
+            </div>
+            <div className="mt-6">
               <button
                 data-testid="create-fissa-btn"
                 type="button"
                 onClick={handleCreateFissa}
-                className="rounded-full px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: '#1DB954' }}
+                className="rounded-full px-6 py-3 font-semibold transition-opacity hover:opacity-90"
+                style={{ backgroundColor: theme[500], color: theme[900] }}
               >
                 Create a Fissa
               </button>
-              <AppStoreLink />
-              <PlayStoreLink />
             </div>
           </div>
           <div className="relative mt-10 sm:mt-20 lg:col-span-5 lg:row-span-2 lg:mt-0 xl:col-span-6">
