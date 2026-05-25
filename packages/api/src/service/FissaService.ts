@@ -1,36 +1,32 @@
-import { type Fissa, type Track, fissas, tracks, usersInFissas, votes, type DB } from "@fissa/db";
+import { type Fissa, type Track, tracks, usersInFissas, type DB } from "@fissa/db";
 import {
   addMilliseconds,
-  biasSort,
-  differenceInMilliseconds,
-  FissaIsPaused,
-  ForceStopFissa,
-  NoNextTrack,
   NotAbleToAccessSpotify,
-  NotTheHost,
   randomize,
-  sleep,
-  sortFissaTracksOrder,
   UnableToCreateFissa,
 } from "@fissa/utils";
-import { and, eq, sql } from "drizzle-orm";
-import type { Session } from "@fissa/auth";
+import { and, eq } from "drizzle-orm";
 
-import type { IFissaRepository, ISpotifyService, ITrackRepository } from "../interfaces";
+import type { IFissaRepository, ITrackRepository } from "../interfaces";
 import type { OutboxRepository } from "../repository/OutboxRepository";
-import { fissaCreated, memberJoined, pointsAwarded } from "../domain/events";
-import { playReward, SKIP_PENALTY } from "../domain/pointsPolicy";
+import { Fissa as FissaAggregate, type FissaOutcome } from "../domain/Fissa";
+import { Track as TrackAggregate } from "../domain/Track";
+import type { PlaybackService } from "./PlaybackService";
 
-export const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
-
+/**
+ * Fissa lifecycle — the live listening party rooted at `pin` (CONTEXT.md): its
+ * owner, member roster, and the lifecycle of the `currentlyPlaying` pointer.
+ * Owner-only commands (skip, restart, pause) live here and ask {@link
+ * PlaybackService} to actually advance or stop the music; this module never
+ * touches Spotify or the queue directly.
+ */
 export class FissaService {
   constructor(
     private readonly fissaRepo: IFissaRepository,
     private readonly trackRepo: ITrackRepository,
-    private readonly spotifyService: ISpotifyService,
+    private readonly playback: PlaybackService,
     private readonly outbox: OutboxRepository,
     private readonly db: DB,
-    private readonly session: Session | null,
   ) {}
 
   activeFissasCount = async (): Promise<number> => {
@@ -80,12 +76,13 @@ export class FissaService {
 
     if (!fissa) throw new UnableToCreateFissa("No unique pin found");
 
-    if (trackList.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-      await this.addRecommendedTracks(fissa.pin, trackList, account.accessToken);
-    }
-
-    await this.playTrack(fissa, trackList[0] as Track, account.accessToken);
-    await this.outbox.append([fissaCreated({ pin: fissa.pin, userId })]);
+    await this.playback.startFirstTrack(
+      fissa.pin,
+      trackList[0] as Track,
+      account.accessToken,
+      trackList,
+    );
+    await this.outbox.append([FissaAggregate.created(fissa.pin, userId)]);
 
     return fissa;
   };
@@ -104,61 +101,81 @@ export class FissaService {
       .values({ pin, userId })
       .onConflictDoNothing();
 
-    // The host isn't "joining" their own party; only guests raise the event.
     const fissa = await this.fissaRepo.findByPin(pin);
-    if (fissa && fissa.userId !== userId) {
-      await this.outbox.append([memberJoined({ pin, userId })]);
-    }
+    if (!fissa) return;
+
+    // The aggregate owns the "host isn't joining their own party" rule.
+    const outcome = this.aggregate(fissa).join(userId);
+    await this.carryOut(pin, outcome);
   };
 
   skipTrack = async (pin: string, userId: string) => {
     const fissa = await this.byId(pin, userId);
 
-    if (fissa.userId !== userId) throw new NotTheHost();
-    if (!fissa.currentlyPlayingId) throw new FissaIsPaused();
-
-    const currentlyPlayingId = fissa.currentlyPlayingId;
+    // Guard the transition first: throws NotTheHost / FissaIsPaused.
+    const outcome = this.aggregate(fissa).skip(userId);
+    const currentlyPlayingId = fissa.currentlyPlayingId!; // non-null once skip() accepts
 
     await this.db.transaction(async (tx) => {
-      const [track] = await tx
-        .update(tracks)
-        .set({
-          totalScore: sql`${tracks.totalScore} + ${SKIP_PENALTY}`,
-          score: 0,
-        })
-        .where(and(eq(tracks.pin, pin), eq(tracks.trackId, currentlyPlayingId)))
-        .returning();
+      const existing = await tx.query.tracks.findFirst({
+        where: and(eq(tracks.pin, pin), eq(tracks.trackId, currentlyPlayingId)),
+        columns: { userId: true, score: true },
+      });
+      if (!existing) return;
 
-      if (track?.userId) {
-        // Penalty is eventual: the Wallet folds it from the outbox (ADR-0001).
-        await this.outbox.append(
-          [pointsAwarded({ pin, userId: track.userId, amount: SKIP_PENALTY, reason: "skipPenalty" })],
-          tx,
-        );
-      }
+      // The Track owns the skip penalty and raises the PointsAwarded event;
+      // the penalty is eventual, folded into the Wallet from the outbox (ADR-0001).
+      const track = new TrackAggregate(pin, currentlyPlayingId, existing.userId ?? null, existing.score);
+      await this.trackRepo.applyOutcome(track, track.skip(), tx);
     });
 
-    return this.playNextTrack(pin, true);
+    return this.carryOut(pin, outcome);
   };
 
   restart = async (pin: string, userId: string) => {
     const fissa = await this.fissaRepo.findByPin(pin);
-
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
-    if (fissa.userId !== userId) throw new NotTheHost();
 
-    return this.playNextTrack(pin, true);
+    const outcome = this.aggregate(fissa).restart(userId); // throws NotTheHost
+    return this.carryOut(pin, outcome);
   };
 
   pause = async (pin: string, userId: string) => {
     const fissa = await this.fissaRepo.findByPin(pin);
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
-    if (fissa.userId !== userId) throw new NotTheHost();
+
+    const outcome = this.aggregate(fissa).pause(userId); // throws NotTheHost
 
     const ownerAccount = await this.fissaRepo.findOwnerAccount(pin);
     if (!ownerAccount?.accessToken) throw new NotAbleToAccessSpotify();
 
-    await this.stopFissa(pin, ownerAccount.accessToken);
+    await this.carryOut(pin, outcome, ownerAccount.accessToken);
+  };
+
+  private aggregate = (fissa: { pin: string; userId: string; currentlyPlayingId: string | null }) =>
+    new FissaAggregate(fissa.pin, fissa.userId, fissa.currentlyPlayingId);
+
+  /**
+   * Carry out a {@link FissaOutcome}: append the events it raised, then ask
+   * Playback to act on the transition. Playback remains the sole writer of the
+   * `currentlyPlaying` pointer (CONTEXT.md) — the aggregate only decided.
+   */
+  private carryOut = async (
+    pin: string,
+    outcome: FissaOutcome,
+    accessToken?: string,
+  ): Promise<Date | null> => {
+    if (outcome.events.length) await this.outbox.append(outcome.events);
+
+    switch (outcome.action) {
+      case "advance":
+        return this.playback.playNext(pin, true);
+      case "stop":
+        if (accessToken) await this.playback.stop(pin, accessToken);
+        return null;
+      case "none":
+        return null;
+    }
   };
 
   members = async (pin: string) => {
@@ -169,145 +186,5 @@ export class FissaService {
         user: { columns: { id: true, name: true, image: true } },
       },
     });
-  };
-
-  playNextTrack = async (pin: string, forceToPlay = false, retriedRecommendations = false): Promise<Date | null> => {
-    const fissaDetails = await this.fissaRepo.findDetailedForSync(pin);
-    const { by, trackList: fissaTracks, currentlyPlaying, expectedEndTime } = fissaDetails;
-
-    if (!by) throw new NotAbleToAccessSpotify();
-
-    const { accessToken } = by;
-    if (!accessToken) throw new NotAbleToAccessSpotify();
-
-    try {
-      if (!forceToPlay) {
-        const isPlaying = await this.spotifyService.isStillPlaying(accessToken);
-        if (!isPlaying || !currentlyPlaying?.trackId) throw new ForceStopFissa();
-      }
-
-      const [nextTrack, ...nextTracks] = this.getNextTracks(fissaTracks, currentlyPlaying?.trackId);
-
-      if (!nextTrack) {
-        if (!retriedRecommendations) {
-          await this.addRecommendedTracks(pin, biasSort(fissaTracks), accessToken);
-          return this.playNextTrack(pin, forceToPlay, true);
-        }
-        throw new NoNextTrack();
-      }
-
-      if (nextTracks?.length <= TRACKS_BEFORE_ADDING_RECOMMENDATIONS) {
-        await this.addRecommendedTracks(pin, biasSort(fissaTracks), accessToken);
-      }
-
-      const timeToPlay = forceToPlay ? new Date() : expectedEndTime;
-      await sleep(differenceInMilliseconds(timeToPlay, new Date()));
-      return await this.playTrack({ pin }, nextTrack as Track, accessToken, currentlyPlaying);
-    } catch (e) {
-      console.error(e);
-      await this.stopFissa(pin, accessToken);
-      return null;
-    }
-  };
-
-  private stopFissa = async (pin: string, accessToken: string) => {
-    try {
-      await this.fissaRepo.clearCurrentlyPlaying(pin);
-      await this.spotifyService.pause(accessToken);
-    } catch (e) {
-      console.error(`${pin}, failed stopping fissa`, e);
-    }
-  };
-
-  private playTrack = async (
-    { pin }: Pick<Fissa, "pin">,
-    { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
-    accessToken: string,
-    currentlyPlaying?: { trackId?: string; score?: number; by?: { userId: string } },
-  ): Promise<Date | null> => {
-    const playing = this.spotifyService.playTrack(accessToken, trackId);
-    const newExpectedEndTime = addMilliseconds(new Date(), durationMs);
-
-    await this.db.transaction(async (tx) => {
-      if (currentlyPlaying?.trackId) {
-        // Crowd-driven reward: the owner earns the track's net vote score
-        // (up minus down votes) accrued while it was queued/playing. A track
-        // nobody voted on pays 0; a well-liked one pays its score.
-        const award = playReward(currentlyPlaying.score ?? 0);
-
-        await tx
-          .update(tracks)
-          .set({
-            hasBeenPlayed: true,
-            score: 0,
-          })
-          .where(and(eq(tracks.pin, pin), eq(tracks.trackId, currentlyPlaying.trackId)));
-
-        await tx
-          .delete(votes)
-          .where(and(eq(votes.pin, pin), eq(votes.trackId, currentlyPlaying.trackId)));
-
-        if (currentlyPlaying.by && award !== 0) {
-          // Reward is eventual: the Wallet folds it from the outbox (ADR-0001).
-          await this.outbox.append(
-            [pointsAwarded({ pin, userId: currentlyPlaying.by.userId, amount: award, reason: "playReward" })],
-            tx,
-          );
-        }
-      }
-
-      await tx
-        .update(fissas)
-        .set({
-          currentlyPlayingId: trackId,
-          currentlyPlayingPin: pin,
-          expectedEndTime: newExpectedEndTime,
-        })
-        .where(eq(fissas.pin, pin));
-    });
-
-    if (!(await playing)) {
-      try {
-        await this.trackRepo.delete(pin, trackId);
-      } catch {
-        console.warn("something went wrong deleting track", { pin, trackId });
-      }
-
-      return this.playNextTrack(pin, true);
-    }
-
-    return newExpectedEndTime;
-  };
-
-  private getNextTracks = (
-    trackList: Pick<Track, "hasBeenPlayed" | "trackId" | "score" | "lastUpdateAt" | "createdAt">[],
-    currentlyPlayingId?: string | null,
-  ) => {
-    const tracksToSort = trackList.filter(
-      ({ hasBeenPlayed, trackId }) => !hasBeenPlayed && trackId !== currentlyPlayingId,
-    );
-    return sortFissaTracksOrder(tracksToSort);
-  };
-
-  private addRecommendedTracks = async (
-    pin: string,
-    trackList: { trackId: string }[],
-    accessToken: string,
-  ) => {
-    try {
-      const trackIds = trackList.map(({ trackId }) => trackId);
-      const recommendations = await this.spotifyService.getRecommendedTracks(accessToken, trackIds);
-
-      await this.trackRepo.insertMany(
-        recommendations.map(({ id, duration_ms }) => ({
-          trackId: id,
-          durationMs: duration_ms,
-          userId: this.session?.user.id,
-          pin,
-        })),
-      );
-    } catch (e) {
-      console.error(`${pin}, failed adding recommended tracks`, e);
-    }
   };
 }

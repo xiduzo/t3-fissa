@@ -4,6 +4,7 @@ import { SpotifyService } from "./infrastructure/SpotifyService";
 
 import { AuthService } from "./service/AuthService";
 import { FissaService } from "./service/FissaService";
+import { PlaybackService } from "./service/PlaybackService";
 import { TrackService } from "./service/TrackService";
 import { VoteService } from "./service/VoteService";
 import { WalletService } from "./service/WalletService";
@@ -21,6 +22,7 @@ import type { Context } from "./utils/context";
 
 export type ServiceContainer = {
   fissaService: FissaService;
+  playbackService: PlaybackService;
   trackService: TrackService;
   voteService: VoteService;
   walletService: WalletService;
@@ -37,10 +39,10 @@ export const createContainer = (ctx: Context): ServiceContainer => {
 
   // Repositories
   const fissaRepo = new FissaRepository(db);
-  const trackRepo = new TrackRepository(db);
+  const outboxRepo = new OutboxRepository(db);
+  const trackRepo = new TrackRepository(db, outboxRepo);
   const voteRepo = new VoteRepository(db);
   const userRepo = new UserRepository(db);
-  const outboxRepo = new OutboxRepository(db);
   const walletRepo = new WalletRepository(db);
 
   // External services
@@ -49,13 +51,14 @@ export const createContainer = (ctx: Context): ServiceContainer => {
   // Domain services (wired bottom-up: no circular deps). Points earning is
   // written to the outbox here and folded into Wallets/Badges by the drainer
   // (ADR-0001); only spending touches a Wallet synchronously.
-  const voteService = new VoteService(voteRepo, db, outboxRepo);
+  const voteService = new VoteService(voteRepo, db, trackRepo);
   const trackService = new TrackService(trackRepo, voteService, outboxRepo);
-  const fissaService = new FissaService(fissaRepo, trackRepo, spotify, outboxRepo, db, session);
+  const playbackService = new PlaybackService(fissaRepo, trackRepo, spotify, db, session);
+  const fissaService = new FissaService(fissaRepo, trackRepo, playbackService, outboxRepo, db);
   const walletService = new WalletService(walletRepo, db);
   const authService = new AuthService(userRepo, spotify, session);
 
-  return { fissaService, trackService, voteService, walletService, authService };
+  return { fissaService, playbackService, trackService, voteService, walletService, authService };
 };
 
 /**

@@ -27,6 +27,17 @@ describe("Track", () => {
       expect(awarded(events)[0]).toMatchObject({ userId: OWNER, amount: 1, reason: "voteReceived" });
     });
 
+    it("re-queues the track: not reset, not played, votes kept", () => {
+      const { resetScore, hasBeenPlayed, clearVotes } = track(0).castVote({
+        voterId: VOTER,
+        direction: 1,
+        previousVote: 0,
+      });
+      expect(resetScore).toBe(false);
+      expect(hasBeenPlayed).toBe(false);
+      expect(clearVotes).toBe(false);
+    });
+
     it("re-casting from up to down moves the score by the delta, not by the raw vote", () => {
       const t = track(1);
       const { scoreDelta } = t.castVote({ voterId: VOTER, direction: -1, previousVote: 1 });
@@ -57,18 +68,52 @@ describe("Track", () => {
   });
 
   describe("play", () => {
-    it("rewards the owner the track's net score", () => {
-      const events = track(4).play();
+    it("rewards the owner the track's net score and resets the score", () => {
+      const t = track(4);
+      const { events, resetScore, totalScoreDelta } = t.play();
       expect(awarded(events)).toHaveLength(1);
       expect(awarded(events)[0]).toMatchObject({ userId: OWNER, amount: 4, reason: "playReward" });
+      expect(resetScore).toBe(true);
+      expect(totalScoreDelta).toBe(0); // totalScore is lifetime; play never touches it
+      expect(t.score).toBe(0);
+    });
+
+    it("marks the track played and clears its votes", () => {
+      const { hasBeenPlayed, clearVotes } = track(4).play();
+      expect(hasBeenPlayed).toBe(true);
+      expect(clearVotes).toBe(true);
     });
 
     it("pays nothing for a track nobody voted on", () => {
-      expect(track(0).play()).toHaveLength(0);
+      expect(awarded(track(0).play().events)).toHaveLength(0);
     });
 
     it("pays nothing for an owner-less (recommended) track", () => {
-      expect(track(5, null).play()).toHaveLength(0);
+      expect(awarded(track(5, null).play().events)).toHaveLength(0);
+    });
+  });
+
+  describe("skip", () => {
+    it("penalises the owner and drops the track's lifetime totalScore", () => {
+      const t = track(3);
+      const { events, resetScore, totalScoreDelta } = t.skip();
+      expect(awarded(events)).toHaveLength(1);
+      expect(awarded(events)[0]).toMatchObject({ userId: OWNER, amount: -5, reason: "skipPenalty" });
+      expect(totalScoreDelta).toBe(-5);
+      expect(resetScore).toBe(true);
+      expect(t.score).toBe(0);
+    });
+
+    it("marks the track played so it drops out of the queue, but keeps its votes", () => {
+      const { hasBeenPlayed, clearVotes } = track(3).skip();
+      expect(hasBeenPlayed).toBe(true);
+      expect(clearVotes).toBe(false);
+    });
+
+    it("still drops totalScore but raises nothing for an owner-less track", () => {
+      const { events, totalScoreDelta } = track(2, null).skip();
+      expect(awarded(events)).toHaveLength(0);
+      expect(totalScoreDelta).toBe(-5);
     });
   });
 });

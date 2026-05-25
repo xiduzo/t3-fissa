@@ -1,8 +1,7 @@
 import { tracks, votes, type DB } from "@fissa/db";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
-import type { IVoteRepository, Vote } from "../interfaces";
-import type { OutboxRepository } from "../repository/OutboxRepository";
+import type { ITrackRepository, IVoteRepository, Vote } from "../interfaces";
 import { Track } from "../domain/Track";
 import type { VoteDirection } from "../domain/events";
 
@@ -10,7 +9,7 @@ export class VoteService {
   constructor(
     private readonly voteRepo: IVoteRepository,
     private readonly db: DB,
-    private readonly outbox: OutboxRepository,
+    private readonly trackRepo: ITrackRepository,
   ) {}
 
   getVotesFromTrack = async (pin: string, trackId: string): Promise<Vote[]> => {
@@ -57,20 +56,13 @@ export class VoteService {
       });
 
       const track = new Track(pin, trackId, existing.userId ?? null, existing.score);
-      const { scoreDelta, events } = track.castVote({
+      const outcome = track.castVote({
         voterId: userId,
         direction: vote as VoteDirection,
         previousVote: previous?.vote ?? 0,
       });
 
-      await tx
-        .update(tracks)
-        .set({
-          score: sql`${tracks.score} + ${scoreDelta}`,
-          totalScore: sql`${tracks.totalScore} + ${scoreDelta}`,
-          hasBeenPlayed: false,
-        })
-        .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)));
+      await this.trackRepo.applyOutcome(track, outcome, tx);
 
       const [result] = await tx
         .insert(votes)
@@ -80,8 +72,6 @@ export class VoteService {
           set: { vote },
         })
         .returning();
-
-      await this.outbox.append(events, tx);
 
       return result;
     });
