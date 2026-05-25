@@ -18,7 +18,7 @@ describe("OutboxDrainer", () => {
   const tx = {} as never;
   beforeEach(() => {
     vi.clearAllMocks();
-    db.transaction.mockImplementation(async (cb: (t: never) => unknown) => cb(tx));
+    db.transaction.mockImplementation((cb: (t: never) => unknown) => Promise.resolve(cb(tx)));
   });
 
   const drainer = () => new OutboxDrainer(db, outbox, wallet, badges);
