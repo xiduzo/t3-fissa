@@ -3,8 +3,8 @@ import { differenceInHours } from "@fissa/utils";
 import { and, eq, sql } from "drizzle-orm";
 
 import type { DomainEvent } from "../domain/events";
-
-type Executor = DB | Parameters<Parameters<DB["transaction"]>[0]>[0];
+import type { Executor } from "../interfaces";
+import type { EventProjection } from "./EventProjection";
 
 /**
  * Badges are a projection, not an aggregate (ADR-0001): they fold domain events
@@ -13,7 +13,7 @@ type Executor = DB | Parameters<Parameters<DB["transaction"]>[0]>[0];
  * additive upsert — idempotency is guaranteed by the outbox marking each event
  * processed once, not by this code.
  */
-export class BadgeProjection {
+export class BadgeProjection implements EventProjection {
   constructor(private readonly db: DB) {}
 
   apply = async (event: DomainEvent, tx: Executor = this.db): Promise<void> => {

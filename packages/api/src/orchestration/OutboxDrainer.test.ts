@@ -3,15 +3,14 @@ import { mock } from "@fissa/test";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { pointsAwarded, voteCast, type DomainEvent } from "../domain/events";
-import type { BadgeProjection } from "../projection/BadgeProjection";
+import type { EventProjection } from "../projection/EventProjection";
 import type { OutboxRepository, StoredEvent } from "../repository/OutboxRepository";
-import type { WalletRepository } from "../repository/WalletRepository";
 import { OutboxDrainer } from "./OutboxDrainer";
 
 describe("OutboxDrainer", () => {
   const outbox = mock<OutboxRepository>();
-  const wallet = mock<WalletRepository>();
-  const badges = mock<BadgeProjection>();
+  const projectionA = mock<EventProjection>();
+  const projectionB = mock<EventProjection>();
   const db = mock<DB>();
 
   // Run each db.transaction callback immediately with a throwaway tx.
@@ -21,30 +20,30 @@ describe("OutboxDrainer", () => {
     db.transaction.mockImplementation((cb: (t: never) => unknown) => Promise.resolve(cb(tx)));
   });
 
-  const drainer = () => new OutboxDrainer(db, outbox, wallet, badges);
+  const drainer = () => new OutboxDrainer(db, outbox, [projectionA, projectionB]);
 
   const stored = (event: DomainEvent): StoredEvent => ({ id: event.eventId, event });
 
-  it("credits the Wallet and folds the badge for a PointsAwarded event, then marks it processed", async () => {
+  it("applies each event to every projection in order and marks it processed", async () => {
     const event = pointsAwarded({ pin: "AB12", userId: "u1", amount: 4, reason: "playReward" });
     outbox.pullUnprocessed.mockResolvedValueOnce([stored(event)]).mockResolvedValue([]);
 
     const applied = await drainer().drain();
 
     expect(applied).toBe(1);
-    expect(wallet.credit).toHaveBeenCalledWith("AB12", "u1", 4, tx);
-    expect(badges.apply).toHaveBeenCalledWith(event, tx);
+    expect(projectionA.apply).toHaveBeenCalledWith(event, tx);
+    expect(projectionB.apply).toHaveBeenCalledWith(event, tx);
     expect(outbox.markProcessed).toHaveBeenCalledWith([event.eventId], tx);
   });
 
-  it("does not touch a Wallet for non-points events", async () => {
+  it("passes every event type to every projection — filtering is the projection's job", async () => {
     const event = voteCast({ pin: "AB12", byUser: "u1", forUser: "u2", direction: 1 });
     outbox.pullUnprocessed.mockResolvedValueOnce([stored(event)]).mockResolvedValue([]);
 
     await drainer().drain();
 
-    expect(wallet.credit).not.toHaveBeenCalled();
-    expect(badges.apply).toHaveBeenCalledWith(event, tx);
+    expect(projectionA.apply).toHaveBeenCalledWith(event, tx);
+    expect(projectionB.apply).toHaveBeenCalledWith(event, tx);
     expect(outbox.markProcessed).toHaveBeenCalledWith([event.eventId], tx);
   });
 
@@ -67,7 +66,7 @@ describe("OutboxDrainer", () => {
     const gate = new Promise<void>((r) => (release = r));
     const event = pointsAwarded({ pin: "AB12", userId: "u1", amount: 1, reason: "voteReceived" });
     outbox.pullUnprocessed.mockResolvedValueOnce([stored(event)]).mockResolvedValue([]);
-    wallet.credit.mockImplementationOnce(async () => {
+    projectionA.apply.mockImplementationOnce(async () => {
       await gate; // hold the first drain open
     });
 

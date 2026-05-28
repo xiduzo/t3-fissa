@@ -1,16 +1,17 @@
 import type { DB } from "@fissa/db";
 
-import type { BadgeProjection } from "../projection/BadgeProjection";
+import type { EventProjection } from "../projection/EventProjection";
 import type { OutboxRepository } from "../repository/OutboxRepository";
-import type { WalletRepository } from "../repository/WalletRepository";
 
 /**
- * Drains the transactional outbox into the eventual read models — the Wallet
- * (points balances) and the Badge projection (ADR-0001).
+ * Drains the transactional outbox into every registered {@link EventProjection}
+ * (ADR-0001 — Wallet credits, Badge counts).
  *
- * Single worker, one event per transaction: the fold and the "mark processed"
- * commit together, so an event is applied exactly once even though delivery is
- * at-least-once. Earning points is what lags here; spending never waits on it.
+ * Single worker, one event per transaction: every projection's fold and the
+ * "mark processed" commit together, so an event is applied exactly once even
+ * though delivery is at-least-once. The drainer is event-type-blind; each
+ * projection owns its own filter. Earning points lags here; spending never
+ * waits on it.
  */
 export class OutboxDrainer {
   private running = false;
@@ -18,8 +19,7 @@ export class OutboxDrainer {
   constructor(
     private readonly db: DB,
     private readonly outbox: OutboxRepository,
-    private readonly wallet: WalletRepository,
-    private readonly badges: BadgeProjection,
+    private readonly projections: EventProjection[],
   ) {}
 
   /** Drain all currently-pending events. Returns how many were applied. */
@@ -33,10 +33,9 @@ export class OutboxDrainer {
       while (pending.length) {
         for (const { id, event } of pending) {
           await this.db.transaction(async (tx) => {
-            if (event.type === "PointsAwarded") {
-              await this.wallet.credit(event.pin, event.userId, event.amount, tx);
+            for (const projection of this.projections) {
+              await projection.apply(event, tx);
             }
-            await this.badges.apply(event, tx);
             await this.outbox.markProcessed([id], tx);
           });
           applied++;

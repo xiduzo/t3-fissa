@@ -16,6 +16,7 @@ import {
   WalletRepository,
 } from "./repository";
 import { BadgeProjection } from "./projection/BadgeProjection";
+import { WalletProjection } from "./projection/WalletProjection";
 import { OutboxDrainer } from "./orchestration/OutboxDrainer";
 import type { Context } from "./utils/context";
 
@@ -65,10 +66,8 @@ export const createContainer = (ctx: Context): ServiceContainer => {
  * server starts a single instance so event folds stay serialized and idempotent.
  */
 export const createOutboxDrainer = (db: DB): OutboxDrainer => {
-  return new OutboxDrainer(
-    db,
-    new OutboxRepository(db),
-    new WalletRepository(db),
+  return new OutboxDrainer(db, new OutboxRepository(db), [
+    new WalletProjection(new WalletRepository(db)),
     new BadgeProjection(db),
-  );
+  ]);
 };
