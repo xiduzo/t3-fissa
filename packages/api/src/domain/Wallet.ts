@@ -23,6 +23,19 @@ export class InsufficientPoints extends Error {
   }
 }
 
+/**
+ * Raised when a guest tries to act on a Wallet for a fissa they're not a
+ * member of. Distinct from a member with a zero balance — that's
+ * {@link InsufficientPoints}. Keeping the two errors separate stops a
+ * non-member spend looking like a normal "you can't afford this" message.
+ */
+export class NotAMember extends Error {
+  constructor(readonly pin: string, readonly userId: string) {
+    super(`User ${userId} is not a member of fissa ${pin}`);
+    this.name = "NotAMember";
+  }
+}
+
 export class Wallet {
   private constructor(
     readonly pin: string,

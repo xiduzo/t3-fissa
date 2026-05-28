@@ -33,15 +33,21 @@ export class WalletRepository {
       });
   };
 
-  /** Load the wallet with a row lock so a concurrent spend can't race the floor. */
-  withLock = async (pin: string, userId: string, tx: Executor): Promise<Wallet> => {
+  /**
+   * Load the wallet with a row lock so a concurrent spend can't race the floor.
+   * Returns `null` if the guest is not a member of this fissa (no row to lock)
+   * — the caller distinguishes "non-member tried to spend" from "member with
+   * zero balance" instead of letting the second one masquerade as the first.
+   */
+  withLock = async (pin: string, userId: string, tx: Executor): Promise<Wallet | null> => {
     const [row] = await tx
       .select({ points: usersInFissas.points })
       .from(usersInFissas)
       .where(and(eq(usersInFissas.pin, pin), eq(usersInFissas.userId, userId)))
       .for("update");
 
-    return Wallet.load(pin, userId, row?.points ?? 0);
+    if (!row) return null;
+    return Wallet.load(pin, userId, row.points);
   };
 
   save = async (wallet: Wallet, tx: Executor): Promise<void> => {
