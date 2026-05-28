@@ -1,7 +1,7 @@
 import { fissas, tracks, usersInFissas, votes, type DB } from "@fissa/db";
 import { count, eq, isNotNull } from "drizzle-orm";
 
-import type { ActiveFissa, FissaDetailedForSync, FissaOwnerAccount, FissaWithRelations, IFissaRepository } from "../interfaces";
+import type { ActiveFissa, FissaForDisplay, FissaForSync, FissaOwnerAccount, IFissaRepository } from "../interfaces";
 import type { Fissa } from "@fissa/db";
 
 export class FissaRepository implements IFissaRepository {
@@ -25,17 +25,17 @@ export class FissaRepository implements IFissaRepository {
     });
   };
 
-  findByPinWithRelations = async (pin: string): Promise<FissaWithRelations | undefined> => {
+  findForDisplay = async (pin: string): Promise<FissaForDisplay | undefined> => {
     return this.db.query.fissas.findFirst({
       where: eq(fissas.pin, pin),
       with: {
         by: { columns: { email: true } },
         tracks: { with: { by: { columns: { email: true } } } },
       },
-    }) as Promise<FissaWithRelations | undefined>;
+    }) as Promise<FissaForDisplay | undefined>;
   };
 
-  findDetailedForSync = async (pin: string): Promise<FissaDetailedForSync> => {
+  findForSync = async (pin: string): Promise<FissaForSync> => {
     const data = await this.db.query.fissas.findFirst({
       where: eq(fissas.pin, pin),
       columns: { pin: true, expectedEndTime: true },

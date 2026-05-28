@@ -72,7 +72,7 @@ export class PlaybackService {
     retriedRecommendations = false,
   ): Promise<Date | null> => {
     const { by, trackList: fissaTracks, currentlyPlaying, expectedEndTime } =
-      await this.fissaRepo.findDetailedForSync(pin);
+      await this.fissaRepo.findForSync(pin);
 
     if (!by?.accessToken) throw new NotAbleToAccessSpotify();
     const { accessToken } = by;

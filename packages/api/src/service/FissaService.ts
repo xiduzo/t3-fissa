@@ -88,7 +88,7 @@ export class FissaService {
   };
 
   byId = async (pin: string, userId?: string) => {
-    const fissa = await this.fissaRepo.findByPinWithRelations(pin);
+    const fissa = await this.fissaRepo.findForDisplay(pin);
 
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
 
