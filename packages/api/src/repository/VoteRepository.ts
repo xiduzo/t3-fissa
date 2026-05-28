@@ -29,4 +29,12 @@ export class VoteRepository implements IVoteRepository {
       where: and(eq(votes.pin, pin), eq(votes.userId, userId)),
     });
   };
+
+  getScoresByFissa = async (pin: string): Promise<Map<string, number>> => {
+    const allVotes = await this.findByFissa(pin);
+    return allVotes.reduce(
+      (acc, { trackId, vote }) => acc.set(trackId, (acc.get(trackId) ?? 0) + vote),
+      new Map<string, number>(),
+    );
+  };
 }

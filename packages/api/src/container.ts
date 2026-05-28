@@ -22,14 +22,15 @@ import type { Context } from "./utils/context";
 
 /**
  * Per-request services plus the repositories procedures call directly. A
- * repository is exposed here when its writes need no orchestration beyond the
- * repo's own transactional methods — currently `TrackRepository`, whose
- * `addTracks` / `delete` / `findByPin` had only thin pass-throughs above them.
+ * repository is exposed here when its reads/writes need no orchestration
+ * beyond the repo's own transactional methods — `TrackRepository` (queue
+ * add/delete/read) and `VoteRepository` (raw vote rows + score read model).
  */
 export type ServiceContainer = {
   fissaService: FissaService;
   playbackService: PlaybackService;
   trackRepo: TrackRepository;
+  voteRepo: VoteRepository;
   voteService: VoteService;
   walletService: WalletService;
   authService: AuthService;
@@ -52,13 +53,13 @@ export const createContainer = (ctx: Context): ServiceContainer => {
   // Domain services (wired bottom-up: no circular deps). Points earning is
   // written to the outbox here and folded into Wallets/Badges by the drainer
   // (ADR-0001); only spending touches a Wallet synchronously.
-  const voteService = new VoteService(voteRepo, db, trackRepo);
+  const voteService = new VoteService(db, trackRepo);
   const playbackService = new PlaybackService(fissaRepo, trackRepo, spotify, db, session);
   const fissaService = new FissaService(fissaRepo, trackRepo, playbackService, outboxRepo, db);
   const walletService = new WalletService(walletRepo, db);
   const authService = new AuthService(userRepo, spotify, session);
 
-  return { fissaService, playbackService, trackRepo, voteService, walletService, authService };
+  return { fissaService, playbackService, trackRepo, voteRepo, voteService, walletService, authService };
 };
 
 /**
