@@ -1,9 +1,12 @@
 import { tracks, votes, type DB, type Track } from "@fissa/db";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
-import type { Executor, ITrackRepository, InsertTrackInput } from "../interfaces";
+import type { AddTracksInput, Executor, ITrackRepository, InsertTrackInput } from "../interfaces";
 import type { Track as TrackAggregate, TrackOutcome } from "../domain/Track";
+import { trackAdded } from "../domain/events";
 import type { OutboxRepository } from "./OutboxRepository";
+
+const SELF_VOTE: 1 = 1;
 
 export class TrackRepository implements ITrackRepository {
   constructor(
@@ -26,6 +29,43 @@ export class TrackRepository implements ITrackRepository {
     await this.db
       .delete(tracks)
       .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)));
+  };
+
+  addTracks = async (
+    pin: string,
+    trackList: AddTracksInput[],
+    userId: string,
+  ): Promise<void> => {
+    if (!trackList.length) return;
+    const trackIds = trackList.map(({ trackId }) => trackId);
+
+    await this.db.transaction(async (tx) => {
+      await tx
+        .insert(tracks)
+        .values(trackList.map((track) => ({ ...track, userId, pin })))
+        .onConflictDoNothing();
+
+      await tx
+        .delete(votes)
+        .where(
+          and(eq(votes.pin, pin), inArray(votes.trackId, trackIds), eq(votes.userId, userId)),
+        );
+
+      await tx
+        .update(tracks)
+        .set({
+          score: sql`${tracks.score} + ${SELF_VOTE}`,
+          totalScore: sql`${tracks.totalScore} + ${SELF_VOTE}`,
+          hasBeenPlayed: false,
+        })
+        .where(and(eq(tracks.pin, pin), inArray(tracks.trackId, trackIds)));
+
+      await tx
+        .insert(votes)
+        .values(trackIds.map((trackId) => ({ pin, trackId, vote: SELF_VOTE, userId })));
+
+      await this.outbox.append([trackAdded({ pin, userId, count: trackList.length })], tx);
+    });
   };
 
   applyOutcome = async (

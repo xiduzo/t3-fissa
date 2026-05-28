@@ -1,5 +1,5 @@
 import { tracks, votes, type DB } from "@fissa/db";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import type { ITrackRepository, IVoteRepository, Vote } from "../interfaces";
 import { Track } from "../domain/Track";
@@ -74,36 +74,6 @@ export class VoteService {
         .returning();
 
       return result;
-    });
-  };
-
-  /**
-   * Bulk auto-upvotes applied when a guest adds tracks they queued themselves.
-   * These are self-votes — no points change hands — so no events are raised.
-   */
-  createVotes = async (
-    pin: string,
-    trackIds: string[],
-    vote: number,
-    userId: string,
-  ): Promise<void> => {
-    await this.db.transaction(async (tx) => {
-      await tx
-        .delete(votes)
-        .where(and(eq(votes.pin, pin), inArray(votes.trackId, trackIds), eq(votes.userId, userId)));
-
-      await tx
-        .update(tracks)
-        .set({
-          score: sql`${tracks.score} + ${vote}`,
-          totalScore: sql`${tracks.totalScore} + ${vote}`,
-          hasBeenPlayed: false,
-        })
-        .where(and(eq(tracks.pin, pin), inArray(tracks.trackId, trackIds)));
-
-      await tx
-        .insert(votes)
-        .values(trackIds.map((trackId) => ({ pin, trackId, vote, userId })));
     });
   };
 

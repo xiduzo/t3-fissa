@@ -17,15 +17,14 @@ const deleteTrack = z.object({
 
 export const trackRouter = createTRPCRouter({
   byPin: protectedProcedure.input(Z_PIN).query(({ ctx, input }) => {
-    return createContainer(ctx).trackService.byPin(input);
+    return createContainer(ctx).trackRepo.findByPin(input);
   }),
   addTracks: protectedProcedure.input(addTracks).mutation(async ({ ctx, input }) => {
-    const result = await createContainer(ctx).trackService.addTracks(input.pin, input.tracks, ctx.session.user.id);
+    await createContainer(ctx).trackRepo.addTracks(input.pin, input.tracks, ctx.session.user.id);
     fissaEvents.publish(input.pin);
-    return result;
   }),
   deleteTrack: protectedProcedure.input(deleteTrack).mutation(async ({ ctx, input }) => {
-    await createContainer(ctx).trackService.deleteTrack(input.pin, input.trackId);
+    await createContainer(ctx).trackRepo.delete(input.pin, input.trackId);
     fissaEvents.publish(input.pin);
   }),
 });
