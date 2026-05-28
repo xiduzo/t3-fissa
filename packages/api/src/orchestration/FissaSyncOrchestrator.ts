@@ -1,5 +1,6 @@
 import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
 
+import { playbackScheduleEvents } from "../events/PlaybackScheduleEvents";
 import type { ActiveFissa } from "../interfaces";
 
 export interface IFissaSyncCaller {
@@ -82,13 +83,22 @@ export class FissaSyncOrchestrator {
 
     const recoveryInterval = setInterval(() => void this.recoveryScan(), this.RECOVERY_INTERVAL_MS);
     const tokenInterval = setInterval(() => void this.syncTokens(), this.TOKEN_REFRESH_INTERVAL_MS);
+    const unsubscribe = playbackScheduleEvents.subscribe((pin, expectedEndTime) =>
+      this.arm({ pin, expectedEndTime }),
+    );
 
     return () => {
       clearInterval(recoveryInterval);
       clearInterval(tokenInterval);
+      unsubscribe();
       for (const timeout of this.pendingTracks.values()) clearTimeout(timeout);
       this.pendingTracks.clear();
     };
+  }
+
+  /** Arm (or re-arm) the end-of-track timer for a fissa whose pointer just moved. */
+  arm(fissa: ActiveFissa): void {
+    this.scheduleNextTrack(fissa);
   }
 
   private scheduleNextTrack(fissa: ActiveFissa): void {

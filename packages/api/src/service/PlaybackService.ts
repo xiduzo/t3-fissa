@@ -14,9 +14,18 @@ import type { Session } from "@fissa/auth";
 
 import type { IFissaRepository, ISpotifyService, ITrackRepository } from "../interfaces";
 import { Track as TrackAggregate } from "../domain/Track";
+import { playbackScheduleEvents } from "../events/PlaybackScheduleEvents";
 
 /** Once the upcoming queue falls to this many tracks, top it up with recommendations. */
 export const TRACKS_BEFORE_ADDING_RECOMMENDATIONS = 3;
+
+/**
+ * Tolerance window for "track ended naturally" vs "user paused mid-track".
+ * If Spotify reports `is_playing=false` and we're at-or-past expectedEndTime
+ * (minus this slack for clock drift), we treat it as a natural end and
+ * advance; otherwise we honour the owner's pause and stop the fissa.
+ */
+const TRACK_END_TOLERANCE_MS = 10_000;
 
 /**
  * Playback engine (see CONTEXT.md) — decides what plays next and when, drives
@@ -70,8 +79,17 @@ export class PlaybackService {
 
     try {
       if (!forceToPlay) {
+        if (!currentlyPlaying?.trackId) throw new ForceStopFissa();
+
         const isPlaying = await this.spotifyService.isStillPlaying(accessToken);
-        if (!isPlaying || !currentlyPlaying?.trackId) throw new ForceStopFissa();
+        if (!isPlaying) {
+          // Distinguish "owner paused on Spotify" from "track ended naturally":
+          // Spotify reports is_playing=false in both cases, but only the latter
+          // happens at/after expectedEndTime. Stopping mid-track honours pause;
+          // advancing at the end is the whole point of the sync loop.
+          const msUntilEnd = differenceInMilliseconds(expectedEndTime, new Date());
+          if (msUntilEnd > TRACK_END_TOLERANCE_MS) throw new ForceStopFissa();
+        }
       }
 
       const [nextTrack, ...nextTracks] = this.getNextTracks(fissaTracks, currentlyPlaying?.trackId);
@@ -155,6 +173,9 @@ export class PlaybackService {
       return this.playNext(pin, true);
     }
 
+    // Arm the orchestrator's end-of-track timer immediately, without waiting
+    // for the next 5-min recovery scan. Single source of truth for advances.
+    playbackScheduleEvents.publish(pin, newExpectedEndTime);
     return newExpectedEndTime;
   };
 
