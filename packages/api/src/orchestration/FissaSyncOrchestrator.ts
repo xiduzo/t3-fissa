@@ -1,35 +1,35 @@
-import { addSeconds, differenceInMilliseconds } from "@fissa/utils";
-
 import { playbackScheduleEvents } from "../events/PlaybackScheduleEvents";
 import type { ActiveFissa } from "../interfaces";
+import { EndOfTrackTimer, type EndOfTrackCaller } from "./EndOfTrackTimer";
 
-export interface IFissaSyncCaller {
+export interface IFissaSyncCaller extends EndOfTrackCaller {
   getActiveFissas(): Promise<ActiveFissa[]>;
-  playNextTrack(pin: string): Promise<Date | null>;
   refreshToken(pin: string): Promise<unknown>;
 }
 
 /**
- * Orchestrates background sync loops for active fissas.
+ * Orchestrates background work for active fissas.
  *
- * Normal path: event-driven. After each playNextTrack resolves with a new
- * expectedEndTime, the next track is scheduled immediately — no polling.
+ * - **End-of-track**: event-driven. After each playNextTrack resolves with a
+ *   new expectedEndTime, {@link EndOfTrackTimer} arms a recursive halving
+ *   timer — no polling.
+ * - **Recovery**: a light scan every RECOVERY_INTERVAL_MS catches any fissa
+ *   that lost its schedule (e.g. after a server restart).
+ * - **Token refresh**: every TOKEN_REFRESH_INTERVAL_MS, refresh each active
+ *   fissa's Spotify access token before it expires.
  *
- * Recovery: a light scan every RECOVERY_INTERVAL_MS catches any fissas that
- * lost their schedule (e.g. after a server restart).
- *
- * Near end-of-track: recursive halving fires validation checkpoints at
- * decreasing intervals so drift is caught early.
+ * The novel halving algorithm lives in EndOfTrackTimer where it can be tested
+ * with a fake clock; the cron scans here are trivial setInterval loops.
  */
 export class FissaSyncOrchestrator {
   private readonly RECOVERY_INTERVAL_MS = 5 * 60 * 1000;
   private readonly TOKEN_REFRESH_INTERVAL_MS = 55_000;
-  private readonly WIGGLE_S = 5;
-  private readonly MIN_CHECK_DELAY_MS = 500;
 
-  private readonly pendingTracks = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly timer: EndOfTrackTimer;
 
-  constructor(private readonly caller: IFissaSyncCaller) {}
+  constructor(private readonly caller: IFissaSyncCaller) {
+    this.timer = new EndOfTrackTimer(caller);
+  }
 
   async bootScan(): Promise<void> {
     try {
@@ -37,7 +37,7 @@ export class FissaSyncOrchestrator {
       if (!fissas?.length) return;
 
       for (const fissa of fissas) {
-        this.scheduleNextTrack(fissa);
+        this.timer.arm(fissa);
       }
     } catch (err) {
       console.error("[sync] boot scan error", err);
@@ -50,10 +50,10 @@ export class FissaSyncOrchestrator {
       if (!fissas?.length) return;
 
       for (const fissa of fissas) {
-        if (this.pendingTracks.has(fissa.pin)) continue;
+        if (this.timer.isArmed(fissa.pin)) continue;
 
         console.warn(`[sync] ${fissa.pin} — recovered missing schedule`);
-        this.scheduleNextTrack(fissa);
+        this.timer.arm(fissa);
       }
     } catch (err) {
       console.error("[sync] recovery scan error", err);
@@ -84,50 +84,19 @@ export class FissaSyncOrchestrator {
     const recoveryInterval = setInterval(() => void this.recoveryScan(), this.RECOVERY_INTERVAL_MS);
     const tokenInterval = setInterval(() => void this.syncTokens(), this.TOKEN_REFRESH_INTERVAL_MS);
     const unsubscribe = playbackScheduleEvents.subscribe((pin, expectedEndTime) =>
-      this.arm({ pin, expectedEndTime }),
+      this.timer.arm({ pin, expectedEndTime }),
     );
 
     return () => {
       clearInterval(recoveryInterval);
       clearInterval(tokenInterval);
       unsubscribe();
-      for (const timeout of this.pendingTracks.values()) clearTimeout(timeout);
-      this.pendingTracks.clear();
+      this.timer.cancelAll();
     };
   }
 
   /** Arm (or re-arm) the end-of-track timer for a fissa whose pointer just moved. */
   arm(fissa: ActiveFissa): void {
-    this.scheduleNextTrack(fissa);
-  }
-
-  private scheduleNextTrack(fissa: ActiveFissa): void {
-    try {
-      clearTimeout(this.pendingTracks.get(fissa.pin));
-
-      const endTime = addSeconds(fissa.expectedEndTime, -this.WIGGLE_S);
-      const delay = differenceInMilliseconds(endTime, new Date());
-
-      if (delay <= this.MIN_CHECK_DELAY_MS) {
-        this.pendingTracks.delete(fissa.pin);
-        this.caller
-          .playNextTrack(fissa.pin)
-          .then((nextExpectedEndTime) => {
-            if (!nextExpectedEndTime) return;
-            this.scheduleNextTrack({ pin: fissa.pin, expectedEndTime: nextExpectedEndTime });
-          })
-          .catch((err: unknown) => console.error(`[sync] ${fissa.pin} failed`, err));
-        return;
-      }
-
-      console.info(`[sync] ${fissa.pin} — next track in ${delay}ms`);
-
-      this.pendingTracks.set(
-        fissa.pin,
-        setTimeout(() => this.scheduleNextTrack(fissa), delay / 2),
-      );
-    } catch (err) {
-      console.error(`[sync] ${fissa.pin} error`, err);
-    }
+    this.timer.arm(fissa);
   }
 }
