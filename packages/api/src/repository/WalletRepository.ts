@@ -1,6 +1,7 @@
 import { usersInFissas, type DB } from "@fissa/db";
 import { and, eq, sql } from "drizzle-orm";
 
+import { STARTING_BALANCE } from "../domain/pointsPolicy";
 import { Wallet } from "../domain/Wallet";
 
 type Executor = DB | Parameters<Parameters<DB["transaction"]>[0]>[0];
@@ -17,7 +18,7 @@ type Executor = DB | Parameters<Parameters<DB["transaction"]>[0]>[0];
 export class WalletRepository {
   constructor(private readonly db: DB) {}
 
-  /** Additive credit (or penalty). Seeds a wallet at the starting 50 if absent. */
+  /** Additive credit (or penalty). Seeds a wallet at the starting balance if absent. */
   credit = async (
     pin: string,
     userId: string,
@@ -26,7 +27,7 @@ export class WalletRepository {
   ): Promise<void> => {
     await tx
       .insert(usersInFissas)
-      .values({ pin, userId, points: 50 + amount })
+      .values({ pin, userId, points: STARTING_BALANCE + amount })
       .onConflictDoUpdate({
         target: [usersInFissas.pin, usersInFissas.userId],
         set: { points: sql`${usersInFissas.points} + ${amount}` },

@@ -31,9 +31,11 @@ export type ServiceContainer = {
   playbackService: PlaybackService;
   trackRepo: TrackRepository;
   voteRepo: VoteRepository;
+  userRepo: UserRepository;
   voteService: VoteService;
   walletService: WalletService;
   authService: AuthService;
+  spotify: SpotifyService;
 };
 
 export const createContainer = (ctx: Context): ServiceContainer => {
@@ -59,7 +61,7 @@ export const createContainer = (ctx: Context): ServiceContainer => {
   const walletService = new WalletService(walletRepo, db);
   const authService = new AuthService(userRepo, spotify, session);
 
-  return { fissaService, playbackService, trackRepo, voteRepo, voteService, walletService, authService };
+  return { fissaService, playbackService, trackRepo, voteRepo, userRepo, voteService, walletService, authService, spotify };
 };
 
 /**

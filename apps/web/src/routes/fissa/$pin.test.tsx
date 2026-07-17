@@ -994,16 +994,16 @@ describe("/fissa/$pin — Upcoming tracks list (Task #61)", () => {
     expect(items[0]).toHaveAttribute("data-trackid", "track-3");
   });
 
-  it("renders tracks sorted by totalScore descending in the queue", () => {
+  it("renders tracks in the server's play order (score descending) in the queue", () => {
     mockUseQuery.mockReturnValue({
       data: {
         pin: "ABC123",
         currentlyPlayingId: "track-1",
         tracks: [
-          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 0, totalScore: 5 },
-          { trackId: "track-low", hasBeenPlayed: false, durationMs: 180000, score: 0, totalScore: 1 },
-          { trackId: "track-high", hasBeenPlayed: false, durationMs: 200000, score: 0, totalScore: 9 },
-          { trackId: "track-mid", hasBeenPlayed: false, durationMs: 200000, score: 0, totalScore: 4 },
+          { trackId: "track-1", hasBeenPlayed: false, durationMs: 210000, score: 5, totalScore: 5 },
+          { trackId: "track-low", hasBeenPlayed: false, durationMs: 180000, score: 1, totalScore: 1 },
+          { trackId: "track-high", hasBeenPlayed: false, durationMs: 200000, score: 9, totalScore: 9 },
+          { trackId: "track-mid", hasBeenPlayed: false, durationMs: 200000, score: 4, totalScore: 4 },
         ],
       },
       isLoading: false,

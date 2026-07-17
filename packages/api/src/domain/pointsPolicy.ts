@@ -16,6 +16,13 @@ import type { VoteDirection } from "./events";
 export const SKIP_PENALTY = -5;
 
 /**
+ * Every Wallet starts at 50 points when a guest first joins a Fissa
+ * (CONTEXT.md). Mirrored by the `users_in_fissas.points` column default in
+ * `@fissa/db` — keep the two in step.
+ */
+export const STARTING_BALANCE = 50;
+
+/**
  * The delta a single re-castable vote applies to a track's score. Re-casting
  * replaces the prior vote, so the change is `next - previous`, never doubled.
  * A first vote has `previous = 0`.

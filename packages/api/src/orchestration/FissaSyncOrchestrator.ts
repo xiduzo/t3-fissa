@@ -94,9 +94,4 @@ export class FissaSyncOrchestrator {
       this.timer.cancelAll();
     };
   }
-
-  /** Arm (or re-arm) the end-of-track timer for a fissa whose pointer just moved. */
-  arm(fissa: ActiveFissa): void {
-    this.timer.arm(fissa);
-  }
 }

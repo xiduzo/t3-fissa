@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { createContainer } from "../container";
-import { fissaEvents } from "../events/FissaEvents";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { Z_PIN, Z_TRACK_ID } from "./constants";
 
@@ -36,10 +35,7 @@ export const voteRouter = createTRPCRouter({
     );
     return result ?? null;
   }),
-  create: protectedProcedure.input(createVote).mutation(async ({ ctx, input }) => {
-    const result = await createContainer(ctx).voteService.createVote(input.pin, input.trackId, input.vote, ctx.session.user.id);
-    // A vote reorders the queue — notify subscribers of this Fissa.
-    fissaEvents.publish(input.pin);
-    return result;
+  create: protectedProcedure.input(createVote).mutation(({ ctx, input }) => {
+    return createContainer(ctx).voteService.createVote(input.pin, input.trackId, input.vote, ctx.session.user.id);
   }),
 });

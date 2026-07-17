@@ -2,8 +2,9 @@ import { tracks, votes, type DB, type Track } from "@fissa/db";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
 import type { AddTracksInput, Executor, ITrackRepository, InsertTrackInput } from "../interfaces";
-import type { Track as TrackAggregate, TrackOutcome } from "../domain/Track";
+import { Track as TrackAggregate, type TrackOutcome } from "../domain/Track";
 import { trackAdded } from "../domain/events";
+import { fissaEvents } from "../events/FissaEvents";
 import type { OutboxRepository } from "./OutboxRepository";
 
 const SELF_VOTE: 1 = 1;
@@ -20,6 +21,20 @@ export class TrackRepository implements ITrackRepository {
     });
   };
 
+  load = async (
+    pin: string,
+    trackId: string,
+    tx: Executor = this.db,
+  ): Promise<TrackAggregate | null> => {
+    const [row] = await tx
+      .select({ userId: tracks.userId, score: tracks.score })
+      .from(tracks)
+      .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)));
+
+    if (!row) return null;
+    return new TrackAggregate(pin, trackId, row.userId ?? null, row.score);
+  };
+
   insertMany = async (input: InsertTrackInput[]): Promise<void> => {
     if (!input.length) return;
     await this.db.insert(tracks).values(input).onConflictDoNothing();
@@ -29,6 +44,7 @@ export class TrackRepository implements ITrackRepository {
     await this.db
       .delete(tracks)
       .where(and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)));
+    fissaEvents.publish(pin);
   };
 
   addTracks = async (
@@ -66,6 +82,8 @@ export class TrackRepository implements ITrackRepository {
 
       await this.outbox.append([trackAdded({ pin, userId, count: trackList.length })], tx);
     });
+
+    fissaEvents.publish(pin);
   };
 
   applyOutcome = async (

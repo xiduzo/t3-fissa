@@ -1,4 +1,4 @@
-import { fissas, type Track, type DB } from "@fissa/db";
+import { type Track, type DB } from "@fissa/db";
 import {
   addMilliseconds,
   biasSort,
@@ -9,11 +9,10 @@ import {
   sleep,
   sortFissaTracksOrder,
 } from "@fissa/utils";
-import { eq } from "drizzle-orm";
 import type { Session } from "@fissa/auth";
 
 import type { IFissaRepository, ISpotifyService, ITrackRepository } from "../interfaces";
-import { Track as TrackAggregate } from "../domain/Track";
+import { fissaEvents } from "../events/FissaEvents";
 import { playbackScheduleEvents } from "../events/PlaybackScheduleEvents";
 
 /** Once the upcoming queue falls to this many tracks, top it up with recommendations. */
@@ -111,10 +110,13 @@ export class PlaybackService {
       // the orchestrator's seam. Left as-is to keep this a behaviour-preserving split.
       const timeToPlay = forceToPlay ? new Date() : expectedEndTime;
       await sleep(differenceInMilliseconds(timeToPlay, new Date()));
-      return await this.playTrack(pin, nextTrack as Track, accessToken, currentlyPlaying);
+      const result = await this.playTrack(pin, nextTrack as Track, accessToken, currentlyPlaying);
+      fissaEvents.publish(pin);
+      return result;
     } catch (e) {
       console.error(e);
       await this.stop(pin, accessToken);
+      fissaEvents.publish(pin);
       return null;
     }
   };
@@ -133,7 +135,7 @@ export class PlaybackService {
     pin: string,
     { trackId, durationMs }: Pick<Track, "trackId" | "durationMs">,
     accessToken: string,
-    currentlyPlaying?: { trackId?: string; score?: number; by?: { userId: string } },
+    currentlyPlaying?: { trackId?: string },
   ): Promise<Date | null> => {
     const playing = this.spotifyService.playTrack(accessToken, trackId);
     const newExpectedEndTime = addMilliseconds(new Date(), durationMs);
@@ -142,25 +144,15 @@ export class PlaybackService {
       if (currentlyPlaying?.trackId) {
         // The Track owns the crowd-driven play reward (its net vote score) and
         // raises the PointsAwarded event; the reward is eventual, folded into
-        // the Wallet from the outbox (ADR-0001). applyOutcome resets the score,
-        // marks it played, clears its votes, and appends the event in this tx.
-        const track = new TrackAggregate(
-          pin,
-          currentlyPlaying.trackId,
-          currentlyPlaying.by?.userId ?? null,
-          currentlyPlaying.score ?? 0,
-        );
-        await this.trackRepo.applyOutcome(track, track.play(), tx);
+        // the Wallet from the outbox (ADR-0001). Loading under this tx pays
+        // the committed score — concurrent votes can't skew the reward.
+        // applyOutcome resets the score, marks it played, clears its votes,
+        // and appends the event in the same tx.
+        const track = await this.trackRepo.load(pin, currentlyPlaying.trackId, tx);
+        if (track) await this.trackRepo.applyOutcome(track, track.play(), tx);
       }
 
-      await tx
-        .update(fissas)
-        .set({
-          currentlyPlayingId: trackId,
-          currentlyPlayingPin: pin,
-          expectedEndTime: newExpectedEndTime,
-        })
-        .where(eq(fissas.pin, pin));
+      await this.fissaRepo.setCurrentlyPlaying(pin, trackId, newExpectedEndTime, tx);
     });
 
     if (!(await playing)) {

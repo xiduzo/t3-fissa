@@ -1,10 +1,14 @@
 import { type FC } from "react";
+import { sortFissaTracksOrder } from "@fissa/utils";
 
 interface QueueTrack {
   trackId: string;
+  score: number;
   totalScore: number;
   hasBeenPlayed: boolean;
   durationMs: number;
+  createdAt: Date;
+  lastUpdateAt: Date;
 }
 
 interface QueueTrackListProps {
@@ -18,14 +22,14 @@ interface QueueTrackListProps {
 }
 
 /**
- * Renders the upcoming tracks queue sorted by totalScore descending.
- * Each track shows artwork (Spotify CDN), track identifier, and vote tally.
- * Defensively filters out already-played tracks.
+ * Renders the upcoming tracks queue in the order the server will actually play
+ * them — the shared `sortFissaTracksOrder` (score desc, then age), the same
+ * module Playback and the Expo client use. Each track shows artwork (Spotify
+ * CDN), track identifier, and vote tally. Defensively filters out
+ * already-played tracks.
  */
 export const QueueTrackList: FC<QueueTrackListProps> = ({ tracks, isAuthenticated = false, currentlyPlayingId, userVotes, onVote, voteErrors, onRetryVote }) => {
-  const sorted = [...tracks]
-    .filter((t) => !t.hasBeenPlayed)
-    .sort((a, b) => b.totalScore - a.totalScore);
+  const sorted = sortFissaTracksOrder(tracks.filter((t) => !t.hasBeenPlayed));
 
   return (
     <ul data-testid="track-list" className="flex flex-col gap-3">

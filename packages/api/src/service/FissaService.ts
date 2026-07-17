@@ -1,16 +1,16 @@
-import { type Fissa, type Track, tracks, usersInFissas, type DB } from "@fissa/db";
+import { type Fissa, type Track, usersInFissas, type DB } from "@fissa/db";
 import {
   addMilliseconds,
   NotAbleToAccessSpotify,
   randomize,
   UnableToCreateFissa,
 } from "@fissa/utils";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 import type { IFissaRepository, ITrackRepository } from "../interfaces";
 import type { OutboxRepository } from "../repository/OutboxRepository";
 import { Fissa as FissaAggregate, type FissaOutcome } from "../domain/Fissa";
-import { Track as TrackAggregate } from "../domain/Track";
+import { fissaEvents } from "../events/FissaEvents";
 import type { PlaybackService } from "./PlaybackService";
 
 /**
@@ -84,6 +84,7 @@ export class FissaService {
     );
     await this.outbox.append([FissaAggregate.created(fissa.pin, userId)]);
 
+    fissaEvents.publish(fissa.pin);
     return fissa;
   };
 
@@ -107,6 +108,7 @@ export class FissaService {
     // The aggregate owns the "host isn't joining their own party" rule.
     const outcome = this.aggregate(fissa).join(userId);
     await this.carryOut(pin, outcome);
+    fissaEvents.publish(pin);
   };
 
   skipTrack = async (pin: string, userId: string) => {
@@ -117,19 +119,16 @@ export class FissaService {
     const currentlyPlayingId = fissa.currentlyPlayingId!; // non-null once skip() accepts
 
     await this.db.transaction(async (tx) => {
-      const existing = await tx.query.tracks.findFirst({
-        where: and(eq(tracks.pin, pin), eq(tracks.trackId, currentlyPlayingId)),
-        columns: { userId: true, score: true },
-      });
-      if (!existing) return;
-
       // The Track owns the skip penalty and raises the PointsAwarded event;
       // the penalty is eventual, folded into the Wallet from the outbox (ADR-0001).
-      const track = new TrackAggregate(pin, currentlyPlayingId, existing.userId ?? null, existing.score);
+      const track = await this.trackRepo.load(pin, currentlyPlayingId, tx);
+      if (!track) return;
       await this.trackRepo.applyOutcome(track, track.skip(), tx);
     });
 
-    return this.carryOut(pin, outcome);
+    const result = await this.carryOut(pin, outcome);
+    fissaEvents.publish(pin);
+    return result;
   };
 
   restart = async (pin: string, userId: string) => {
@@ -137,7 +136,9 @@ export class FissaService {
     if (!fissa) throw new Error(`Fissa not found: ${pin}`);
 
     const outcome = this.aggregate(fissa).restart(userId); // throws NotTheHost
-    return this.carryOut(pin, outcome);
+    const result = await this.carryOut(pin, outcome);
+    fissaEvents.publish(pin);
+    return result;
   };
 
   pause = async (pin: string, userId: string) => {
@@ -150,6 +151,7 @@ export class FissaService {
     if (!ownerAccount?.accessToken) throw new NotAbleToAccessSpotify();
 
     await this.carryOut(pin, outcome, ownerAccount.accessToken);
+    fissaEvents.publish(pin);
   };
 
   private aggregate = (fissa: { pin: string; userId: string; currentlyPlayingId: string | null }) =>

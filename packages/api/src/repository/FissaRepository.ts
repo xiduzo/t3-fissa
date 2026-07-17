@@ -1,7 +1,7 @@
 import { fissas, tracks, usersInFissas, votes, type DB } from "@fissa/db";
 import { count, eq, isNotNull } from "drizzle-orm";
 
-import type { ActiveFissa, FissaForDisplay, FissaForSync, FissaOwnerAccount, IFissaRepository } from "../interfaces";
+import type { ActiveFissa, Executor, FissaForDisplay, FissaForSync, FissaOwnerAccount, IFissaRepository } from "../interfaces";
 import type { Fissa } from "@fissa/db";
 
 export class FissaRepository implements IFissaRepository {
@@ -41,13 +41,7 @@ export class FissaRepository implements IFissaRepository {
       columns: { pin: true, expectedEndTime: true },
       with: {
         currentlyPlaying: {
-          columns: { trackId: true, score: true },
-          with: {
-            by: {
-              columns: {},
-              with: { accounts: { columns: { userId: true }, limit: 1 } },
-            },
-          },
+          columns: { trackId: true },
         },
         by: {
           columns: {},
@@ -77,11 +71,7 @@ export class FissaRepository implements IFissaRepository {
       trackList: data.tracks,
       by: data.by.accounts[0],
       currentlyPlaying: data.currentlyPlaying
-        ? {
-            trackId: data.currentlyPlaying.trackId,
-            score: data.currentlyPlaying.score,
-            by: data.currentlyPlaying.by?.accounts[0],
-          }
+        ? { trackId: data.currentlyPlaying.trackId }
         : undefined,
     };
   };
@@ -121,8 +111,9 @@ export class FissaRepository implements IFissaRepository {
     pin: string,
     trackId: string,
     expectedEndTime: Date,
+    tx: Executor = this.db,
   ): Promise<void> => {
-    await this.db
+    await tx
       .update(fissas)
       .set({ currentlyPlayingId: trackId, currentlyPlayingPin: pin, expectedEndTime })
       .where(eq(fissas.pin, pin));

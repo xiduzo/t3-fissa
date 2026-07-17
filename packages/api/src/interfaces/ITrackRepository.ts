@@ -20,6 +20,14 @@ export type AddTracksInput = {
 export interface ITrackRepository {
   findByPin(pin: string): Promise<Track[]>;
 
+  /**
+   * Load the Track aggregate root — owner + current score — inside the
+   * caller's transaction, or `null` when no such track is queued. The single
+   * place a raw row becomes a Track aggregate; reading the score under `tx`
+   * means a command always acts on the committed score, not a stale read.
+   */
+  load(pin: string, trackId: string, tx?: Executor): Promise<TrackAggregate | null>;
+
   insertMany(input: InsertTrackInput[]): Promise<void>;
 
   delete(pin: string, trackId: string): Promise<void>;

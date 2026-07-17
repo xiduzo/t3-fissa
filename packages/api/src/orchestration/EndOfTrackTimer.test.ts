@@ -77,6 +77,42 @@ describe("EndOfTrackTimer", () => {
     expect(t.isArmed("AB12")).toBe(false);
   });
 
+  it("a re-arm while playNextTrack is in flight wins over the stale async re-arm", async () => {
+    let resolvePlay!: (d: Date | null) => void;
+    caller.playNextTrack.mockReturnValueOnce(new Promise((r) => (resolvePlay = r)));
+    const t = timer();
+
+    // Track is ending — the timer fires playNextTrack.
+    t.arm({ pin: "AB12", expectedEndTime: addMilliseconds(NOW, 5_000) });
+    expect(caller.playNextTrack).toHaveBeenCalledTimes(1);
+
+    // While the advance is in flight, a skip re-arms with the real new end time.
+    t.arm({ pin: "AB12", expectedEndTime: addMilliseconds(NOW, 300_000) });
+
+    // The in-flight advance resolves late with a now-stale end time — its
+    // re-arm must NOT overwrite the newer schedule.
+    resolvePlay(addMilliseconds(NOW, 30_000));
+    await vi.advanceTimersByTimeAsync(0);
+
+    // Past the stale end time nothing fires; the newer schedule stands.
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(caller.playNextTrack).toHaveBeenCalledTimes(1);
+    expect(t.isArmed("AB12")).toBe(true);
+  });
+
+  it("a halving step from a superseded generation dies instead of resurrecting its end time", async () => {
+    const t = timer();
+    // Old chain halving toward +60s (fires timeouts at 27.5s, ...).
+    t.arm({ pin: "AB12", expectedEndTime: addMilliseconds(NOW, 60_000) });
+    // Restart pushes the end far out; the old chain is now stale.
+    t.arm({ pin: "AB12", expectedEndTime: addMilliseconds(NOW, 600_000) });
+
+    // Run well past the old end time: the stale chain must never fire.
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(caller.playNextTrack).not.toHaveBeenCalled();
+    expect(t.isArmed("AB12")).toBe(true);
+  });
+
   it("cancelAll drops every pending timer", () => {
     const t = timer();
     t.arm({ pin: "AA00", expectedEndTime: addMilliseconds(NOW, 60_000) });

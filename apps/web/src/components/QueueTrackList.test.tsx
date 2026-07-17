@@ -10,12 +10,18 @@ import { render, screen, within, fireEvent } from "@testing-library/react";
 import React from "react";
 import { QueueTrackList } from "./QueueTrackList";
 
-const makeTracks = (overrides: Array<Partial<{ trackId: string; totalScore: number; hasBeenPlayed: boolean; durationMs: number }>>) =>
+const makeTracks = (overrides: Array<Partial<{ trackId: string; score: number; totalScore: number; hasBeenPlayed: boolean; durationMs: number }>>) =>
   overrides.map((t, i) => ({
     trackId: t.trackId ?? `track-${i}`,
+    // The queue orders by score (the server's play order); totalScore is the
+    // displayed lifetime tally. Default them to the same value so fixtures
+    // stay terse.
+    score: t.score ?? t.totalScore ?? 0,
     totalScore: t.totalScore ?? 0,
     hasBeenPlayed: t.hasBeenPlayed ?? false,
     durationMs: t.durationMs ?? 180000,
+    createdAt: new Date(2026, 0, 1, 0, 0, i),
+    lastUpdateAt: new Date(2026, 0, 1, 0, 0, i),
   }));
 
 describe("QueueTrackList", () => {
@@ -44,7 +50,7 @@ describe("QueueTrackList", () => {
     expect(items).toHaveLength(2);
   });
 
-  it("renders tracks sorted by totalScore descending", () => {
+  it("renders tracks in the server's play order (score descending)", () => {
     render(
       <QueueTrackList
         tracks={makeTracks([

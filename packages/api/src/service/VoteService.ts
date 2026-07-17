@@ -1,9 +1,9 @@
-import { tracks, votes, type DB } from "@fissa/db";
+import { votes, type DB } from "@fissa/db";
 import { and, eq } from "drizzle-orm";
 
 import type { ITrackRepository, Vote } from "../interfaces";
-import { Track } from "../domain/Track";
 import type { VoteDirection } from "../domain/events";
+import { fissaEvents } from "../events/FissaEvents";
 
 /**
  * Vote command service. The only thing it owns is `createVote` — load the
@@ -24,18 +24,14 @@ export class VoteService {
     vote: number,
     userId: string,
   ): Promise<Vote | undefined> => {
-    return this.db.transaction(async (tx) => {
-      const existing = await tx.query.tracks.findFirst({
-        where: and(eq(tracks.pin, pin), eq(tracks.trackId, trackId)),
-        columns: { userId: true, score: true },
-      });
-      if (!existing) return undefined;
+    const result = await this.db.transaction(async (tx) => {
+      const track = await this.trackRepo.load(pin, trackId, tx);
+      if (!track) return undefined;
 
       const previous = await tx.query.votes.findFirst({
         where: and(eq(votes.pin, pin), eq(votes.trackId, trackId), eq(votes.userId, userId)),
       });
 
-      const track = new Track(pin, trackId, existing.userId ?? null, existing.score);
       const outcome = track.castVote({
         voterId: userId,
         direction: vote as VoteDirection,
@@ -44,7 +40,7 @@ export class VoteService {
 
       await this.trackRepo.applyOutcome(track, outcome, tx);
 
-      const [result] = await tx
+      const [row] = await tx
         .insert(votes)
         .values({ pin, trackId, vote, userId })
         .onConflictDoUpdate({
@@ -53,7 +49,11 @@ export class VoteService {
         })
         .returning();
 
-      return result;
+      return row;
     });
+
+    // A vote reorders the queue — every mutation invalidates the Fissa view.
+    if (result) fissaEvents.publish(pin);
+    return result;
   };
 }

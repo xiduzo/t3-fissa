@@ -1,5 +1,7 @@
 import type { Fissa, Track } from "@fissa/db";
 
+import type { Executor } from "./ITrackRepository";
+
 export type FissaForDisplay = Fissa & {
   by: { email: string | null };
   tracks: (Track & { by: { email: string | null } })[];
@@ -20,13 +22,8 @@ export type FissaForSync = {
     | "durationMs"
   >[];
   by: { accessToken: string | null; id: string } | undefined;
-  currentlyPlaying:
-    | {
-        trackId: string | undefined;
-        score: number;
-        by: { userId: string } | undefined;
-      }
-    | undefined;
+  /** Pointer only — commands load the full Track aggregate through ITrackRepository.load. */
+  currentlyPlaying: { trackId: string | undefined } | undefined;
 };
 
 export type FissaOwnerAccount = {
@@ -63,7 +60,7 @@ export interface IFissaRepository {
 
   deleteByUserId(userId: string): Promise<void>;
 
-  setCurrentlyPlaying(pin: string, trackId: string, expectedEndTime: Date): Promise<void>;
+  setCurrentlyPlaying(pin: string, trackId: string, expectedEndTime: Date, tx?: Executor): Promise<void>;
 
   clearCurrentlyPlaying(pin: string): Promise<void>;
 }

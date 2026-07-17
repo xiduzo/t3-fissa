@@ -25,12 +25,28 @@ export class EndOfTrackTimer {
   readonly MIN_CHECK_DELAY_MS = 500;
 
   private readonly pending = new Map<string, ReturnType<typeof setTimeout>>();
+  /**
+   * Monotonic arm counter per pin. Each `arm` starts a new generation; the
+   * halving recursion and the async re-arm after `playNextTrack` both carry
+   * theirs and die silently once a newer arm supersedes them. Without this, a
+   * skip/restart that moves `expectedEndTime` while an advance is in flight
+   * gets overwritten by the stale re-arm (last-writer-wins).
+   */
+  private readonly generation = new Map<string, number>();
 
   constructor(private readonly caller: EndOfTrackCaller) {}
 
   /** Arm (or re-arm) the timer for a fissa whose pointer just moved. */
   arm(fissa: ActiveFissa): void {
+    const gen = (this.generation.get(fissa.pin) ?? 0) + 1;
+    this.generation.set(fissa.pin, gen);
+    this.armAt(fissa, gen);
+  }
+
+  private armAt(fissa: ActiveFissa, gen: number): void {
     try {
+      if (this.generation.get(fissa.pin) !== gen) return; // superseded by a newer arm
+
       clearTimeout(this.pending.get(fissa.pin));
 
       const endTime = addSeconds(fissa.expectedEndTime, -this.WIGGLE_S);
@@ -42,6 +58,7 @@ export class EndOfTrackTimer {
           .playNextTrack(fissa.pin)
           .then((nextExpectedEndTime) => {
             if (!nextExpectedEndTime) return;
+            if (this.generation.get(fissa.pin) !== gen) return; // superseded while advancing
             this.arm({ pin: fissa.pin, expectedEndTime: nextExpectedEndTime });
           })
           .catch((err: unknown) => console.error(`[sync] ${fissa.pin} failed`, err));
@@ -52,7 +69,7 @@ export class EndOfTrackTimer {
 
       this.pending.set(
         fissa.pin,
-        setTimeout(() => this.arm(fissa), delay / 2),
+        setTimeout(() => this.armAt(fissa, gen), delay / 2),
       );
     } catch (err) {
       console.error(`[sync] ${fissa.pin} error`, err);
@@ -68,5 +85,6 @@ export class EndOfTrackTimer {
   cancelAll(): void {
     for (const timeout of this.pending.values()) clearTimeout(timeout);
     this.pending.clear();
+    this.generation.clear();
   }
 }
